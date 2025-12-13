@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib
 
+import net.minecraft.resources.ResourceLocation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -9,4 +10,6 @@ object BigShotLib {
 
     fun init() {
     }
+
+    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
 }

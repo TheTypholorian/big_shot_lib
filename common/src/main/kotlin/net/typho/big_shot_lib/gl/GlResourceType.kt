@@ -113,7 +113,7 @@ data class GlResourceType(
         ): Array<GlResourceType> {
             return IntStream.range(0, number - 1)
                 .mapToObj { GlResourceType(glName.apply(it), bind) }
-                .toArray { arrayOf() }
+                .toArray { arrayOfNulls(number - 1) }
         }
     }
 }
