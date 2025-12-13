@@ -12,7 +12,6 @@ object Services {
             .orElseThrow {
                 IllegalStateException("Failed to load service for ${clazz.name}")
             }
-        Constants.LOG.debug("Loaded {} for service {}", loadedService, clazz)
         return loadedService
     }
 }

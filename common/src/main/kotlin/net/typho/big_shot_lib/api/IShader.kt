@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.shaders.AbstractUniform
 import net.minecraft.client.renderer.texture.AbstractTexture
-import net.typho.big_shot_lib.Unbindable
+import net.typho.big_shot_lib.gl.Unbindable
 
 interface IShader : Unbindable {
     fun getUniform(name: String): AbstractUniform?

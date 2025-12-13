@@ -1,13 +1,10 @@
 package net.typho.big_shot_lib.api
 
 import com.mojang.blaze3d.shaders.AbstractUniform
-import net.typho.big_shot_lib.GlResourceStack
-import net.typho.big_shot_lib.GlResourceType
-import net.typho.big_shot_lib.ShaderType
-import net.typho.big_shot_lib.Unbindable
+import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.error.ShaderLinkException
-import net.typho.vibrancy.gl.Bindable
+import net.typho.big_shot_lib.gl.*
 import org.joml.Matrix3f
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -16,13 +13,28 @@ import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.*
 import java.util.*
 
-open class NeoShader(val id: Int) : Bindable<NeoShader.Bound> {
-    private val uniforms = HashMap<String, Uniform?>()
-    private val samplers = HashMap<String, Sampler>()
-    private val bound = Bound()
+open class NeoShader(
+    protected val location: ResourceLocation,
+    protected val id: Int
+) : Bindable<NeoShader.Bound> {
+    companion object {
+        val REGISTRY = HashMap<ResourceLocation, NeoShader>()
+
+        fun register(shader: NeoShader) {
+            REGISTRY.put(shader.location(), shader)
+        }
+    }
+
+    protected val uniforms = HashMap<String, Uniform?>()
+    protected val samplers = HashMap<String, Sampler>()
+    protected val bound = Bound()
+
+    override fun release() {
+        glDeleteProgram(id())
+    }
 
     override fun bind(): Bound {
-        type().bind(id)
+        type().bind(id())
         return bound
     }
 
@@ -30,6 +42,8 @@ open class NeoShader(val id: Int) : Bindable<NeoShader.Bound> {
         stack.put(bound)
         return bind()
     }
+
+    override fun location() = location
 
     override fun type() = GlResourceType.PROGRAM
 
@@ -73,7 +87,7 @@ open class NeoShader(val id: Int) : Bindable<NeoShader.Bound> {
             sources.add(id)
         }
 
-        fun build(): NeoShader {
+        fun build(location: ResourceLocation): NeoShader {
             val id = glCreateProgram()
 
             for (source in sources) {
@@ -91,7 +105,7 @@ open class NeoShader(val id: Int) : Bindable<NeoShader.Bound> {
                 glDeleteShader(source)
             }
 
-            return NeoShader(id)
+            return NeoShader(location, id)
         }
     }
 
