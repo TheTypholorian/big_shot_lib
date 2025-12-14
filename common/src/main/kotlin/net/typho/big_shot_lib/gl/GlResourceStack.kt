@@ -8,16 +8,12 @@ class GlResourceStack : AutoCloseable {
     val bound = LinkedList<Unbindable>()
 
     fun put(unbindable: Unbindable): Unbindable? {
-        val resource = unbindable.getResource()
+        val type = unbindable.resource().type()
 
-        if (resource != null) {
-            val type = resource.type()
-
-            if (type == null) {
-                bound.add(unbindable)
-            } else {
-                return boundMap.put(type, unbindable)
-            }
+        if (type == null) {
+            bound.add(unbindable)
+        } else {
+            return boundMap.put(type, unbindable)
         }
 
         return null
