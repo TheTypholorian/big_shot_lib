@@ -5,6 +5,8 @@ import net.typho.big_shot_lib.gl.GlResourceType
 import net.typho.big_shot_lib.gl.TextureFormat
 import net.typho.big_shot_lib.gl.Unbindable
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE
+import org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R
 import org.lwjgl.opengl.GL32.glFramebufferTexture
 import org.lwjgl.system.MemoryUtil
 
@@ -19,6 +21,16 @@ open class NeoTexture(
         type: GlResourceType,
         format: TextureFormat
     ) : this(location, type, glGenTextures(), format)
+
+    init {
+        bind().use {
+            glTexParameteri(type.glName, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+            glTexParameteri(type.glName, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+            glTexParameteri(type.glName, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE)
+            glTexParameteri(type.glName, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+            glTexParameteri(type.glName, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        }
+    }
 
     override fun bind(): Unbindable<NeoTexture> {
         type().bind(id)

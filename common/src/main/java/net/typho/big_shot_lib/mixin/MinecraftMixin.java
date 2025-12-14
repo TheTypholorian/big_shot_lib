@@ -1,8 +1,10 @@
 package net.typho.big_shot_lib.mixin;
 
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.typho.big_shot_lib.api.NeoFramebuffer;
 import net.typho.big_shot_lib.resource.ShaderReloadListener;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +19,10 @@ public class MinecraftMixin {
     @Final
     private ReloadableResourceManager resourceManager;
 
+    @Shadow
+    @Final
+    private Window window;
+
     @Inject(
             method = "<init>",
             at = @At(
@@ -27,5 +33,15 @@ public class MinecraftMixin {
     )
     private void init(GameConfig gameConfig, CallbackInfo ci) {
         resourceManager.registerReloadListener(ShaderReloadListener.INSTANCE);
+    }
+
+    @Inject(
+            method = "resizeDisplay",
+            at = @At("TAIL")
+    )
+    private void resizeDisplay(CallbackInfo ci) {
+        for (NeoFramebuffer fbo : NeoFramebuffer.Companion.getAUTO_RESIZE()) {
+            fbo.resize(window.getWidth(), window.getHeight());
+        }
     }
 }

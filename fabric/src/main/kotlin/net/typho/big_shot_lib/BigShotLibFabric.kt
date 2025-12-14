@@ -11,32 +11,83 @@ import net.minecraft.client.Minecraft
 import net.minecraft.world.inventory.InventoryMenu
 import net.minecraft.world.phys.AABB
 import net.typho.big_shot_lib.BigShotLib.cube
+import net.typho.big_shot_lib.BigShotLib.quad
+import net.typho.big_shot_lib.api.ITexture
+import net.typho.big_shot_lib.api.NeoFramebuffer
 import net.typho.big_shot_lib.api.NeoShader
+import net.typho.big_shot_lib.gl.TextureFormat
+import org.joml.Vector3f
+import org.joml.Vector4f
 
 object BigShotLibFabric : ModInitializer {
-    var vbo: VertexBuffer? = null
+    var cubeVBO: VertexBuffer? = null
+    var blitVBO: VertexBuffer? = null
+    var fbo: NeoFramebuffer.TextureBacked? = null
 
     override fun onInitialize() {
         RenderSystem.recordRenderCall {
-            val vbo = VertexBuffer(VertexBuffer.Usage.STATIC)
-            val builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
+            val minecraft = Minecraft.getInstance()
 
-            builder.cube(AABB(0.0, 0.0, 0.0, 16.0, 16.0, 16.0))
+            val cubeVBO = VertexBuffer(VertexBuffer.Usage.STATIC)
+            val cubeBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
 
-            vbo.bind()
-            vbo.upload(builder.buildOrThrow())
+            cubeBuilder.cube(AABB(0.0, 0.0, 0.0, 16.0, 16.0, 16.0))
+
+            cubeVBO.bind()
+            cubeVBO.upload(cubeBuilder.buildOrThrow())
             VertexBuffer.unbind()
-            BigShotLibFabric.vbo = vbo
+            BigShotLibFabric.cubeVBO = cubeVBO
+
+            val blitVBO = VertexBuffer(VertexBuffer.Usage.STATIC)
+            val blitBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
+
+            blitBuilder.quad(
+                Vector3f(0f, 0f, 0f),
+                Vector3f(1f, 0f, 0f),
+                Vector3f(1f, 1f, 0f),
+                Vector3f(0f, 1f, 0f),
+                Vector3f(0f, 0f, -1f)
+            )
+
+            blitVBO.bind()
+            blitVBO.upload(blitBuilder.buildOrThrow())
+            VertexBuffer.unbind()
+            BigShotLibFabric.blitVBO = blitVBO
+
+            val fbo = NeoFramebuffer.TextureBacked(
+                BigShotLib.id("test_fbo"),
+                arrayOf(TextureFormat.RGBA),
+                null,
+                minecraft.window.width,
+                minecraft.window.height
+            )
+            NeoFramebuffer.AUTO_RESIZE.add(fbo)
+            NeoFramebuffer.AUTO_CLEAR.put(fbo, Vector4f(0f))
+            BigShotLibFabric.fbo = fbo
         }
 
         BigShotLib.init()
         WorldRenderEvents.LAST.register { context ->
-            NeoShader.REGISTRY[BigShotLib.id("test_shader")]!!.bind().use {
-                val shader = it.resource()
+            NeoShader.get(BigShotLib.id("test_shader"))!!.bind().use { shader ->
+                fbo!!.bind().use {
+                    val shader = shader.resource()
+                    shader.setCommonUniforms()
+                    shader.setSampler(
+                        "TestSampler",
+                        Minecraft.getInstance().modelManager.getAtlas(InventoryMenu.BLOCK_ATLAS)
+                    )
+                    cubeVBO!!.bind()
+                    cubeVBO!!.draw()
+                    VertexBuffer.unbind()
+                }
+            }
+
+            NeoShader.get(BigShotLib.id("blit"))!!.bind().use { shader ->
+                val shader = shader.resource()
                 shader.setCommonUniforms()
-                shader.setSampler("TestSampler", Minecraft.getInstance().modelManager.getAtlas(InventoryMenu.BLOCK_ATLAS))
-                vbo!!.bind()
-                vbo!!.draw()
+                shader.setSampler("Sampler0", fbo!!.colorAttachments[0] as ITexture)
+                blitVBO!!.bind()
+                blitVBO!!.draw()
                 VertexBuffer.unbind()
             }
         }

@@ -1,10 +1,13 @@
 package net.typho.big_shot_lib.api
 
+import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.gl.GlResourceType
 import net.typho.big_shot_lib.gl.TextureFormat
 import net.typho.big_shot_lib.gl.Unbindable
+import org.joml.Vector4f
 import org.lwjgl.opengl.GL30.*
+import java.util.*
 
 open class NeoFramebuffer(
     protected val location: ResourceLocation,
@@ -14,21 +17,39 @@ open class NeoFramebuffer(
     protected var width: Int,
     protected var height: Int
 ) : IFramebuffer {
+    companion object {
+        val AUTO_RESIZE = LinkedList<NeoFramebuffer>()
+        val AUTO_CLEAR = LinkedHashMap<NeoFramebuffer, Vector4f>()
+    }
+
+    constructor(
+        location: ResourceLocation,
+        colorAttachments: Array<IFramebufferAttachment>,
+        depthAttachment: IFramebufferAttachment?,
+        width: Int,
+        height: Int
+    ) : this(location, glGenFramebuffers(), colorAttachments, depthAttachment, width, height)
+
     init {
         bind().use {
-            colorAttachments.forEachIndexed { i, attachment -> attachment.attach(GL_COLOR_ATTACHMENT0 + i, type().glName) }
-            depthAttachment?.let {
-                val depth = it.format().depth
-                val stencil = it.format().stencil
+            colorAttachments.forEachIndexed { i, attachment ->
+                attachment.resize2D(width, height)
+                attachment.attach(GL_COLOR_ATTACHMENT0 + i, type().glName)
+            }
+            depthAttachment?.let { attachment ->
+                attachment.resize2D(width, height)
+
+                val depth = attachment.format().depth
+                val stencil = attachment.format().stencil
 
                 if (depth) {
-                    it.attach(if (stencil) GL_DEPTH_STENCIL_ATTACHMENT else GL_DEPTH_ATTACHMENT, type().glName)
+                    attachment.attach(if (stencil) GL_DEPTH_STENCIL_ATTACHMENT else GL_DEPTH_ATTACHMENT, type().glName)
                 } else {
                     if (!stencil) {
-                        throw IllegalStateException("Illegal depth format ${it.format()} for framebuffer $location")
+                        throw IllegalStateException("Illegal depth format ${attachment.format()} for framebuffer $location")
                     }
 
-                    it.attach(GL_DEPTH_ATTACHMENT, type().glName)
+                    attachment.attach(GL_DEPTH_ATTACHMENT, type().glName)
                 }
             }
         }
@@ -36,7 +57,11 @@ open class NeoFramebuffer(
 
     override fun bind(): Unbindable<NeoFramebuffer> {
         type().bind(id())
-        return Unbindable.of(this)
+        return object : Unbindable<NeoFramebuffer> {
+            override fun resource() = this@NeoFramebuffer
+
+            override fun unbind() = Minecraft.getInstance().mainRenderTarget.bindWrite(true)
+        }
     }
 
     override fun release() {
@@ -64,6 +89,11 @@ open class NeoFramebuffer(
         }
     }
 
+    override fun clearColor(color: Vector4f) {
+        glClearColor(color.x, color.y, color.z, color.w)
+        glClear(GL_COLOR_BUFFER_BIT)
+    }
+
     open class TextureBacked(
         location: ResourceLocation,
         colorFormats: Array<TextureFormat>,
@@ -72,7 +102,6 @@ open class NeoFramebuffer(
         height: Int,
     ) : NeoFramebuffer(
         location,
-        glGenFramebuffers(),
         colorFormats.mapIndexed { index, format ->
             NeoTexture(
                 location.withSuffix("/color_$index"),
@@ -99,7 +128,6 @@ open class NeoFramebuffer(
         height: Int,
     ) : NeoFramebuffer(
         location,
-        glGenFramebuffers(),
         colorFormats.mapIndexed { index, format ->
             NeoRenderBuffer(
                 location.withSuffix("/color_$index"),

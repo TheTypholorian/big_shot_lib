@@ -25,6 +25,8 @@ open class NeoShader(
         fun register(shader: NeoShader) {
             REGISTRY.put(shader.location(), shader)
         }
+
+        fun get(location: ResourceLocation) = REGISTRY.get(location)
     }
 
     protected val uniforms = HashMap<String, Uniform?>()
