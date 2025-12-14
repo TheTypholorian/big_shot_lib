@@ -1,11 +1,14 @@
 package net.typho.big_shot_lib
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.VertexConsumer
+import com.mojang.blaze3d.vertex.*
 import net.minecraft.client.Camera
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.phys.AABB
+import net.typho.big_shot_lib.api.IWindow
+import net.typho.big_shot_lib.api.NeoWindow
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.slf4j.Logger
@@ -14,8 +17,34 @@ import org.slf4j.LoggerFactory
 object BigShotLib {
     const val MOD_ID = "big_shot_lib"
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
+    var DEBUG_WINDOW: NeoWindow? = null
+    var blitVBO: VertexBuffer? = null
 
     fun init() {
+        RenderSystem.recordRenderCall {
+            val blitVBO = VertexBuffer(VertexBuffer.Usage.STATIC)
+            val blitBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
+
+            blitBuilder.quad(
+                Vector3f(0f, 0f, 0f),
+                Vector3f(1f, 0f, 0f),
+                Vector3f(1f, 1f, 0f),
+                Vector3f(0f, 1f, 0f),
+                Vector3f(0f, 0f, -1f)
+            )
+
+            blitVBO.bind()
+            blitVBO.upload(blitBuilder.buildOrThrow())
+            VertexBuffer.unbind()
+            BigShotLib.blitVBO = blitVBO
+
+            val window = DebugWindow(
+                IWindow.create(1280, 800, "Debug Window"),
+                MultiBufferSource.immediate(ByteBufferBuilder(1536))
+            )
+            NeoWindow.AUTO_RENDER.add(window)
+            DEBUG_WINDOW = window
+        }
     }
 
     fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)

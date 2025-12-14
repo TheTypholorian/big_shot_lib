@@ -20,6 +20,13 @@ open class NeoFramebuffer(
     companion object {
         val AUTO_RESIZE = LinkedList<NeoFramebuffer>()
         val AUTO_CLEAR = LinkedHashMap<NeoFramebuffer, Vector4f>()
+        val REGISTRY = HashMap<ResourceLocation, NeoFramebuffer>()
+
+        fun register(framebuffer: NeoFramebuffer) {
+            REGISTRY.put(framebuffer.location(), framebuffer)
+        }
+
+        fun get(location: ResourceLocation) = REGISTRY.get(location)
     }
 
     constructor(
