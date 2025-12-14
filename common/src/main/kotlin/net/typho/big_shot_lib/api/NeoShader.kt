@@ -28,13 +28,13 @@ open class NeoShader(
     }
 
     protected val uniforms = HashMap<String, Uniform?>()
-    protected val samplers = HashMap<String, Sampler>()
+    protected val samplers = HashMap<String, Sampler?>()
 
     override fun release() {
         glDeleteProgram(id())
     }
 
-    override fun bind(): Unbindable {
+    override fun bind(): Unbindable<NeoShader> {
         type().bind(id())
         return Unbindable.of(this)
     }
@@ -57,8 +57,10 @@ open class NeoShader(
 
     override fun setSampler(name: String, id: Int) {
         samplers.computeIfAbsent(name) {
-            Sampler(getUniform(name)!!, samplers.size)
-        }.set(id)
+            getUniform(name)?.let {
+                Sampler(it, samplers.size)
+            }
+        }?.set(id)
     }
 
     open class Builder() {

@@ -20,7 +20,7 @@ open class NeoTexture(
         format: TextureFormat
     ) : this(location, type, glGenTextures(), format)
 
-    override fun bind(): Unbindable {
+    override fun bind(): Unbindable<NeoTexture> {
         type().bind(id)
         return Unbindable.of(this)
     }

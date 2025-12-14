@@ -4,10 +4,10 @@ import java.lang.AutoCloseable
 import java.util.*
 
 class GlResourceStack : AutoCloseable {
-    val boundMap = HashMap<GlResourceType, Unbindable>()
-    val bound = LinkedList<Unbindable>()
+    val boundMap = HashMap<GlResourceType, Unbindable<*>>()
+    val bound = LinkedList<Unbindable<*>>()
 
-    fun put(unbindable: Unbindable): Unbindable? {
+    fun put(unbindable: Unbindable<*>): Unbindable<*>? {
         val type = unbindable.resource().type()
 
         if (type == null) {

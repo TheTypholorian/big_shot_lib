@@ -92,7 +92,10 @@ data class GlResourceType(
         val SAMPLERS = array(
             GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
             { GL_TEXTURE0 + it },
-            ::glBindSampler
+            { name, id ->
+                glActiveTexture(name)
+                glBindTexture(GL_TEXTURE_2D, id)
+            }
         )
 
         val FRAMEBUFFER = GlResourceType(GL_FRAMEBUFFER, ::glBindFramebuffer)

@@ -7,6 +7,10 @@ import com.mojang.blaze3d.vertex.VertexBuffer
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+import net.minecraft.client.Minecraft
+import net.minecraft.world.inventory.InventoryMenu
+import net.minecraft.world.phys.AABB
+import net.typho.big_shot_lib.BigShotLib.cube
 import net.typho.big_shot_lib.api.NeoShader
 
 object BigShotLibFabric : ModInitializer {
@@ -15,12 +19,9 @@ object BigShotLibFabric : ModInitializer {
     override fun onInitialize() {
         RenderSystem.recordRenderCall {
             val vbo = VertexBuffer(VertexBuffer.Usage.STATIC)
-            val builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION)
+            val builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
 
-            builder.addVertex(0f, 0f, 0f)
-            builder.addVertex(1f, 0f, 0f)
-            builder.addVertex(1f, 1f, 0f)
-            builder.addVertex(0f, 1f, 0f)
+            builder.cube(AABB(0.0, 0.0, 0.0, 16.0, 16.0, 16.0))
 
             vbo.bind()
             vbo.upload(builder.buildOrThrow())
@@ -30,7 +31,10 @@ object BigShotLibFabric : ModInitializer {
 
         BigShotLib.init()
         WorldRenderEvents.LAST.register { context ->
-            NeoShader.REGISTRY.get(BigShotLib.id("test_shader"))!!.bind().use {
+            NeoShader.REGISTRY[BigShotLib.id("test_shader")]!!.bind().use {
+                val shader = it.resource()
+                shader.setCommonUniforms()
+                shader.setSampler("TestSampler", Minecraft.getInstance().modelManager.getAtlas(InventoryMenu.BLOCK_ATLAS))
                 vbo!!.bind()
                 vbo!!.draw()
                 VertexBuffer.unbind()

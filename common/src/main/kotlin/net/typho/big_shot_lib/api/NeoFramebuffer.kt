@@ -34,7 +34,7 @@ open class NeoFramebuffer(
         }
     }
 
-    override fun bind(): Unbindable {
+    override fun bind(): Unbindable<NeoFramebuffer> {
         type().bind(id())
         return Unbindable.of(this)
     }

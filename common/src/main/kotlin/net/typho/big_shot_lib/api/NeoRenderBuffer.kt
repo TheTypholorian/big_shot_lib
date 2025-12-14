@@ -17,7 +17,7 @@ open class NeoRenderBuffer(
         format: TextureFormat
     ) : this(location, glGenRenderbuffers(), format)
 
-    override fun bind(): Unbindable {
+    override fun bind(): Unbindable<NeoRenderBuffer> {
         type().bind(id)
         return Unbindable.of(this)
     }
