@@ -3,9 +3,15 @@ package net.typho.big_shot_lib.gl
 import java.lang.AutoCloseable
 
 interface Unbindable : AutoCloseable {
-    fun getResource(): GlResourceInstance?
+    fun resource(): GlResourceInstance
 
-    fun unbind() = getResource()!!.type()!!.unbind()
+    fun unbind() = resource().type()!!.unbind()
 
     override fun close() = unbind()
+
+    companion object {
+        fun of(instance: GlResourceInstance) = object : Unbindable {
+            override fun resource() = instance
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.gl
 
-interface Bindable<T : Unbindable> : GlResourceInstance {
-    fun bind(): T
+interface Bindable {
+    fun bind(): Unbindable
 
-    fun bind(stack: GlResourceStack): T
+    fun bind(stack: GlResourceStack) = stack.put(bind())
 }

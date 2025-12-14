@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api
 
-import net.typho.big_shot_lib.gl.Unbindable
+import net.typho.big_shot_lib.gl.Bindable
+import net.typho.big_shot_lib.gl.GlResourceInstance
 
-interface ITexture : Unbindable {
-}
+interface ITexture : Bindable, GlResourceInstance, IFramebufferAttachment

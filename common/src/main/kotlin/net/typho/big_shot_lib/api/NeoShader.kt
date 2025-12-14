@@ -4,7 +4,9 @@ import com.mojang.blaze3d.shaders.AbstractUniform
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.error.ShaderLinkException
-import net.typho.big_shot_lib.gl.*
+import net.typho.big_shot_lib.gl.GlResourceType
+import net.typho.big_shot_lib.gl.ShaderType
+import net.typho.big_shot_lib.gl.Unbindable
 import org.joml.Matrix3f
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -16,7 +18,7 @@ import java.util.*
 open class NeoShader(
     protected val location: ResourceLocation,
     protected val id: Int
-) : Bindable<NeoShader.Bound> {
+) : IShader {
     companion object {
         val REGISTRY = HashMap<ResourceLocation, NeoShader>()
 
@@ -27,20 +29,14 @@ open class NeoShader(
 
     protected val uniforms = HashMap<String, Uniform?>()
     protected val samplers = HashMap<String, Sampler>()
-    protected val bound = Bound()
 
     override fun release() {
         glDeleteProgram(id())
     }
 
-    override fun bind(): Bound {
+    override fun bind(): Unbindable {
         type().bind(id())
-        return bound
-    }
-
-    override fun bind(stack: GlResourceStack): Bound {
-        stack.put(bound)
-        return bind()
+        return Unbindable.of(this)
     }
 
     override fun location() = location
@@ -49,24 +45,20 @@ open class NeoShader(
 
     override fun id(): Int = id
 
-    inner class Bound : Unbindable, IShader {
-        override fun getResource() = this@NeoShader
+    override fun getUniform(name: String) = uniforms.computeIfAbsent(name) {
+        val location = glGetUniformLocation(id(), name)
 
-        override fun getUniform(name: String) = uniforms.computeIfAbsent(name) {
-            val location = glGetUniformLocation(getResource().id(), name)
-
-            if (location == -1) {
-                return@computeIfAbsent null
-            }
-
-            return@computeIfAbsent Uniform(location)
+        if (location == -1) {
+            return@computeIfAbsent null
         }
 
-        override fun setSampler(name: String, id: Int) {
-            samplers.computeIfAbsent(name) {
-                Sampler(getUniform(name)!!, samplers.size)
-            }.set(id)
-        }
+        return@computeIfAbsent Uniform(location)
+    }
+
+    override fun setSampler(name: String, id: Int) {
+        samplers.computeIfAbsent(name) {
+            Sampler(getUniform(name)!!, samplers.size)
+        }.set(id)
     }
 
     open class Builder() {
@@ -200,7 +192,16 @@ open class NeoShader(
             glUniformMatrix2x3fv(location, false, floatArrayOf(m00, m01, m02, m10, m11, m12))
         }
 
-        override fun setMat2x4(m00: Float, m01: Float, m02: Float, m03: Float, m10: Float, m11: Float, m12: Float, m13: Float) {
+        override fun setMat2x4(
+            m00: Float,
+            m01: Float,
+            m02: Float,
+            m03: Float,
+            m10: Float,
+            m11: Float,
+            m12: Float,
+            m13: Float
+        ) {
             glUniformMatrix2x4fv(location, false, floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13))
         }
 
@@ -208,24 +209,98 @@ open class NeoShader(
             glUniformMatrix3x2fv(location, false, floatArrayOf(m00, m01, m10, m11, m20, m21))
         }
 
-        override fun setMat3x3(m00: Float, m01: Float, m02: Float, m10: Float, m11: Float, m12: Float, m20: Float, m21: Float, m22: Float) {
+        override fun setMat3x3(
+            m00: Float,
+            m01: Float,
+            m02: Float,
+            m10: Float,
+            m11: Float,
+            m12: Float,
+            m20: Float,
+            m21: Float,
+            m22: Float
+        ) {
             glUniformMatrix3fv(location, false, floatArrayOf(m00, m01, m02, m10, m11, m12, m20, m21, m22))
         }
 
-        override fun setMat3x4(m00: Float, m01: Float, m02: Float, m03: Float, m10: Float, m11: Float, m12: Float, m13: Float, m20: Float, m21: Float, m22: Float, m23: Float) {
-            glUniformMatrix3x4fv(location, false, floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23))
+        override fun setMat3x4(
+            m00: Float,
+            m01: Float,
+            m02: Float,
+            m03: Float,
+            m10: Float,
+            m11: Float,
+            m12: Float,
+            m13: Float,
+            m20: Float,
+            m21: Float,
+            m22: Float,
+            m23: Float
+        ) {
+            glUniformMatrix3x4fv(
+                location,
+                false,
+                floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23)
+            )
         }
 
-        override fun setMat4x2(m00: Float, m01: Float, m02: Float, m03: Float, m10: Float, m11: Float, m12: Float, m13: Float) {
+        override fun setMat4x2(
+            m00: Float,
+            m01: Float,
+            m02: Float,
+            m03: Float,
+            m10: Float,
+            m11: Float,
+            m12: Float,
+            m13: Float
+        ) {
             glUniformMatrix4x2fv(location, false, floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13))
         }
 
-        override fun setMat4x3(m00: Float, m01: Float, m02: Float, m03: Float, m10: Float, m11: Float, m12: Float, m13: Float, m20: Float, m21: Float, m22: Float, m23: Float) {
-            glUniformMatrix4x3fv(location, false, floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23))
+        override fun setMat4x3(
+            m00: Float,
+            m01: Float,
+            m02: Float,
+            m03: Float,
+            m10: Float,
+            m11: Float,
+            m12: Float,
+            m13: Float,
+            m20: Float,
+            m21: Float,
+            m22: Float,
+            m23: Float
+        ) {
+            glUniformMatrix4x3fv(
+                location,
+                false,
+                floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23)
+            )
         }
 
-        override fun setMat4x4(m00: Float, m01: Float, m02: Float, m03: Float, m10: Float, m11: Float, m12: Float, m13: Float, m20: Float, m21: Float, m22: Float, m23: Float, m30: Float, m31: Float, m32: Float, m33: Float) {
-            glUniformMatrix4fv(location, false, floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33))
+        override fun setMat4x4(
+            m00: Float,
+            m01: Float,
+            m02: Float,
+            m03: Float,
+            m10: Float,
+            m11: Float,
+            m12: Float,
+            m13: Float,
+            m20: Float,
+            m21: Float,
+            m22: Float,
+            m23: Float,
+            m30: Float,
+            m31: Float,
+            m32: Float,
+            m33: Float
+        ) {
+            glUniformMatrix4fv(
+                location,
+                false,
+                floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33)
+            )
         }
     }
 }
