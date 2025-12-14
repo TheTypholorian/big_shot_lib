@@ -11,7 +11,7 @@ import java.util.function.Consumer
 import java.util.function.Function
 import java.util.stream.IntStream
 
-data class GlResourceType(
+open class GlResourceType(
     val glName: Int,
     private val bind: Consumer<Int>,
     private val unbind: Runnable
@@ -34,9 +34,9 @@ data class GlResourceType(
         { bind.accept(0) }
     )
 
-    fun bind(id: Int) = bind.accept(id)
+    open fun bind(id: Int) = bind.accept(id)
 
-    fun unbind() = unbind.run()
+    open fun unbind() = unbind.run()
 
     @OptIn(ExperimentalStdlibApi::class)
     override fun toString(): String = "GlResourceType[${glName.toHexString()}]"
@@ -59,16 +59,17 @@ data class GlResourceType(
         val ELEMENT_ARRAY_BUFFER = GlResourceType(GL_ELEMENT_ARRAY_BUFFER, ::glBindBuffer)
         val PIXEL_PACK_BUFFER = GlResourceType(GL_PIXEL_PACK_BUFFER, ::glBindBuffer)
         val PIXEL_UNPACK_BUFFER = GlResourceType(GL_PIXEL_UNPACK_BUFFER, ::glBindBuffer)
-        val UNIFORM_BUFFER = GlResourceType(GL_UNIFORM_BUFFER, ::glBindBuffer)
         val TEXTURE_BUFFER_STORAGE = GlResourceType(GL_TEXTURE_BUFFER, ::glBindBuffer)
-        val TRANSFORM_FEEDBACK_BUFFER = GlResourceType(GL_TRANSFORM_FEEDBACK_BUFFER, ::glBindBuffer)
         val COPY_READ_BUFFER = GlResourceType(GL_COPY_READ_BUFFER, ::glBindBuffer)
         val COPY_WRITE_BUFFER = GlResourceType(GL_COPY_WRITE_BUFFER, ::glBindBuffer)
         val DRAW_INDIRECT_BUFFER = GlResourceType(GL_DRAW_INDIRECT_BUFFER, ::glBindBuffer)
-        val ATOMIC_COUNTER_BUFFER = GlResourceType(GL_ATOMIC_COUNTER_BUFFER, ::glBindBuffer)
         val DISPATCH_INDIRECT_BUFFER = GlResourceType(GL_DISPATCH_INDIRECT_BUFFER, ::glBindBuffer)
-        val SHADER_STORAGE_BUFFER = GlResourceType(GL_SHADER_STORAGE_BUFFER, ::glBindBuffer)
         val QUERY_BUFFER = GlResourceType(GL_QUERY_BUFFER, ::glBindBuffer)
+
+        val TRANSFORM_FEEDBACK_BUFFER = GlIndexedBufferType(GL_TRANSFORM_FEEDBACK_BUFFER, ::glBindBuffer)
+        val UNIFORM_BUFFER = GlIndexedBufferType(GL_UNIFORM_BUFFER, ::glBindBuffer)
+        val ATOMIC_COUNTER_BUFFER = GlIndexedBufferType(GL_ATOMIC_COUNTER_BUFFER, ::glBindBuffer)
+        val SHADER_STORAGE_BUFFER = GlIndexedBufferType(GL_SHADER_STORAGE_BUFFER, ::glBindBuffer)
 
         val VERTEX_ARRAY = GlResourceType(GL_VERTEX_ARRAY, ::glBindVertexArray)
 
@@ -119,4 +120,26 @@ data class GlResourceType(
                 .toArray { arrayOfNulls(number - 1) }
         }
     }
+}
+
+open class GlIndexedBufferType : GlResourceType {
+    constructor(
+        glName: Int,
+        bind: Consumer<Int>,
+        unbind: Runnable
+    ) : super(glName, bind, unbind)
+
+    constructor(
+        name: Int,
+        bind: BiConsumer<Int, Int>
+    ) : super(name, bind)
+
+    constructor(
+        name: Int,
+        bind: Consumer<Int>
+    ) : super(name, bind)
+
+    open fun bindBase(id: Int, index: Int) = glBindBufferBase(glName, index, id)
+
+    open fun unbindBase(index: Int) = glBindBufferBase(glName, index, 0)
 }

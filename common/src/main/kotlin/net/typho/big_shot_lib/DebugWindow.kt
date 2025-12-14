@@ -30,8 +30,8 @@ class DebugWindow(
                     shader.getUniform("Height")?.set(1f)
                     shader.getUniform("X")?.set(-0.75f)
                     shader.getUniform("Y")?.set(-0.5f)
-                    BigShotLib.blitVBO!!.bind()
-                    BigShotLib.blitVBO!!.draw()
+                    BigShotLib.SCREEN_VBO!!.bind()
+                    BigShotLib.SCREEN_VBO!!.draw()
                     VertexBuffer.unbind()
                 }
             //}
