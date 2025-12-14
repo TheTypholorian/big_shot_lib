@@ -14,6 +14,7 @@ import org.joml.Vector4f
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.*
 import java.util.*
+import java.util.function.Function
 
 open class NeoShader(
     protected val location: ResourceLocation,
@@ -70,10 +71,27 @@ open class NeoShader(
 
         fun attach(
             type: ShaderType,
-            source: String
+            source: String,
+            includes: Function<ResourceLocation, String>? = null
         ) {
+            val modifiedSource = includes?.let {
+                var newSource = source
+
+                for (i in 0 until newSource.length) {
+                    if (newSource.startsWith("#include \"", i)) {
+                        val start = i + "#include \"".length
+                        val end = newSource.indexOf('"', start)
+                        val include = ResourceLocation.parse(newSource.substring(start, end))
+                        val code = it.apply(include)
+                        newSource = newSource.substring(0, i) + code + newSource.substring(end + 1)
+                    }
+                }
+
+                newSource
+            } ?: source
+
             val id = glCreateShader(type.id)
-            glShaderSource(id, source)
+            glShaderSource(id, modifiedSource)
             glCompileShader(id)
 
             if (glGetShaderi(id, GL_COMPILE_STATUS) == GL_FALSE) {
