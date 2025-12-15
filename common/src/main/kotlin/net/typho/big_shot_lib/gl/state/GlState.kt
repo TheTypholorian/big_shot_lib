@@ -10,7 +10,7 @@ interface GlState<T> {
     fun set(value: T)
 
     @Suppress("UNCHECKED_CAST")
-    fun set(value: Any) = set(value as T)
+    fun setCast(value: Any) = set(value as T)
 
     fun reset() = set(default())
 

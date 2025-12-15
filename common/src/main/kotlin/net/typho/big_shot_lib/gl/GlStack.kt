@@ -46,7 +46,7 @@ class GlStack : AutoCloseable {
         miscBound.forEach { it.unbind() }
 
         for (entry in defaultStates) {
-            entry.key.set(entry.value)
+            entry.key.setCast(entry.value)
         }
 
         boundMap.clear()
