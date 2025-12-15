@@ -1,7 +1,10 @@
 package net.typho.big_shot_lib.gl
 
 import net.typho.big_shot_lib.gl.resource.GlResourceType
+import net.typho.big_shot_lib.gl.state.GlCapability
 import net.typho.big_shot_lib.gl.state.GlState
+import org.lwjgl.opengl.GL11.glDisable
+import org.lwjgl.opengl.GL11.glEnable
 import java.lang.AutoCloseable
 import java.util.*
 
@@ -10,6 +13,7 @@ class GlStack : AutoCloseable {
     val miscBound = LinkedList<Unbindable<*>>()
     val defaultStates = HashMap<GlState<*>, Any>()
     val states = HashMap<GlState<*>, Any>()
+    val capabilities = HashMap<GlCapability, Boolean>()
 
     fun put(unbindable: Unbindable<*>): Unbindable<*>? {
         val type = unbindable.resource().type()
@@ -41,17 +45,48 @@ class GlStack : AutoCloseable {
         defaultStates.computeIfAbsent(state) { it.default() as Any }
     }
 
-    override fun close() {
-        boundMap.values.forEach { it.unbind() }
-        miscBound.forEach { it.unbind() }
+    fun enable(cap: GlCapability) {
+        if (!(capabilities.get(cap) ?: false)) {
+            glEnable(cap.id)
+            capabilities.put(cap, true)
+        }
+    }
 
+    fun disable(cap: GlCapability) {
+        if (capabilities.get(cap) ?: true) {
+            glDisable(cap.id)
+            capabilities.put(cap, false)
+        }
+    }
+
+    fun restoreDefaultCapabilities() {
+        for (entry in capabilities) {
+            if (entry.key.default != entry.value) {
+                if (entry.key.default) {
+                    glEnable(entry.key.id)
+                } else {
+                    glDisable(entry.key.id)
+                }
+            }
+        }
+    }
+
+    fun restoreDefaultStates() {
         for (entry in defaultStates) {
             entry.key.setCast(entry.value)
         }
 
-        boundMap.clear()
-        miscBound.clear()
         defaultStates.clear()
         states.clear()
+    }
+
+    override fun close() {
+        boundMap.values.forEach { it.unbind() }
+        boundMap.clear()
+
+        miscBound.forEach { it.unbind() }
+        miscBound.clear()
+
+        restoreDefaultStates()
     }
 }

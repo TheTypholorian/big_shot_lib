@@ -15,20 +15,22 @@ interface GlState<T> {
     fun reset() = set(default())
 
     companion object {
-        val ALL_STATES = LinkedList<GlState<*>>(listOf(
-            BlendColor,
-            BlendEquation,
-            BlendFunction,
-            ColorMask,
-            CullFace,
-            DepthTest,
-            LineWidth,
-            PointSize,
-            PolygonMode,
-            Scissor,
-            StencilFunc,
-            StencilMask,
-            StencilOp
-        ))
+        val ALL_STATES = LinkedList<GlState<*>>(
+            listOf(
+                BlendColor,
+                BlendEquation,
+                BlendFunction,
+                ColorMask,
+                CullFace,
+                DepthTest,
+                LineWidth,
+                PointSize,
+                PolygonMode,
+                Scissor,
+                StencilFunc,
+                StencilMask,
+                StencilOp
+            )
+        )
     }
 }
