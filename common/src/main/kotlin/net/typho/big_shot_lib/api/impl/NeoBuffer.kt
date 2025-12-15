@@ -1,9 +1,10 @@
-package net.typho.big_shot_lib.api
+package net.typho.big_shot_lib.api.impl
 
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.gl.BufferUsage
-import net.typho.big_shot_lib.gl.GlResourceType
+import net.typho.big_shot_lib.api.IBuffer
 import net.typho.big_shot_lib.gl.Unbindable
+import net.typho.big_shot_lib.gl.resource.BufferUsage
+import net.typho.big_shot_lib.gl.resource.GlResourceType
 import org.lwjgl.opengl.GL15.*
 
 open class NeoBuffer(

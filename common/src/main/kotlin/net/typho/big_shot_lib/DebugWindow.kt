@@ -3,10 +3,10 @@ package net.typho.big_shot_lib
 import com.mojang.blaze3d.vertex.VertexBuffer
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.renderer.MultiBufferSource
-import net.typho.big_shot_lib.api.NeoFramebuffer
-import net.typho.big_shot_lib.api.NeoShader
-import net.typho.big_shot_lib.api.NeoWindow
-import net.typho.big_shot_lib.gl.TextureFormat
+import net.typho.big_shot_lib.api.impl.NeoFramebuffer
+import net.typho.big_shot_lib.api.impl.NeoShader
+import net.typho.big_shot_lib.api.impl.NeoWindow
+import net.typho.big_shot_lib.gl.resource.TextureFormat
 
 class DebugWindow(
     handle: Long,

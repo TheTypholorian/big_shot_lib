@@ -1,9 +1,10 @@
-package net.typho.big_shot_lib.api
+package net.typho.big_shot_lib.api.impl
 
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.gl.GlResourceType
-import net.typho.big_shot_lib.gl.TextureFormat
+import net.typho.big_shot_lib.api.ITexture
 import net.typho.big_shot_lib.gl.Unbindable
+import net.typho.big_shot_lib.gl.resource.GlResourceType
+import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE
 import org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R
@@ -68,7 +69,7 @@ open class NeoTexture(
                 height,
                 0,
                 format().id,
-                GL_UNSIGNED_BYTE,
+                format().type,
                 MemoryUtil.NULL
             )
         }

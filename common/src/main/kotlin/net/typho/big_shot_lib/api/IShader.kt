@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.gl.Bindable
-import net.typho.big_shot_lib.gl.GlResourceInstance
+import net.typho.big_shot_lib.gl.resource.GlResourceInstance
 import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW
 

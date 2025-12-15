@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.gl
+package net.typho.big_shot_lib.gl.resource
 
 import net.minecraft.resources.FileToIdConverter
 import org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER

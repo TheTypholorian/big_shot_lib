@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.gl
+package net.typho.big_shot_lib.gl.resource
 
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.*

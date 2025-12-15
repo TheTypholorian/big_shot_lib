@@ -5,7 +5,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.typho.big_shot_lib.api.NeoFramebuffer;
+import net.typho.big_shot_lib.api.impl.NeoFramebuffer;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

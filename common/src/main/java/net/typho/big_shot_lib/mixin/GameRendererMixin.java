@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.mixin;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.typho.big_shot_lib.api.NeoWindow;
+import net.typho.big_shot_lib.api.impl.NeoWindow;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

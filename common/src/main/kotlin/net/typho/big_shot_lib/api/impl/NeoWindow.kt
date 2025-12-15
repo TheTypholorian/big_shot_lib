@@ -1,7 +1,9 @@
-package net.typho.big_shot_lib.api
+package net.typho.big_shot_lib.api.impl
 
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.MultiBufferSource
+import net.typho.big_shot_lib.api.IFramebuffer
+import net.typho.big_shot_lib.api.IWindow
 import java.util.*
 
 abstract class NeoWindow(

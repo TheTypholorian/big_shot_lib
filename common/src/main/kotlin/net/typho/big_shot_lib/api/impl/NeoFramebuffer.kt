@@ -1,14 +1,18 @@
-package net.typho.big_shot_lib.api
+package net.typho.big_shot_lib.api.impl
 
 import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.gl.GlResourceType
-import net.typho.big_shot_lib.gl.TextureFormat
+import net.typho.big_shot_lib.api.IFramebuffer
+import net.typho.big_shot_lib.api.IFramebufferAttachment
+import net.typho.big_shot_lib.error.IncompleteFramebufferException
 import net.typho.big_shot_lib.gl.Unbindable
+import net.typho.big_shot_lib.gl.resource.GlResourceType
+import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.joml.Vector4f
 import org.lwjgl.opengl.GL30.*
 import java.util.*
 
+@OptIn(ExperimentalStdlibApi::class)
 open class NeoFramebuffer(
     protected val location: ResourceLocation,
     protected val id: Int,
@@ -49,15 +53,18 @@ open class NeoFramebuffer(
                 val depth = attachment.format().depth
                 val stencil = attachment.format().stencil
 
-                if (depth) {
-                    attachment.attach(if (stencil) GL_DEPTH_STENCIL_ATTACHMENT else GL_DEPTH_ATTACHMENT, type().glName)
-                } else {
-                    if (!stencil) {
-                        throw IllegalStateException("Illegal depth format ${attachment.format()} for framebuffer $location")
-                    }
-
-                    attachment.attach(GL_DEPTH_ATTACHMENT, type().glName)
+                when {
+                    depth && stencil -> attachment.attach(GL_DEPTH_STENCIL_ATTACHMENT, type().glName)
+                    depth && !stencil -> attachment.attach(GL_DEPTH_ATTACHMENT, type().glName)
+                    !depth && stencil -> attachment.attach(GL_STENCIL_ATTACHMENT, type().glName)
+                    else -> throw IllegalStateException("Illegal depth format ${attachment.format()} for framebuffer $location")
                 }
+            }
+
+            val status = glCheckFramebufferStatus(type().glName)
+
+            if (status != GL_FRAMEBUFFER_COMPLETE) {
+                throw IncompleteFramebufferException("Framebuffer ${location()} incomplete with error 0x${status.toHexString()}")
             }
         }
     }

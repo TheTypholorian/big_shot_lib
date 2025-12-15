@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.gl
+package net.typho.big_shot_lib.gl.resource
 
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.*
@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL41.GL_RGB565
 enum class TextureFormat(
     val id: Int,
     val internal: Int,
+    val type: Int = GL_UNSIGNED_BYTE,
     val color: Boolean = false,
     val depth: Boolean = false,
     val stencil: Boolean = false
@@ -90,12 +91,12 @@ enum class TextureFormat(
     RGBA16UI(GL_RGBA_INTEGER, GL_RGBA16UI, color = true),
     RGBA32I(GL_RGBA_INTEGER, GL_RGBA32I, color = true),
     RGBA32UI(GL_RGBA_INTEGER, GL_RGBA32UI, color = true),
-    DEPTH_COMPONENT(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, depth = true),
-    DEPTH_STENCIL(GL_DEPTH_STENCIL, GL_DEPTH_STENCIL, depth = true, stencil = true),
-    DEPTH_COMPONENT16(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, depth = true),
-    DEPTH_COMPONENT24(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, depth = true),
-    DEPTH_COMPONENT32(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32, depth = true),
-    DEPTH_COMPONENT32F(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, depth = true),
-    DEPTH24_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH24_STENCIL8, depth = true, stencil = true),
-    DEPTH32F_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH32F_STENCIL8, depth = true, stencil = true)
+    DEPTH_COMPONENT(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, depth = true),
+    DEPTH_STENCIL(GL_DEPTH_STENCIL, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, depth = true, stencil = true),
+    DEPTH_COMPONENT16(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, GL_FLOAT, depth = true),
+    DEPTH_COMPONENT24(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24, GL_FLOAT, depth = true),
+    DEPTH_COMPONENT32(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32, GL_FLOAT, depth = true),
+    DEPTH_COMPONENT32F(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_FLOAT, depth = true),
+    DEPTH24_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH24_STENCIL8, GL_UNSIGNED_INT_24_8, depth = true, stencil = true),
+    DEPTH32F_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH32F_STENCIL8, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, depth = true, stencil = true)
 }

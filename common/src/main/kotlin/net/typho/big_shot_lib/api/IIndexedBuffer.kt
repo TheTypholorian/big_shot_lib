@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api
 
-import net.typho.big_shot_lib.gl.GlIndexedBufferType
-import net.typho.big_shot_lib.gl.GlResourceStack
+import net.typho.big_shot_lib.gl.GlStack
 import net.typho.big_shot_lib.gl.Unbindable
+import net.typho.big_shot_lib.gl.resource.GlIndexedBufferType
 
 interface IIndexedBuffer : IBuffer {
     override fun type(): GlIndexedBufferType
@@ -12,5 +12,5 @@ interface IIndexedBuffer : IBuffer {
         return Unbindable.ofIndexedBuffer(this, index)
     }
 
-    fun bindBase(stack: GlResourceStack, index: Int) = stack.put(bindBase(index))
+    fun bindBase(stack: GlStack, index: Int) = stack.put(bindBase(index))
 }

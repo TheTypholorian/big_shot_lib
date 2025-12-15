@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api
 
-import net.typho.big_shot_lib.gl.TextureFormat
+import net.typho.big_shot_lib.gl.resource.TextureFormat
 
 interface IFramebufferAttachment {
     fun format(): TextureFormat

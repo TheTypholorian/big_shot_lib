@@ -1,12 +1,13 @@
-package net.typho.big_shot_lib.api
+package net.typho.big_shot_lib.api.impl
 
 import com.mojang.blaze3d.shaders.AbstractUniform
 import net.minecraft.resources.ResourceLocation
+import net.typho.big_shot_lib.api.IShader
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.error.ShaderLinkException
-import net.typho.big_shot_lib.gl.GlResourceType
-import net.typho.big_shot_lib.gl.ShaderType
 import net.typho.big_shot_lib.gl.Unbindable
+import net.typho.big_shot_lib.gl.resource.GlResourceType
+import net.typho.big_shot_lib.gl.resource.ShaderType
 import org.joml.Matrix3f
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -66,7 +67,7 @@ open class NeoShader(
         }?.set(id)
     }
 
-    open class Builder() {
+    open class Builder(val location: ResourceLocation) {
         val sources = LinkedList<Int>()
 
         fun attach(
@@ -76,15 +77,20 @@ open class NeoShader(
         ) {
             val modifiedSource = includes?.let {
                 var newSource = source
+                var includeString = "#include \""
+                var i = 0
 
-                for (i in 0 until newSource.length) {
-                    if (newSource.startsWith("#include \"", i)) {
-                        val start = i + "#include \"".length
+                while (i < newSource.length) {
+                    if (newSource.startsWith(includeString, i)) {
+                        val start = i + includeString.length
                         val end = newSource.indexOf('"', start)
                         val include = ResourceLocation.parse(newSource.substring(start, end))
                         val code = it.apply(include)
                         newSource = newSource.substring(0, i) + code + newSource.substring(end + 1)
                     }
+
+                    includeString = "\n#include \""
+                    i++
                 }
 
                 newSource
@@ -95,13 +101,13 @@ open class NeoShader(
             glCompileShader(id)
 
             if (glGetShaderi(id, GL_COMPILE_STATUS) == GL_FALSE) {
-                throw ShaderCompileException(glGetShaderInfoLog(id).trim())
+                throw ShaderCompileException("Error compiling ${type.key} shader for $location:\n${glGetShaderInfoLog(id).trim()}")
             }
 
             sources.add(id)
         }
 
-        fun build(location: ResourceLocation): NeoShader {
+        fun build(): NeoShader {
             val id = glCreateProgram()
 
             for (source in sources) {
@@ -111,7 +117,7 @@ open class NeoShader(
             glLinkProgram(id)
 
             if (glGetProgrami(id, GL_LINK_STATUS) == GL_FALSE) {
-                throw ShaderLinkException(glGetProgramInfoLog(id).trim())
+                throw ShaderLinkException("Error linking shader $location:\n${glGetProgramInfoLog(id).trim()}")
             }
 
             for (source in sources) {

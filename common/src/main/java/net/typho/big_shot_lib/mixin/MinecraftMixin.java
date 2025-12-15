@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.typho.big_shot_lib.api.NeoFramebuffer;
+import net.typho.big_shot_lib.api.impl.NeoFramebuffer;
 import net.typho.big_shot_lib.resource.ShaderReloadListener;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

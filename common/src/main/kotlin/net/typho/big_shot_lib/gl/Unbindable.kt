@@ -1,6 +1,8 @@
 package net.typho.big_shot_lib.gl
 
 import net.typho.big_shot_lib.api.IBuffer
+import net.typho.big_shot_lib.gl.resource.GlIndexedBufferType
+import net.typho.big_shot_lib.gl.resource.GlResourceInstance
 import java.lang.AutoCloseable
 
 interface Unbindable<T : GlResourceInstance> : AutoCloseable {

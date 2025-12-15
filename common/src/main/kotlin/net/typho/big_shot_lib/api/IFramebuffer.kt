@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api
 
 import net.typho.big_shot_lib.gl.Bindable
-import net.typho.big_shot_lib.gl.GlResourceInstance
-import net.typho.big_shot_lib.gl.TextureFormat
+import net.typho.big_shot_lib.gl.resource.GlResourceInstance
+import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.joml.Vector4f
 
 interface IFramebuffer : Bindable, GlResourceInstance {
