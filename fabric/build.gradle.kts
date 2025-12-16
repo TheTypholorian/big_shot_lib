@@ -15,6 +15,9 @@ dependencies {
     modImplementation(libs.fabricApi)
 
     modImplementation(libs.flk)
+    modImplementation(fileTree("../libs/fabric") {
+        include("*.jar")
+    })
 }
 
 loom {

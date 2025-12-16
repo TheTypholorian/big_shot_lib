@@ -44,4 +44,7 @@ sourceSets.main.get().resources { srcDir("src/generated/resources") }
 
 dependencies {
     implementation(libs.kff)
+    implementation(fileTree("../libs/neoforge") {
+        include("*.jar")
+    })
 }
