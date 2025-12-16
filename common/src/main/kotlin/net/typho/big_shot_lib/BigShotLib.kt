@@ -8,8 +8,12 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.phys.AABB
 import org.joml.Matrix4f
 import org.joml.Vector3f
+import org.lwjgl.system.MemoryUtil
+import org.lwjgl.util.shaderc.Shaderc.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.nio.file.Files
+import java.nio.file.Paths
 
 object BigShotLib {
     const val MOD_ID = "big_shot_lib"
@@ -33,6 +37,69 @@ object BigShotLib {
     }
 
     fun init() {
+        val compiler = shaderc_compiler_initialize()
+        require(compiler != MemoryUtil.NULL)
+
+        val options = shaderc_compile_options_initialize()
+        require(options != MemoryUtil.NULL)
+
+        shaderc_compile_options_set_target_env(
+            options,
+            shaderc_target_env_opengl,
+            shaderc_env_version_opengl_4_5
+        )
+
+        shaderc_compile_options_set_source_language(
+            options,
+            shaderc_source_language_glsl
+        )
+
+        val code = """
+            #version 450 core
+            
+            layout(location = 0) uniform mat4 Matrix;
+            
+            layout(location = 0) in vec3 Position;
+            layout(location = 1) in vec3 Normal;
+            layout(location = 2) in vec3 Albedo;
+            layout(location = 3) in vec2 UV;
+            
+            layout(location = 0) out vec3 pos;
+            layout(location = 1) out vec3 normal;
+            layout(location = 2) out vec3 albedo;
+            layout(location = 3) out vec2 uv;
+            
+            void main() {
+                pos = Position;
+                normal = Normal;
+                albedo = Albedo;
+                uv = UV;
+            }
+        """.trimIndent()
+        val result = shaderc_compile_into_spv(
+            compiler,
+            code,
+            shaderc_glsl_vertex_shader,
+            "test_vertex.vsh",
+            "main",
+            options
+        )
+
+        val status = shaderc_result_get_compilation_status(result)
+        if (status != shaderc_compilation_status_success) {
+            error("Shader compile failed:\n${shaderc_result_get_error_message(result)?.trim()}")
+        }
+
+        val size = shaderc_result_get_length(result).toInt()
+        val pointer = shaderc_result_get_bytes(result)!!
+
+        val bytes = ByteArray(size)
+        pointer.get(bytes)
+        Files.write(Paths.get("test.bin"), bytes)
+
+        shaderc_result_release(result)
+        shaderc_compile_options_release(options)
+        shaderc_compiler_release(compiler)
     }
 
     fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)

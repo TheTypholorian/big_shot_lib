@@ -24,6 +24,9 @@ dependencies {
     implementation(fileTree("../libs/common") {
         include("*.jar")
     })
+    implementation(fileTree("../libs/shared") {
+        include("*.jar")
+    })
 }
 
 configurations {

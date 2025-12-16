@@ -47,4 +47,7 @@ dependencies {
     implementation(fileTree("../libs/neoforge") {
         include("*.jar")
     })
+    implementation(fileTree("../libs/shared") {
+        include("*.jar")
+    })
 }

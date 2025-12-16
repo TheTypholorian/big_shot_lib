@@ -18,6 +18,9 @@ dependencies {
     modImplementation(fileTree("../libs/fabric") {
         include("*.jar")
     })
+    modImplementation(fileTree("../libs/shared") {
+        include("*.jar")
+    })
 }
 
 loom {
