@@ -31,6 +31,10 @@ open class NeoShader(
         fun get(location: ResourceLocation) = REGISTRY.get(location)
     }
 
+    init {
+        type().label(id(), location().toString())
+    }
+
     protected val uniforms = HashMap<String, Uniform?>()
     protected val samplers = HashMap<String, Sampler?>()
 

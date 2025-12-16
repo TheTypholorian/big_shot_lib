@@ -67,6 +67,8 @@ open class NeoFramebuffer(
                 throw IncompleteFramebufferException("Framebuffer ${location()} incomplete with error 0x${status.toHexString()}")
             }
         }
+
+        type().label(id(), location().toString())
     }
 
     override fun bind(): Unbindable<NeoFramebuffer> {

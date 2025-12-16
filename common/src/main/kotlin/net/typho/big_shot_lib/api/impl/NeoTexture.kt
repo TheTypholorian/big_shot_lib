@@ -31,6 +31,7 @@ open class NeoTexture(
             glTexParameteri(type.glName, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
             glTexParameteri(type.glName, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
         }
+        type().label(id(), location().toString())
     }
 
     override fun bind(): Unbindable<NeoTexture> {

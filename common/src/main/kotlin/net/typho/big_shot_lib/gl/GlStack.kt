@@ -33,12 +33,6 @@ class GlStack : AutoCloseable {
         }
     }
 
-    fun <T, S : GlState<T>> ensureSet(state: S, value: T) {
-        if (states[state] != value) {
-            set(state, value)
-        }
-    }
-
     fun <T, S : GlState<T>> set(state: S, value: T) {
         state.set(value)
         states.put(state, value as Any)
@@ -46,29 +40,25 @@ class GlStack : AutoCloseable {
     }
 
     fun enable(cap: GlCapability) {
-        if (!(capabilities.get(cap) ?: false)) {
-            glEnable(cap.id)
-            capabilities.put(cap, true)
-        }
+        glEnable(cap.id)
+        capabilities.put(cap, true)
     }
 
     fun disable(cap: GlCapability) {
-        if (capabilities.get(cap) ?: true) {
-            glDisable(cap.id)
-            capabilities.put(cap, false)
-        }
+        glDisable(cap.id)
+        capabilities.put(cap, false)
     }
 
     fun restoreDefaultCapabilities() {
         for (entry in capabilities) {
-            if (entry.key.default != entry.value) {
-                if (entry.key.default) {
-                    glEnable(entry.key.id)
-                } else {
-                    glDisable(entry.key.id)
-                }
+            if (entry.key.default) {
+                glEnable(entry.key.id)
+            } else {
+                glDisable(entry.key.id)
             }
         }
+
+        capabilities.replaceAll { cap, value -> cap.default }
     }
 
     fun restoreDefaultStates() {
@@ -88,5 +78,6 @@ class GlStack : AutoCloseable {
         miscBound.clear()
 
         restoreDefaultStates()
+        restoreDefaultCapabilities()
     }
 }

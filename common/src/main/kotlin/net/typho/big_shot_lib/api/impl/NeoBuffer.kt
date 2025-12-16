@@ -19,6 +19,10 @@ open class NeoBuffer(
         usage: BufferUsage
     ) : this(location, type, glGenBuffers(), usage)
 
+    init {
+        location()?.let { type().label(id(), it.toString()) }
+    }
+
     override fun release() {
         glDeleteBuffers(id)
     }
