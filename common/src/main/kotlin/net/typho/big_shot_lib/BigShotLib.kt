@@ -6,12 +6,16 @@ import net.minecraft.client.Camera
 import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.phys.AABB
+import net.typho.big_shot_lib.spirv.ShaderMixinContext
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.shaderc.Shaderc.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.nio.ByteBuffer
+import java.nio.file.Files
+import java.nio.file.Paths
 
 object BigShotLib {
     const val MOD_ID = "big_shot_lib"
@@ -85,19 +89,22 @@ object BigShotLib {
 
         val size = shaderc_result_get_length(result).toInt()
         val pointer = shaderc_result_get_bytes(result)!!
+        val context = ShaderMixinContext()
+        context.code.add(pointer)
 
-        val ints = pointer.asIntBuffer()
-        var index = 5 // skip header and such we don't care
+        context.inject(
+            ShaderMixinContext.AtVoidReturn("main"),
+            ByteBuffer.wrap(byteArrayOf(
+                0x3E, 0x00, 0x03, 0x00,
+                0x09, 0x00, 0x00, 0x00,
+                0x0C, 0x00, 0x00, 0x00
+            ))
+        )
 
-        while (index < ints.capacity()) {
-            val op = ints[index]
-            val type = op and 0xFFFF
-            val length = (op ushr 16) and 0xFFFF
-
-            println("Op index $index, type $type, length $length")
-
-            index += length
-        }
+        val compiled = context.compile()
+        val array = ByteArray(compiled.capacity())
+        compiled.get(array)
+        Files.write(Paths.get("injected.bin"), array)
 
         shaderc_result_release(result)
         shaderc_compile_options_release(options)
