@@ -12,10 +12,6 @@ import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.shaderc.Shaderc.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.file.Files
-import java.nio.file.Paths
 
 object BigShotLib {
     const val MOD_ID = "big_shot_lib"
@@ -63,15 +59,14 @@ object BigShotLib {
             
             layout(location = 0) in vec3 Position;
             layout(location = 1) in vec3 Normal;
-            layout(location = 2) in vec3 Albedo;
-            layout(location = 3) in vec2 UV;
+            layout(location = 2) in vec2 UV;
             
             layout(location = 0) out vec3 pos;
-            layout(location = 1) out vec3 albedo;
+            layout(location = 1) out vec2 uv;
             
             void main() {
                 pos = Position;
-                albedo = Albedo;
+                uv = UV;
             }
         """.trimIndent()
         val result = shaderc_compile_into_spv(
@@ -91,93 +86,22 @@ object BigShotLib {
         val size = shaderc_result_get_length(result).toInt()
         val pointer = shaderc_result_get_bytes(result)!!
 
-        println(pointer.capacity())
+        val ints = pointer.asIntBuffer()
+        var index = 5 // skip header and such we don't care
 
-        val bytes = ByteArray(size)
-        pointer.get(bytes)
-        Files.write(Paths.get("test.bin"), bytes)
+        while (index < ints.capacity()) {
+            val op = ints[index]
+            val type = op and 0xFFFF
+            val length = (op ushr 16) and 0xFFFF
 
-        val modified = injectOutputs(pointer, 1, 3)
-        val mBytes = ByteArray(modified.limit())
-        modified.get(0, mBytes)
-        Files.write(Paths.get("modified.bin"), mBytes)
+            println("Op index $index, type $type, length $length")
+
+            index += length
+        }
 
         shaderc_result_release(result)
         shaderc_compile_options_release(options)
         shaderc_compiler_release(compiler)
-    }
-
-    fun injectOutputs(originalSpirv: ByteBuffer, inVec3Id: Int, inVec2Id: Int): ByteBuffer {
-        originalSpirv.order(ByteOrder.LITTLE_ENDIAN)
-        val words = originalSpirv.asIntBuffer()
-        val newWords = IntArray(words.capacity() + 20) // rough extra space
-        words.get(newWords, 0, words.capacity())
-        var nextId = newWords.maxOrNull()!! + 1
-        var insertIndex = 5 // after header (first 5 words)
-
-        fun makeWord(opcode: Int, wordCount: Int) = (wordCount shl 16) or opcode
-
-        // IDs for new types and variables
-        val floatId = nextId++
-        val vec3Id = nextId++
-        val vec2Id = nextId++
-        val ptrVec3Id = nextId++
-        val ptrVec2Id = nextId++
-        val outVec3Id = nextId++
-        val outVec2Id = nextId++
-
-        // Insert type declarations
-        val typeWords = intArrayOf(
-            makeWord(0x15, 3), floatId, 32,                 // OpTypeFloat %float 32
-            makeWord(0x16, 4), vec3Id, floatId, 3,         // OpTypeVector %vec3 %float 3
-            makeWord(0x16, 4), vec2Id, floatId, 2,         // OpTypeVector %vec2 %float 2
-            makeWord(0x1e, 4), ptrVec3Id, 3, vec3Id,       // OpTypePointer Output %vec3
-            makeWord(0x1e, 4), ptrVec2Id, 3, vec2Id        // OpTypePointer Output %vec2
-        )
-        newWords.copyInto(typeWords, 0, 0, typeWords.size)
-        // shift the existing words after insertIndex
-        System.arraycopy(newWords, insertIndex, newWords, insertIndex + typeWords.size, words.capacity() - insertIndex)
-        System.arraycopy(typeWords, 0, newWords, insertIndex, typeWords.size)
-        insertIndex += typeWords.size
-
-        // Insert output variables
-        val varWords = intArrayOf(
-            makeWord(0x21, 3), ptrVec3Id, outVec3Id, 3,   // OpVariable %ptr_vec3 Output
-            makeWord(0x21, 3), ptrVec2Id, outVec2Id, 3    // OpVariable %ptr_vec2 Output
-        )
-        System.arraycopy(newWords, insertIndex, newWords, insertIndex + varWords.size, newWords.size - insertIndex - varWords.size)
-        System.arraycopy(varWords, 0, newWords, insertIndex, varWords.size)
-
-        // Decorations
-        val decorateWords = intArrayOf(
-            makeWord(0x11, 4), outVec3Id, 30, 0, // OpDecorate %outVec3 Location 0
-            makeWord(0x11, 4), outVec2Id, 30, 1  // OpDecorate %outVec2 Location 1
-        )
-        System.arraycopy(newWords, insertIndex + varWords.size, newWords, insertIndex + varWords.size + decorateWords.size, newWords.size - insertIndex - varWords.size - decorateWords.size)
-        System.arraycopy(decorateWords, 0, newWords, insertIndex + varWords.size, decorateWords.size)
-
-        // Find main function end to inject OpStore
-        var i = 0
-        while (i < newWords.size) {
-            val word = newWords[i]
-            val wordCount = word shr 16
-            val opcode = word and 0xFFFF
-            if (opcode == 0x11) { // OpFunctionEnd
-                val storeWords = intArrayOf(
-                    makeWord(0x3d, 3), outVec3Id, inVec3Id,   // OpStore %outVec3 %inVec3
-                    makeWord(0x3d, 3), outVec2Id, inVec2Id    // OpStore %outVec2 %inVec2
-                )
-                System.arraycopy(newWords, i, newWords, i + storeWords.size, newWords.size - i - storeWords.size)
-                System.arraycopy(storeWords, 0, newWords, i, storeWords.size)
-                break
-            }
-            i += wordCount
-        }
-
-        val finalBuffer = ByteBuffer.allocateDirect(newWords.size * 4).order(ByteOrder.LITTLE_ENDIAN)
-        finalBuffer.asIntBuffer().put(newWords)
-        finalBuffer.flip()
-        return finalBuffer
     }
 
     fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
