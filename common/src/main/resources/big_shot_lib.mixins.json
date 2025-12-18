@@ -8,7 +8,8 @@
   "client": [
     "GameRendererMixin",
     "LevelRendererMixin",
-    "MinecraftMixin"
+    "MinecraftMixin",
+    "ProgramMixin"
   ],
   "server": [],
   "injectors": {
