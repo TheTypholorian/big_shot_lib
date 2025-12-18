@@ -36,11 +36,11 @@ public class ProgramMixin {
         if (code.startsWith("#version")) {
             int version = Integer.parseInt(code.split("\\s+")[1]);
 
-            if (version < 430) {
-                code = "#version 430 core" + code.substring(code.indexOf('\n'));
+            if (version < 450) {
+                code = "#version 450 core" + code.substring(code.indexOf('\n'));
             }
         } else {
-            code = "#version 430 core\n" + code;
+            code = "#version 450 core\n" + code;
         }
 
         ShaderType shaderType = ShaderType.fromVanillaType(type);

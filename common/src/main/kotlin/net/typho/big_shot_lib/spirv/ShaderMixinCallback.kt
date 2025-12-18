@@ -5,6 +5,8 @@ import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.gl.resource.ShaderType
 import org.lwjgl.util.shaderc.Shaderc.*
 import java.nio.ByteBuffer
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.*
 
 interface ShaderMixinCallback {
@@ -23,11 +25,11 @@ interface ShaderMixinCallback {
             shaderc_compile_options_set_source_language(options, shaderc_source_language_glsl)
             shaderc_compile_options_set_auto_map_locations(options, true)
             shaderc_compile_options_set_auto_bind_uniforms(options, true)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_buffer, 0)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_sampler, 100)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_image, 200)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_storage_buffer, 300)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_texture, 400)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_buffer, 100)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_sampler, 200)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_image, 300)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_storage_buffer, 400)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_texture, 500)
         }
 
         @JvmStatic
@@ -50,7 +52,13 @@ interface ShaderMixinCallback {
                 throw ShaderCompileException("SPIR-V compilation of $type shader for $fileName failed:\n${shaderc_result_get_error_message(result)?.trim()}")
             }
 
-            return shaderc_result_get_bytes(result)!!
+            val bytes = shaderc_result_get_bytes(result)!!
+
+            val array = ByteArray(bytes.capacity())
+            bytes.get(0, array)
+            Files.write(Paths.get("shader_dump", "$fileName.bin"), array)
+
+            return bytes
         }
 
         @JvmStatic

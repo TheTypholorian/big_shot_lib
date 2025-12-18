@@ -9,7 +9,8 @@
     "GameRendererMixin",
     "LevelRendererMixin",
     "MinecraftMixin",
-    "ProgramMixin"
+    "ProgramMixin",
+    "WindowMixin"
   ],
   "server": [],
   "injectors": {
