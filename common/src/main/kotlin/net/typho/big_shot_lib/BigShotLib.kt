@@ -90,8 +90,31 @@ object BigShotLib {
         val size = shaderc_result_get_length(result).toInt()
         val pointer = shaderc_result_get_bytes(result)!!
         val context = ShaderMixinContext()
-        context.code.add(pointer)
+        context.code.add(pointer.order(ShaderMixinContext.BYTE_ORDER))
+        context.loadBound()
 
+        val typePointer = 7 // TODO replace with better
+
+        val outputId = context.addStaticVar(3, typePointer) // Output
+        val inputId = context.addStaticVar(1, typePointer) // Input
+        val tempVar = context.bound++
+        context.inject(
+            ShaderMixinContext.AtVoidReturn("main"),
+            ByteBuffer.allocate(7 * ShaderMixinContext.WORD_SIZE_BYTES)
+                .order(ShaderMixinContext.BYTE_ORDER)
+
+                .putInt(0x00_04_00_3D)
+                .putInt(typePointer)
+                .putInt(tempVar)
+                .putInt(inputId)
+
+                .putInt(0x00_03_00_3E)
+                .putInt(outputId)
+                .putInt(tempVar)
+        )
+        context.putBound()
+
+        /*
         context.inject(
             ShaderMixinContext.AtVoidReturn("main"),
             ByteBuffer.wrap(byteArrayOf(
@@ -100,6 +123,7 @@ object BigShotLib {
                 0x0C, 0x00, 0x00, 0x00
             ))
         )
+         */
 
         val compiled = context.compile()
         val array = ByteArray(compiled.capacity())

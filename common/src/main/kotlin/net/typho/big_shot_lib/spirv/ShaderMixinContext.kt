@@ -1,12 +1,27 @@
 package net.typho.big_shot_lib.spirv
 
+import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.error.ShaderMixinException
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.*
 
 class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
     val code = LinkedList<ByteBuffer>()
     var headerSize = 5
+    var bound: Int = 0
+
+    fun loadBound() {
+        bound = code[0].getInt(3 * WORD_SIZE_BYTES)
+    }
+
+    fun putBound() {
+        if (bound <= 0) {
+            BigShotLib.LOGGER.warn("Shader Mixin Context bound $bound is a suspicious value, did you remember to call loadBound() after initializing?")
+        }
+
+        code[0].putInt(3 * WORD_SIZE_BYTES, bound)
+    }
 
     fun split(index: Int): Int? {
         var listIndex = 0
@@ -18,14 +33,16 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
 
             if (index == sectionStart) {
                 return listIndex
-            } else if (index == sectionEnd) {
-                return listIndex + 1
             } else if (index > sectionStart && index < sectionEnd) {
-                val lowSection = ByteBuffer.allocate(index - sectionStart)
+                val lowSection = ByteBuffer.allocate(index - sectionStart).order(BYTE_ORDER)
                 lowSection.put(0, section, 0, lowSection.capacity())
 
-                val highSection = ByteBuffer.allocate(sectionEnd - index)
+                val highSection = ByteBuffer.allocate(sectionEnd - index).order(BYTE_ORDER)
                 highSection.put(0, section, lowSection.capacity(), highSection.capacity())
+
+                code.removeAt(listIndex)
+                code.add(listIndex, lowSection)
+                code.add(listIndex + 1, highSection)
 
                 return listIndex + 1
             }
@@ -38,19 +55,46 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
     }
 
     fun inject(index: Int, inject: ByteBuffer) {
-        code.add(split(index)!!, inject)
+        code.add(split(index)!!, inject.order(BYTE_ORDER))
     }
 
-    fun inject(at: At, inject: ByteBuffer) = inject(at.getStart(this), inject)
+    fun inject(at: At, inject: ByteBuffer) = inject(at.getStart(this) * WORD_SIZE_BYTES, inject)
+
+    fun addStaticVar(storageClass: Int, typePointer: Int, name: String? = null, initializer: Int? = null): Int {
+        val valueId = bound
+        val typePointerId = bound++
+        val variableId = bound++
+        val buffer = ByteBuffer.allocate((if (initializer == null) 8 else 9) * WORD_SIZE_BYTES)
+            .order(BYTE_ORDER)
+
+            .putInt(0x00_04_00_20)
+            .putInt(typePointerId)
+            .putInt(storageClass)
+            .putInt(typePointer)
+
+            .putInt(if (initializer == null) 0x00_04_00_3B else 0x00_05_00_3B)
+            .putInt(typePointerId)
+            .putInt(variableId)
+            .putInt(storageClass)
+
+        if (initializer != null) {
+            buffer.putInt(initializer)
+        }
+
+        inject(BeforeFirstFunction(), buffer)
+        putBound()
+        return valueId
+    }
 
     fun compile(): ByteBuffer {
         if (code.isEmpty()) {
-            val buffer = ByteBuffer.allocate(0)
+            val buffer = ByteBuffer.allocate(0).order(BYTE_ORDER)
             code.add(buffer)
             return buffer
         }
 
         if (code.size == 1) {
+            putBound()
             return code[0]
         }
 
@@ -60,7 +104,7 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
             size += bytes.capacity()
         }
 
-        val array = ByteBuffer.allocate(size)
+        val array = ByteBuffer.allocate(size).order(BYTE_ORDER)
         var index = 0
 
         for (bytes in code) {
@@ -71,13 +115,15 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
         code.clear()
         code.add(array)
 
+        putBound()
+
         return array
     }
 
     fun getOpcodeData(op: Opcode): ByteBuffer {
         val code = compile()
-        val buf = ByteBuffer.allocate(op.length * WORD_BYTES)
-        buf.put(0, code, (op.index + 1) * WORD_BYTES, buf.capacity())
+        val buf = ByteBuffer.allocate(op.length * WORD_SIZE_BYTES)
+        buf.put(0, code, (op.index + 1) * WORD_SIZE_BYTES, buf.capacity())
         return buf
     }
 
@@ -87,15 +133,12 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
             val code = compile()
             var index = headerSize
 
-            override fun hasNext() = index * WORD_BYTES < code.capacity()
+            override fun hasNext() = index * WORD_SIZE_BYTES < code.capacity()
 
             override fun next(): Opcode {
-                val op = code.getInt(index * WORD_BYTES)
+                val op = code.getInt(index * WORD_SIZE_BYTES)
                 val type = op and 0xFFFF
                 val length = (op ushr 16) and 0xFFFF
-
-                println("Op ${op.toHexString()} index $index, type $type, length $length")
-
                 val opcode = Opcode(index, type, length)
 
                 index += length
@@ -106,7 +149,8 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
     }
 
     companion object {
-        const val WORD_BYTES = 4
+        const val WORD_SIZE_BYTES = 4
+        val BYTE_ORDER: ByteOrder = ByteOrder.LITTLE_ENDIAN
     }
 
     class Opcode(val index: Int, val type: Int, val length: Int)
@@ -147,7 +191,7 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
                 if (opcode.type == 5) { // OpName
                     val contents = context.getOpcodeData(opcode)
                     val contentsArray = contents.array()
-                    val name = String(contentsArray, WORD_BYTES, contentsArray.size - 2 * WORD_BYTES)
+                    val name = String(contentsArray, WORD_SIZE_BYTES, contentsArray.size - 2 * WORD_SIZE_BYTES)
 
                     if (name.trim(0.toChar()) == method) {
                         methodId = contents.getInt(0)
@@ -170,11 +214,11 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
 
                     val contents = context.getOpcodeData(opcode)
 
-                    if (contents.getInt(WORD_BYTES) == methodId) {
+                    if (contents.getInt(WORD_SIZE_BYTES) == methodId) {
                         inMethod = true
                     }
                 } else if (inMethod && opcode.type == id) {
-                    println("injecting at ${opcode.index} $id")
+                    println("injecting at ${opcode.index} $id ${context.compile().capacity()}")
                     return opcode.index
                 }
             }
@@ -186,4 +230,6 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
     open class AtVoidReturn(method: String): AtOpcodeInMethod(253, method) // OpReturn
 
     open class AtReturnValue(method: String): AtOpcodeInMethod(254, method) // OpReturnValue
+
+    open class BeforeFirstFunction(): AtOpcode(54) // OpFunction
 }
