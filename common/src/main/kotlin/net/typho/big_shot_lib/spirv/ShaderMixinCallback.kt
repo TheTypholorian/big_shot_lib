@@ -24,7 +24,10 @@ interface ShaderMixinCallback {
             shaderc_compile_options_set_auto_map_locations(options, true)
             shaderc_compile_options_set_auto_bind_uniforms(options, true)
             shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_buffer, 0)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_sampler, 0)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_sampler, 100)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_image, 200)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_storage_buffer, 300)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_texture, 400)
         }
 
         @JvmStatic
