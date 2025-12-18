@@ -93,10 +93,11 @@ object BigShotLib {
         context.code.add(pointer.order(ShaderMixinContext.BYTE_ORDER))
         context.loadBound()
 
-        val typePointer = 7 // TODO replace with better
+        val floatType = context.addFloatType(32)
+        val vec3Type = context.addVectorType(floatType, 3)
 
-        val outputId = context.addStaticVar(3, typePointer) // Output
-        val inputId = context.addStaticVar(1, typePointer) // Input
+        val outputId = context.addStaticVar(3, vec3Type, "BigShotNormalOutput") // Output
+        val inputId = context.addStaticVar(1, vec3Type, "BigShotNormalInput") // Input
         val tempVar = context.bound++
         context.inject(
             ShaderMixinContext.AtVoidReturn("main"),
@@ -104,7 +105,7 @@ object BigShotLib {
                 .order(ShaderMixinContext.BYTE_ORDER)
 
                 .putInt(0x00_04_00_3D)
-                .putInt(typePointer)
+                .putInt(vec3Type)
                 .putInt(tempVar)
                 .putInt(inputId)
 
@@ -113,17 +114,6 @@ object BigShotLib {
                 .putInt(tempVar)
         )
         context.putBound()
-
-        /*
-        context.inject(
-            ShaderMixinContext.AtVoidReturn("main"),
-            ByteBuffer.wrap(byteArrayOf(
-                0x3E, 0x00, 0x03, 0x00,
-                0x09, 0x00, 0x00, 0x00,
-                0x0C, 0x00, 0x00, 0x00
-            ))
-        )
-         */
 
         val compiled = context.compile()
         val array = ByteArray(compiled.capacity())

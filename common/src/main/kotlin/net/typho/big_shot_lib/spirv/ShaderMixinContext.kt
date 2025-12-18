@@ -60,10 +60,87 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
 
     fun inject(at: At, inject: ByteBuffer) = inject(at.getStart(this) * WORD_SIZE_BYTES, inject)
 
+    fun addIntType(bits: Int = 32, signed: Boolean): Int {
+        val resultId = bound++
+
+        val buffer = ByteBuffer.allocate(4 * WORD_SIZE_BYTES)
+            .order(BYTE_ORDER)
+
+            .putInt(0x00_04_00_15)
+            .putInt(resultId)
+            .putInt(bits)
+            .putInt(if (signed) 1 else 0)
+
+        inject(BeforeFirstFunction(), buffer)
+        putBound()
+        return resultId
+    }
+
+    fun addFloatType(bits: Int = 32): Int {
+        val resultId = bound++
+
+        val buffer = ByteBuffer.allocate(3 * WORD_SIZE_BYTES)
+            .order(BYTE_ORDER)
+
+            .putInt(0x00_03_00_16)
+            .putInt(resultId)
+            .putInt(bits)
+
+        inject(BeforeFirstFunction(), buffer)
+        putBound()
+        return resultId
+    }
+
+    fun addVectorType(typePointer: Int, components: Int): Int {
+        val resultId = bound++
+
+        val buffer = ByteBuffer.allocate(4 * WORD_SIZE_BYTES)
+            .order(BYTE_ORDER)
+
+            .putInt(0x00_04_00_17)
+            .putInt(resultId)
+            .putInt(typePointer)
+            .putInt(components)
+
+        inject(BeforeFirstFunction(), buffer)
+        putBound()
+        return resultId
+    }
+
+    fun addMatrixType(typePointer: Int, columnCount: Int): Int {
+        val resultId = bound++
+
+        val buffer = ByteBuffer.allocate(4 * WORD_SIZE_BYTES)
+            .order(BYTE_ORDER)
+
+            .putInt(0x00_04_00_18)
+            .putInt(resultId)
+            .putInt(typePointer)
+            .putInt(columnCount)
+
+        inject(BeforeFirstFunction(), buffer)
+        putBound()
+        return resultId
+    }
+
+    fun addSamplerType(): Int {
+        val resultId = bound++
+
+        val buffer = ByteBuffer.allocate(2 * WORD_SIZE_BYTES)
+            .order(BYTE_ORDER)
+
+            .putInt(0x00_02_00_1A)
+            .putInt(resultId)
+
+        inject(BeforeFirstFunction(), buffer)
+        putBound()
+        return resultId
+    }
+
     fun addStaticVar(storageClass: Int, typePointer: Int, name: String? = null, initializer: Int? = null): Int {
-        val valueId = bound
         val typePointerId = bound++
         val variableId = bound++
+
         val buffer = ByteBuffer.allocate((if (initializer == null) 8 else 9) * WORD_SIZE_BYTES)
             .order(BYTE_ORDER)
 
@@ -82,8 +159,23 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
         }
 
         inject(BeforeFirstFunction(), buffer)
+
+        if (name != null) {
+            val bytes = name.toByteArray()
+            val words = Math.ceilDiv(bytes.size, WORD_SIZE_BYTES) + 2
+
+            val buffer = ByteBuffer.allocate(words * WORD_SIZE_BYTES)
+                .order(BYTE_ORDER)
+
+                .putInt(0x00_05 or (words shl 16))
+                .putInt(variableId)
+                .put(bytes)
+
+            inject(AtOpcode(5), buffer) // OpName
+        }
+
         putBound()
-        return valueId
+        return variableId
     }
 
     fun compile(): ByteBuffer {
@@ -218,7 +310,6 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
                         inMethod = true
                     }
                 } else if (inMethod && opcode.type == id) {
-                    println("injecting at ${opcode.index} $id ${context.compile().capacity()}")
                     return opcode.index
                 }
             }
