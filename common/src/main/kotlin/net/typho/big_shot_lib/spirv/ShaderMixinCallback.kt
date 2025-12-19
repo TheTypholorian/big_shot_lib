@@ -23,13 +23,19 @@ interface ShaderMixinCallback {
         init {
             shaderc_compile_options_set_target_env(options, shaderc_target_env_opengl, shaderc_env_version_opengl_4_5)
             shaderc_compile_options_set_source_language(options, shaderc_source_language_glsl)
+            shaderc_compile_options_set_target_spirv(options, shaderc_spirv_version_1_5)
+
             shaderc_compile_options_set_auto_map_locations(options, true)
             shaderc_compile_options_set_auto_bind_uniforms(options, true)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_buffer, 100)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_sampler, 200)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_image, 300)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_storage_buffer, 400)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_texture, 500)
+
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_buffer, 10)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_sampler, 20)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_image, 30)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_storage_buffer, 40)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_texture, 50)
+            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_unordered_access_view, 60)
+
+            shaderc_compile_options_set_generate_debug_info(options)
         }
 
         @JvmStatic
@@ -52,11 +58,15 @@ interface ShaderMixinCallback {
                 throw ShaderCompileException("SPIR-V compilation of $type shader for $fileName failed:\n${shaderc_result_get_error_message(result)?.trim()}")
             }
 
-            val bytes = shaderc_result_get_bytes(result)!!
+            val bytes = shaderc_result_get_bytes(result)!!//ByteBuffer.allocate(shaderc_result_get_length(result).toInt())
+            //MemoryUtil.memCopy(shaderc_result_get_bytes(result)!!, bytes)
+            //bytes.flip()
 
             val array = ByteArray(bytes.capacity())
             bytes.get(0, array)
             Files.write(Paths.get("shader_dump", "$fileName.bin"), array)
+
+            //shaderc_result_release(result)
 
             return bytes
         }
