@@ -32,22 +32,13 @@ public class ProgramMixin {
             @Local(argsOnly = true, ordinal = 0) String name
     ) {
         String code = String.join("", list);
-
-        if (code.startsWith("#version")) {
-            int version = Integer.parseInt(code.split("\\s+")[1]);
-
-            if (version < 450) {
-                code = "#version 450 core" + code.substring(code.indexOf('\n'));
-            }
-        } else {
-            code = "#version 450 core\n" + code;
-        }
-
         ShaderType shaderType = ShaderType.fromVanillaType(type);
+        ResourceLocation resLoc = ResourceLocation.withDefaultNamespace(name);
         ByteBuffer compiled = ShaderMixinCallback.invoke(
-                ResourceLocation.withDefaultNamespace(name),
+                resLoc,
                 shaderType,
                 ShaderMixinCallback.compile(
+                        resLoc,
                         shaderType,
                         name + type.getExtension(),
                         code,

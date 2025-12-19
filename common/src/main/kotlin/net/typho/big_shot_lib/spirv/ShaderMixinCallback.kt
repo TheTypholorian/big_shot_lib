@@ -10,7 +10,10 @@ import java.nio.file.Paths
 import java.util.*
 
 interface ShaderMixinCallback {
-    fun modify(shader: ResourceLocation, type: ShaderType, context: ShaderMixinContext)
+    fun mixinGLSL(shader: ResourceLocation, type: ShaderType, code: String): String = code
+
+    fun mixinSpirV(shader: ResourceLocation, type: ShaderType, context: ShaderMixinContext) {
+    }
 
     companion object {
         @JvmStatic
@@ -28,25 +31,83 @@ interface ShaderMixinCallback {
             shaderc_compile_options_set_auto_map_locations(options, true)
             shaderc_compile_options_set_auto_bind_uniforms(options, true)
 
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_buffer, 10)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_sampler, 20)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_image, 30)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_storage_buffer, 40)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_texture, 50)
-            shaderc_compile_options_set_binding_base(options, shaderc_uniform_kind_unordered_access_view, 60)
+            register(object : ShaderMixinCallback {
+                override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, code: String): String {
+                    if (code.startsWith("#version")) {
+                        val version =
+                            code.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].toInt()
 
-            shaderc_compile_options_set_generate_debug_info(options)
+                        if (version < 450) {
+                            return "#version 450 core" + code.substring(code.indexOf('\n'))
+                        }
+                    } else {
+                        return "#version 450 core\n$code"
+                    }
+
+                    return code
+                }
+            })
+
+            register(object : ShaderMixinCallback {
+                override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, code: String): String {
+                    when (shader.toString()) {
+                        "minecraft:rendertype_translucent_moving_block" -> {
+                            return code.replace("uniform sampler2D Sampler2;", "layout(location = 200) uniform sampler2D Sampler2;")
+                        }
+                        "minecraft:rendertype_beacon_beam" -> {
+                            return code.replace("uniform mat4 ProjMat;", "layout(location = 200) uniform mat4 ProjMat;")
+                        }
+                        "minecraft:rendertype_breeze_wind" -> {
+                            return code.replace("uniform sampler2D Sampler0;", "layout(location = 200) uniform sampler2D Sampler0;")
+                        }
+                    }
+
+                    return code
+                }
+
+                override fun mixinSpirV(
+                    shader: ResourceLocation,
+                    type: ShaderType,
+                    context: ShaderMixinContext
+                ) {
+                    if (type == ShaderType.FRAGMENT) {
+                        val code = context.compile()
+
+                        for (opcode in context) {
+                            if (opcode.type == 71) { // OpDecorate
+                                val decoration = code.getInt((opcode.index + 2) * ShaderMixinContext.WORD_SIZE_BYTES)
+
+                                if (decoration == 30) { // Location
+                                    val index = (opcode.index + 3) * ShaderMixinContext.WORD_SIZE_BYTES
+                                    val location = code.getInt(index)
+
+                                    if (location < 200) {
+                                        code.putInt(index, location + 10)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            })
         }
 
         @JvmStatic
         fun register(callback: ShaderMixinCallback) {
+            callbacks.add(callback)
         }
 
         @JvmStatic
-        fun compile(type: ShaderType, fileName: String, code: String, entrypoint: String = "main"): ByteBuffer {
+        fun compile(shader: ResourceLocation, type: ShaderType, fileName: String, code: String, entrypoint: String = "main"): ByteBuffer {
+            var modified = code
+
+            for (callback in callbacks) {
+                modified = callback.mixinGLSL(shader, type, modified)
+            }
+
             val result = shaderc_compile_into_spv(
                 compiler,
-                code,
+                modified,
                 type.shadercId,
                 fileName,
                 entrypoint,
@@ -78,7 +139,7 @@ interface ShaderMixinCallback {
             context.loadBound()
 
             for (callback in callbacks) {
-                callback.modify(shader, type, context)
+                callback.mixinSpirV(shader, type, context)
             }
 
             return context.compile()

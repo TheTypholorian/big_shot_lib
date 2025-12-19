@@ -37,6 +37,7 @@ loom {
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
             runDir("runs/client")
+            programArgs("--quickPlaySingleplayer", "test")
         }
         named("server") {
             server()
