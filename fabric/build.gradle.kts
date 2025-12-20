@@ -5,6 +5,10 @@ plugins {
 
 val modId: String by project
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     minecraft(libs.minecraft)
     mappings(loom.layered {
@@ -12,15 +16,18 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-${libs.versions.parchmentMC.get()}:${libs.versions.parchment.get()}@zip")
     })
     modImplementation(libs.fabricLoader)
-    modImplementation(libs.fabricApi)
 
     modImplementation(libs.flk)
-    modImplementation(fileTree("../libs/fabric") {
-        include("*.jar")
-    })
-    modImplementation(fileTree("../libs/shared") {
-        include("*.jar")
-    })
+
+    fun lwjglInclude(dependency: Any) {
+        include(dependency)
+        api(dependency)
+    }
+
+    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
+    lwjglInclude("org.lwjgl:lwjgl-shaderc::natives-windows")
+    lwjglInclude("org.lwjgl:lwjgl-shaderc::natives-linux")
+    lwjglInclude("org.lwjgl:lwjgl-shaderc::natives-macos")
 }
 
 loom {

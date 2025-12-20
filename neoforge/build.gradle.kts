@@ -42,12 +42,21 @@ neoForge {
 
 sourceSets.main.get().resources { srcDir("src/generated/resources") }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation(libs.kff)
-    implementation(fileTree("../libs/neoforge") {
-        include("*.jar")
-    })
-    implementation(fileTree("../libs/shared") {
-        include("*.jar")
-    })
+
+    fun lwjglInclude(dependency: Any) {
+        jarJar(dependency)
+        api(dependency)
+        additionalRuntimeClasspath(dependency)
+    }
+
+    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
+    lwjglInclude("org.lwjgl:lwjgl-shaderc::natives-windows")
+    lwjglInclude("org.lwjgl:lwjgl-shaderc::natives-linux")
+    lwjglInclude("org.lwjgl:lwjgl-shaderc::natives-macos")
 }

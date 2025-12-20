@@ -4,7 +4,9 @@
   "package": "net.typho.big_shot_lib.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
-  "client": [],
+  "client": [
+    "ShaderInstanceMixin"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

@@ -16,13 +16,14 @@ import static org.lwjgl.opengl.ARBGLSPIRV.GL_SHADER_BINARY_FORMAT_SPIR_V_ARB;
 import static org.lwjgl.opengl.ARBGLSPIRV.glSpecializeShaderARB;
 import static org.lwjgl.opengl.GL41.glShaderBinary;
 
-@Mixin(value = Program.class, remap = false)
+@Mixin(Program.class)
 public class ProgramMixin {
     @Redirect(
             method = "compileShaderInternal",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/platform/GlStateManager;glShaderSource(ILjava/util/List;)V"
+                    target = "Lcom/mojang/blaze3d/platform/GlStateManager;glShaderSource(ILjava/util/List;)V",
+                    remap = false
             )
     )
     private static void compileShaderInternal(
@@ -32,7 +33,7 @@ public class ProgramMixin {
             @Local(argsOnly = true, ordinal = 0) String name
     ) {
         ByteBuffer compiled = ShaderMixinCallback.compile(
-                ResourceLocation.withDefaultNamespace(name),
+                ResourceLocation.parse(name),
                 ShaderType.fromVanillaType(type),
                 ShaderMixinCallback.getCurrentVertexFormat().get(),
                 name + type.getExtension(),
@@ -47,7 +48,8 @@ public class ProgramMixin {
             method = "compileShaderInternal",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/platform/GlStateManager;glCompileShader(I)V"
+                    target = "Lcom/mojang/blaze3d/platform/GlStateManager;glCompileShader(I)V",
+                    remap = false
             )
     )
     private static void compileShaderInternal(int shader) {

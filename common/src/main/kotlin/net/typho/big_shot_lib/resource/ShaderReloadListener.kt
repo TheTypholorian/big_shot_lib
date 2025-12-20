@@ -22,7 +22,13 @@ object ShaderReloadListener : SynchronousReloadListener {
                 NeoShader.REGISTRY.remove(id)?.release()
 
                 val json = JsonParser.parseReader(jsonReader).asJsonObject
-                val builder = NeoShader.Builder(id, IShader.parseFormat(json.get("format")!!)!!)
+                val format = json.get("format")
+
+                if (format == null) {
+                    throw NullPointerException("Shader $id is missing vertex format")
+                }
+
+                val builder = NeoShader.Builder(id, IShader.parseFormat(format)!!)
 
                 for (type in ShaderType.entries) {
                     val sourceKeyJson = json.getAsJsonPrimitive(type.key)
