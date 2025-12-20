@@ -5,6 +5,7 @@ import net.minecraft.resources.FileToIdConverter
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib
+import net.typho.big_shot_lib.api.IShader
 import net.typho.big_shot_lib.api.impl.NeoShader
 import net.typho.big_shot_lib.gl.resource.ShaderType
 
@@ -21,7 +22,7 @@ object ShaderReloadListener : SynchronousReloadListener {
                 NeoShader.REGISTRY.remove(id)?.release()
 
                 val json = JsonParser.parseReader(jsonReader).asJsonObject
-                val builder = NeoShader.Builder(id)
+                val builder = NeoShader.Builder(id, IShader.parseFormat(json.get("format")!!)!!)
 
                 for (type in ShaderType.entries) {
                     val sourceKeyJson = json.getAsJsonPrimitive(type.key)

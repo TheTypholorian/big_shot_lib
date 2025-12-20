@@ -1,21 +1,28 @@
 package net.typho.big_shot_lib.spirv
 
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.gl.resource.ShaderType
+import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.util.shaderc.Shaderc.*
 import java.nio.ByteBuffer
 import java.util.*
 
 interface ShaderMixinCallback {
-    fun mixinGLSL(shader: ResourceLocation, type: ShaderType, code: String): String = code
+    fun mixinGLSL(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, code: String): String = code
 
-    fun mixinSpirV(shader: ResourceLocation, type: ShaderType, context: ShaderMixinContext) {
+    fun mixinSpirV(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, context: ShaderMixinContext) {
     }
 
     companion object {
         @JvmStatic
+        @ApiStatus.Internal
+        val currentVertexFormat = ThreadLocal<VertexFormat>()
+
+        @JvmStatic
         val callbacks = LinkedList<ShaderMixinCallback>()
+
         @JvmStatic
         val compiler = shaderc_compiler_initialize()
         @JvmStatic
@@ -30,7 +37,7 @@ interface ShaderMixinCallback {
             shaderc_compile_options_set_auto_bind_uniforms(options, false)
 
             register(object : ShaderMixinCallback {
-                override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, code: String): String {
+                override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, code: String): String {
                     if (code.startsWith("#version")) {
                         val version =
                             code.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].toInt()
@@ -47,7 +54,7 @@ interface ShaderMixinCallback {
             })
 
             register(object : ShaderMixinCallback {
-                override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, code: String): String {
+                override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, code: String): String {
                     when (shader.toString()) {
                         "minecraft:rendertype_translucent_moving_block" -> {
                             return code.replace("uniform sampler2D Sampler2;", "layout(location = 1000) uniform sampler2D Sampler2;")
@@ -67,6 +74,7 @@ interface ShaderMixinCallback {
                 override fun mixinSpirV(
                     shader: ResourceLocation,
                     type: ShaderType,
+                    format: VertexFormat?,
                     context: ShaderMixinContext
                 ) {
                     if (type != ShaderType.VERTEX) {
@@ -117,11 +125,11 @@ interface ShaderMixinCallback {
         }
 
         @JvmStatic
-        fun compile(shader: ResourceLocation, type: ShaderType, fileName: String, code: String, entrypoint: String = "main"): ByteBuffer {
+        fun compile(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, fileName: String, code: String, entrypoint: String = "main"): ByteBuffer {
             var modified = code
 
             for (callback in callbacks) {
-                modified = callback.mixinGLSL(shader, type, modified)
+                modified = callback.mixinGLSL(shader, type, format, modified)
             }
 
             val result = shaderc_compile_into_spv(
@@ -149,7 +157,7 @@ interface ShaderMixinCallback {
             context.loadBound()
 
             for (callback in callbacks) {
-                callback.mixinSpirV(shader, type, context)
+                callback.mixinSpirV(shader, type, format, context)
             }
 
             return context.compile()

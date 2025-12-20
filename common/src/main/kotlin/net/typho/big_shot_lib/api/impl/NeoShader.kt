@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.impl
 
 import com.mojang.blaze3d.shaders.AbstractUniform
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.IShader
 import net.typho.big_shot_lib.error.ShaderCompileException
@@ -23,7 +24,8 @@ import java.util.function.Function
 
 open class NeoShader(
     protected val location: ResourceLocation,
-    protected val id: Int
+    protected val id: Int,
+    protected val format: VertexFormat
 ) : IShader {
     companion object {
         val REGISTRY = HashMap<ResourceLocation, NeoShader>()
@@ -75,7 +77,9 @@ open class NeoShader(
         }?.set(id)
     }
 
-    open class Builder(val location: ResourceLocation) {
+    override fun vertexFormat() = format
+
+    open class Builder(val location: ResourceLocation, val format: VertexFormat) {
         val sources = LinkedList<Int>()
 
         fun attach(
@@ -108,33 +112,17 @@ open class NeoShader(
 
             val id = glCreateShader(type.id)
 
-            if (true) {
-                val compiled = ShaderMixinCallback.compile(
-                    location,
-                    type,
-                    fileName,
-                    modifiedSource,
-                    entrypoint
-                )
+            val compiled = ShaderMixinCallback.compile(
+                location,
+                type,
+                format,
+                fileName,
+                modifiedSource,
+                entrypoint
+            )
 
-                glShaderBinary(intArrayOf(id), GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled)
-                glSpecializeShaderARB(id, "main", intArrayOf(), intArrayOf())
-            } else {
-                glShaderSource(id, modifiedSource)
-                glCompileShader(id)
-            }
-
-            /*
-            ByteBuffer compiled = ShaderMixinCallback.compile(
-                    ResourceLocation.withDefaultNamespace(name),
-                    ShaderType.fromVanillaType(type),
-                    name + type.getExtension(),
-                    String.join("", list),
-                    "main"
-            );
-            glShaderBinary(new int[]{id}, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled);
-            glSpecializeShaderARB(id, "main", new int[0], new int[0]);
-             */
+            glShaderBinary(intArrayOf(id), GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled)
+            glSpecializeShaderARB(id, "main", intArrayOf(), intArrayOf())
 
             if (glGetShaderi(id, GL_COMPILE_STATUS) == GL_FALSE) {
                 throw ShaderCompileException("Error compiling ${type.key} shader for $location:\n${glGetShaderInfoLog(id).trim()}")
@@ -161,7 +149,7 @@ open class NeoShader(
                 glDeleteShader(source)
             }
 
-            return NeoShader(location, id)
+            return NeoShader(location, id, format)
         }
     }
 

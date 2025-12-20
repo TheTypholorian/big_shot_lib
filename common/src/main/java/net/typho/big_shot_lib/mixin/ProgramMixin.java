@@ -34,6 +34,7 @@ public class ProgramMixin {
         ByteBuffer compiled = ShaderMixinCallback.compile(
                 ResourceLocation.withDefaultNamespace(name),
                 ShaderType.fromVanillaType(type),
+                ShaderMixinCallback.getCurrentVertexFormat().get(),
                 name + type.getExtension(),
                 String.join("", list),
                 "main"
