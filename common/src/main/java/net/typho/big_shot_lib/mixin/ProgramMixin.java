@@ -31,19 +31,12 @@ public class ProgramMixin {
             @Local(argsOnly = true) Program.Type type,
             @Local(argsOnly = true, ordinal = 0) String name
     ) {
-        String code = String.join("", list);
-        ShaderType shaderType = ShaderType.fromVanillaType(type);
-        ResourceLocation resLoc = ResourceLocation.withDefaultNamespace(name);
-        ByteBuffer compiled = ShaderMixinCallback.invoke(
-                resLoc,
-                shaderType,
-                ShaderMixinCallback.compile(
-                        resLoc,
-                        shaderType,
-                        name + type.getExtension(),
-                        code,
-                        "main"
-                )
+        ByteBuffer compiled = ShaderMixinCallback.compile(
+                ResourceLocation.withDefaultNamespace(name),
+                ShaderType.fromVanillaType(type),
+                name + type.getExtension(),
+                String.join("", list),
+                "main"
         );
         glShaderBinary(new int[]{id}, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled);
         glSpecializeShaderARB(id, "main", new int[0], new int[0]);

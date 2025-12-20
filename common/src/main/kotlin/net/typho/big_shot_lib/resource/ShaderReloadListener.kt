@@ -28,14 +28,20 @@ object ShaderReloadListener : SynchronousReloadListener {
 
                     if (sourceKeyJson != null) {
                         val sourceKey = ResourceLocation.parse(sourceKeyJson.asString)
-                        val source = manager.getResourceOrThrow(type.idConverter.idToFile(sourceKey))
+                        val withExtension = type.idConverter.idToFile(sourceKey)
+                        val source = manager.getResourceOrThrow(withExtension)
 
                         source.openAsReader().use { sourceReader ->
-                            builder.attach(type, sourceReader.readText()) { include ->
-                                manager.getResourceOrThrow(glslIdConverter.idToFile(include))
-                                    .openAsReader()
-                                    .use { reader -> reader.readText() }
-                            }
+                            builder.attach(
+                                type,
+                                withExtension.toString(),
+                                sourceReader.readText(),
+                                { include ->
+                                    manager.getResourceOrThrow(glslIdConverter.idToFile(include))
+                                        .openAsReader()
+                                        .use { reader -> reader.readText() }
+                                }
+                            )
                         }
                     }
                 }

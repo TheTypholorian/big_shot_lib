@@ -8,12 +8,16 @@ import net.typho.big_shot_lib.error.ShaderLinkException
 import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.ShaderType
+import net.typho.big_shot_lib.spirv.ShaderMixinCallback
 import org.joml.Matrix3f
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.joml.Vector4f
+import org.lwjgl.opengl.ARBGLSPIRV.GL_SHADER_BINARY_FORMAT_SPIR_V_ARB
+import org.lwjgl.opengl.ARBGLSPIRV.glSpecializeShaderARB
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.*
+import org.lwjgl.opengl.GL41.glShaderBinary
 import java.util.*
 import java.util.function.Function
 
@@ -76,8 +80,10 @@ open class NeoShader(
 
         fun attach(
             type: ShaderType,
+            fileName: String,
             source: String,
-            includes: Function<ResourceLocation, String>? = null
+            includes: Function<ResourceLocation, String>? = null,
+            entrypoint: String = "main"
         ) {
             val modifiedSource = includes?.let {
                 var newSource = source
@@ -101,8 +107,34 @@ open class NeoShader(
             } ?: source
 
             val id = glCreateShader(type.id)
-            glShaderSource(id, modifiedSource)
-            glCompileShader(id)
+
+            if (true) {
+                val compiled = ShaderMixinCallback.compile(
+                    location,
+                    type,
+                    fileName,
+                    modifiedSource,
+                    entrypoint
+                )
+
+                glShaderBinary(intArrayOf(id), GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled)
+                glSpecializeShaderARB(id, "main", intArrayOf(), intArrayOf())
+            } else {
+                glShaderSource(id, modifiedSource)
+                glCompileShader(id)
+            }
+
+            /*
+            ByteBuffer compiled = ShaderMixinCallback.compile(
+                    ResourceLocation.withDefaultNamespace(name),
+                    ShaderType.fromVanillaType(type),
+                    name + type.getExtension(),
+                    String.join("", list),
+                    "main"
+            );
+            glShaderBinary(new int[]{id}, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled);
+            glSpecializeShaderARB(id, "main", new int[0], new int[0]);
+             */
 
             if (glGetShaderi(id, GL_COMPILE_STATUS) == GL_FALSE) {
                 throw ShaderCompileException("Error compiling ${type.key} shader for $location:\n${glGetShaderInfoLog(id).trim()}")

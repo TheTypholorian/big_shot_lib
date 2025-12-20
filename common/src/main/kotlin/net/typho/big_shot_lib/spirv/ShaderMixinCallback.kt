@@ -5,8 +5,6 @@ import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.gl.resource.ShaderType
 import org.lwjgl.util.shaderc.Shaderc.*
 import java.nio.ByteBuffer
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.*
 
 interface ShaderMixinCallback {
@@ -29,7 +27,7 @@ interface ShaderMixinCallback {
             shaderc_compile_options_set_target_spirv(options, shaderc_spirv_version_1_5)
 
             shaderc_compile_options_set_auto_map_locations(options, true)
-            shaderc_compile_options_set_auto_bind_uniforms(options, true)
+            shaderc_compile_options_set_auto_bind_uniforms(options, false)
 
             register(object : ShaderMixinCallback {
                 override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, code: String): String {
@@ -52,13 +50,14 @@ interface ShaderMixinCallback {
                 override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, code: String): String {
                     when (shader.toString()) {
                         "minecraft:rendertype_translucent_moving_block" -> {
-                            return code.replace("uniform sampler2D Sampler2;", "layout(location = 200) uniform sampler2D Sampler2;")
+                            return code.replace("uniform sampler2D Sampler2;", "layout(location = 1000) uniform sampler2D Sampler2;")
                         }
                         "minecraft:rendertype_beacon_beam" -> {
-                            return code.replace("uniform mat4 ProjMat;", "layout(location = 200) uniform mat4 ProjMat;")
+                            return code.replace("uniform mat4 ProjMat;", "layout(location = 1000) uniform mat4 ProjMat;")
                         }
                         "minecraft:rendertype_breeze_wind" -> {
-                            return code.replace("uniform sampler2D Sampler0;", "layout(location = 200) uniform sampler2D Sampler0;")
+                            return code.replace("uniform sampler2D Sampler0;", "layout(location = 1000) uniform sampler2D Sampler0;")
+                                .replace("out vec4 lightMapColor;", "layout(location = 1000) out vec4 lightMapColor;")
                         }
                     }
 
@@ -70,19 +69,39 @@ interface ShaderMixinCallback {
                     type: ShaderType,
                     context: ShaderMixinContext
                 ) {
-                    if (type == ShaderType.FRAGMENT) {
+                    if (type != ShaderType.VERTEX) {
                         val code = context.compile()
+                        val offset = type.ordinal * 100
 
+                        mainLoop@
                         for (opcode in context) {
                             if (opcode.type == 71) { // OpDecorate
+                                val id = code.getInt((opcode.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES)
+
+                                for (opcode1 in context) {
+                                    if (opcode1.type == 59) { // OpVariable
+                                        val checkId = code.getInt((opcode1.index + 2) * ShaderMixinContext.WORD_SIZE_BYTES)
+
+                                        if (checkId == id) {
+                                            val storageClass = code.getInt((opcode1.index + 3) * ShaderMixinContext.WORD_SIZE_BYTES)
+
+                                            if (storageClass == 0) { // UniformConstant
+                                                break
+                                            } else {
+                                                continue@mainLoop
+                                            }
+                                        }
+                                    }
+                                }
+
                                 val decoration = code.getInt((opcode.index + 2) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                                 if (decoration == 30) { // Location
                                     val index = (opcode.index + 3) * ShaderMixinContext.WORD_SIZE_BYTES
                                     val location = code.getInt(index)
 
-                                    if (location < 200) {
-                                        code.putInt(index, location + 10)
+                                    if (location < 1000) {
+                                        code.putInt(index, location + offset)
                                     }
                                 }
                             }
@@ -123,19 +142,10 @@ interface ShaderMixinCallback {
             //MemoryUtil.memCopy(shaderc_result_get_bytes(result)!!, bytes)
             //bytes.flip()
 
-            val array = ByteArray(bytes.capacity())
-            bytes.get(0, array)
-            Files.write(Paths.get("shader_dump", "$fileName.bin"), array)
-
             //shaderc_result_release(result)
 
-            return bytes
-        }
-
-        @JvmStatic
-        fun invoke(shader: ResourceLocation, type: ShaderType, compiled: ByteBuffer): ByteBuffer {
             val context = ShaderMixinContext()
-            context.code.add(compiled.order(ShaderMixinContext.BYTE_ORDER))
+            context.code.add(bytes.order(ShaderMixinContext.BYTE_ORDER))
             context.loadBound()
 
             for (callback in callbacks) {
