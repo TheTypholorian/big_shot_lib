@@ -9,6 +9,7 @@ import net.typho.big_shot_lib.error.ShaderLinkException
 import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.ShaderType
+import net.typho.big_shot_lib.spirv.ShaderLocationsInfo
 import net.typho.big_shot_lib.spirv.ShaderMixinCallback
 import org.joml.Matrix3f
 import org.joml.Matrix4f
@@ -79,7 +80,11 @@ open class NeoShader(
 
     override fun vertexFormat() = format
 
-    open class Builder(val location: ResourceLocation, val format: VertexFormat) {
+    open class Builder(
+        val location: ResourceLocation,
+        val format: VertexFormat
+    ) {
+        val locations = ShaderLocationsInfo()
         val sources = LinkedList<Int>()
 
         fun attach(
@@ -116,6 +121,7 @@ open class NeoShader(
                 location,
                 type,
                 format,
+                locations,
                 fileName,
                 modifiedSource,
                 entrypoint

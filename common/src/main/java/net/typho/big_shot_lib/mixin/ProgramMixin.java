@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Objects;
 
 import static org.lwjgl.opengl.ARBGLSPIRV.GL_SHADER_BINARY_FORMAT_SPIR_V_ARB;
 import static org.lwjgl.opengl.ARBGLSPIRV.glSpecializeShaderARB;
@@ -35,7 +36,8 @@ public class ProgramMixin {
         ByteBuffer compiled = ShaderMixinCallback.compile(
                 ResourceLocation.parse(name),
                 ShaderType.fromVanillaType(type),
-                ShaderMixinCallback.getCurrentVertexFormat().get(),
+                ShaderMixinCallback.currentVertexFormat.get(),
+                Objects.requireNonNull(ShaderMixinCallback.currentLocationsInfo.get()),
                 name + type.getExtension(),
                 String.join("", list),
                 "main"

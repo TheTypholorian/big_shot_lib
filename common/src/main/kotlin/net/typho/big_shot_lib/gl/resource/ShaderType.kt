@@ -4,8 +4,8 @@ import com.mojang.blaze3d.shaders.Program
 import net.minecraft.resources.FileToIdConverter
 import org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER
 import org.lwjgl.opengl.GL20.GL_VERTEX_SHADER
-import org.lwjgl.opengl.GL43.*
-import org.lwjgl.util.shaderc.Shaderc.*
+import org.lwjgl.util.shaderc.Shaderc.shaderc_glsl_fragment_shader
+import org.lwjgl.util.shaderc.Shaderc.shaderc_glsl_vertex_shader
 
 enum class ShaderType(
     val id: Int,
@@ -15,11 +15,8 @@ enum class ShaderType(
     val idConverter: FileToIdConverter = FileToIdConverter("neo/shaders", ".$extension")
 ) {
     VERTEX(GL_VERTEX_SHADER, shaderc_glsl_vertex_shader, "vertex", "vsh"),
-    GEOMETRY(GL_GEOMETRY_SHADER, shaderc_glsl_geometry_shader, "geometry", "gsh"),
-    FRAGMENT(GL_FRAGMENT_SHADER, shaderc_glsl_fragment_shader, "fragment", "fsh"),
-    COMPUTE(GL_COMPUTE_SHADER, shaderc_glsl_compute_shader, "compute", "csh"),
-    TESS_CONTROL(GL_TESS_CONTROL_SHADER, shaderc_glsl_tess_control_shader, "tessellation_control", "tcsh"),
-    TESS_EVALUATION(GL_TESS_EVALUATION_SHADER, shaderc_glsl_tess_evaluation_shader, "tessellation_evaluation", "tesh");
+    //GEOMETRY(GL_GEOMETRY_SHADER, shaderc_glsl_geometry_shader, "geometry", "gsh"),
+    FRAGMENT(GL_FRAGMENT_SHADER, shaderc_glsl_fragment_shader, "fragment", "fsh");
 
     override fun toString() = key
 

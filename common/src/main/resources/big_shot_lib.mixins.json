@@ -6,10 +6,12 @@
   "compatibilityLevel": "JAVA_18",
   "mixins": [],
   "client": [
+    "EffectInstanceMixin",
     "GameRendererMixin",
     "LevelRendererMixin",
     "MinecraftMixin",
     "ProgramMixin",
+    "ProgramTypeMixin",
     "WindowMixin"
   ],
   "server": [],
