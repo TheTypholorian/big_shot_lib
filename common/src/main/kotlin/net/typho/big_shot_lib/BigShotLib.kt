@@ -163,9 +163,9 @@ object BigShotLib {
         v3: Vector3f,
         normal: Vector3f
     ) {
-        addVertex(v0).setUv(1f, 0f).setNormal(normal.x, normal.y, normal.z)
-        addVertex(v1).setUv(0f, 0f).setNormal(normal.x, normal.y, normal.z)
-        addVertex(v2).setUv(0f, 1f).setNormal(normal.x, normal.y, normal.z)
-        addVertex(v3).setUv(1f, 1f).setNormal(normal.x, normal.y, normal.z)
+        addVertex(v0).setUv(0f, 1f).setNormal(normal.x, normal.y, normal.z)
+        addVertex(v1).setUv(1f, 1f).setNormal(normal.x, normal.y, normal.z)
+        addVertex(v2).setUv(1f, 0f).setNormal(normal.x, normal.y, normal.z)
+        addVertex(v3).setUv(0f, 0f).setNormal(normal.x, normal.y, normal.z)
     }
 }
