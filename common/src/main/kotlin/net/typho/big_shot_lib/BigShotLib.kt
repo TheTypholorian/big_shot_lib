@@ -25,10 +25,10 @@ object BigShotLib {
         val blitBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
 
         blitBuilder.quad(
-            Vector3f(-1f, -1f, 0f),
-            Vector3f(1f, -1f, 0f),
-            Vector3f(1f, 1f, 0f),
             Vector3f(-1f, 1f, 0f),
+            Vector3f(1f, 1f, 0f),
+            Vector3f(1f, -1f, 0f),
+            Vector3f(-1f, -1f, 0f),
             Vector3f(0f, 0f, -1f)
         )
 
