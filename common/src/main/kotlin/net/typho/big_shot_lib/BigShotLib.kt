@@ -32,6 +32,8 @@ object BigShotLib {
         return@lazy vbo
     }
 
+    fun init() = Unit
+
     fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
 
     fun getViewMatrix(
