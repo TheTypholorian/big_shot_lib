@@ -57,7 +57,7 @@ enum class ShaderPrimitiveType(
         val buffer = ByteBuffer.allocate(size * WORD_SIZE_BYTES)
             .order(ShaderMixinContext.BYTE_ORDER)
 
-            .putInt((size shl 16) or id)
+            .putInt((size shl 16) or this.id)
             .putInt(id)
 
         width?.let {
