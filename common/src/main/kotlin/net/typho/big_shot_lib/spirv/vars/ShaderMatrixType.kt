@@ -43,6 +43,7 @@ class ShaderMatrixType(
             .order(ShaderMixinContext.BYTE_ORDER)
 
             .put(0, buffer, 0, buffer.capacity())
+            .position(buffer.capacity())
 
             .putInt(0x00_04_00_18)
             .putInt(id)
