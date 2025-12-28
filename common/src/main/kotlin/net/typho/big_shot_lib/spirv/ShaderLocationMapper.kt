@@ -13,28 +13,26 @@ object ShaderLocationMapper : ShaderMixinCallback {
         context: ShaderMixinContext,
         locations: ShaderLocationsInfo
     ) {
-        val code = context.compile()
-
         for (opcode in context) {
             if (opcode.type == 71) { // OpDecorate
-                val id = code.getInt((opcode.index + 1) * WORD_SIZE_BYTES)
+                val id = context.code.getInt((opcode.index + 1) * WORD_SIZE_BYTES)
 
                 for (opcode1 in context) {
                     if (opcode1.type == 59) { // OpVariable
-                        val checkId = code.getInt((opcode1.index + 2) * WORD_SIZE_BYTES)
+                        val checkId = context.code.getInt((opcode1.index + 2) * WORD_SIZE_BYTES)
 
                         if (checkId == id) {
-                            val decoration = code.getInt((opcode.index + 2) * WORD_SIZE_BYTES)
+                            val decoration = context.code.getInt((opcode.index + 2) * WORD_SIZE_BYTES)
 
                             if (decoration == 30) { // Location
-                                val storageClass = code.getInt((opcode1.index + 3) * WORD_SIZE_BYTES)
+                                val storageClass = context.code.getInt((opcode1.index + 3) * WORD_SIZE_BYTES)
 
                                 locations.getMapper(storageClass, type)?.let { mapper ->
                                     var name: String? = null
 
                                     for (opcode2 in context) {
                                         if (opcode2.type == 5) { // OpName
-                                            val checkId1 = code.getInt((opcode2.index + 1) * WORD_SIZE_BYTES)
+                                            val checkId1 = context.code.getInt((opcode2.index + 1) * WORD_SIZE_BYTES)
 
                                             if (checkId1 == id) {
                                                 val contents = context.getOpcodeData(opcode2)
@@ -54,8 +52,8 @@ object ShaderLocationMapper : ShaderMixinCallback {
                                     }
 
                                     val index = (opcode.index + 3) * WORD_SIZE_BYTES
-                                    val location = code.getInt(index)
-                                    code.putInt(index, mapper.map(name, location))
+                                    val location = context.code.getInt(index)
+                                    context.code.putInt(index, mapper.map(name, location))
                                 }
 
                                 break

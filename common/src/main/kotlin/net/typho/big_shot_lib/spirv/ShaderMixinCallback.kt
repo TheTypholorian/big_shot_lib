@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.gl.resource.ShaderType
+import net.typho.big_shot_lib.platform.Services
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.util.shaderc.Shaderc.*
 import java.nio.ByteBuffer
@@ -75,22 +76,20 @@ interface ShaderMixinCallback {
 
             val bytes = shaderc_result_get_bytes(result)!!
 
-            val context = ShaderMixinContext()
-            context.code.add(bytes.order(ShaderMixinContext.BYTE_ORDER))
-            context.loadBound()
+            val context = ShaderMixinContext(bytes)
 
             for (callback in callbacks) {
                 callback.mixinSpirV(shader, type, format, context, locations)
             }
 
-            val compiled = context.compile()
+            if (Services.PLATFORM.isDevelopmentEnvironment()) {
+                val array = ByteArray(context.code.capacity()) { i -> context.code.get(i) }
+                val path = Paths.get("shader_dump", shader.namespace, shader.path + "." + type.extension + ".bin")
+                Files.createDirectories(path.parent)
+                Files.write(path, array)
+            }
 
-            val array = ByteArray(compiled.capacity()) { i -> compiled.get(i) }
-            val path = Paths.get("shader_dump", shader.namespace, shader.path + "." + type.extension + ".bin")
-            Files.createDirectories(path.parent)
-            Files.write(path, array)
-
-            return compiled
+            return context.code
         }
     }
 }

@@ -4,15 +4,18 @@ import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.error.ShaderMixinException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.util.*
 
-class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
-    val code = LinkedList<ByteBuffer>()
+class ShaderMixinContext(var code: ByteBuffer) : Iterable<ShaderMixinContext.Opcode> {
     var headerSize = 5
     var bound: Int = 0
 
+    init {
+        code.order(BYTE_ORDER)
+        loadBound()
+    }
+
     fun loadBound() {
-        bound = code[0].getInt(3 * WORD_SIZE_BYTES)
+        bound = code.getInt(3 * WORD_SIZE_BYTES)
     }
 
     fun putBound() {
@@ -20,42 +23,28 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
             BigShotLib.LOGGER.warn("Shader Mixin Context bound $bound is a suspicious value, did you remember to call loadBound() after initializing?")
         }
 
-        code[0].putInt(3 * WORD_SIZE_BYTES, bound)
+        code.putInt(3 * WORD_SIZE_BYTES, bound)
     }
 
-    fun split(index: Int): Int? {
-        var listIndex = 0
-        var sectionStart = 0
-        var sectionEnd = 0
+    fun split(index: Int, size: Int) {
+        val newBuffer = ByteBuffer.allocate(code.capacity() + size).order(BYTE_ORDER)
 
-        for (section in code) {
-            sectionEnd += section.capacity()
-
-            if (index == sectionStart) {
-                return listIndex
-            } else if (index > sectionStart && index < sectionEnd) {
-                val lowSection = ByteBuffer.allocate(index - sectionStart).order(BYTE_ORDER)
-                lowSection.put(0, section, 0, lowSection.capacity())
-
-                val highSection = ByteBuffer.allocate(sectionEnd - index).order(BYTE_ORDER)
-                highSection.put(0, section, lowSection.capacity(), highSection.capacity())
-
-                code.removeAt(listIndex)
-                code.add(listIndex, lowSection)
-                code.add(listIndex + 1, highSection)
-
-                return listIndex + 1
-            }
-
-            sectionStart = sectionEnd
-            listIndex++
+        if (index == 0) {
+            newBuffer.put(size, code, 0, code.capacity())
+        } else if (index > 0 && index < code.capacity()) {
+            newBuffer.put(0, code, 0, index)
+            newBuffer.put(index + size, code, index, code.capacity() - index)
+        } else {
+            newBuffer.put(0, code, 0, code.capacity())
         }
 
-        return null
+        code = newBuffer
     }
 
     fun inject(index: Int, inject: ByteBuffer) {
-        code.add(split(index)!!, inject.order(BYTE_ORDER))
+        inject.order(BYTE_ORDER)
+        split(index, inject.capacity())
+        code.put(index, inject, 0, inject.capacity())
     }
 
     fun inject(at: At, inject: ByteBuffer) = inject(at.getStart(this) * WORD_SIZE_BYTES, inject)
@@ -178,42 +167,28 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
         return variableId
     }
 
-    fun compile(): ByteBuffer {
-        if (code.isEmpty()) {
-            val buffer = ByteBuffer.allocate(0).order(BYTE_ORDER)
-            code.add(buffer)
-            return buffer
+    fun addEntrypointVars(vararg ids: Int): Boolean {
+        for (opcode in this) {
+            if (opcode.type == 15) { // OpEntryPoint
+                code.putInt(
+                    opcode.index * WORD_SIZE_BYTES,
+                    ((opcode.length + ids.size) shl 16) or opcode.type
+                )
+                val buffer = ByteBuffer.allocate(ids.size * WORD_SIZE_BYTES)
+                        .order(BYTE_ORDER)
+                buffer.asIntBuffer().put(ids)
+                inject(
+                    (opcode.index + opcode.length) * WORD_SIZE_BYTES,
+                    buffer
+                )
+                return true
+            }
         }
 
-        if (code.size == 1) {
-            putBound()
-            return code[0]
-        }
-
-        var size = 0
-
-        for (bytes in code) {
-            size += bytes.capacity()
-        }
-
-        val array = ByteBuffer.allocate(size).order(BYTE_ORDER)
-        var index = 0
-
-        for (bytes in code) {
-            array.put(index, bytes, 0, bytes.capacity())
-            index += bytes.capacity()
-        }
-
-        code.clear()
-        code.add(array)
-
-        putBound()
-
-        return array
+        return false
     }
 
     fun getOpcodeData(op: Opcode): ByteBuffer {
-        val code = compile()
         val buf = ByteBuffer.allocate(op.length * WORD_SIZE_BYTES)
         buf.put(0, code, (op.index + 1) * WORD_SIZE_BYTES, buf.capacity())
         return buf
@@ -222,7 +197,7 @@ class ShaderMixinContext : Iterable<ShaderMixinContext.Opcode> {
     @OptIn(ExperimentalStdlibApi::class)
     override fun iterator(): Iterator<Opcode> {
         return object : Iterator<Opcode> {
-            val code = compile()
+            val code = this@ShaderMixinContext.code
             var index = headerSize
 
             override fun hasNext() = index * WORD_SIZE_BYTES < code.capacity()
