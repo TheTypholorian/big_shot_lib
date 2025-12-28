@@ -1,11 +1,14 @@
 package net.typho.big_shot_lib.spirv
 
 import net.typho.big_shot_lib.BigShotLib
-import net.typho.big_shot_lib.error.ShaderMixinException
+import net.typho.big_shot_lib.spirv.at.At
+import net.typho.big_shot_lib.spirv.at.AtOpcode
+import net.typho.big_shot_lib.spirv.at.BeforeFirstFunction
+import net.typho.big_shot_lib.spirv.vars.ShaderVariableType
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class ShaderMixinContext(var code: ByteBuffer) : Iterable<ShaderMixinContext.Opcode> {
+class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
     var headerSize = 5
     var bound: Int = 0
 
@@ -49,83 +52,6 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<ShaderMixinContext.Opc
 
     fun inject(at: At, inject: ByteBuffer) = inject(at.getStart(this) * WORD_SIZE_BYTES, inject)
 
-    fun addIntType(bits: Int = 32, signed: Boolean): Int {
-        val resultId = bound++
-
-        val buffer = ByteBuffer.allocate(4 * WORD_SIZE_BYTES)
-            .order(BYTE_ORDER)
-
-            .putInt(0x00_04_00_15)
-            .putInt(resultId)
-            .putInt(bits)
-            .putInt(if (signed) 1 else 0)
-
-        inject(BeforeFirstFunction(), buffer)
-        putBound()
-        return resultId
-    }
-
-    fun addFloatType(bits: Int = 32): Int {
-        val resultId = bound++
-
-        val buffer = ByteBuffer.allocate(3 * WORD_SIZE_BYTES)
-            .order(BYTE_ORDER)
-
-            .putInt(0x00_03_00_16)
-            .putInt(resultId)
-            .putInt(bits)
-
-        inject(BeforeFirstFunction(), buffer)
-        putBound()
-        return resultId
-    }
-
-    fun addVectorType(typePointer: Int, components: Int): Int {
-        val resultId = bound++
-
-        val buffer = ByteBuffer.allocate(4 * WORD_SIZE_BYTES)
-            .order(BYTE_ORDER)
-
-            .putInt(0x00_04_00_17)
-            .putInt(resultId)
-            .putInt(typePointer)
-            .putInt(components)
-
-        inject(BeforeFirstFunction(), buffer)
-        putBound()
-        return resultId
-    }
-
-    fun addMatrixType(typePointer: Int, columnCount: Int): Int {
-        val resultId = bound++
-
-        val buffer = ByteBuffer.allocate(4 * WORD_SIZE_BYTES)
-            .order(BYTE_ORDER)
-
-            .putInt(0x00_04_00_18)
-            .putInt(resultId)
-            .putInt(typePointer)
-            .putInt(columnCount)
-
-        inject(BeforeFirstFunction(), buffer)
-        putBound()
-        return resultId
-    }
-
-    fun addSamplerType(): Int {
-        val resultId = bound++
-
-        val buffer = ByteBuffer.allocate(2 * WORD_SIZE_BYTES)
-            .order(BYTE_ORDER)
-
-            .putInt(0x00_02_00_1A)
-            .putInt(resultId)
-
-        inject(BeforeFirstFunction(), buffer)
-        putBound()
-        return resultId
-    }
-
     fun addStaticVar(storageClass: Int, typePointer: Int, name: String? = null, initializer: Int? = null): Int {
         val typePointerId = bound++
         val variableId = bound++
@@ -147,7 +73,7 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<ShaderMixinContext.Opc
             buffer.putInt(initializer)
         }
 
-        inject(BeforeFirstFunction(), buffer)
+        inject(BeforeFirstFunction, buffer)
 
         if (name != null) {
             val bytes = name.toByteArray()
@@ -169,10 +95,10 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<ShaderMixinContext.Opc
 
     fun addEntrypointVars(vararg ids: Int): Boolean {
         for (opcode in this) {
-            if (opcode.type == 15) { // OpEntryPoint
+            if (opcode.id == 15) { // OpEntryPoint
                 code.putInt(
                     opcode.index * WORD_SIZE_BYTES,
-                    ((opcode.length + ids.size) shl 16) or opcode.type
+                    ((opcode.length + ids.size) shl 16) or opcode.id
                 )
                 val buffer = ByteBuffer.allocate(ids.size * WORD_SIZE_BYTES)
                         .order(BYTE_ORDER)
@@ -186,6 +112,80 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<ShaderMixinContext.Opc
         }
 
         return false
+    }
+
+    fun locateVariable(
+        name: String? = null,
+        location: Int? = null,
+        type: ShaderVariableType? = null
+    ): Int? {
+        mainLoop@
+        for (opcode in this) {
+            if (opcode.id == 59) { // OpVariable
+                val id = code.getInt((opcode.index + 2) * WORD_SIZE_BYTES)
+
+                if (name != null) {
+                    for (opcode1 in this) {
+                        if (opcode1.id == 5) { // OpName
+                            if (code.getInt((opcode.index + 1) * WORD_SIZE_BYTES) == id) {
+                                val contents = getOpcodeData(opcode1)
+                                val contentsArray = contents.array()
+                                val actualName = String(
+                                    contentsArray,
+                                    WORD_SIZE_BYTES,
+                                    contentsArray.size - 2 * WORD_SIZE_BYTES
+                                ).trim(0.toChar())
+
+                                if (name != actualName) {
+                                    continue@mainLoop
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (location != null) {
+                    for (opcode1 in this) {
+                        if (opcode1.id == 71) { // OpDecorate
+                            if (code.getInt((opcode.index + 1) * WORD_SIZE_BYTES) == id) {
+                                val decoration = code.getInt((opcode.index + 2) * WORD_SIZE_BYTES)
+
+                                if (decoration == 30) { // Location
+                                    val actualLocation = code.getInt((opcode.index + 3) * WORD_SIZE_BYTES)
+
+                                    if (actualLocation != location) {
+                                        continue@mainLoop
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (type != null) {
+                    var matches = false
+
+                    for (opcode1 in this) {
+                        if (type.matches(opcode1, this)) {
+                            val target = code.getInt((opcode.index + 1) * WORD_SIZE_BYTES)
+
+                            if (target == id) {
+                                matches = true
+                                break
+                            }
+                        }
+                    }
+
+                    if (!matches) {
+                        return null
+                    }
+                }
+
+                return id
+            }
+        }
+
+        return null
     }
 
     fun getOpcodeData(op: Opcode): ByteBuffer {
@@ -219,83 +219,4 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<ShaderMixinContext.Opc
         const val WORD_SIZE_BYTES = 4
         val BYTE_ORDER: ByteOrder = ByteOrder.LITTLE_ENDIAN
     }
-
-    class Opcode(val index: Int, val type: Int, val length: Int)
-
-    interface At {
-        fun getStart(context: ShaderMixinContext): Int
-
-        fun getEnd(context: ShaderMixinContext): Int? = null
-    }
-
-    open class AtOpcode(val id: Int) : At {
-        override fun getStart(context: ShaderMixinContext): Int {
-            for (opcode in context) {
-                if (opcode.type == id) {
-                    return opcode.index
-                }
-            }
-
-            return 0
-        }
-
-        override fun getEnd(context: ShaderMixinContext): Int {
-            for (opcode in context) {
-                if (opcode.type == id) {
-                    return opcode.index + opcode.length + 1
-                }
-            }
-
-            return 0
-        }
-    }
-
-    open class AtOpcodeInMethod(val id: Int, val method: String): At {
-        override fun getStart(context: ShaderMixinContext): Int {
-            var methodId: Int? = -1
-
-            for (opcode in context) {
-                if (opcode.type == 5) { // OpName
-                    val contents = context.getOpcodeData(opcode)
-                    val contentsArray = contents.array()
-                    val name = String(contentsArray, WORD_SIZE_BYTES, contentsArray.size - 2 * WORD_SIZE_BYTES)
-
-                    if (name.trim(0.toChar()) == method) {
-                        methodId = contents.getInt(0)
-                        break;
-                    }
-                }
-            }
-
-            if (methodId == -1) {
-                throw ShaderMixinException("Unable to find method $method")
-            }
-
-            var inMethod = false
-
-            for (opcode in context) {
-                if (opcode.type == 54) { // OpFunction
-                    if (inMethod) {
-                        break
-                    }
-
-                    val contents = context.getOpcodeData(opcode)
-
-                    if (contents.getInt(WORD_SIZE_BYTES) == methodId) {
-                        inMethod = true
-                    }
-                } else if (inMethod && opcode.type == id) {
-                    return opcode.index
-                }
-            }
-
-            throw ShaderMixinException("Unable to find opcode $id method $method")
-        }
-    }
-
-    open class AtVoidReturn(method: String): AtOpcodeInMethod(253, method) // OpReturn
-
-    open class AtReturnValue(method: String): AtOpcodeInMethod(254, method) // OpReturnValue
-
-    open class BeforeFirstFunction(): AtOpcode(54) // OpFunction
 }

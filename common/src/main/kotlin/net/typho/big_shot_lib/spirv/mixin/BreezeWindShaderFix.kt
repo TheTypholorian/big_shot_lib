@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.spirv
+package net.typho.big_shot_lib.spirv.mixin
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation

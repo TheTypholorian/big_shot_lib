@@ -5,6 +5,9 @@ import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.platform.Services
+import net.typho.big_shot_lib.spirv.mixin.BreezeWindShaderFix
+import net.typho.big_shot_lib.spirv.mixin.ShaderLocationMapper
+import net.typho.big_shot_lib.spirv.mixin.ShaderVersionUpdater
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.util.shaderc.Shaderc.*
 import java.nio.ByteBuffer
