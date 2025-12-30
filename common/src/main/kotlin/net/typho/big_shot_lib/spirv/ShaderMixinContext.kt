@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.spirv.at.At
 import net.typho.big_shot_lib.spirv.at.AtOpcode
 import net.typho.big_shot_lib.spirv.at.BeforeFirstFunction
+import net.typho.big_shot_lib.spirv.vars.LocatedVariable
 import net.typho.big_shot_lib.spirv.vars.ShaderVariableType
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -118,84 +119,96 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
         name: String? = null,
         location: Int? = null,
         type: ShaderVariableType? = null
-    ): Int? {
-        mainLoop@
+    ): LocatedVariable? {
         for (opcode in this) {
             if (opcode.id == 59) { // OpVariable
                 val id = code.getInt((opcode.index + 2) * WORD_SIZE_BYTES)
+                var actualName: String? = null
+                var actualLocation: Int? = null
+                var actualTypePointer: Int? = null
+                var actualType: Int? = null
 
-                if (name != null) {
-                    var found = false
-
-                    for (opcode1 in this) {
-                        if (opcode1.id == 5) { // OpName
-                            if (code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES) == id) {
-                                val contents = getOpcodeData(opcode1)
-                                val contentsArray = contents.array()
-                                val actualName = String(
-                                    contentsArray,
-                                    WORD_SIZE_BYTES,
-                                    contentsArray.size - 2 * WORD_SIZE_BYTES
-                                ).trim(0.toChar())
-
-                                if (name == actualName) {
-                                    found = true
-                                    break
-                                }
-                            }
+                for (opcode1 in this) {
+                    if (opcode1.id == 5) { // OpName
+                        if (code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES) == id) {
+                            val contents = getOpcodeData(opcode1)
+                            val contentsArray = contents.array()
+                            actualName = String(
+                                contentsArray,
+                                WORD_SIZE_BYTES,
+                                contentsArray.size - 2 * WORD_SIZE_BYTES
+                            ).trim(0.toChar())
+                            break
                         }
-                    }
-
-                    if (!found) {
-                        continue@mainLoop
                     }
                 }
 
-                if (location != null) {
-                    var found = false
-
-                    for (opcode1 in this) {
-                        if (opcode1.id == 71) { // OpDecorate
-                            if (code.getInt((opcode.index + 1) * WORD_SIZE_BYTES) == id) {
-                                val decoration = code.getInt((opcode.index + 2) * WORD_SIZE_BYTES)
-
-                                if (decoration == 30) { // Location
-                                    val actualLocation = code.getInt((opcode.index + 3) * WORD_SIZE_BYTES)
-
-                                    if (actualLocation == location) {
-                                        found = true
-                                        break
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (!found) {
-                        continue@mainLoop
-                    }
+                if (name != null && actualName != name) {
+                    continue
                 }
 
-                if (type != null) {
-                    var found = false
+                for (opcode1 in this) {
+                    if (opcode1.id == 71) { // OpDecorate
+                        if (code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES) == id) {
+                            val decoration = code.getInt((opcode1.index + 2) * WORD_SIZE_BYTES)
 
-                    for (opcode1 in this) {
-                        if (type.matches(opcode1, this)) {
-                            val target = code.getInt((opcode.index + 1) * WORD_SIZE_BYTES)
-
-                            if (target == id) {
-                                found = true
+                            if (decoration == 30) { // Location
+                                actualLocation = code.getInt((opcode1.index + 3) * WORD_SIZE_BYTES)
                                 break
                             }
                         }
                     }
+                }
 
-                    if (!found) {
-                        continue@mainLoop
+                if (location != null && actualLocation != location) {
+                    continue
+                }
+
+                for (opcode1 in this) {
+                    if (opcode1.id == 59) { // OpVariable
+                        if (code.getInt((opcode1.index + 2) * WORD_SIZE_BYTES) == id) {
+                            actualTypePointer = code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES)
+                            break
+                        }
                     }
                 }
 
-                return id
+                actualTypePointer?.let {
+                    for (opcode1 in this) {
+                        if (opcode1.id == 32) { // OpTypePointer
+                            if (code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES) == id) {
+                                actualType = code.getInt((opcode1.index + 3) * WORD_SIZE_BYTES)
+                                break
+                            }
+                        }
+                    }
+                }
+
+                var typeMatches = type?.let {
+                    none { opcode1 ->
+                        if (type.matches(opcode1, this)) {
+                            val target = code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES)
+
+                            if (target == id) {
+                                return@none true
+                            }
+                        }
+
+                        return@none false
+                    }
+                }
+
+                if (typeMatches != null && !typeMatches) {
+                    continue
+                }
+
+                return LocatedVariable(
+                    id,
+                    actualName,
+                    actualLocation,
+                    actualTypePointer,
+                    actualType
+                )
             }
         }
 
