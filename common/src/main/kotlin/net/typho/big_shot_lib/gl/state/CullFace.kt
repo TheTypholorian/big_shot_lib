@@ -2,15 +2,25 @@ package net.typho.big_shot_lib.gl.state
 
 import org.lwjgl.opengl.GL11.*
 
-object CullFace : GlState<Face> {
-    override fun default() = Face.DEFAULT
+enum class CullFace(val id: Int) : GlState<CullFace>, GlState.Value {
+    FRONT(GL_FRONT),
+    BACK(GL_BACK),
+    FRONT_AND_BACK(GL_FRONT_AND_BACK);
 
-    override fun queryValue(): Face? {
-        val face = glGetInteger(GL_CULL_FACE)
-        return Face.entries.find { it.id == face }
+    companion object {
+        val DEFAULT = BACK
     }
 
-    override fun set(value: Face) {
+    override fun default() = DEFAULT
+
+    override fun queryValue(): CullFace? {
+        val face = glGetInteger(GL_CULL_FACE)
+        return CullFace.entries.find { it.id == face }
+    }
+
+    override fun set(value: CullFace) {
         glCullFace(value.id)
     }
+
+    override fun getType() = this
 }

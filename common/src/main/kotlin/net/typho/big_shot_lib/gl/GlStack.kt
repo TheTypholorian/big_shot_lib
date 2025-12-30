@@ -27,10 +27,9 @@ class GlStack : AutoCloseable {
         return null
     }
 
-    fun queryValuesForDefaults(states: List<GlState<*>> = GlState.ALL_STATES) {
-        for (state in states) {
-            defaultStates.put(state, state.queryValue() as Any)
-        }
+    @Suppress("UNCHECKED")
+    fun <T : GlState.Value, S : GlState<T>> set(value: T) {
+        set(value.getType() as S, value)
     }
 
     fun <T, S : GlState<T>> set(state: S, value: T) {

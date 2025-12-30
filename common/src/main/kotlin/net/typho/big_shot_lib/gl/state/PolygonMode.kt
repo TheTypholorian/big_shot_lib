@@ -2,25 +2,25 @@ package net.typho.big_shot_lib.gl.state
 
 import org.lwjgl.opengl.GL11.*
 
-object PolygonMode : GlState<PolygonMode.Mode> {
-    override fun default() = Mode.DEFAULT
+enum class PolygonMode(val id: Int) : GlState<PolygonMode>, GlState.Value {
+    POINT(GL_POINT),
+    LINE(GL_LINE),
+    FILL(GL_FILL);
 
-    override fun queryValue(): Mode? {
-        val mode = glGetInteger(GL_POLYGON_MODE)
-        return Mode.entries.find { it.id == mode }
+    companion object {
+        val DEFAULT = FILL
     }
 
-    override fun set(value: Mode) {
+    override fun default() = DEFAULT
+
+    override fun queryValue(): PolygonMode? {
+        val mode = glGetInteger(GL_POLYGON_MODE)
+        return PolygonMode.entries.find { it.id == mode }
+    }
+
+    override fun set(value: PolygonMode) {
         glPolygonMode(GL_FRONT_AND_BACK, value.id)
     }
 
-    enum class Mode(var id: Int) {
-        POINT(GL_POINT),
-        LINE(GL_LINE),
-        FILL(GL_FILL);
-
-        companion object {
-            val DEFAULT = FILL
-        }
-    }
+    override fun getType() = this
 }

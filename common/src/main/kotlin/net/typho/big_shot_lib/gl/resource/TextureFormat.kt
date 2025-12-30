@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.gl.resource
 
+import com.mojang.blaze3d.platform.NativeImage
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL31.*
@@ -91,6 +92,7 @@ enum class TextureFormat(
     RGBA16UI(GL_RGBA_INTEGER, GL_RGBA16UI, color = true),
     RGBA32I(GL_RGBA_INTEGER, GL_RGBA32I, color = true),
     RGBA32UI(GL_RGBA_INTEGER, GL_RGBA32UI, color = true),
+
     DEPTH_COMPONENT(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, depth = true),
     DEPTH_STENCIL(GL_DEPTH_STENCIL, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, depth = true, stencil = true),
     DEPTH_COMPONENT16(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16, GL_FLOAT, depth = true),
@@ -98,5 +100,14 @@ enum class TextureFormat(
     DEPTH_COMPONENT32(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32, GL_FLOAT, depth = true),
     DEPTH_COMPONENT32F(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_FLOAT, depth = true),
     DEPTH24_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH24_STENCIL8, GL_UNSIGNED_INT_24_8, depth = true, stencil = true),
-    DEPTH32F_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH32F_STENCIL8, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, depth = true, stencil = true)
+    DEPTH32F_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH32F_STENCIL8, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, depth = true, stencil = true);
+
+    companion object {
+        fun get(format: NativeImage.Format): TextureFormat = when (format) {
+            NativeImage.Format.RGBA -> RGBA
+            NativeImage.Format.RGB -> RGB
+            NativeImage.Format.LUMINANCE_ALPHA -> RG
+            NativeImage.Format.LUMINANCE -> RED
+        }
+    }
 }

@@ -55,7 +55,7 @@ open class NeoTexture(
         glFramebufferTexture2D(
             target,
             attachment,
-            GL_TEXTURE_2D,
+            type().glName,
             id(),
             0
         )

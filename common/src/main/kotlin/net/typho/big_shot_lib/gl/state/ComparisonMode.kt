@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.gl.state
 
 import org.lwjgl.opengl.GL11.*
 
-enum class ComparisonMode(var id: Int) {
+enum class ComparisonMode(val id: Int) {
     NEVER(GL_NEVER),
     ALWAYS(GL_ALWAYS),
     LESS(GL_LESS),

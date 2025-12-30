@@ -12,6 +12,7 @@
     "MinecraftMixin",
     "ProgramMixin",
     "ProgramTypeMixin",
+    "SimpleTextureAccessor",
     "WindowMixin"
   ],
   "server": [],
