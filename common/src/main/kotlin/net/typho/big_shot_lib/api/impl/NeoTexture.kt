@@ -8,7 +8,7 @@ import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE
 import org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R
-import org.lwjgl.opengl.GL32.glFramebufferTexture
+import org.lwjgl.opengl.GL30.glFramebufferTexture2D
 import org.lwjgl.system.MemoryUtil
 
 open class NeoTexture(
@@ -51,10 +51,11 @@ open class NeoTexture(
 
     override fun format() = format
 
-    override fun attach(attachment: Int, target: Int) {
-        glFramebufferTexture(
+    override fun attach2D(attachment: Int, target: Int) {
+        glFramebufferTexture2D(
             target,
             attachment,
+            GL_TEXTURE_2D,
             id(),
             0
         )

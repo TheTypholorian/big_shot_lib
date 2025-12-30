@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.spirv.vars
 import net.typho.big_shot_lib.spirv.Opcode
 import net.typho.big_shot_lib.spirv.ShaderMixinContext
 import net.typho.big_shot_lib.spirv.ShaderMixinContext.Companion.WORD_SIZE_BYTES
+import net.typho.big_shot_lib.spirv.at.At
 import java.nio.ByteBuffer
 
 class ShaderMatrixType(
@@ -32,6 +33,36 @@ class ShaderMatrixType(
         }
 
         return false
+    }
+
+    override fun findOrInject(context: ShaderMixinContext, at: At): Int {
+        for (opcode in context) {
+            if (matches(opcode, context)) {
+                return context.code.getInt((opcode.index + 1) * WORD_SIZE_BYTES)
+            }
+        }
+
+        for (opcode in context) {
+            if (component.matches(opcode, context)) {
+                val id = context.bound++
+                context.putBound()
+                val id1 = context.code.getInt((opcode.index + 1) * WORD_SIZE_BYTES)
+
+                context.inject(
+                    at,
+                    ByteBuffer.allocate(4 * WORD_SIZE_BYTES)
+                        .order(ShaderMixinContext.BYTE_ORDER)
+
+                        .putInt(0x00_04_00_18)
+                        .putInt(id)
+                        .putInt(id1)
+                        .putInt(size)
+                )
+                return id
+            }
+        }
+
+        return inject(context, at)
     }
 
     override fun compile(id: Int, context: ShaderMixinContext): ByteBuffer {

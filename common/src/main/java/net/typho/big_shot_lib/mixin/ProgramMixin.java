@@ -5,6 +5,7 @@ import com.mojang.blaze3d.shaders.Program;
 import net.minecraft.resources.ResourceLocation;
 import net.typho.big_shot_lib.gl.resource.ShaderType;
 import net.typho.big_shot_lib.spirv.ShaderMixinCallback;
+import org.lwjgl.system.MemoryUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -44,6 +45,7 @@ public class ProgramMixin {
         );
         glShaderBinary(new int[]{id}, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled);
         glSpecializeShaderARB(id, "main", new int[0], new int[0]);
+        MemoryUtil.memFree(compiled);
     }
 
     @Redirect(

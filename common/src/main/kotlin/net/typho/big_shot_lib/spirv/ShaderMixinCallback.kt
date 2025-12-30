@@ -9,6 +9,7 @@ import net.typho.big_shot_lib.spirv.mixin.BreezeWindShaderFix
 import net.typho.big_shot_lib.spirv.mixin.ShaderLocationMapper
 import net.typho.big_shot_lib.spirv.mixin.ShaderVersionUpdater
 import org.jetbrains.annotations.ApiStatus
+import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.shaderc.Shaderc.*
 import java.nio.ByteBuffer
 import java.nio.file.Files
@@ -92,7 +93,9 @@ interface ShaderMixinCallback {
                 Files.write(path, array)
             }
 
-            return context.code
+            val nativeBuffer = MemoryUtil.memAlloc(context.code.capacity())
+            nativeBuffer.put(0, context.code, 0, context.code.capacity())
+            return nativeBuffer
         }
     }
 }

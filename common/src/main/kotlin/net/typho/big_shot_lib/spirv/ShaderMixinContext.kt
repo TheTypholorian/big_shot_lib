@@ -77,7 +77,7 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
 
         if (name != null) {
             val bytes = name.toByteArray()
-            val words = Math.ceilDiv(bytes.size, WORD_SIZE_BYTES) + 2
+            val words = Math.ceilDiv(bytes.size, WORD_SIZE_BYTES) + 3
 
             val buffer = ByteBuffer.allocate(words * WORD_SIZE_BYTES)
                 .order(BYTE_ORDER)
@@ -125,9 +125,11 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
                 val id = code.getInt((opcode.index + 2) * WORD_SIZE_BYTES)
 
                 if (name != null) {
+                    var found = false
+
                     for (opcode1 in this) {
                         if (opcode1.id == 5) { // OpName
-                            if (code.getInt((opcode.index + 1) * WORD_SIZE_BYTES) == id) {
+                            if (code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES) == id) {
                                 val contents = getOpcodeData(opcode1)
                                 val contentsArray = contents.array()
                                 val actualName = String(
@@ -136,15 +138,22 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
                                     contentsArray.size - 2 * WORD_SIZE_BYTES
                                 ).trim(0.toChar())
 
-                                if (name != actualName) {
-                                    continue@mainLoop
+                                if (name == actualName) {
+                                    found = true
+                                    break
                                 }
                             }
                         }
                     }
+
+                    if (!found) {
+                        continue@mainLoop
+                    }
                 }
 
                 if (location != null) {
+                    var found = false
+
                     for (opcode1 in this) {
                         if (opcode1.id == 71) { // OpDecorate
                             if (code.getInt((opcode.index + 1) * WORD_SIZE_BYTES) == id) {
@@ -153,31 +162,36 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
                                 if (decoration == 30) { // Location
                                     val actualLocation = code.getInt((opcode.index + 3) * WORD_SIZE_BYTES)
 
-                                    if (actualLocation != location) {
-                                        continue@mainLoop
+                                    if (actualLocation == location) {
+                                        found = true
+                                        break
                                     }
                                 }
                             }
                         }
                     }
+
+                    if (!found) {
+                        continue@mainLoop
+                    }
                 }
 
                 if (type != null) {
-                    var matches = false
+                    var found = false
 
                     for (opcode1 in this) {
                         if (type.matches(opcode1, this)) {
                             val target = code.getInt((opcode.index + 1) * WORD_SIZE_BYTES)
 
                             if (target == id) {
-                                matches = true
+                                found = true
                                 break
                             }
                         }
                     }
 
-                    if (!matches) {
-                        return null
+                    if (!found) {
+                        continue@mainLoop
                     }
                 }
 

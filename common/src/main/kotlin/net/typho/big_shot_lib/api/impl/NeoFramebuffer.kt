@@ -45,7 +45,7 @@ open class NeoFramebuffer(
         bind().use {
             colorAttachments.forEachIndexed { i, attachment ->
                 attachment.resize2D(width, height)
-                attachment.attach(GL_COLOR_ATTACHMENT0 + i, type().glName)
+                attachment.attach2D(GL_COLOR_ATTACHMENT0 + i, type().glName)
             }
             depthAttachment?.let { attachment ->
                 attachment.resize2D(width, height)
@@ -54,9 +54,9 @@ open class NeoFramebuffer(
                 val stencil = attachment.format().stencil
 
                 when {
-                    depth && stencil -> attachment.attach(GL_DEPTH_STENCIL_ATTACHMENT, type().glName)
-                    depth && !stencil -> attachment.attach(GL_DEPTH_ATTACHMENT, type().glName)
-                    !depth && stencil -> attachment.attach(GL_STENCIL_ATTACHMENT, type().glName)
+                    depth && stencil -> attachment.attach2D(GL_DEPTH_STENCIL_ATTACHMENT, type().glName)
+                    depth && !stencil -> attachment.attach2D(GL_DEPTH_ATTACHMENT, type().glName)
+                    !depth && stencil -> attachment.attach2D(GL_STENCIL_ATTACHMENT, type().glName)
                     else -> throw IllegalStateException("Illegal depth format ${attachment.format()} for framebuffer $location")
                 }
             }

@@ -39,7 +39,7 @@ open class NeoRenderBuffer(
 
     override fun format() = format
 
-    override fun attach(attachment: Int, target: Int) {
+    override fun attach2D(attachment: Int, target: Int) {
         glFramebufferRenderbuffer(
             target,
             attachment,

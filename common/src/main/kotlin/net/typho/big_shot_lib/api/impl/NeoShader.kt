@@ -20,6 +20,7 @@ import org.lwjgl.opengl.ARBGLSPIRV.glSpecializeShaderARB
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL41.glShaderBinary
+import org.lwjgl.system.MemoryUtil
 import java.util.*
 import java.util.function.Function
 
@@ -129,6 +130,8 @@ open class NeoShader(
 
             glShaderBinary(intArrayOf(id), GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled)
             glSpecializeShaderARB(id, "main", intArrayOf(), intArrayOf())
+
+            MemoryUtil.memFree(compiled)
 
             if (glGetShaderi(id, GL_COMPILE_STATUS) == GL_FALSE) {
                 throw ShaderCompileException("Error compiling ${type.key} shader for $location:\n${glGetShaderInfoLog(id).trim()}")
