@@ -178,7 +178,7 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
 
                 for (opcode1 in this) {
                     if (opcode1.id == 32) { // OpTypePointer
-                        if (code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES) == id) {
+                        if (code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES) == actualTypePointer) {
                             actualType = code.getInt((opcode1.index + 3) * WORD_SIZE_BYTES)
                             break
                         }

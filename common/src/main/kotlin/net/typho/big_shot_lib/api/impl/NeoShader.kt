@@ -52,7 +52,19 @@ open class NeoShader(
 
     override fun bind(): Unbindable<NeoShader> {
         type().bind(id())
-        return Unbindable.of(this)
+        return object : Unbindable<NeoShader> {
+            override fun resource() = this@NeoShader
+
+            override fun unbind() {
+                super.unbind()
+
+                for (sampler in samplers.values) {
+                    sampler?.let {
+                        GlResourceType.SAMPLERS[it.unit].unbind()
+                    }
+                }
+            }
+        }
     }
 
     override fun location() = location
