@@ -5,6 +5,7 @@ import net.typho.big_shot_lib.spirv.at.At
 import net.typho.big_shot_lib.spirv.at.AtOpcode
 import net.typho.big_shot_lib.spirv.at.BeforeFirstFunction
 import net.typho.big_shot_lib.spirv.vars.LocatedVariable
+import net.typho.big_shot_lib.spirv.vars.ShaderAnyType
 import net.typho.big_shot_lib.spirv.vars.ShaderVariableType
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -118,7 +119,7 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
     fun locateVariable(
         name: String? = null,
         location: Int? = null,
-        type: ShaderVariableType? = null
+        type: ShaderVariableType = ShaderAnyType
     ): LocatedVariable? {
         for (opcode in this) {
             if (opcode.id == 59) { // OpVariable
@@ -173,32 +174,24 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
                     }
                 }
 
-                actualTypePointer?.let {
-                    for (opcode1 in this) {
-                        if (opcode1.id == 32) { // OpTypePointer
-                            if (code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES) == id) {
-                                actualType = code.getInt((opcode1.index + 3) * WORD_SIZE_BYTES)
-                                break
-                            }
+                actualTypePointer!!
+
+                for (opcode1 in this) {
+                    if (opcode1.id == 32) { // OpTypePointer
+                        if (code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES) == id) {
+                            actualType = code.getInt((opcode1.index + 3) * WORD_SIZE_BYTES)
+                            break
                         }
                     }
                 }
 
-                var typeMatches = type?.let {
-                    none { opcode1 ->
-                        if (type.matches(opcode1, this)) {
-                            val target = code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES)
+                actualType!!
 
-                            if (target == id) {
-                                return@none true
-                            }
-                        }
-
-                        return@none false
-                    }
+                val typeMatches = this.any { opcode1 ->
+                    type.matches(opcode1, this, actualType)
                 }
 
-                if (typeMatches != null && !typeMatches) {
+                if (!typeMatches) {
                     continue
                 }
 

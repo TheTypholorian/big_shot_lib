@@ -4,6 +4,6 @@ data class LocatedVariable(
     val id: Int,
     val name: String?,
     val location: Int?,
-    val typePointer: Int?,
-    val type: Int?
+    val typePointer: Int,
+    val type: Int
 )

@@ -8,7 +8,7 @@ import net.typho.big_shot_lib.spirv.at.BeforeFirstFunction
 import java.nio.ByteBuffer
 
 interface ShaderVariableType {
-    fun matches(opcode: Opcode, context: ShaderMixinContext): Boolean
+    fun matches(opcode: Opcode, context: ShaderMixinContext, id: Int? = null): Boolean
 
     fun findOrInject(context: ShaderMixinContext, at: At = BeforeFirstFunction): Int {
         for (opcode in context) {

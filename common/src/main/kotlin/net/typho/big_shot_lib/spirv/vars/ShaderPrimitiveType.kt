@@ -24,8 +24,16 @@ enum class ShaderPrimitiveType(
     FLOAT_16(22, 16),
     FLOAT_32(22, 32);
 
-    override fun matches(opcode: Opcode, context: ShaderMixinContext): Boolean {
-        if (opcode.id != id) {
+    override fun matches(
+        opcode: Opcode,
+        context: ShaderMixinContext,
+        id: Int?
+    ): Boolean {
+        if (opcode.id != this.id) {
+            return false
+        }
+
+        if (id != null && context.code.getInt((opcode.index + 1) * WORD_SIZE_BYTES) != id) {
             return false
         }
 

@@ -12,13 +12,18 @@ class ShaderVectorType(
 ) : ShaderVariableType {
     override fun matches(
         opcode: Opcode,
-        context: ShaderMixinContext
+        context: ShaderMixinContext,
+        id: Int?
     ): Boolean {
         if (opcode.id != 23) {
             return false
         }
 
         if (context.code.getInt((opcode.index + 3) * WORD_SIZE_BYTES) != size) {
+            return false
+        }
+
+        if (id != null && context.code.getInt((opcode.index + 1) * WORD_SIZE_BYTES) != id) {
             return false
         }
 
