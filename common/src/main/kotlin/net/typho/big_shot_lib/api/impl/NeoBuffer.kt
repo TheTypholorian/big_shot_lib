@@ -6,6 +6,7 @@ import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.BufferUsage
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import org.lwjgl.opengl.GL15.*
+import java.nio.ByteBuffer
 
 open class NeoBuffer(
     protected val location: ResourceLocation?,
@@ -40,7 +41,7 @@ open class NeoBuffer(
 
     override fun usage() = usage
 
-    override fun upload(buffer: Long) {
+    override fun upload(buffer: ByteBuffer) {
         glBufferData(type().glName, buffer, usage().id)
     }
 }
