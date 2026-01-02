@@ -95,9 +95,10 @@ open class NeoShader(
 
     open class Builder(
         val location: ResourceLocation,
-        val format: VertexFormat
+        val format: VertexFormat,
+        val hasGeometryShader: Boolean
     ) {
-        val locations = ShaderLocationsInfo()
+        val locations = ShaderLocationsInfo(hasGeometryShader)
         val sources = LinkedList<Int>()
 
         fun attach(

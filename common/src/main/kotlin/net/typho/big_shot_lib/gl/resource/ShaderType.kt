@@ -4,8 +4,8 @@ import com.mojang.blaze3d.shaders.Program
 import net.minecraft.resources.FileToIdConverter
 import org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER
 import org.lwjgl.opengl.GL20.GL_VERTEX_SHADER
-import org.lwjgl.util.shaderc.Shaderc.shaderc_glsl_fragment_shader
-import org.lwjgl.util.shaderc.Shaderc.shaderc_glsl_vertex_shader
+import org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER
+import org.lwjgl.util.shaderc.Shaderc.*
 
 enum class ShaderType(
     val id: Int,
@@ -15,7 +15,7 @@ enum class ShaderType(
     val idConverter: FileToIdConverter = FileToIdConverter("neo/shaders", ".$extension")
 ) {
     VERTEX(GL_VERTEX_SHADER, shaderc_glsl_vertex_shader, "vertex", "vsh"),
-    //GEOMETRY(GL_GEOMETRY_SHADER, shaderc_glsl_geometry_shader, "geometry", "gsh"),
+    GEOMETRY(GL_GEOMETRY_SHADER, shaderc_glsl_geometry_shader, "geometry", "gsh"),
     FRAGMENT(GL_FRAGMENT_SHADER, shaderc_glsl_fragment_shader, "fragment", "fsh");
 
     override fun toString() = key

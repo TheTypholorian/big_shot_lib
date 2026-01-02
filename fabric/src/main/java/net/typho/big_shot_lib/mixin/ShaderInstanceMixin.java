@@ -22,7 +22,7 @@ public class ShaderInstanceMixin {
     )
     private void setThreadLocal(ResourceProvider resourceProvider, String name, VertexFormat vertexFormat, CallbackInfo ci) {
         ShaderMixinCallback.currentVertexFormat.set(vertexFormat);
-        ShaderMixinCallback.currentLocationsInfo.set(new ShaderLocationsInfo());
+        ShaderMixinCallback.currentLocationsInfo.set(new ShaderLocationsInfo(false));
     }
 
     @Inject(

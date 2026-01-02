@@ -28,7 +28,11 @@ object ShaderReloadListener : SynchronousReloadListener {
                     throw NullPointerException("Shader $id is missing vertex format")
                 }
 
-                val builder = NeoShader.Builder(id, IShader.parseFormat(format)!!)
+                val builder = NeoShader.Builder(
+                    id,
+                    IShader.parseFormat(format)!!,
+                    json.has(ShaderType.GEOMETRY.key)
+                )
 
                 for (type in ShaderType.entries) {
                     val sourceKeyJson = json.getAsJsonPrimitive(type.key)
