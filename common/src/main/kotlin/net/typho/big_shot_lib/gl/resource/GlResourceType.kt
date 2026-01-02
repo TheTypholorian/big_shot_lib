@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.gl.resource
 
+import com.mojang.blaze3d.platform.GlStateManager
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.*
 import org.lwjgl.opengl.GL40.*
@@ -107,8 +108,8 @@ open class GlResourceType(
             { GL_TEXTURE0 + it },
             GL_SAMPLER,
             { name, id ->
-                glActiveTexture(name)
-                glBindTexture(GL_TEXTURE_2D, id)
+                GlStateManager._activeTexture(name)
+                GlStateManager._bindTexture(id)
             }
         )
 
@@ -134,29 +135,4 @@ open class GlResourceType(
                 .toArray { arrayOfNulls(number - 1) }
         }
     }
-}
-
-open class GlIndexedBufferType : GlResourceType {
-    constructor(
-        glName: Int,
-        namespace: Int,
-        bind: Consumer<Int>,
-        unbind: Runnable
-    ) : super(glName, namespace, bind, unbind)
-
-    constructor(
-        name: Int,
-        namespace: Int,
-        bind: BiConsumer<Int, Int>
-    ) : super(name, namespace, bind)
-
-    constructor(
-        name: Int,
-        namespace: Int,
-        bind: Consumer<Int>
-    ) : super(name, namespace, bind)
-
-    open fun bindBase(id: Int, index: Int) = glBindBufferBase(glName, index, id)
-
-    open fun unbindBase(index: Int) = glBindBufferBase(glName, index, 0)
 }
