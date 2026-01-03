@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.gl.state
 
-import org.lwjgl.opengl.GL11.glColorMask
+import com.mojang.blaze3d.platform.GlStateManager
 
 class ColorMask(
     var red: Boolean,
@@ -17,7 +17,7 @@ class ColorMask(
     override fun queryValue(): ColorMask? = null
 
     override fun set(value: ColorMask) {
-        glColorMask(value.red, value.green, value.blue, value.alpha)
+        GlStateManager._colorMask(value.red, value.green, value.blue, value.alpha)
     }
 
     override fun getType() = this

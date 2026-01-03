@@ -3,8 +3,6 @@ package net.typho.big_shot_lib.gl
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.state.GlCapability
 import net.typho.big_shot_lib.gl.state.GlState
-import org.lwjgl.opengl.GL11.glDisable
-import org.lwjgl.opengl.GL11.glEnable
 import java.lang.AutoCloseable
 import java.util.*
 
@@ -39,21 +37,21 @@ class GlStack : AutoCloseable {
     }
 
     fun enable(cap: GlCapability) {
-        glEnable(cap.id)
+        cap.enable()
         capabilities.put(cap, true)
     }
 
     fun disable(cap: GlCapability) {
-        glDisable(cap.id)
+        cap.disable()
         capabilities.put(cap, false)
     }
 
     fun restoreDefaultCapabilities() {
         for (entry in capabilities) {
             if (entry.key.default) {
-                glEnable(entry.key.id)
+                entry.key.enable()
             } else {
-                glDisable(entry.key.id)
+                entry.key.disable()
             }
         }
 

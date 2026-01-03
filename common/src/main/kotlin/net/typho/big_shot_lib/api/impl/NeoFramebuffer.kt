@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.impl
 
+import com.mojang.blaze3d.platform.GlStateManager
 import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.IFramebuffer
@@ -106,8 +107,8 @@ open class NeoFramebuffer(
     }
 
     override fun clearColor(color: Vector4f) {
-        glClearColor(color.x, color.y, color.z, color.w)
-        glClear(GL_COLOR_BUFFER_BIT)
+        GlStateManager._clearColor(color.x, color.y, color.z, color.w)
+        GlStateManager._clear(GL_COLOR_BUFFER_BIT, false)
     }
 
     open class TextureBacked(

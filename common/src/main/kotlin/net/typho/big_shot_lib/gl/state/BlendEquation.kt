@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.gl.state
 
+import com.mojang.blaze3d.platform.GlStateManager
 import org.lwjgl.opengl.GL14.*
 import org.lwjgl.opengl.GL20.GL_BLEND_EQUATION_RGB
 
@@ -22,7 +23,7 @@ enum class BlendEquation(val id: Int) : GlState<BlendEquation>, GlState.Value {
     }
 
     override fun set(value: BlendEquation) {
-        glBlendEquation(value.id)
+        GlStateManager._blendEquation(value.id)
     }
 
     override fun getType() = this

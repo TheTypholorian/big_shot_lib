@@ -1,16 +1,22 @@
 package net.typho.big_shot_lib.gl.state
 
+import com.mojang.blaze3d.platform.GlStateManager
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*
 
-enum class GlCapability(val id: Int, val default: Boolean = false) {
-    BLEND(GL_BLEND),
-    COLOR_LOGIC_OP(GL_COLOR_LOGIC_OP),
-    CULL_FACE(GL_CULL_FACE, true),
+enum class GlCapability(
+    val id: Int,
+    val default: Boolean = false,
+    private val enable: Runnable = Runnable { glEnable(id) },
+    private val disable: Runnable = Runnable { glDisable(id) }
+) {
+    BLEND(GL_BLEND, enable = GlStateManager::_enableBlend, disable = GlStateManager::_disableBlend),
+    COLOR_LOGIC_OP(GL_COLOR_LOGIC_OP, enable = GlStateManager::_enableColorLogicOp, disable = GlStateManager::_disableColorLogicOp),
+    CULL_FACE(GL_CULL_FACE, true, enable = GlStateManager::_enableCull, disable = GlStateManager::_disableCull),
     DEBUG_OUTPUT(GL_DEBUG_OUTPUT, true),
     DEBUG_OUTPUT_SYNCHRONOUS(GL_DEBUG_OUTPUT_SYNCHRONOUS, true),
     DEPTH_CLAMP(GL_DEPTH_CLAMP),
-    DEPTH_TEST(GL_DEPTH_TEST, true),
+    DEPTH_TEST(GL_DEPTH_TEST, true, enable = GlStateManager::_enableDepthTest, disable = GlStateManager::_disableDepthTest),
     DITHER(GL_DITHER),
     FRAMEBUFFER_SRGB(GL_FRAMEBUFFER_SRGB),
     LINE_SMOOTH(GL_LINE_SMOOTH),
@@ -27,8 +33,16 @@ enum class GlCapability(val id: Int, val default: Boolean = false) {
     SAMPLE_COVERAGE(GL_SAMPLE_COVERAGE),
     SAMPLE_SHADING(GL_SAMPLE_SHADING),
     SAMPLE_MASK(GL_SAMPLE_MASK),
-    SCISSOR_TEST(GL_SCISSOR_TEST),
+    SCISSOR_TEST(GL_SCISSOR_TEST, enable = GlStateManager::_enableScissorTest, disable = GlStateManager::_disableScissorTest),
     STENCIL_TEST(GL_STENCIL_TEST),
     TEXTURE_CUBE_MAP_SEAMLESS(GL_TEXTURE_CUBE_MAP_SEAMLESS),
-    PROGRAM_POINT_SIZE(GL_PROGRAM_POINT_SIZE)
+    PROGRAM_POINT_SIZE(GL_PROGRAM_POINT_SIZE);
+
+    fun enable() {
+        enable.run()
+    }
+
+    fun disable() {
+        disable.run()
+    }
 }

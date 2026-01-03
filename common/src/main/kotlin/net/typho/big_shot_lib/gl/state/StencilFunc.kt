@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.gl.state
 
+import com.mojang.blaze3d.platform.GlStateManager
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL20.glStencilFunc
 
 class StencilFunc(
     var func: ComparisonMode,
@@ -24,7 +24,7 @@ class StencilFunc(
     }
 
     override fun set(value: StencilFunc) {
-        glStencilFunc(value.func.id, value.ref, value.mask)
+        GlStateManager._stencilFunc(value.func.id, value.ref, value.mask)
     }
 
     override fun getType() = this

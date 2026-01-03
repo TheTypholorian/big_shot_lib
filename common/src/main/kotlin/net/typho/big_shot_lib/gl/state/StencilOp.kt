@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.gl.state
 
+import com.mojang.blaze3d.platform.GlStateManager
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL20.glStencilOp
 
 class StencilOp(
     var sfail: IntAction,
@@ -26,7 +26,7 @@ class StencilOp(
     }
 
     override fun set(value: StencilOp) {
-        glStencilOp(value.sfail.id, value.dpfail.id, value.dppass.id)
+        GlStateManager._stencilOp(value.sfail.id, value.dpfail.id, value.dppass.id)
     }
 
     override fun getType() = this

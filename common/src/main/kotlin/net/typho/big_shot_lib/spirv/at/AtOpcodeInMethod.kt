@@ -17,7 +17,7 @@ open class AtOpcodeInMethod(val id: Int, val method: String): At {
 
                 if (name.trim(0.toChar()) == method) {
                     methodId = contents.getInt(0)
-                    break;
+                    break
                 }
             }
         }

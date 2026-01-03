@@ -1,17 +1,17 @@
 package net.typho.big_shot_lib.gl.state
 
 import com.mojang.blaze3d.platform.GlStateManager
-import org.lwjgl.opengl.GL11.GL_STENCIL_WRITEMASK
+import org.lwjgl.opengl.GL11.GL_DEPTH_WRITEMASK
 import org.lwjgl.opengl.GL11.glGetInteger
 
-object StencilMask : GlState<Int> {
+object DepthMask : GlState<Int> {
     override fun default() = 0xFF
 
     override fun queryValue(): Int? {
-        return glGetInteger(GL_STENCIL_WRITEMASK)
+        return glGetInteger(GL_DEPTH_WRITEMASK)
     }
 
     override fun set(value: Int) {
-        GlStateManager._stencilMask(value)
+        GlStateManager._depthFunc(value)
     }
 }

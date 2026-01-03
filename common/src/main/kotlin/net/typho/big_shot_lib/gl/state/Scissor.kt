@@ -1,6 +1,8 @@
 package net.typho.big_shot_lib.gl.state
 
-import org.lwjgl.opengl.GL11.*
+import com.mojang.blaze3d.platform.GlStateManager
+import org.lwjgl.opengl.GL11.GL_SCISSOR_BOX
+import org.lwjgl.opengl.GL11.glGetIntegerv
 
 class Scissor(
     var x: Int,
@@ -21,7 +23,7 @@ class Scissor(
     }
 
     override fun set(value: Scissor) {
-        glScissor(value.x, value.y, value.width, value.height)
+        GlStateManager._scissorBox(value.x, value.y, value.width, value.height)
     }
 
     override fun getType() = this

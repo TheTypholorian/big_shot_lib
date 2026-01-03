@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.gl.state
 
+import com.mojang.blaze3d.platform.GlStateManager
 import org.lwjgl.opengl.GL11.*
 
 enum class PolygonMode(val id: Int) : GlState<PolygonMode>, GlState.Value {
@@ -19,7 +20,7 @@ enum class PolygonMode(val id: Int) : GlState<PolygonMode>, GlState.Value {
     }
 
     override fun set(value: PolygonMode) {
-        glPolygonMode(GL_FRONT_AND_BACK, value.id)
+        GlStateManager._polygonMode(GL_FRONT_AND_BACK, value.id)
     }
 
     override fun getType() = this

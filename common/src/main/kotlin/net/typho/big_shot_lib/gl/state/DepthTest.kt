@@ -1,6 +1,8 @@
 package net.typho.big_shot_lib.gl.state
 
-import org.lwjgl.opengl.GL11.*
+import com.mojang.blaze3d.platform.GlStateManager
+import org.lwjgl.opengl.GL11.GL_DEPTH_FUNC
+import org.lwjgl.opengl.GL11.glGetInteger
 
 object DepthTest : GlState<ComparisonMode> {
     override fun default() = ComparisonMode.DEFAULT
@@ -11,6 +13,6 @@ object DepthTest : GlState<ComparisonMode> {
     }
 
     override fun set(value: ComparisonMode) {
-        glDepthFunc(value.id)
+        GlStateManager._depthFunc(value.id)
     }
 }

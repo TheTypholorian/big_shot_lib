@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.gl.state
 
+import com.mojang.blaze3d.platform.GlStateManager
 import org.lwjgl.opengl.GL14.*
 
 class BlendFunction(
@@ -22,7 +23,7 @@ class BlendFunction(
     }
 
     override fun set(value: BlendFunction) {
-        glBlendFunc(value.src.id, value.dst.id)
+        GlStateManager._blendFunc(value.src.id, value.dst.id)
     }
 
     override fun getType() = this
