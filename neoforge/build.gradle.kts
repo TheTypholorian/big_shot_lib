@@ -1,11 +1,35 @@
 import org.gradle.internal.extensions.stdlib.capitalized
+import java.nio.file.Files
 
 plugins {
     id("multiloader-loader")
     alias(libs.plugins.moddev)
+    id("com.modrinth.minotaur") version "2.+"
 }
 
+val modName: String by project
 val modId: String by project
+val version: String by project
+
+base {
+    archivesName = "$modId-neoforge"
+}
+
+modrinth {
+    token = Files.readString(project.rootDir.parentFile.resolve("modrinth_token.txt").toPath())
+    projectId = "big-shot-lib"
+    versionName = "$modName $version for NeoForge 1.21"
+    versionNumber = "mc1.21-$version-neoforge"
+    versionType = "release"
+    uploadFile.set(tasks.jar)
+    additionalFiles.add(tasks.sourcesJar)
+    gameVersions.addAll("1.21", "1.21.1")
+    loaders.add("neoforge")
+
+    dependencies {
+        required.project("kotlin-for-forge")
+    }
+}
 
 neoForge {
     version = libs.versions.neoforge
@@ -55,8 +79,14 @@ dependencies {
         additionalRuntimeClasspath(dependency)
     }
 
+    fun lwjglNatives(dependency: Any) {
+        jarJar(dependency)
+        api(dependency)
+        additionalRuntimeClasspath(dependency)
+    }
+
     lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
-    lwjglInclude("org.lwjgl:lwjgl-shaderc::natives-windows")
-    lwjglInclude("org.lwjgl:lwjgl-shaderc::natives-linux")
-    lwjglInclude("org.lwjgl:lwjgl-shaderc::natives-macos")
+    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
+    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
+    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
 }

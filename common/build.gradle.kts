@@ -3,6 +3,12 @@ plugins {
     alias(libs.plugins.moddev)
 }
 
+val modId: String by project
+
+base {
+    archivesName = "$modId-common"
+}
+
 neoForge {
     neoFormVersion = libs.versions.neoForm
     // Automatically enable AccessTransformers if the file exists
