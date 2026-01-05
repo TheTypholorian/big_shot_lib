@@ -177,7 +177,7 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
 
         fun putString(string: String?): Builder {
             string?.let {
-                val length = Mth.positiveCeilDiv(string.length, 4) + 1
+                val length = (Mth.positiveCeilDiv(string.length, ShaderMixinContext.WORD_SIZE_BYTES) + 1) * ShaderMixinContext.WORD_SIZE_BYTES
                 bytes += length
 
                 tokens.add { buffer ->
