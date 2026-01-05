@@ -67,42 +67,70 @@ open class GlResourceType(
     }
 
     companion object {
+        @JvmField
         val ARRAY_BUFFER = GlResourceType(GL_ARRAY_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val ELEMENT_ARRAY_BUFFER = GlResourceType(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val PIXEL_PACK_BUFFER = GlResourceType(GL_PIXEL_PACK_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val PIXEL_UNPACK_BUFFER = GlResourceType(GL_PIXEL_UNPACK_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val TEXTURE_BUFFER_STORAGE = GlResourceType(GL_TEXTURE_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val COPY_READ_BUFFER = GlResourceType(GL_COPY_READ_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val COPY_WRITE_BUFFER = GlResourceType(GL_COPY_WRITE_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val DRAW_INDIRECT_BUFFER = GlResourceType(GL_DRAW_INDIRECT_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val DISPATCH_INDIRECT_BUFFER = GlResourceType(GL_DISPATCH_INDIRECT_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val QUERY_BUFFER = GlResourceType(GL_QUERY_BUFFER, GL_BUFFER, ::glBindBuffer)
 
+        @JvmField
         val TRANSFORM_FEEDBACK_BUFFER = GlIndexedBufferType(GL_TRANSFORM_FEEDBACK_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val UNIFORM_BUFFER = GlIndexedBufferType(GL_UNIFORM_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val ATOMIC_COUNTER_BUFFER = GlIndexedBufferType(GL_ATOMIC_COUNTER_BUFFER, GL_BUFFER, ::glBindBuffer)
+        @JvmField
         val SHADER_STORAGE_BUFFER = GlIndexedBufferType(GL_SHADER_STORAGE_BUFFER, GL_BUFFER, ::glBindBuffer)
 
+        @JvmField
         val VERTEX_ARRAY = GlResourceType(GL_VERTEX_ARRAY, GL_VERTEX_ARRAY, ::glBindVertexArray)
 
+        @JvmField
         val TEXTURE_1D = GlResourceType(GL_TEXTURE_1D, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_2D = GlResourceType(GL_TEXTURE_2D, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_2D_MULTISAMPLE = GlResourceType(GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_3D = GlResourceType(GL_TEXTURE_3D, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_CUBE_MAP = GlResourceType(GL_TEXTURE_CUBE_MAP, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_RECTANGLE = GlResourceType(GL_TEXTURE_RECTANGLE, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_BUFFER_VIEW = GlResourceType(GL_TEXTURE_BUFFER, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_1D_ARRAY = GlResourceType(GL_TEXTURE_1D_ARRAY, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_2D_ARRAY = GlResourceType(GL_TEXTURE_2D_ARRAY, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_2D_MULTISAMPLE_ARRAY = GlResourceType(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, GL_TEXTURE, ::glBindTexture)
+        @JvmField
         val TEXTURE_CUBE_MAP_ARRAY = GlResourceType(GL_TEXTURE_CUBE_MAP_ARRAY, GL_TEXTURE, ::glBindTexture)
 
+        @JvmField
         val TEXTURE_UNITS = array(
             GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
             { it },
             GL_TEXTURE,
             ::glBindTextureUnit
         )
+        @JvmField
         val SAMPLERS = array(
             GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
             { GL_TEXTURE0 + it },
@@ -113,17 +141,25 @@ open class GlResourceType(
             }
         )
 
+        @JvmField
         val FRAMEBUFFER = GlResourceType(GL_FRAMEBUFFER, GL_FRAMEBUFFER, ::glBindFramebuffer)
+        @JvmField
         val READ_FRAMEBUFFER = GlResourceType(GL_READ_FRAMEBUFFER, GL_FRAMEBUFFER, ::glBindFramebuffer)
+        @JvmField
         val DRAW_FRAMEBUFFER = GlResourceType(GL_DRAW_FRAMEBUFFER, GL_FRAMEBUFFER, ::glBindFramebuffer)
 
+        @JvmField
         val RENDERBUFFER = GlResourceType(GL_RENDERBUFFER, GL_RENDERBUFFER, ::glBindRenderbuffer)
 
+        @JvmField
         val TRANSFORM_FEEDBACK = GlResourceType(GL_TRANSFORM_FEEDBACK, GL_TRANSFORM_FEEDBACK, ::glBindTransformFeedback)
 
+        @JvmField
         val PROGRAM = GlResourceType(GL_PROGRAM, GL_PROGRAM, ::glUseProgram)
+        @JvmField
         val PROGRAM_PIPELINE = GlResourceType(GL_PROGRAM_PIPELINE, GL_PROGRAM_PIPELINE, ::glBindProgramPipeline)
 
+        @JvmStatic
         fun array(
             number: Int,
             glName: Function<Int, Int>,

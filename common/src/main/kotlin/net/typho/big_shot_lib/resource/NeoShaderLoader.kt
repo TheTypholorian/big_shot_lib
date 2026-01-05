@@ -10,6 +10,7 @@ import net.typho.big_shot_lib.api.impl.NeoShader
 import net.typho.big_shot_lib.gl.resource.ShaderType
 
 object NeoShaderLoader : SynchronousReloadListener {
+    @JvmField
     val jsonIdConverter: FileToIdConverter = FileToIdConverter.json(NeoShader.PATH)
 
     override fun reload(manager: ResourceManager) {

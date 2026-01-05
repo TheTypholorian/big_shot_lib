@@ -8,6 +8,7 @@ class BlendFunction(
     var dst: BlendFactor
 ) : GlState<BlendFunction>, GlState.Value {
     companion object {
+        @JvmField
         val DEFAULT = BlendFunction(BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA)
     }
 

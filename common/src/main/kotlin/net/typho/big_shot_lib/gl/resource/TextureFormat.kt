@@ -103,6 +103,7 @@ enum class TextureFormat(
     DEPTH32F_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH32F_STENCIL8, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, depth = true, stencil = true);
 
     companion object {
+        @JvmStatic
         fun get(format: NativeImage.Format): TextureFormat = when (format) {
             NativeImage.Format.RGBA -> RGBA
             NativeImage.Format.RGB -> RGB

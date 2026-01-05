@@ -9,6 +9,7 @@ class StencilFunc(
     var mask: Int
 ) : GlState<StencilFunc>, GlState.Value {
     companion object {
+        @JvmField
         val DEFAULT = StencilFunc(ComparisonMode.ALWAYS, 0xFF, 0xFF)
     }
 

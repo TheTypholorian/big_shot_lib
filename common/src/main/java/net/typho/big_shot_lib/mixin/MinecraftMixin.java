@@ -40,7 +40,7 @@ public class MinecraftMixin {
             at = @At("TAIL")
     )
     private void resizeDisplay(CallbackInfo ci) {
-        for (NeoFramebuffer fbo : NeoFramebuffer.Companion.getAUTO_RESIZE()) {
+        for (NeoFramebuffer fbo : NeoFramebuffer.AUTO_RESIZE) {
             fbo.resize(window.getWidth(), window.getHeight());
         }
     }

@@ -23,14 +23,19 @@ open class NeoFramebuffer(
     protected var height: Int
 ) : IFramebuffer {
     companion object {
+        @JvmField
         val AUTO_RESIZE = LinkedList<NeoFramebuffer>()
+        @JvmField
         val AUTO_CLEAR = LinkedHashMap<NeoFramebuffer, Vector4f>()
+        @JvmField
         val REGISTRY = HashMap<ResourceLocation, NeoFramebuffer>()
 
+        @JvmStatic
         fun register(framebuffer: NeoFramebuffer) {
             REGISTRY.put(framebuffer.location(), framebuffer)
         }
 
+        @JvmStatic
         fun get(location: ResourceLocation) = REGISTRY.get(location)
     }
 

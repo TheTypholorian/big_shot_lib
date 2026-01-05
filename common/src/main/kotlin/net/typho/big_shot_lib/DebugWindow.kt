@@ -7,7 +7,9 @@ import net.typho.big_shot_lib.api.impl.NeoFramebuffer
 import net.typho.big_shot_lib.api.impl.NeoShader
 import net.typho.big_shot_lib.api.impl.NeoWindow
 import net.typho.big_shot_lib.gl.resource.TextureFormat
+import org.jetbrains.annotations.ApiStatus
 
+@ApiStatus.Experimental
 class DebugWindow(
     handle: Long,
     bufferSource: MultiBufferSource.BufferSource

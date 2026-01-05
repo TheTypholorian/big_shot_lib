@@ -9,6 +9,7 @@ class StencilOp(
     var dppass: IntAction
 ) : GlState<StencilOp>, GlState.Value {
     companion object {
+        @JvmField
         val DEFAULT = StencilOp(IntAction.DEFAULT, IntAction.DEFAULT, IntAction.DEFAULT)
     }
 

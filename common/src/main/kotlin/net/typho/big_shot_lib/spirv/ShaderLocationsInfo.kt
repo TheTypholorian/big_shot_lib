@@ -2,11 +2,16 @@ package net.typho.big_shot_lib.spirv
 
 import net.typho.big_shot_lib.gl.resource.ShaderType
 
-class ShaderLocationsInfo(val hasGeometryShader: Boolean) {
+class ShaderLocationsInfo(@JvmField val hasGeometryShader: Boolean) {
+    @JvmField
     val uniforms = Mapper()
+    @JvmField
     val vertexInputs = Mapper()
+    @JvmField
     val vertexOutputs = Mapper()
+    @JvmField
     val fragmentInputs = if (hasGeometryShader) Mapper() else vertexOutputs
+    @JvmField
     val fragmentOutputs = Mapper()
 
     fun getMapper(storageClass: Int, stage: ShaderType): Mapper? {

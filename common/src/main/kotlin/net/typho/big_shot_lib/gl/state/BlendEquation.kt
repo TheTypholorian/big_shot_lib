@@ -12,6 +12,7 @@ enum class BlendEquation(val id: Int) : GlState<BlendEquation>, GlState.Value {
     MAX(GL_MAX);
 
     companion object {
+        @JvmField
         val DEFAULT = ADD
     }
 

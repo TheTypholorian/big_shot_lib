@@ -11,6 +11,7 @@ class BlendColor(
     var alpha: Float,
 ) : GlState<BlendColor>, GlState.Value {
     companion object {
+        @JvmField
         val DEFAULT = BlendColor(0f, 0f, 0f, 0f)
     }
 

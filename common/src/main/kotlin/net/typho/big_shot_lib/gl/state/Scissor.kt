@@ -11,6 +11,7 @@ class Scissor(
     var height: Int,
 ) : GlState<Scissor>, GlState.Value {
     companion object {
+        @JvmField
         val DEFAULT = Scissor(0, 0, 0, 0)
     }
 

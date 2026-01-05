@@ -9,6 +9,7 @@ enum class PolygonMode(val id: Int) : GlState<PolygonMode>, GlState.Value {
     FILL(GL_FILL);
 
     companion object {
+        @JvmField
         val DEFAULT = FILL
     }
 

@@ -46,6 +46,7 @@ interface IShader : Bindable, GlResourceInstance {
     fun vertexFormat(): VertexFormat?
 
     companion object {
+        @JvmStatic
         fun loadInclude(location: ResourceLocation): ByteArray {
             val resource = Minecraft.getInstance().resourceManager.getResourceOrThrow(
                 location.withPath { path ->
@@ -59,6 +60,7 @@ interface IShader : Bindable, GlResourceInstance {
             return resource.open().use(InputStream::readAllBytes)
         }
 
+        @JvmStatic
         fun resolveIncludes(source: String): String {
             var newSource = source
             var includeString = "#include \""
@@ -81,6 +83,7 @@ interface IShader : Bindable, GlResourceInstance {
             return newSource
         }
 
+        @JvmStatic
         fun parseFormat(json: JsonElement?): VertexFormat? {
             if (json == null) {
                 return null

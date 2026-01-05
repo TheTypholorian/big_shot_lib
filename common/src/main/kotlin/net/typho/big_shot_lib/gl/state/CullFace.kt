@@ -8,6 +8,7 @@ enum class CullFace(val id: Int) : GlState<CullFace>, GlState.Value {
     FRONT_AND_BACK(GL_FRONT_AND_BACK);
 
     companion object {
+        @JvmField
         val DEFAULT = BACK
     }
 

@@ -13,10 +13,12 @@ interface Unbindable<T : GlResourceInstance> : AutoCloseable {
     override fun close() = unbind()
 
     companion object {
+        @JvmStatic
         fun <T : GlResourceInstance> of(instance: T) = object : Unbindable<T> {
             override fun resource() = instance
         }
 
+        @JvmStatic
         fun <T : IBuffer> ofIndexedBuffer(instance: T, index: Int) = object : Unbindable<T> {
             override fun resource() = instance
 

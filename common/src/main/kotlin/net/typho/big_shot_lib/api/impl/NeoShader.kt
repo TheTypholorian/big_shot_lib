@@ -30,12 +30,15 @@ open class NeoShader(
 ) : IShader {
     companion object {
         const val PATH = "neo/shaders"
+        @JvmField
         val REGISTRY = HashMap<ResourceLocation, NeoShader>()
 
+        @JvmStatic
         fun register(shader: NeoShader) {
             REGISTRY.put(shader.location(), shader)
         }
 
+        @JvmStatic
         fun get(location: ResourceLocation) = REGISTRY.get(location)
     }
 

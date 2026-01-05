@@ -13,6 +13,7 @@ enum class ComparisonMode(val id: Int) {
     NOTEQUAL(GL_NOTEQUAL);
 
     companion object {
+        @JvmField
         val DEFAULT = LEQUAL
     }
 }

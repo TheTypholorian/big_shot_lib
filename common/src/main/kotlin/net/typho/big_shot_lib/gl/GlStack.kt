@@ -7,10 +7,15 @@ import java.lang.AutoCloseable
 import java.util.*
 
 class GlStack : AutoCloseable {
+    @JvmField
     val boundMap = HashMap<GlResourceType, Unbindable<*>>()
+    @JvmField
     val miscBound = LinkedList<Unbindable<*>>()
+    @JvmField
     val defaultStates = HashMap<GlState<*>, Any>()
+    @JvmField
     val states = HashMap<GlState<*>, Any>()
+    @JvmField
     val capabilities = HashMap<GlCapability, Boolean>()
 
     fun put(unbindable: Unbindable<*>): Unbindable<*>? {
@@ -25,7 +30,7 @@ class GlStack : AutoCloseable {
         return null
     }
 
-    @Suppress("UNCHECKED")
+    @Suppress("UNCHECKED_CAST")
     fun <T : GlState.Value, S : GlState<T>> set(value: T) {
         set(value.getType() as S, value)
     }

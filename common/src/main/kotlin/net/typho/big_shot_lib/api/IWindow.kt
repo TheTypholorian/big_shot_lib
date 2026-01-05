@@ -23,6 +23,7 @@ interface IWindow {
     fun render(deltaTracker: DeltaTracker)
 
     companion object {
+        @JvmStatic
         fun create(
             width: Int,
             height: Int,

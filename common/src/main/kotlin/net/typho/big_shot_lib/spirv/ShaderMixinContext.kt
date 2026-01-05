@@ -8,13 +8,16 @@ import net.typho.big_shot_lib.spirv.vars.ShaderVariableType
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
+class ShaderMixinContext(@JvmField var code: ByteBuffer) : Iterable<Opcode> {
     companion object {
         const val WORD_SIZE_BYTES = 4
+        @JvmField
         val BYTE_ORDER: ByteOrder = ByteOrder.LITTLE_ENDIAN
     }
 
+    @JvmField
     var headerSize = 5
+    @JvmField
     var bound: Int = 0
 
     init {

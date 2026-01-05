@@ -15,6 +15,7 @@ enum class IntAction(var id: Int) {
     INVERT(GL_INVERT);
 
     companion object {
+        @JvmField
         val DEFAULT = KEEP
     }
 }

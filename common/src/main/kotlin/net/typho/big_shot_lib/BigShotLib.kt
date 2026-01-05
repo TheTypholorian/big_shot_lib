@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory
 
 object BigShotLib {
     const val MOD_ID = "big_shot_lib"
+    @JvmField
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
     val SCREEN_VBO: VertexBuffer by lazy {
         val vbo = VertexBuffer(VertexBuffer.Usage.STATIC)
@@ -34,8 +35,10 @@ object BigShotLib {
 
     fun init() = Unit
 
+    @JvmStatic
     fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
 
+    @JvmStatic
     fun getViewMatrix(
         camera: Camera = Minecraft.getInstance().gameRenderer.mainCamera,
         matrix: Matrix4f = RenderSystem.getModelViewMatrix()
@@ -43,6 +46,7 @@ object BigShotLib {
         return matrix.translate(camera.position.toVector3f().mul(-1f))
     }
 
+    @JvmStatic
     fun VertexConsumer.cube(
         box: AABB,
     ) {
@@ -65,6 +69,7 @@ object BigShotLib {
         quad(vertices[3], vertices[2], vertices[6], vertices[7], Vector3f(0f, -1f, 0f))
     }
 
+    @JvmStatic
     fun VertexConsumer.quad(
         v0: Vector3f,
         v1: Vector3f,

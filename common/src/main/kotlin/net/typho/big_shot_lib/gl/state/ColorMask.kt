@@ -9,6 +9,7 @@ class ColorMask(
     var alpha: Boolean,
 ) : GlState<ColorMask>, GlState.Value {
     companion object {
+        @JvmField
         val DEFAULT = ColorMask(true, true, true, true)
     }
 
