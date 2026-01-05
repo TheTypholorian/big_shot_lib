@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.spirv
 
 import net.minecraft.util.Mth
 import java.nio.ByteBuffer
+import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import java.nio.ShortBuffer
 import java.util.*
@@ -22,6 +23,8 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
         const val OP_TYPE_POINTER = 32
         const val OP_TYPE_FUNCTION = 33
 
+        const val OP_CONSTANT = 43
+
         const val OP_FUNCTION = 54
 
         const val OP_VARIABLE = 59
@@ -29,6 +32,25 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
         const val OP_STORE = 62
 
         const val OP_DECORATE = 71
+
+        const val OP_IMAGE_SAMPLE_IMPLICIT_LOD = 87
+
+        const val OP_S_NEGATE = 126
+        const val OP_F_NEGATE = 127
+        const val OP_I_ADD = 128
+        const val OP_F_ADD = 129
+        const val OP_I_SUB = 130
+        const val OP_F_SUB = 131
+        const val OP_I_MUL = 132
+        const val OP_F_MUL = 133
+        const val OP_U_DIV = 134
+        const val OP_S_DIV = 135
+        const val OP_F_DIV = 136
+        const val OP_U_MOD = 137
+        const val OP_S_REM = 138
+        const val OP_S_MOD = 139
+        const val OP_F_REM = 140
+        const val OP_F_MOD = 141
 
         const val OP_RETURN = 253
         const val OP_RETURN_VALUE = 254
@@ -125,6 +147,30 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
             ints?.let {
                 bytes += Int.SIZE_BYTES
                 tokens.add { buffer -> buffer.asIntBuffer().put(ints) }
+            }
+            return this
+        }
+
+        fun putFloat(float: Float?): Builder {
+            float?.let {
+                bytes += Float.SIZE_BYTES
+                tokens.add { buffer -> buffer.putFloat(float) }
+            }
+            return this
+        }
+
+        fun putFloats(floats: FloatArray?): Builder {
+            floats?.let {
+                bytes += Float.SIZE_BYTES
+                tokens.add { buffer -> buffer.asFloatBuffer().put(floats) }
+            }
+            return this
+        }
+
+        fun putFloats(floats: FloatBuffer?): Builder {
+            floats?.let {
+                bytes += Float.SIZE_BYTES
+                tokens.add { buffer -> buffer.asFloatBuffer().put(floats) }
             }
             return this
         }
