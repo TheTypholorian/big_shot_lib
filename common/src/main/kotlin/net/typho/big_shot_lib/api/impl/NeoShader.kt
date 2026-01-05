@@ -119,7 +119,7 @@ open class NeoShader(
                     format,
                     locations,
                     fileName,
-                    source,
+                    IShader.resolveIncludes(source),
                     entrypoint
                 )
 
