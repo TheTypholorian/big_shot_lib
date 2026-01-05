@@ -39,7 +39,7 @@ public class GlShaderMixin {
     ) {
         ShaderType type1 = ShaderType.fromSodiumType(type);
         ByteBuffer compiled = ShaderMixinCallback.compile(
-                location,
+                location.withPath(path -> path.substring(0, path.lastIndexOf('.'))),
                 type1,
                 ShaderMixinCallback.currentVertexFormat.get(),
                 Objects.requireNonNull(ShaderMixinCallback.currentLocationsInfo.get()),

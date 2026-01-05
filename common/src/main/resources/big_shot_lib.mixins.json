@@ -15,8 +15,7 @@
     "MinecraftMixin",
     "ProgramMixin",
     "ProgramTypeMixin",
-    "SimpleTextureAccessor",
-    "WindowMixin"
+    "SimpleTextureAccessor"
   ],
   "server": [],
   "injectors": {

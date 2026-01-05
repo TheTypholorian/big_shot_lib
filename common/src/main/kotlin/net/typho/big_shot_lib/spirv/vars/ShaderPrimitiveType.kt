@@ -10,19 +10,19 @@ enum class ShaderPrimitiveType(
     val width: Int? = null,
     val signed: Boolean? = null
 ) : ShaderVariableType {
-    VOID(19),
-    BOOLEAN(20),
+    VOID(Opcode.OP_TYPE_VOID),
+    BOOLEAN(Opcode.OP_TYPE_BOOL),
 
-    INT_8(21, 8, true),
-    UINT_8(21, 8, false),
-    INT_16(21, 16, true),
-    UINT_16(21, 16, false),
-    INT_32(21, 32, true),
-    UINT_32(21, 32, false),
+    INT_8(Opcode.OP_TYPE_INT, 8, true),
+    UINT_8(Opcode.OP_TYPE_INT, 8, false),
+    INT_16(Opcode.OP_TYPE_INT, 16, true),
+    UINT_16(Opcode.OP_TYPE_INT, 16, false),
+    INT_32(Opcode.OP_TYPE_INT, 32, true),
+    UINT_32(Opcode.OP_TYPE_INT, 32, false),
 
-    FLOAT_8(22, 8),
-    FLOAT_16(22, 16),
-    FLOAT_32(22, 32);
+    FLOAT_8(Opcode.OP_TYPE_FLOAT, 8),
+    FLOAT_16(Opcode.OP_TYPE_FLOAT, 16),
+    FLOAT_32(Opcode.OP_TYPE_FLOAT, 32);
 
     override fun matches(
         opcode: Opcode,
