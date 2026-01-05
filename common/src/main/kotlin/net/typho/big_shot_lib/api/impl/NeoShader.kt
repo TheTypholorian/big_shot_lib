@@ -22,7 +22,6 @@ import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL41.glShaderBinary
 import org.lwjgl.system.MemoryUtil
 import java.util.*
-import java.util.function.Function
 
 open class NeoShader(
     protected val location: ResourceLocation,
@@ -30,6 +29,7 @@ open class NeoShader(
     protected val format: VertexFormat
 ) : IShader {
     companion object {
+        const val PATH = "neo/shaders"
         val REGISTRY = HashMap<ResourceLocation, NeoShader>()
 
         fun register(shader: NeoShader) {
@@ -105,7 +105,6 @@ open class NeoShader(
             type: ShaderType,
             fileName: String,
             source: String,
-            includes: Function<ResourceLocation, String>? = null,
             entrypoint: String = "main"
         ) {
             val id = glCreateShader(type.id)
@@ -126,7 +125,7 @@ open class NeoShader(
 
                 MemoryUtil.memFree(compiled)
             } else {
-                glShaderSource(id, source)
+                glShaderSource(id, IShader.resolveIncludes(source))
                 glCompileShader(id)
             }
 

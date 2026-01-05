@@ -10,11 +10,14 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.AbstractTexture
+import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.BigShotLib
+import net.typho.big_shot_lib.api.impl.NeoShader
 import net.typho.big_shot_lib.gl.Bindable
 import net.typho.big_shot_lib.gl.resource.GlResourceInstance
 import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW
+import java.io.InputStream
 import java.util.*
 
 interface IShader : Bindable, GlResourceInstance {
@@ -43,6 +46,41 @@ interface IShader : Bindable, GlResourceInstance {
     fun vertexFormat(): VertexFormat?
 
     companion object {
+        fun loadInclude(location: ResourceLocation): ByteArray {
+            val resource = Minecraft.getInstance().resourceManager.getResourceOrThrow(
+                location.withPath { path ->
+                    if (path.contains('.')) {
+                        return@withPath "${NeoShader.PATH}/$path"
+                    } else {
+                        return@withPath "${NeoShader.PATH}/$path.glsl"
+                    }
+                }
+            )
+            return resource.open().use(InputStream::readAllBytes)
+        }
+
+        fun resolveIncludes(source: String): String {
+            var newSource = source
+            var includeString = "#include \""
+            var i = 0
+
+            while (i < newSource.length) {
+                if (newSource.startsWith(includeString, i)) {
+                    val start = i + includeString.length
+                    val end = newSource.indexOf('"', start)
+                    val location = ResourceLocation.parse(newSource.substring(start, end))
+                    val code = String(loadInclude(location))
+                    newSource = newSource.substring(0, i) + code + newSource.substring(end + 1)
+                    i = 0
+                }
+
+                includeString = "\n#include \""
+                i++
+            }
+
+            return newSource
+        }
+
         fun parseFormat(json: JsonElement?): VertexFormat? {
             if (json == null) {
                 return null

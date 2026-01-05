@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.typho.big_shot_lib.api.impl.NeoFramebuffer;
-import net.typho.big_shot_lib.resource.ShaderReloadListener;
+import net.typho.big_shot_lib.resource.NeoShaderLoader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,7 +32,7 @@ public class MinecraftMixin {
             )
     )
     private void init(GameConfig gameConfig, CallbackInfo ci) {
-        resourceManager.registerReloadListener(ShaderReloadListener.INSTANCE);
+        resourceManager.registerReloadListener(NeoShaderLoader.INSTANCE);
     }
 
     @Inject(

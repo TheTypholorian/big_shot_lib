@@ -2,6 +2,8 @@ package net.typho.big_shot_lib.spirv
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
+import net.typho.big_shot_lib.BufferUtil
+import net.typho.big_shot_lib.api.IShader
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.platform.Services
@@ -11,6 +13,8 @@ import net.typho.big_shot_lib.spirv.mixin.ShaderVersionUpdater
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.shaderc.Shaderc.*
+import org.lwjgl.util.shaderc.ShadercIncludeResolveI
+import org.lwjgl.util.shaderc.ShadercIncludeResult
 import java.nio.ByteBuffer
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -45,6 +49,24 @@ interface ShaderMixinCallback {
             shaderc_compile_options_set_target_env(options, shaderc_target_env_opengl, shaderc_env_version_opengl_4_5)
             shaderc_compile_options_set_source_language(options, shaderc_source_language_glsl)
             shaderc_compile_options_set_target_spirv(options, shaderc_spirv_version_1_5)
+
+            shaderc_compile_options_set_include_callbacks(
+                options,
+                ShadercIncludeResolveI { userData, requested, type, source, depth ->
+                    val requestedName = MemoryUtil.memUTF8(requested)
+                    val bytes = BufferUtil.wrapDirect(IShader.loadInclude(ResourceLocation.parse(requestedName)))
+                    return@ShadercIncludeResolveI ShadercIncludeResult.create()
+                        .content(bytes)
+                        .source_name(BufferUtil.wrapDirect(requestedName.encodeToByteArray()))
+                        .address()
+                },
+                { userData, result ->
+                    val result = ShadercIncludeResult.create(result)
+                    MemoryUtil.memFree(result.content())
+                    MemoryUtil.memFree(result.source_name())
+                },
+                MemoryUtil.NULL
+            )
 
             shaderc_compile_options_set_auto_map_locations(options, true)
             shaderc_compile_options_set_auto_bind_uniforms(options, false)

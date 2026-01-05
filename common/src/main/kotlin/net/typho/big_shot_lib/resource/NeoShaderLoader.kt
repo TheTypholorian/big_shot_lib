@@ -9,9 +9,8 @@ import net.typho.big_shot_lib.api.IShader
 import net.typho.big_shot_lib.api.impl.NeoShader
 import net.typho.big_shot_lib.gl.resource.ShaderType
 
-object ShaderReloadListener : SynchronousReloadListener {
-    val jsonIdConverter: FileToIdConverter = FileToIdConverter.json("neo/shaders")
-    val glslIdConverter: FileToIdConverter = FileToIdConverter("neo/shaders", ".glsl")
+object NeoShaderLoader : SynchronousReloadListener {
+    val jsonIdConverter: FileToIdConverter = FileToIdConverter.json(NeoShader.PATH)
 
     override fun reload(manager: ResourceManager) {
         var loaded = 0
@@ -46,12 +45,7 @@ object ShaderReloadListener : SynchronousReloadListener {
                             builder.attach(
                                 type,
                                 withExtension.toString(),
-                                sourceReader.readText(),
-                                { include ->
-                                    manager.getResourceOrThrow(glslIdConverter.idToFile(include))
-                                        .openAsReader()
-                                        .use { reader -> reader.readText() }
-                                }
+                                sourceReader.readText()
                             )
                         }
                     }

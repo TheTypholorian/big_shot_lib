@@ -7,10 +7,16 @@ import java.nio.ByteOrder
 object BufferUtil {
     @JvmStatic
     fun concat(first: ByteBuffer, second: ByteBuffer, order: ByteOrder = ShaderMixinContext.BYTE_ORDER): ByteBuffer {
-        val buffer = ByteBuffer.allocate(first.capacity() + second.capacity())
+        return ByteBuffer.allocate(first.capacity() + second.capacity())
             .order(order)
-        buffer.put(first)
-        buffer.put(second)
-        return buffer
+            .put(first)
+            .put(second)
+    }
+
+    @JvmStatic
+    fun wrapDirect(bytes: ByteArray): ByteBuffer {
+        return ByteBuffer.allocateDirect(bytes.size)
+            .put(bytes)
+            .flip()
     }
 }
