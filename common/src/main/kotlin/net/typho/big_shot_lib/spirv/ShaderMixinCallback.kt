@@ -38,6 +38,9 @@ interface ShaderMixinCallback {
         @JvmField
         val options = shaderc_compile_options_initialize()
 
+        @JvmField
+        val enabled = Services.PLATFORM.shaderMixinsEnabled()
+
         init {
             shaderc_compile_options_set_target_env(options, shaderc_target_env_opengl, shaderc_env_version_opengl_4_5)
             shaderc_compile_options_set_source_language(options, shaderc_source_language_glsl)
@@ -46,13 +49,21 @@ interface ShaderMixinCallback {
             shaderc_compile_options_set_auto_map_locations(options, true)
             shaderc_compile_options_set_auto_bind_uniforms(options, false)
 
-            register(BreezeWindShaderFix)
-            register(ShaderVersionUpdater)
-            register(ShaderLocationMapper)
+            callbacks.add(BreezeWindShaderFix)
+            callbacks.add(ShaderVersionUpdater)
+            callbacks.add(ShaderLocationMapper)
         }
 
         @JvmStatic
         fun register(callback: ShaderMixinCallback) {
+            if (!enabled) {
+                throw IllegalStateException(
+                    "Big shot lib shader mixins are not enabled." +
+                            "\nFor fabric, add \"big_shot_lib:require_shader_mixins\": true under the \"custom\" tag in your fabric.mod.json." +
+                            "\nFor [neo]forge, add \"big_shot_lib:require_shader_mixins\": true under the \"modproperties\" tag under your mod definition in your mods.toml."
+                )
+            }
+
             callbacks.add(callback)
         }
 

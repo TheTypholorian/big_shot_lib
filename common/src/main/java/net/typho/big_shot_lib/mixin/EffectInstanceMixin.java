@@ -21,8 +21,10 @@ public class EffectInstanceMixin {
             )
     )
     private void setThreadLocal(ResourceProvider resourceProvider, String name, CallbackInfo ci) {
-        ShaderMixinCallback.currentVertexFormat.set(DefaultVertexFormat.BLIT_SCREEN);
-        ShaderMixinCallback.currentLocationsInfo.set(new ShaderLocationsInfo(false));
+        if (ShaderMixinCallback.enabled) {
+            ShaderMixinCallback.currentVertexFormat.set(DefaultVertexFormat.BLIT_SCREEN);
+            ShaderMixinCallback.currentLocationsInfo.set(new ShaderLocationsInfo(false));
+        }
     }
 
     @Inject(
@@ -33,7 +35,9 @@ public class EffectInstanceMixin {
             )
     )
     private void clearThreadLocal(ResourceProvider resourceProvider, String name, CallbackInfo ci) {
-        ShaderMixinCallback.currentVertexFormat.remove();
-        ShaderMixinCallback.currentLocationsInfo.remove();
+        if (ShaderMixinCallback.enabled) {
+            ShaderMixinCallback.currentVertexFormat.remove();
+            ShaderMixinCallback.currentLocationsInfo.remove();
+        }
     }
 }

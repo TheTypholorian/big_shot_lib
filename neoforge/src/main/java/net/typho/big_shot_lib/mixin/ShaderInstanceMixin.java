@@ -22,8 +22,10 @@ public class ShaderInstanceMixin {
             )
     )
     private void setThreadLocal(ResourceProvider p_173336_, ResourceLocation shaderLocation, VertexFormat p_173338_, CallbackInfo ci) {
-        ShaderMixinCallback.currentVertexFormat.set(p_173338_);
-        ShaderMixinCallback.currentLocationsInfo.set(new ShaderLocationsInfo(false));
+        if (ShaderMixinCallback.enabled) {
+            ShaderMixinCallback.currentVertexFormat.set(p_173338_);
+            ShaderMixinCallback.currentLocationsInfo.set(new ShaderLocationsInfo(false));
+        }
     }
 
     @Inject(
@@ -34,7 +36,9 @@ public class ShaderInstanceMixin {
             )
     )
     private void clearThreadLocal(ResourceProvider p_173336_, ResourceLocation shaderLocation, VertexFormat p_173338_, CallbackInfo ci) {
-        ShaderMixinCallback.currentVertexFormat.remove();
-        ShaderMixinCallback.currentLocationsInfo.remove();
+        if (ShaderMixinCallback.enabled) {
+            ShaderMixinCallback.currentVertexFormat.remove();
+            ShaderMixinCallback.currentLocationsInfo.remove();
+        }
     }
 }

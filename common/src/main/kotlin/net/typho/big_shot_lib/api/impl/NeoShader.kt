@@ -108,43 +108,27 @@ open class NeoShader(
             includes: Function<ResourceLocation, String>? = null,
             entrypoint: String = "main"
         ) {
-            val modifiedSource = includes?.let {
-                var newSource = source
-                var includeString = "#include \""
-                var i = 0
-
-                while (i < newSource.length) {
-                    if (newSource.startsWith(includeString, i)) {
-                        val start = i + includeString.length
-                        val end = newSource.indexOf('"', start)
-                        val include = ResourceLocation.parse(newSource.substring(start, end))
-                        val code = it.apply(include)
-                        newSource = newSource.substring(0, i) + code + newSource.substring(end + 1)
-                    }
-
-                    includeString = "\n#include \""
-                    i++
-                }
-
-                newSource
-            } ?: source
-
             val id = glCreateShader(type.id)
 
-            val compiled = ShaderMixinCallback.compile(
-                location,
-                type,
-                format,
-                locations,
-                fileName,
-                modifiedSource,
-                entrypoint
-            )
+            if (ShaderMixinCallback.enabled) {
+                val compiled = ShaderMixinCallback.compile(
+                    location,
+                    type,
+                    format,
+                    locations,
+                    fileName,
+                    source,
+                    entrypoint
+                )
 
-            glShaderBinary(intArrayOf(id), GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled)
-            glSpecializeShaderARB(id, "main", intArrayOf(), intArrayOf())
+                glShaderBinary(intArrayOf(id), GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled)
+                glSpecializeShaderARB(id, "main", intArrayOf(), intArrayOf())
 
-            MemoryUtil.memFree(compiled)
+                MemoryUtil.memFree(compiled)
+            } else {
+                glShaderSource(id, source)
+                glCompileShader(id)
+            }
 
             if (glGetShaderi(id, GL_COMPILE_STATUS) == GL_FALSE) {
                 throw ShaderCompileException("Error compiling ${type.key} shader for $location:\n${glGetShaderInfoLog(id).trim()}")

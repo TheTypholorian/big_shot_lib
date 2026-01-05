@@ -21,8 +21,10 @@ public class ShaderChunkRendererMixin {
             at = @At("HEAD")
     )
     private void createShader1(String path, ChunkShaderOptions options, CallbackInfoReturnable<GlProgram<ChunkShaderInterface>> cir) {
-        ShaderMixinCallback.currentVertexFormat.set(DefaultVertexFormat.POSITION_TEX_COLOR);
-        ShaderMixinCallback.currentLocationsInfo.set(new ShaderLocationsInfo(false));
+        if (ShaderMixinCallback.enabled) {
+            ShaderMixinCallback.currentVertexFormat.set(DefaultVertexFormat.POSITION_TEX_COLOR);
+            ShaderMixinCallback.currentLocationsInfo.set(new ShaderLocationsInfo(false));
+        }
     }
 
     @Inject(
@@ -30,7 +32,9 @@ public class ShaderChunkRendererMixin {
             at = @At("TAIL")
     )
     private void createShader2(String path, ChunkShaderOptions options, CallbackInfoReturnable<GlProgram<ChunkShaderInterface>> cir) {
-        ShaderMixinCallback.currentVertexFormat.remove();
-        ShaderMixinCallback.currentLocationsInfo.remove();
+        if (ShaderMixinCallback.enabled) {
+            ShaderMixinCallback.currentVertexFormat.remove();
+            ShaderMixinCallback.currentLocationsInfo.remove();
+        }
     }
 }
