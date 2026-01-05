@@ -4,8 +4,8 @@ import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.spirv.at.At
 import net.typho.big_shot_lib.spirv.at.AtOpcode
 import net.typho.big_shot_lib.spirv.at.BeforeFirstFunction
-import net.typho.big_shot_lib.spirv.vars.LocatedVariable
 import net.typho.big_shot_lib.spirv.vars.ShaderAnyType
+import net.typho.big_shot_lib.spirv.vars.ShaderVariable
 import net.typho.big_shot_lib.spirv.vars.ShaderVariableType
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -54,7 +54,7 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
 
     fun inject(at: At, inject: ByteBuffer) = inject(at.getStart(this) * WORD_SIZE_BYTES, inject)
 
-    fun addStaticVar(storageClass: Int, typePointer: Int, name: String? = null, initializer: Int? = null): Int {
+    fun addStaticVar(storageClass: Int, typePointer: Int, name: String? = null, initializer: Int? = null): ShaderVariable {
         val typePointerId = bound++
         val variableId = bound++
 
@@ -92,7 +92,13 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
         }
 
         putBound()
-        return variableId
+        return ShaderVariable(
+            variableId,
+            name,
+            null,
+            typePointerId,
+            typePointer
+        )
     }
 
     fun addEntrypointVars(vararg ids: Int): Boolean {
@@ -120,7 +126,7 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
         name: String? = null,
         location: Int? = null,
         type: ShaderVariableType = ShaderAnyType
-    ): LocatedVariable? {
+    ): ShaderVariable? {
         for (opcode in this) {
             if (opcode.id == 59) { // OpVariable
                 val id = code.getInt((opcode.index + 2) * WORD_SIZE_BYTES)
@@ -195,7 +201,7 @@ class ShaderMixinContext(var code: ByteBuffer) : Iterable<Opcode> {
                     continue
                 }
 
-                return LocatedVariable(
+                return ShaderVariable(
                     id,
                     actualName,
                     actualLocation,

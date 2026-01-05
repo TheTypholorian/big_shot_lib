@@ -24,6 +24,10 @@ neoForge {
 
 repositories {
     mavenCentral()
+    maven {
+        name = "Modrinth"
+        url = uri("https://api.modrinth.com/maven")
+    }
 }
 
 dependencies {
@@ -33,6 +37,7 @@ dependencies {
     annotationProcessor(libs.mixinExtras.common)
 
     implementation("org.lwjgl:lwjgl-shaderc:3.3.3")
+    implementation(libs.sodium)
 }
 
 configurations {

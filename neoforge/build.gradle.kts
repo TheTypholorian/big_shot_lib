@@ -68,6 +68,10 @@ sourceSets.main.get().resources { srcDir("src/generated/resources") }
 
 repositories {
     mavenCentral()
+    maven {
+        name = "Modrinth"
+        url = uri("https://api.modrinth.com/maven")
+    }
 }
 
 dependencies {
@@ -89,4 +93,6 @@ dependencies {
     lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
     lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
     lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
+
+    implementation(libs.sodium)
 }

@@ -32,6 +32,10 @@ modrinth {
 
 repositories {
     mavenCentral()
+    maven {
+        name = "Modrinth"
+        url = uri("https://api.modrinth.com/maven")
+    }
 }
 
 dependencies {
@@ -53,6 +57,8 @@ dependencies {
     lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
     lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
     lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
+
+    modImplementation(libs.sodium)
 }
 
 loom {

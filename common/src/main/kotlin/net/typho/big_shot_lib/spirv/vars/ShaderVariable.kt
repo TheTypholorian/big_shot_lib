@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.spirv.vars
 
-data class LocatedVariable(
+data class ShaderVariable(
     val id: Int,
     val name: String?,
     val location: Int?,

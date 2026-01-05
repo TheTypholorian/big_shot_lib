@@ -4,7 +4,10 @@
   "package": "net.typho.big_shot_lib.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
-  "mixins": [],
+  "mixins": [
+    "GlShaderMixin",
+    "ShaderChunkRendererMixin"
+  ],
   "client": [
     "EffectInstanceMixin",
     "GameRendererMixin",

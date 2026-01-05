@@ -57,7 +57,15 @@ interface ShaderMixinCallback {
         }
 
         @JvmStatic
-        fun compile(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, locations: ShaderLocationsInfo, fileName: String, code: String, entrypoint: String = "main"): ByteBuffer {
+        fun compile(
+            shader: ResourceLocation,
+            type: ShaderType,
+            format: VertexFormat?,
+            locations: ShaderLocationsInfo,
+            fileName: String,
+            code: String,
+            entrypoint: String = "main"
+        ): ByteBuffer {
             var modified = code
 
             for (callback in callbacks) {
