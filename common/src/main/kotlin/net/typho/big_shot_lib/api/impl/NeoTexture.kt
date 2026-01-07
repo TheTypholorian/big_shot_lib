@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.api.impl
 
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.ITexture
-import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.lwjgl.opengl.GL11.*
@@ -24,19 +23,14 @@ open class NeoTexture(
     ) : this(location, type, glGenTextures(), format)
 
     init {
-        bind().use {
-            glTexParameteri(type.glName, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-            glTexParameteri(type.glName, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-            glTexParameteri(type.glName, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE)
-            glTexParameteri(type.glName, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-            glTexParameteri(type.glName, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-        }
+        bind()
+        glTexParameteri(type.glName, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(type.glName, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(type.glName, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE)
+        glTexParameteri(type.glName, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+        glTexParameteri(type.glName, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        unbind()
         type().label(id(), location().toString())
-    }
-
-    override fun bind(): Unbindable<NeoTexture> {
-        type().bind(id)
-        return Unbindable.of(this)
     }
 
     override fun release() {
@@ -62,18 +56,18 @@ open class NeoTexture(
     }
 
     override fun resize2D(width: Int, height: Int) {
-        bind().use {
-            glTexImage2D(
-                type().glName,
-                0,
-                format().internal,
-                width,
-                height,
-                0,
-                format().id,
-                format().type,
-                MemoryUtil.NULL
-            )
-        }
+        bind()
+        glTexImage2D(
+            type().glName,
+            0,
+            format().internal,
+            width,
+            height,
+            0,
+            format().id,
+            format().type,
+            MemoryUtil.NULL
+        )
+        unbind()
     }
 }

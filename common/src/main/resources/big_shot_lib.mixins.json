@@ -15,6 +15,7 @@
     "MinecraftMixin",
     "ProgramMixin",
     "ProgramTypeMixin",
+    "ShaderInstanceMixin",
     "SimpleTextureAccessor"
   ],
   "server": [],

@@ -1,5 +1,8 @@
 package net.typho.big_shot_lib.gl
 
+import net.typho.big_shot_lib.api.IIndexedBuffer
+import net.typho.big_shot_lib.gl.resource.GlIndexedBufferType
+import net.typho.big_shot_lib.gl.resource.GlResourceInstance
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.state.GlCapability
 import net.typho.big_shot_lib.gl.state.GlState
@@ -8,26 +11,31 @@ import java.util.*
 
 class GlStack : AutoCloseable {
     @JvmField
-    val boundMap = HashMap<GlResourceType, Unbindable<*>>()
+    val boundMap = HashMap<GlResourceType, GlResourceInstance>()
     @JvmField
-    val miscBound = LinkedList<Unbindable<*>>()
+    val miscBound = LinkedList<GlResourceInstance>()
     @JvmField
     val defaultStates = HashMap<GlState<*>, Any>()
     @JvmField
     val states = HashMap<GlState<*>, Any>()
     @JvmField
     val capabilities = HashMap<GlCapability, Boolean>()
+    @JvmField
+    val boundBases = HashMap<GlIndexedBufferType, HashMap<Int, IIndexedBuffer>>()
 
-    fun put(unbindable: Unbindable<*>): Unbindable<*>? {
-        val type = unbindable.resource().type()
+    fun bind(resource: GlResourceInstance) {
+        val type = resource.type()
 
         if (type == null) {
-            miscBound.add(unbindable)
+            miscBound.add(resource)
         } else {
-            return boundMap.put(type, unbindable)
+            boundMap.put(type, resource)
         }
+    }
 
-        return null
+    fun bindBase(resource: IIndexedBuffer, index: Int) {
+        bind(resource as GlResourceInstance)
+        boundBases.computeIfAbsent(resource.type()) { HashMap() }.put(index, resource)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -78,6 +86,13 @@ class GlStack : AutoCloseable {
 
         miscBound.forEach { it.unbind() }
         miscBound.clear()
+
+        boundBases.forEach { type ->
+            type.value.forEach { base ->
+                base.value.unbindBase(base.key)
+            }
+        }
+        boundBases.clear()
 
         restoreDefaultStates()
         restoreDefaultCapabilities()

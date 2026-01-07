@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.impl
+package net.typho.big_shot_lib.api.builtin
 
 import net.minecraft.client.renderer.texture.DynamicTexture
 import net.minecraft.resources.ResourceLocation

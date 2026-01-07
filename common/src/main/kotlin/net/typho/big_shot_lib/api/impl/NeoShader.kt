@@ -1,30 +1,25 @@
 package net.typho.big_shot_lib.api.impl
 
-import com.mojang.blaze3d.shaders.AbstractUniform
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
+import net.typho.big_shot_lib.api.DirectSampler
+import net.typho.big_shot_lib.api.DirectUniform
 import net.typho.big_shot_lib.api.IShader
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.error.ShaderLinkException
-import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.spirv.ShaderLocationsInfo
 import net.typho.big_shot_lib.spirv.ShaderMixinCallback
-import org.joml.Matrix3f
-import org.joml.Matrix4f
-import org.joml.Vector3f
-import org.joml.Vector4f
 import org.lwjgl.opengl.ARBGLSPIRV.GL_SHADER_BINARY_FORMAT_SPIR_V_ARB
 import org.lwjgl.opengl.ARBGLSPIRV.glSpecializeShaderARB
 import org.lwjgl.opengl.GL20.*
-import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL41.glShaderBinary
 import org.lwjgl.system.MemoryUtil
 import java.util.*
 
 open class NeoShader(
-    private val locations: ShaderLocationsInfo?,
+    private var locations: ShaderLocationsInfo?,
     val hasGeometryShader: Boolean,
     protected val location: ResourceLocation,
     protected val id: Int,
@@ -48,28 +43,25 @@ open class NeoShader(
         type().label(id(), location().toString())
     }
 
-    protected val uniforms = HashMap<String, Uniform?>()
-    protected val samplers = HashMap<String, Sampler?>()
+    protected val uniforms = HashMap<String, DirectUniform?>()
+    protected val samplers = HashMap<String, DirectSampler?>()
 
-    override fun `big_shot_lib$getLocations`() = locations
+    override fun getLocations() = locations
+
+    override fun setLocations(locations: ShaderLocationsInfo?) {
+        this.locations = locations
+    }
 
     override fun release() {
         glDeleteProgram(id())
     }
 
-    override fun bind(): Unbindable<NeoShader> {
-        type().bind(id())
-        return object : Unbindable<NeoShader> {
-            override fun resource() = this@NeoShader
+    override fun unbind() {
+        super.unbind()
 
-            override fun unbind() {
-                super.unbind()
-
-                for (sampler in samplers.values) {
-                    sampler?.let {
-                        GlResourceType.SAMPLERS[it.unit].unbind()
-                    }
-                }
+        for (sampler in samplers.values) {
+            sampler?.let {
+                GlResourceType.SAMPLERS[it.unit].unbind()
             }
         }
     }
@@ -81,19 +73,21 @@ open class NeoShader(
     override fun id(): Int = id
 
     override fun getUniform(name: String) = uniforms.computeIfAbsent(name) {
-        val location = if (locations == null) glGetUniformLocation(id(), name) else locations.uniforms.get(name)
+        val location = locations?.uniforms?.get(name) ?: glGetUniformLocation(id(), name)
 
-        if (location == null || location == -1) {
+        locations?.uniforms?.map?.put(name, location)
+
+        if (location == -1) {
             return@computeIfAbsent null
         }
 
-        return@computeIfAbsent Uniform(location)
+        return@computeIfAbsent DirectUniform(location)
     }
 
     override fun setSampler(name: String, id: Int) {
         samplers.computeIfAbsent(name) {
             getUniform(name)?.let {
-                Sampler(it, samplers.size)
+                DirectSampler(it, samplers.size)
             }
         }?.set(id)
     }
@@ -162,209 +156,6 @@ open class NeoShader(
             }
 
             return NeoShader(locations, hasGeometryShader, location, id, format)
-        }
-    }
-
-    open class Sampler(
-        val uniform: Uniform,
-        val unit: Int
-    ) {
-        fun set(id: Int) {
-            GlResourceType.SAMPLERS[unit].bind(id)
-            uniform.set(unit)
-        }
-    }
-
-    open class Uniform(
-        val location: Int
-    ) : AbstractUniform() {
-        override fun set(x: Float) {
-            glUniform1f(location, x)
-        }
-
-        override fun set(x: Float, y: Float) {
-            glUniform2f(location, x, y)
-        }
-
-        override fun set(x: Float, y: Float, z: Float) {
-            glUniform3f(location, x, y, z)
-        }
-
-        override fun set(x: Float, y: Float, z: Float, w: Float) {
-            glUniform4f(location, x, y, z, w)
-        }
-
-        override fun set(x: Int) {
-            glUniform1i(location, x)
-        }
-
-        override fun set(x: Int, y: Int) {
-            glUniform2i(location, x, y)
-        }
-
-        override fun set(x: Int, y: Int, z: Int) {
-            glUniform3i(location, x, y, z)
-        }
-
-        override fun set(x: Int, y: Int, z: Int, w: Int) {
-            glUniform4i(location, x, y, z, w)
-        }
-
-        override fun set(valueArray: FloatArray) {
-            when (valueArray.size) {
-                1 -> glUniform1fv(location, valueArray)
-                2 -> glUniform2fv(location, valueArray)
-                3 -> glUniform3fv(location, valueArray)
-                4 -> glUniform4fv(location, valueArray)
-                else -> glUniformMatrix4fv(location, false, valueArray)
-            }
-        }
-
-        override fun set(vector: Vector3f) {
-            glUniform3f(location, vector.x, vector.y, vector.z)
-        }
-
-        override fun set(vector: Vector4f) {
-            glUniform4f(location, vector.x, vector.y, vector.z, vector.w)
-        }
-
-        override fun set(matrix: Matrix4f) {
-            val buffer = FloatArray(16)
-            matrix.get(buffer)
-            glUniformMatrix4fv(location, false, buffer)
-        }
-
-        override fun set(matrix: Matrix3f) {
-            val buffer = FloatArray(9)
-            matrix.get(buffer)
-            glUniformMatrix3fv(location, false, buffer)
-        }
-
-        override fun setSafe(x: Float, y: Float, z: Float, w: Float) {
-            glUniform4f(location, x, y, z, w)
-        }
-
-        override fun setSafe(x: Int, y: Int, z: Int, w: Int) {
-            glUniform4i(location, x, y, z, w)
-        }
-
-        override fun setMat2x2(m00: Float, m01: Float, m10: Float, m11: Float) {
-            glUniformMatrix2fv(location, false, floatArrayOf(m00, m01, m10, m11))
-        }
-
-        override fun setMat2x3(m00: Float, m01: Float, m02: Float, m10: Float, m11: Float, m12: Float) {
-            glUniformMatrix2x3fv(location, false, floatArrayOf(m00, m01, m02, m10, m11, m12))
-        }
-
-        override fun setMat2x4(
-            m00: Float,
-            m01: Float,
-            m02: Float,
-            m03: Float,
-            m10: Float,
-            m11: Float,
-            m12: Float,
-            m13: Float
-        ) {
-            glUniformMatrix2x4fv(location, false, floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13))
-        }
-
-        override fun setMat3x2(m00: Float, m01: Float, m10: Float, m11: Float, m20: Float, m21: Float) {
-            glUniformMatrix3x2fv(location, false, floatArrayOf(m00, m01, m10, m11, m20, m21))
-        }
-
-        override fun setMat3x3(
-            m00: Float,
-            m01: Float,
-            m02: Float,
-            m10: Float,
-            m11: Float,
-            m12: Float,
-            m20: Float,
-            m21: Float,
-            m22: Float
-        ) {
-            glUniformMatrix3fv(location, false, floatArrayOf(m00, m01, m02, m10, m11, m12, m20, m21, m22))
-        }
-
-        override fun setMat3x4(
-            m00: Float,
-            m01: Float,
-            m02: Float,
-            m03: Float,
-            m10: Float,
-            m11: Float,
-            m12: Float,
-            m13: Float,
-            m20: Float,
-            m21: Float,
-            m22: Float,
-            m23: Float
-        ) {
-            glUniformMatrix3x4fv(
-                location,
-                false,
-                floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23)
-            )
-        }
-
-        override fun setMat4x2(
-            m00: Float,
-            m01: Float,
-            m02: Float,
-            m03: Float,
-            m10: Float,
-            m11: Float,
-            m12: Float,
-            m13: Float
-        ) {
-            glUniformMatrix4x2fv(location, false, floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13))
-        }
-
-        override fun setMat4x3(
-            m00: Float,
-            m01: Float,
-            m02: Float,
-            m03: Float,
-            m10: Float,
-            m11: Float,
-            m12: Float,
-            m13: Float,
-            m20: Float,
-            m21: Float,
-            m22: Float,
-            m23: Float
-        ) {
-            glUniformMatrix4x3fv(
-                location,
-                false,
-                floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23)
-            )
-        }
-
-        override fun setMat4x4(
-            m00: Float,
-            m01: Float,
-            m02: Float,
-            m03: Float,
-            m10: Float,
-            m11: Float,
-            m12: Float,
-            m13: Float,
-            m20: Float,
-            m21: Float,
-            m22: Float,
-            m23: Float,
-            m30: Float,
-            m31: Float,
-            m32: Float,
-            m33: Float
-        ) {
-            glUniformMatrix4fv(
-                location,
-                false,
-                floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33)
-            )
         }
     }
 }

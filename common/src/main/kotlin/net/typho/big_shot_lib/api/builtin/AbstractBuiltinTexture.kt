@@ -1,18 +1,12 @@
-package net.typho.big_shot_lib.api.impl
+package net.typho.big_shot_lib.api.builtin
 
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.typho.big_shot_lib.api.ITexture
-import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import org.lwjgl.opengl.GL30.glFramebufferTexture2D
 
 abstract class AbstractBuiltinTexture<T : AbstractTexture>(val inner: T) : ITexture {
     override fun type() = GlResourceType.TEXTURE_2D
-
-    override fun bind(): Unbindable<AbstractBuiltinTexture<T>> {
-        inner.bind()
-        return Unbindable.of(this)
-    }
 
     override fun release() {
         inner.close()

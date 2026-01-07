@@ -6,7 +6,6 @@ import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.IFramebuffer
 import net.typho.big_shot_lib.api.IFramebufferAttachment
 import net.typho.big_shot_lib.error.IncompleteFramebufferException
-import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.joml.Vector4f
@@ -48,42 +47,39 @@ open class NeoFramebuffer(
     ) : this(location, glGenFramebuffers(), colorAttachments, depthAttachment, width, height)
 
     init {
-        bind().use {
-            colorAttachments.forEachIndexed { i, attachment ->
-                attachment.resize2D(width, height)
-                attachment.attach2D(GL_COLOR_ATTACHMENT0 + i, type().glName)
-            }
-            depthAttachment?.let { attachment ->
-                attachment.resize2D(width, height)
+        bind()
 
-                val depth = attachment.format().depth
-                val stencil = attachment.format().stencil
+        colorAttachments.forEachIndexed { i, attachment ->
+            attachment.resize2D(width, height)
+            attachment.attach2D(GL_COLOR_ATTACHMENT0 + i, type().glName)
+        }
+        depthAttachment?.let { attachment ->
+            attachment.resize2D(width, height)
 
-                when {
-                    depth && stencil -> attachment.attach2D(GL_DEPTH_STENCIL_ATTACHMENT, type().glName)
-                    depth && !stencil -> attachment.attach2D(GL_DEPTH_ATTACHMENT, type().glName)
-                    !depth && stencil -> attachment.attach2D(GL_STENCIL_ATTACHMENT, type().glName)
-                    else -> throw IllegalStateException("Illegal depth format ${attachment.format()} for framebuffer $location")
-                }
-            }
+            val depth = attachment.format().depth
+            val stencil = attachment.format().stencil
 
-            val status = glCheckFramebufferStatus(type().glName)
-
-            if (status != GL_FRAMEBUFFER_COMPLETE) {
-                throw IncompleteFramebufferException("Framebuffer ${location()} incomplete with error 0x${status.toHexString()}")
+            when {
+                depth && stencil -> attachment.attach2D(GL_DEPTH_STENCIL_ATTACHMENT, type().glName)
+                depth && !stencil -> attachment.attach2D(GL_DEPTH_ATTACHMENT, type().glName)
+                !depth && stencil -> attachment.attach2D(GL_STENCIL_ATTACHMENT, type().glName)
+                else -> throw IllegalStateException("Illegal depth format ${attachment.format()} for framebuffer $location")
             }
         }
+
+        val status = glCheckFramebufferStatus(type().glName)
+
+        if (status != GL_FRAMEBUFFER_COMPLETE) {
+            throw IncompleteFramebufferException("Framebuffer ${location()} incomplete with error 0x${status.toHexString()}")
+        }
+
+        unbind()
 
         type().label(id(), location().toString())
     }
 
-    override fun bind(): Unbindable<NeoFramebuffer> {
-        type().bind(id())
-        return object : Unbindable<NeoFramebuffer> {
-            override fun resource() = this@NeoFramebuffer
-
-            override fun unbind() = Minecraft.getInstance().mainRenderTarget.bindWrite(true)
-        }
+    override fun unbind() {
+        Minecraft.getInstance().mainRenderTarget.bindWrite(true)
     }
 
     override fun release() {
@@ -105,10 +101,12 @@ open class NeoFramebuffer(
     override fun height() = height
 
     override fun resize(width: Int, height: Int) {
-        bind().use {
-            colorAttachments.forEach { it.resize2D(width, height) }
-            depthAttachment?.resize2D(width, height)
-        }
+        bind()
+
+        colorAttachments.forEach { it.resize2D(width, height) }
+        depthAttachment?.resize2D(width, height)
+
+        unbind()
     }
 
     override fun clearColor(color: Vector4f) {

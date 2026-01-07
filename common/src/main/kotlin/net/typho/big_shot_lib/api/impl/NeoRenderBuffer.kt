@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.api.impl
 
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.ITexture
-import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.lwjgl.opengl.GL11.glDeleteTextures
@@ -20,11 +19,6 @@ open class NeoRenderBuffer(
 
     init {
         type().label(id(), location().toString())
-    }
-
-    override fun bind(): Unbindable<NeoRenderBuffer> {
-        type().bind(id)
-        return Unbindable.of(this)
     }
 
     override fun release() {
@@ -49,13 +43,13 @@ open class NeoRenderBuffer(
     }
 
     override fun resize2D(width: Int, height: Int) {
-        bind().use {
-            glRenderbufferStorage(
-                type().glName,
-                format().id,
-                width,
-                height
-            )
-        }
+        bind()
+        glRenderbufferStorage(
+            type().glName,
+            format().id,
+            width,
+            height
+        )
+        unbind()
     }
 }

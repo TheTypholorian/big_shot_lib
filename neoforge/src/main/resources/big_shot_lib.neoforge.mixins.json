@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
-    "ShaderInstanceMixin"
+    "neoforge.ShaderInstanceMixin"
   ],
   "server": [],
   "injectors": {

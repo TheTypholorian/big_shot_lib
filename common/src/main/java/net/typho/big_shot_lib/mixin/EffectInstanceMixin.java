@@ -4,15 +4,12 @@ import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.typho.big_shot_lib.spirv.ShaderExtension;
+import net.typho.big_shot_lib.spirv.ShaderInstanceLocationsExtension;
 import net.typho.big_shot_lib.spirv.ShaderLocationsInfo;
 import net.typho.big_shot_lib.spirv.ShaderMixinCallback;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,7 +19,8 @@ import java.util.Map;
 import java.util.function.IntSupplier;
 
 @Mixin(EffectInstance.class)
-public class EffectInstanceMixin implements ShaderExtension {
+@Implements(@Interface(iface = ShaderInstanceLocationsExtension.class, prefix = "big_shot_lib$"))
+public class EffectInstanceMixin {
     @Shadow
     @Final
     private List<String> samplerNames;
@@ -121,7 +119,6 @@ public class EffectInstanceMixin implements ShaderExtension {
         }
     }
 
-    @Override
     public @Nullable ShaderLocationsInfo big_shot_lib$getLocations() {
         return big_shot_lib$locations;
     }

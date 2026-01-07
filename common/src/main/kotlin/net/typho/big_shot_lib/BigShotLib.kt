@@ -10,6 +10,7 @@ import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import sun.misc.Unsafe
 
 object BigShotLib {
     const val MOD_ID = "big_shot_lib"
@@ -31,6 +32,18 @@ object BigShotLib {
         vbo.upload(blitBuilder.buildOrThrow())
         VertexBuffer.unbind()
         return@lazy vbo
+    }
+    @JvmField
+    val UNSAFE: Unsafe
+
+    init {
+        try {
+            val f = Unsafe::class.java.getDeclaredField("theUnsafe")
+            f.setAccessible(true)
+            UNSAFE = f.get(null) as Unsafe
+        } catch (e: Exception) {
+            throw RuntimeException("Failed to get Unsafe instance", e)
+        }
     }
 
     fun init() = Unit

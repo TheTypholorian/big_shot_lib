@@ -12,15 +12,14 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.impl.NeoShader
-import net.typho.big_shot_lib.gl.Bindable
 import net.typho.big_shot_lib.gl.resource.GlResourceInstance
-import net.typho.big_shot_lib.spirv.ShaderExtension
+import net.typho.big_shot_lib.spirv.ShaderInstanceLocationsExtension
 import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW
 import java.io.InputStream
 import java.util.*
 
-interface IShader : Bindable, GlResourceInstance, ShaderExtension {
+interface IShader : GlResourceInstance, ShaderInstanceLocationsExtension {
     fun getUniform(name: String): AbstractUniform?
 
     fun setSampler(name: String, id: Int)

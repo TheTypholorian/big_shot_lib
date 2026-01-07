@@ -1,10 +1,9 @@
-package net.typho.big_shot_lib.api.impl
+package net.typho.big_shot_lib.api.builtin
 
 import com.mojang.blaze3d.pipeline.RenderTarget
 import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.IFramebuffer
-import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.joml.Vector4f
@@ -27,13 +26,8 @@ class BuiltinFramebuffer(val inner: RenderTarget) : IFramebuffer {
         inner.clear(false)
     }
 
-    override fun bind(): Unbindable<BuiltinFramebuffer> {
-        inner.bindWrite(true)
-        return object : Unbindable<BuiltinFramebuffer> {
-            override fun resource() = this@BuiltinFramebuffer
-
-            override fun unbind() = Minecraft.getInstance().mainRenderTarget.bindWrite(true)
-        }
+    override fun unbind() {
+        Minecraft.getInstance().mainRenderTarget.bindWrite(true)
     }
 
     override fun release() {

@@ -23,9 +23,9 @@ public class LevelRendererMixin {
     )
     private void renderLevel(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
         NeoFramebuffer.AUTO_CLEAR.forEach((fbo, color) -> {
-            try (var bound = fbo.bind()) {
-                bound.resource().clearColor(color);
-            }
+            fbo.bind();
+            fbo.clearColor(color);
+            fbo.unbind();
         });
     }
 }
