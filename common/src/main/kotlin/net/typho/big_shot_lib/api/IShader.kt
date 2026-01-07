@@ -9,7 +9,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.impl.NeoShader
@@ -44,8 +43,6 @@ interface IShader : GlResourceInstance, ShaderInstanceLocationsExtension {
     }
 
     fun vertexFormat(): VertexFormat?
-
-    fun getBuiltin(): ShaderInstance
 
     companion object {
         @JvmStatic
