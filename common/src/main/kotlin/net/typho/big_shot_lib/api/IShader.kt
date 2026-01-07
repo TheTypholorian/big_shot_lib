@@ -11,16 +11,16 @@ import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.api.impl.NeoShader
 import net.typho.big_shot_lib.gl.Bindable
 import net.typho.big_shot_lib.gl.resource.GlResourceInstance
+import net.typho.big_shot_lib.spirv.ShaderExtension
 import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW
 import java.io.InputStream
 import java.util.*
 
-interface IShader : Bindable, GlResourceInstance {
+interface IShader : Bindable, GlResourceInstance, ShaderExtension {
     fun getUniform(name: String): AbstractUniform?
 
     fun setSampler(name: String, id: Int)
@@ -35,7 +35,7 @@ interface IShader : Bindable, GlResourceInstance {
         time: Float = GLFW.glfwGetTime().toFloat(),
         window: Window = Minecraft.getInstance().window,
         projMat: Matrix4f = RenderSystem.getProjectionMatrix(),
-        modelViewMat: Matrix4f = BigShotLib.getViewMatrix()
+        modelViewMat: Matrix4f = RenderSystem.getModelViewMatrix()
     ) {
         getUniform("Time")?.set(time)
         getUniform("ScreenSize")?.set(window.width.toFloat(), window.height.toFloat())

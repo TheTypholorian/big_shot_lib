@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.IShader
 import net.typho.big_shot_lib.gl.Unbindable
 import net.typho.big_shot_lib.gl.resource.GlResourceType
+import net.typho.big_shot_lib.spirv.ShaderExtension.Companion.getLocations
 
 class BuiltinEffectShader(val inner: EffectInstance) : IShader {
     override fun getUniform(name: String): AbstractUniform? = inner.getUniform(name)
@@ -30,4 +31,6 @@ class BuiltinEffectShader(val inner: EffectInstance) : IShader {
     override fun type() = GlResourceType.PROGRAM
 
     override fun id() = inner.id
+
+    override fun `big_shot_lib$getLocations`() = inner.getLocations()
 }

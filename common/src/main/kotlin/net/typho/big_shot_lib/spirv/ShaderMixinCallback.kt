@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.spirv
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
+import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.platform.Services
@@ -42,6 +43,10 @@ interface ShaderMixinCallback {
         val enabled = Services.PLATFORM.shaderMixinsEnabled()
 
         init {
+            if (enabled) {
+                BigShotLib.LOGGER.info("Enabling shader mixins")
+            }
+
             shaderc_compile_options_set_target_env(options, shaderc_target_env_opengl, shaderc_env_version_opengl_4_5)
             shaderc_compile_options_set_source_language(options, shaderc_source_language_glsl)
             shaderc_compile_options_set_target_spirv(options, shaderc_spirv_version_1_5)

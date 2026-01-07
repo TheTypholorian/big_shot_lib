@@ -24,6 +24,8 @@ import org.lwjgl.system.MemoryUtil
 import java.util.*
 
 open class NeoShader(
+    private val locations: ShaderLocationsInfo?,
+    val hasGeometryShader: Boolean,
     protected val location: ResourceLocation,
     protected val id: Int,
     protected val format: VertexFormat
@@ -35,7 +37,7 @@ open class NeoShader(
 
         @JvmStatic
         fun register(shader: NeoShader) {
-            REGISTRY.put(shader.location(), shader)
+            REGISTRY[shader.location()] = shader
         }
 
         @JvmStatic
@@ -48,6 +50,8 @@ open class NeoShader(
 
     protected val uniforms = HashMap<String, Uniform?>()
     protected val samplers = HashMap<String, Sampler?>()
+
+    override fun `big_shot_lib$getLocations`() = locations
 
     override fun release() {
         glDeleteProgram(id())
@@ -77,9 +81,9 @@ open class NeoShader(
     override fun id(): Int = id
 
     override fun getUniform(name: String) = uniforms.computeIfAbsent(name) {
-        val location = glGetUniformLocation(id(), name)
+        val location = if (locations == null) glGetUniformLocation(id(), name) else locations.uniforms.get(name)
 
-        if (location == -1) {
+        if (location == null || location == -1) {
             return@computeIfAbsent null
         }
 
@@ -101,7 +105,7 @@ open class NeoShader(
         val format: VertexFormat,
         val hasGeometryShader: Boolean
     ) {
-        val locations = ShaderLocationsInfo(hasGeometryShader)
+        val locations = if (ShaderMixinCallback.enabled) ShaderLocationsInfo(hasGeometryShader) else null
         val sources = LinkedList<Int>()
 
         fun attach(
@@ -117,7 +121,7 @@ open class NeoShader(
                     location,
                     type,
                     format,
-                    locations,
+                    locations!!,
                     fileName,
                     IShader.resolveIncludes(source),
                     entrypoint
@@ -157,7 +161,7 @@ open class NeoShader(
                 glDeleteShader(source)
             }
 
-            return NeoShader(location, id, format)
+            return NeoShader(locations, hasGeometryShader, location, id, format)
         }
     }
 

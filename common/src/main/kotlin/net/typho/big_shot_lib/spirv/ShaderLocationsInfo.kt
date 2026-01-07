@@ -36,6 +36,7 @@ class ShaderLocationsInfo(@JvmField val hasGeometryShader: Boolean) {
     }
 
     class Mapper {
+        @JvmField
         val map = HashMap<String, Int>()
 
         fun findUnboundLocation(): Int {
@@ -63,6 +64,8 @@ class ShaderLocationsInfo(@JvmField val hasGeometryShader: Boolean) {
                 return@computeIfAbsent findUnboundLocation()
             }
         }
+
+        fun get(id: String) = map.get(id)
 
         override fun toString() = map.toString()
     }
