@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.Arrays;
 
+import static org.lwjgl.opengl.GL43.GL_DEBUG_SOURCE_SHADER_COMPILER;
 import static org.lwjgl.opengl.GL43.GL_DEBUG_TYPE_ERROR;
 
 @Mixin(GlDebug.class)
@@ -28,9 +29,10 @@ public class GlDebugMixin {
             String s,
             Object o,
             Operation<Void> original,
+            @Local(argsOnly = true, ordinal = 0) int source,
             @Local(argsOnly = true, ordinal = 1) int type
     ) {
-        if (type == GL_DEBUG_TYPE_ERROR) {
+        if (type == GL_DEBUG_TYPE_ERROR && source != GL_DEBUG_SOURCE_SHADER_COMPILER) {
             GlError error = new GlError(o.toString());
             error.setStackTrace(Arrays.copyOfRange(error.getStackTrace(), 4, error.getStackTrace().length));
             throw error;
