@@ -16,17 +16,17 @@ object NeoShaderLoader : SynchronousReloadListener {
     override fun reload(manager: ResourceManager) {
         var loaded = 0
 
+        NeoShader.REGISTRY.values.removeIf { shader ->
+            shader.release()
+            true
+        }
+
         for (entry in jsonIdConverter.listMatchingResources(manager)) {
             entry.value.openAsReader().use { jsonReader ->
                 val id = jsonIdConverter.fileToId(entry.key)
-                NeoShader.REGISTRY.remove(id)?.release()
 
                 val json = JsonParser.parseReader(jsonReader).asJsonObject
-                val format = json.get("format")
-
-                if (format == null) {
-                    throw NullPointerException("Shader $id is missing vertex format")
-                }
+                val format = json.get("format") ?: throw NullPointerException("Shader $id is missing vertex format")
 
                 val builder = NeoShader.Builder(
                     id,

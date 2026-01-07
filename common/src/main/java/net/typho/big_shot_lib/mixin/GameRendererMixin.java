@@ -27,7 +27,7 @@ public class GameRendererMixin {
             )
     )
     private void render(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
-        for (NeoWindow window : NeoWindow.Companion.getAUTO_RENDER()) {
+        for (NeoWindow window : NeoWindow.AUTO_RENDER) {
             glfwMakeContextCurrent(window.handle());
             //try (var bound = window.framebuffer().bind()) {
             window.render(deltaTracker);

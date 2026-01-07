@@ -38,4 +38,6 @@ class BuiltinShader(val inner: ShaderInstance) : IShader {
     override fun getLocations() = inner.getLocations()
 
     override fun setLocations(locations: ShaderLocationsInfo?) = inner.setLocations(locations)
+
+    override fun getBuiltin() = inner
 }

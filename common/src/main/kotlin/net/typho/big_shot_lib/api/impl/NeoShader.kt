@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.DirectSampler
 import net.typho.big_shot_lib.api.DirectUniform
 import net.typho.big_shot_lib.api.IShader
+import net.typho.big_shot_lib.api.peer.ShaderPeer
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.error.ShaderLinkException
 import net.typho.big_shot_lib.gl.resource.GlResourceType
@@ -45,6 +46,7 @@ open class NeoShader(
 
     protected val uniforms = HashMap<String, DirectUniform?>()
     protected val samplers = HashMap<String, DirectSampler?>()
+    protected val peer = ShaderPeer.create(this)
 
     override fun getLocations() = locations
 
@@ -93,6 +95,8 @@ open class NeoShader(
     }
 
     override fun vertexFormat() = format
+
+    override fun getBuiltin() = peer
 
     open class Builder(
         val location: ResourceLocation,

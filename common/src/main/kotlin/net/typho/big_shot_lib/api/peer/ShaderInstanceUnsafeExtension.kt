@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.peer
 
 import com.mojang.blaze3d.shaders.Program
+import com.mojang.blaze3d.shaders.Uniform
 import com.mojang.blaze3d.vertex.VertexFormat
 
 interface ShaderInstanceUnsafeExtension {
@@ -14,5 +15,7 @@ interface ShaderInstanceUnsafeExtension {
 
     fun setFormat(format: VertexFormat)
 
-    fun init()
+    fun getUniforms(): List<Uniform>
+
+    fun initialize()
 }

@@ -1,6 +1,9 @@
 package net.typho.big_shot_lib.mixin;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mojang.blaze3d.shaders.Program;
+import com.mojang.blaze3d.shaders.Shader;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -10,20 +13,25 @@ import net.typho.big_shot_lib.spirv.ShaderLocationsInfo;
 import net.typho.big_shot_lib.spirv.ShaderMixinCallback;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.nio.IntBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.function.IntSupplier;
 
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
+
 @Mixin(ShaderInstance.class)
 @Implements({
         @Interface(iface = ShaderInstanceLocationsExtension.class, prefix = "locations$"),
-        @Interface(iface = ShaderInstanceUnsafeExtension.class, prefix = "unsafe$"),
+        @Interface(iface = ShaderInstanceUnsafeExtension.class, prefix = "unsafe$")
 })
 public abstract class ShaderInstanceMixin {
     @Shadow
@@ -138,6 +146,12 @@ public abstract class ShaderInstanceMixin {
     @Nullable
     public abstract Uniform getUniform(String name);
 
+    @Shadow
+    public abstract void markDirty();
+
+    @Shadow
+    protected abstract void updateLocations();
+
     @Unique
     private ShaderLocationsInfo big_shot_lib$locations = ShaderMixinCallback.enabled ? new ShaderLocationsInfo(false) : null;
 
@@ -211,7 +225,74 @@ public abstract class ShaderInstanceMixin {
         vertexFormat = format;
     }
 
-    public void unsafe$init() {
+    public @NotNull List<Uniform> unsafe$getUniforms() {
+        return uniforms;
+    }
+
+    public void unsafe$initialize() {
+        samplerMap = Maps.newHashMap();
+        samplerNames = Lists.newArrayList();
+        samplerLocations = Lists.newArrayList();
+        uniforms = Lists.newArrayList();
+        uniformLocations = Lists.newArrayList();
+        uniformMap = Maps.newHashMap();
+
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer sizeBuf = stack.mallocInt(1);
+            IntBuffer typeBuf = stack.mallocInt(1);
+            int numUniforms = glGetProgrami(programId, GL_ACTIVE_UNIFORMS);
+
+            for (int i = 0; i < numUniforms; i++) {
+                String name = glGetActiveUniform(programId, i, sizeBuf, typeBuf);
+                int type = typeBuf.get(0);
+
+                switch (type) {
+                    case GL_SAMPLER_2D,
+                         GL_SAMPLER_3D,
+                         GL_SAMPLER_CUBE,
+                         GL_SAMPLER_2D_SHADOW,
+                         GL_INT_SAMPLER_2D,
+                         GL_UNSIGNED_INT_SAMPLER_2D,
+                         GL_SAMPLER_2D_ARRAY,
+                         GL_SAMPLER_CUBE_SHADOW,
+                         GL_SAMPLER_2D_ARRAY_SHADOW: {
+                        samplerMap.put(name, null);
+                        samplerNames.add(name);
+                        break;
+                    }
+                    default: {
+                        int index = switch (type) {
+                            case GL_INT_VEC2, GL_INT_VEC3, GL_INT_VEC4 -> 0;
+                            case GL_FLOAT_VEC2, GL_FLOAT_VEC3, GL_FLOAT_VEC4 -> 4;
+                            case GL_FLOAT_MAT2 -> 8;
+                            case GL_FLOAT_MAT3 -> 9;
+                            case GL_FLOAT_MAT4 -> 10;
+                            default -> -1;
+                        };
+                        int count = switch (type) {
+                            case GL_INT_VEC2, GL_FLOAT_VEC2 -> 2;
+                            case GL_INT_VEC3, GL_FLOAT_VEC3 -> 3;
+                            case GL_INT_VEC4, GL_FLOAT_VEC4, GL_FLOAT_MAT2 -> 4;
+                            case GL_FLOAT_MAT3 -> 9;
+                            case GL_FLOAT_MAT4 -> 16;
+                            default -> -1;
+                        };
+                        uniforms.add(new Uniform(name, index + (count > 1 && count <= 4 && index < 8 ? count - 1 : 0), count, (Shader) this));
+                    }
+                }
+            }
+        }
+
+        int j = 0;
+
+        for (String string3 : vertexFormat.getElementAttributeNames()) {
+            Uniform.glBindAttribLocation(programId, j, string3);
+            j++;
+        }
+
+        updateLocations();
+        markDirty();
+
         big_shot_lib$locations = ShaderMixinCallback.enabled ? new ShaderLocationsInfo(false) : null;
 
         MODEL_VIEW_MATRIX = getUniform("ModelViewMat");

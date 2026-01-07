@@ -16,6 +16,7 @@ abstract class NeoWindow(
     val bufferSource: MultiBufferSource.BufferSource
 ) : IWindow {
     companion object {
+        @JvmField
         val AUTO_RENDER = LinkedList<NeoWindow>()
     }
 
