@@ -8,8 +8,7 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://fabricmc.net/",
-        "sources": "https://github.com/FabricMC/fabric-example-mod"
+        "sources": "https://github.com/TheTypholorian/big_shot_lib"
     },
     "license": "${license}",
     "icon": "${mod_id}.png",
