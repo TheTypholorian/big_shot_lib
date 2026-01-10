@@ -45,6 +45,7 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-${libs.versions.parchmentMC.get()}:${libs.versions.parchment.get()}@zip")
     })
     modImplementation(libs.fabricLoader)
+    modImplementation(libs.fabricApi)
 
     modImplementation(libs.flk)
 
