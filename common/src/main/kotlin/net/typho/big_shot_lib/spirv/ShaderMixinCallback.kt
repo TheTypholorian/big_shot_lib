@@ -10,6 +10,7 @@ import net.typho.big_shot_lib.spirv.mixin.BreezeWindShaderFix
 import net.typho.big_shot_lib.spirv.mixin.ShaderLocationMapper
 import net.typho.big_shot_lib.spirv.mixin.ShaderVersionUpdater
 import org.jetbrains.annotations.ApiStatus
+import org.lwjgl.opengl.GL
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.shaderc.Shaderc.*
 import java.nio.ByteBuffer
@@ -45,11 +46,15 @@ interface ShaderMixinCallback {
         init {
             if (enabled) {
                 BigShotLib.LOGGER.info("Enabling shader mixins")
+
+                if (!GL.getCapabilities().GL_ARB_gl_spirv) {
+                    throw UnsupportedOperationException("Big Shot Lib Shader Mixins need opengl extension GL_ARB_gl_spirv")
+                }
             }
 
             shaderc_compile_options_set_target_env(options, shaderc_target_env_opengl, shaderc_env_version_opengl_4_5)
             shaderc_compile_options_set_source_language(options, shaderc_source_language_glsl)
-            shaderc_compile_options_set_target_spirv(options, shaderc_spirv_version_1_5)
+            shaderc_compile_options_set_target_spirv(options, shaderc_spirv_version_1_0)
 
             /*
             shaderc_compile_options_set_include_callbacks(
