@@ -5,12 +5,13 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.IShader
+import net.typho.big_shot_lib.gl.resource.ExtraUnbind
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.spirv.ShaderInstanceLocationsExtension.Companion.getLocations
 import net.typho.big_shot_lib.spirv.ShaderInstanceLocationsExtension.Companion.setLocations
 import net.typho.big_shot_lib.spirv.ShaderLocationsInfo
 
-class BuiltinShader(val inner: ShaderInstance) : IShader {
+class BuiltinShader(val inner: ShaderInstance) : IShader, ExtraUnbind {
     override fun getUniform(name: String): AbstractUniform? = inner.getUniform(name)
 
     override fun setSampler(name: String, id: Int) = inner.setSampler(name, id)
@@ -22,6 +23,10 @@ class BuiltinShader(val inner: ShaderInstance) : IShader {
     }
 
     override fun unbind() {
+        unbindExtra()
+    }
+
+    override fun unbindExtra() {
         inner.clear()
     }
 

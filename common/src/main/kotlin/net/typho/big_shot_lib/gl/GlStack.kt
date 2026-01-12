@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.gl
 
 import net.typho.big_shot_lib.api.IIndexedBuffer
+import net.typho.big_shot_lib.gl.resource.ExtraUnbind
 import net.typho.big_shot_lib.gl.resource.GlIndexedBufferType
 import net.typho.big_shot_lib.gl.resource.GlResourceInstance
 import net.typho.big_shot_lib.gl.resource.GlResourceType
@@ -29,7 +30,11 @@ class GlStack : AutoCloseable {
         if (type == null) {
             miscBound.add(resource)
         } else {
-            boundMap.put(type, resource)
+            val bound = boundMap.put(type, resource)
+
+            if (bound is ExtraUnbind) {
+                bound.unbindExtra()
+            }
         }
     }
 

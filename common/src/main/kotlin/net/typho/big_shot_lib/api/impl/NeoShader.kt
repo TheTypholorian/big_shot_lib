@@ -7,6 +7,7 @@ import net.typho.big_shot_lib.api.DirectUniform
 import net.typho.big_shot_lib.api.IShader
 import net.typho.big_shot_lib.error.ShaderCompileException
 import net.typho.big_shot_lib.error.ShaderLinkException
+import net.typho.big_shot_lib.gl.resource.ExtraUnbind
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.spirv.ShaderLocationsInfo
@@ -24,7 +25,7 @@ open class NeoShader(
     protected val location: ResourceLocation,
     protected val id: Int,
     protected val format: VertexFormat
-) : IShader {
+) : IShader, ExtraUnbind {
     companion object {
         const val PATH = "neo/shaders"
         @JvmField
@@ -58,7 +59,10 @@ open class NeoShader(
 
     override fun unbind() {
         super.unbind()
+        unbindExtra()
+    }
 
+    override fun unbindExtra() {
         for (sampler in samplers.values) {
             sampler?.let {
                 GlResourceType.SAMPLERS[it.unit].unbind()

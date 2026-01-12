@@ -15,8 +15,8 @@ interface GlResourceInstance {
     fun bind() = type()!!.bind(id())
 
     fun bind(stack: GlStack) {
-        bind()
         stack.bind(this)
+        bind()
     }
 
     fun unbind() = type()!!.unbind()
