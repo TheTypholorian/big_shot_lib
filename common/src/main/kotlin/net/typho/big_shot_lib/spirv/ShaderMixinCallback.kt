@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.spirv
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.BigShotLib
@@ -47,8 +48,10 @@ interface ShaderMixinCallback {
             if (enabled) {
                 BigShotLib.LOGGER.info("Enabling shader mixins")
 
-                if (!GL.getCapabilities().GL_ARB_gl_spirv) {
-                    throw UnsupportedOperationException("Big Shot Lib Shader Mixins need opengl extension GL_ARB_gl_spirv")
+                RenderSystem.recordRenderCall {
+                    if (!GL.getCapabilities().GL_ARB_gl_spirv) {
+                        throw UnsupportedOperationException("Big Shot Lib Shader Mixins need opengl extension GL_ARB_gl_spirv")
+                    }
                 }
             }
 
