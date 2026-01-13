@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.spirv.ShaderMixinCallback
 
 object BreezeWindShaderFix : ShaderMixinCallback {
-    override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, code: String): String {
+    override fun mixinPreCompile(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, code: String): String {
         if (shader == ResourceLocation.withDefaultNamespace("rendertype_breeze_wind")) {
             return code.replace("out vec4 lightMapColor;", "")
                 .replace("lightMapColor =", "vec4 lightMapColor =")

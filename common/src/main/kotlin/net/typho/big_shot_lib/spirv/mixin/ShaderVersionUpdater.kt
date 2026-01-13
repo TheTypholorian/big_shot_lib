@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.spirv.ShaderMixinCallback
 
 object ShaderVersionUpdater : ShaderMixinCallback {
-    override fun mixinGLSL(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, code: String): String {
+    override fun mixinPreCompile(shader: ResourceLocation, type: ShaderType, format: VertexFormat?, code: String): String {
         if (code.startsWith("#version")) {
             val version =
                 code.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1].toInt()

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.typho.big_shot_lib.spirv.ShaderInstanceLocationsExtension;
-import net.typho.big_shot_lib.spirv.ShaderMixinCallback;
+import net.typho.big_shot_lib.spirv.ShaderMixinManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,9 +23,9 @@ public class ShaderInstanceMixin {
             )
     )
     private void setThreadLocal(ResourceProvider resourceProvider, String name, VertexFormat vertexFormat, CallbackInfo ci) {
-        if (ShaderMixinCallback.enabled) {
-            ShaderMixinCallback.currentVertexFormat.set(vertexFormat);
-            ShaderMixinCallback.currentLocationsInfo.set(Objects.requireNonNull(((ShaderInstanceLocationsExtension) this).getLocations()));
+        if (ShaderMixinManager.enabled) {
+            ShaderMixinManager.currentVertexFormat.set(vertexFormat);
+            ShaderMixinManager.currentLocationsInfo.set(Objects.requireNonNull(((ShaderInstanceLocationsExtension) this).getLocations()));
         }
     }
 
@@ -37,9 +37,9 @@ public class ShaderInstanceMixin {
             )
     )
     private void clearThreadLocal(ResourceProvider resourceProvider, String name, VertexFormat vertexFormat, CallbackInfo ci) {
-        if (ShaderMixinCallback.enabled) {
-            ShaderMixinCallback.currentVertexFormat.remove();
-            ShaderMixinCallback.currentLocationsInfo.remove();
+        if (ShaderMixinManager.enabled) {
+            ShaderMixinManager.currentVertexFormat.remove();
+            ShaderMixinManager.currentLocationsInfo.remove();
         }
     }
 }

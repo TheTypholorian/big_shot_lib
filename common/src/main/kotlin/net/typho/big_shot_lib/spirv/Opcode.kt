@@ -89,7 +89,7 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
 
         fun putBytes(bytes: ByteArray?): Builder {
             bytes?.let {
-                this.bytes += Byte.SIZE_BYTES
+                this.bytes += bytes.size * Byte.SIZE_BYTES
                 tokens.add { buffer -> buffer.put(bytes) }
             }
             return this
@@ -97,7 +97,7 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
 
         fun putBytes(bytes: ByteBuffer?): Builder {
             bytes?.let {
-                this.bytes += Byte.SIZE_BYTES
+                this.bytes += bytes.capacity() * Byte.SIZE_BYTES
                 tokens.add { buffer -> buffer.put(bytes) }
             }
             return this
@@ -113,7 +113,7 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
 
         fun putShorts(shorts: ShortArray?): Builder {
             shorts?.let {
-                bytes += Short.SIZE_BYTES
+                bytes += shorts.size * Short.SIZE_BYTES
                 tokens.add { buffer -> buffer.asShortBuffer().put(shorts) }
             }
             return this
@@ -121,7 +121,7 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
 
         fun putShorts(shorts: ShortBuffer?): Builder {
             shorts?.let {
-                bytes += Short.SIZE_BYTES
+                bytes += shorts.capacity() * Short.SIZE_BYTES
                 tokens.add { buffer -> buffer.asShortBuffer().put(shorts) }
             }
             return this
@@ -137,7 +137,7 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
 
         fun putInts(ints: IntArray?): Builder {
             ints?.let {
-                bytes += Int.SIZE_BYTES
+                bytes += ints.size * Int.SIZE_BYTES
                 tokens.add { buffer -> buffer.asIntBuffer().put(ints) }
             }
             return this
@@ -145,7 +145,7 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
 
         fun putInts(ints: IntBuffer?): Builder {
             ints?.let {
-                bytes += Int.SIZE_BYTES
+                bytes += ints.capacity() * Int.SIZE_BYTES
                 tokens.add { buffer -> buffer.asIntBuffer().put(ints) }
             }
             return this
@@ -161,7 +161,7 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
 
         fun putFloats(floats: FloatArray?): Builder {
             floats?.let {
-                bytes += Float.SIZE_BYTES
+                bytes += floats.size * Float.SIZE_BYTES
                 tokens.add { buffer -> buffer.asFloatBuffer().put(floats) }
             }
             return this
@@ -169,7 +169,7 @@ data class Opcode(val index: Int, val id: Int, val length: Int) {
 
         fun putFloats(floats: FloatBuffer?): Builder {
             floats?.let {
-                bytes += Float.SIZE_BYTES
+                bytes += floats.capacity() * Float.SIZE_BYTES
                 tokens.add { buffer -> buffer.asFloatBuffer().put(floats) }
             }
             return this

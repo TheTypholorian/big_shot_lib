@@ -37,6 +37,7 @@ dependencies {
     annotationProcessor(libs.mixinExtras.common)
 
     implementation("org.lwjgl:lwjgl-shaderc:3.3.3")
+    implementation("org.lwjgl:lwjgl-spvc:3.3.3")
     implementation(libs.sodium)
 }
 

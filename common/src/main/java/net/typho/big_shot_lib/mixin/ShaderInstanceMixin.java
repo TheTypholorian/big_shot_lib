@@ -4,7 +4,7 @@ import com.mojang.blaze3d.shaders.Uniform;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.typho.big_shot_lib.spirv.ShaderInstanceLocationsExtension;
 import net.typho.big_shot_lib.spirv.ShaderLocationsInfo;
-import net.typho.big_shot_lib.spirv.ShaderMixinCallback;
+import net.typho.big_shot_lib.spirv.ShaderMixinManager;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.*;
@@ -52,7 +52,7 @@ public abstract class ShaderInstanceMixin {
     private String name;
 
     @Unique
-    private ShaderLocationsInfo big_shot_lib$locations = ShaderMixinCallback.enabled ? new ShaderLocationsInfo(false) : null;
+    private ShaderLocationsInfo big_shot_lib$locations = ShaderMixinManager.enabled ? new ShaderLocationsInfo(false) : null;
 
     @Inject(
             method = "updateLocations",

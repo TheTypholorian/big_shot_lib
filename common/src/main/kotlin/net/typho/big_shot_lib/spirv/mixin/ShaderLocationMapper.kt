@@ -3,13 +3,15 @@ package net.typho.big_shot_lib.spirv.mixin
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.gl.resource.ShaderType
+import net.typho.big_shot_lib.spirv.Opcode
 import net.typho.big_shot_lib.spirv.ShaderLocationsInfo
 import net.typho.big_shot_lib.spirv.ShaderMixinCallback
 import net.typho.big_shot_lib.spirv.ShaderMixinContext
 import net.typho.big_shot_lib.spirv.ShaderMixinContext.Companion.WORD_SIZE_BYTES
+import java.util.*
 
 object ShaderLocationMapper : ShaderMixinCallback {
-    override fun mixinSpirV(
+    override fun mixinPostCompile(
         shader: ResourceLocation,
         type: ShaderType,
         format: VertexFormat?,
@@ -17,11 +19,11 @@ object ShaderLocationMapper : ShaderMixinCallback {
         locations: ShaderLocationsInfo
     ) {
         for (opcode in context) {
-            if (opcode.id == 71) { // OpDecorate
+            if (opcode.id == Opcode.OP_DECORATE) {
                 val id = context.code.getInt((opcode.index + 1) * WORD_SIZE_BYTES)
 
                 for (opcode1 in context) {
-                    if (opcode1.id == 59) { // OpVariable
+                    if (opcode1.id == Opcode.OP_VARIABLE) {
                         val checkId = context.code.getInt((opcode1.index + 2) * WORD_SIZE_BYTES)
 
                         if (checkId == id) {
@@ -34,7 +36,7 @@ object ShaderLocationMapper : ShaderMixinCallback {
                                     var name: String? = null
 
                                     for (opcode2 in context) {
-                                        if (opcode2.id == 5) { // OpName
+                                        if (opcode2.id == Opcode.OP_NAME) {
                                             val checkId1 = context.code.getInt((opcode2.index + 1) * WORD_SIZE_BYTES)
 
                                             if (checkId1 == id) {
@@ -65,6 +67,25 @@ object ShaderLocationMapper : ShaderMixinCallback {
                     }
                 }
             }
+        }
+
+        val toRemove = LinkedList<Opcode>()
+
+        for (opcode in context) {
+            if (opcode.id == Opcode.OP_DECORATE) {
+                val decoration = context.code.getInt((opcode.index + 2) * WORD_SIZE_BYTES)
+
+                if (decoration == 33) { // Binding
+                    toRemove.add(opcode)
+                }
+            }
+        }
+
+        var offset = 0
+
+        for (opcode in toRemove) {
+            context.splice(opcode.index - offset, opcode.length * WORD_SIZE_BYTES)
+            offset += opcode.length
         }
     }
 }

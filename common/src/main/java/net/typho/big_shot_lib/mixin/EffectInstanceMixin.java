@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.typho.big_shot_lib.spirv.ShaderInstanceLocationsExtension;
 import net.typho.big_shot_lib.spirv.ShaderLocationsInfo;
-import net.typho.big_shot_lib.spirv.ShaderMixinCallback;
+import net.typho.big_shot_lib.spirv.ShaderMixinManager;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.*;
@@ -46,7 +46,7 @@ public class EffectInstanceMixin {
     @Final
     private String name;
     @Unique
-    private final ShaderLocationsInfo big_shot_lib$locations = ShaderMixinCallback.enabled ? new ShaderLocationsInfo(false) : null;
+    private final ShaderLocationsInfo big_shot_lib$locations = ShaderMixinManager.enabled ? new ShaderLocationsInfo(false) : null;
 
     @Inject(
             method = "<init>",
@@ -57,9 +57,9 @@ public class EffectInstanceMixin {
             )
     )
     private void setThreadLocal(ResourceProvider resourceProvider, String name, CallbackInfo ci) {
-        if (ShaderMixinCallback.enabled) {
-            ShaderMixinCallback.currentVertexFormat.set(DefaultVertexFormat.BLIT_SCREEN);
-            ShaderMixinCallback.currentLocationsInfo.set(big_shot_lib$locations);
+        if (ShaderMixinManager.enabled) {
+            ShaderMixinManager.currentVertexFormat.set(DefaultVertexFormat.BLIT_SCREEN);
+            ShaderMixinManager.currentLocationsInfo.set(big_shot_lib$locations);
         }
     }
 
@@ -71,9 +71,9 @@ public class EffectInstanceMixin {
             )
     )
     private void clearThreadLocal(ResourceProvider resourceProvider, String name, CallbackInfo ci) {
-        if (ShaderMixinCallback.enabled) {
-            ShaderMixinCallback.currentVertexFormat.remove();
-            ShaderMixinCallback.currentLocationsInfo.remove();
+        if (ShaderMixinManager.enabled) {
+            ShaderMixinManager.currentVertexFormat.remove();
+            ShaderMixinManager.currentLocationsInfo.remove();
         }
     }
 

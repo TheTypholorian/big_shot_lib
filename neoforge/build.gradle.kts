@@ -93,6 +93,10 @@ dependencies {
     lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
     lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
     lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
+    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3")
+    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-windows")
+    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
+    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
     implementation(libs.sodium)
 }

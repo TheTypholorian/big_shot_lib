@@ -53,6 +53,16 @@ class ShaderMixinContext(@JvmField var code: ByteBuffer) : Iterable<Opcode> {
         code = newBuffer
     }
 
+    fun splice(words: Int, size: Int) {
+        val bytes = words * WORD_SIZE_BYTES
+        val newBuffer = ByteBuffer.allocate(code.capacity() - size).order(BYTE_ORDER)
+
+        newBuffer.put(0, code, 0, bytes)
+        newBuffer.put(bytes, code, bytes + size, code.capacity() - (bytes + size))
+
+        code = newBuffer
+    }
+
     fun inject(words: Int, vararg inject: ByteBuffer) {
         var bytes = words * WORD_SIZE_BYTES
         var size = 0

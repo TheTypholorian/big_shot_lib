@@ -6,7 +6,7 @@ import net.caffeinemc.mods.sodium.client.render.chunk.ShaderChunkRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.shader.ChunkShaderInterface;
 import net.caffeinemc.mods.sodium.client.render.chunk.shader.ChunkShaderOptions;
 import net.typho.big_shot_lib.spirv.ShaderLocationsInfo;
-import net.typho.big_shot_lib.spirv.ShaderMixinCallback;
+import net.typho.big_shot_lib.spirv.ShaderMixinManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,9 +21,9 @@ public class ShaderChunkRendererMixin {
             at = @At("HEAD")
     )
     private void createShader1(String path, ChunkShaderOptions options, CallbackInfoReturnable<GlProgram<ChunkShaderInterface>> cir) {
-        if (ShaderMixinCallback.enabled) {
-            ShaderMixinCallback.currentVertexFormat.set(DefaultVertexFormat.POSITION_TEX_COLOR);
-            ShaderMixinCallback.currentLocationsInfo.set(new ShaderLocationsInfo(false));
+        if (ShaderMixinManager.enabled) {
+            ShaderMixinManager.currentVertexFormat.set(DefaultVertexFormat.POSITION_TEX_COLOR);
+            ShaderMixinManager.currentLocationsInfo.set(new ShaderLocationsInfo(false));
         }
     }
 
@@ -32,9 +32,9 @@ public class ShaderChunkRendererMixin {
             at = @At("TAIL")
     )
     private void createShader2(String path, ChunkShaderOptions options, CallbackInfoReturnable<GlProgram<ChunkShaderInterface>> cir) {
-        if (ShaderMixinCallback.enabled) {
-            ShaderMixinCallback.currentVertexFormat.remove();
-            ShaderMixinCallback.currentLocationsInfo.remove();
+        if (ShaderMixinManager.enabled) {
+            ShaderMixinManager.currentVertexFormat.remove();
+            ShaderMixinManager.currentLocationsInfo.remove();
         }
     }
 }

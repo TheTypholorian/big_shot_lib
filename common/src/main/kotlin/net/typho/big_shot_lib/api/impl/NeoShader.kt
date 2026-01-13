@@ -11,12 +11,8 @@ import net.typho.big_shot_lib.gl.resource.ExtraUnbind
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.spirv.ShaderLocationsInfo
-import net.typho.big_shot_lib.spirv.ShaderMixinCallback
-import org.lwjgl.opengl.ARBGLSPIRV.GL_SHADER_BINARY_FORMAT_SPIR_V_ARB
-import org.lwjgl.opengl.ARBGLSPIRV.glSpecializeShaderARB
+import net.typho.big_shot_lib.spirv.ShaderMixinManager
 import org.lwjgl.opengl.GL20.*
-import org.lwjgl.opengl.GL41.glShaderBinary
-import org.lwjgl.system.MemoryUtil
 import java.util.*
 
 open class NeoShader(
@@ -103,19 +99,20 @@ open class NeoShader(
         val format: VertexFormat,
         val hasGeometryShader: Boolean
     ) {
-        val locations = if (ShaderMixinCallback.enabled) ShaderLocationsInfo(hasGeometryShader) else null
+        val locations = if (ShaderMixinManager.enabled) ShaderLocationsInfo(hasGeometryShader) else null
         val sources = LinkedList<Int>()
 
         fun attach(
             type: ShaderType,
             fileName: String,
             source: String,
-            entrypoint: String = "main"
+            entrypoint: String = ShaderMixinManager.DEFAULT_ENTRYPOINT
         ) {
             val id = glCreateShader(type.id)
+            var newSource = IShader.resolveIncludes(source)
 
-            if (ShaderMixinCallback.enabled) {
-                val compiled = ShaderMixinCallback.compile(
+            if (ShaderMixinManager.enabled) {
+                newSource = ShaderMixinManager.apply(
                     location,
                     type,
                     format,
@@ -124,15 +121,10 @@ open class NeoShader(
                     IShader.resolveIncludes(source),
                     entrypoint
                 )
-
-                glShaderBinary(intArrayOf(id), GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, compiled)
-                glSpecializeShaderARB(id, "main", intArrayOf(), intArrayOf())
-
-                MemoryUtil.memFree(compiled)
-            } else {
-                glShaderSource(id, IShader.resolveIncludes(source))
-                glCompileShader(id)
             }
+
+            glShaderSource(id, newSource)
+            glCompileShader(id)
 
             if (glGetShaderi(id, GL_COMPILE_STATUS) == GL_FALSE) {
                 throw ShaderCompileException("Error compiling ${type.key} shader for $location:\n${glGetShaderInfoLog(id).trim()}")
