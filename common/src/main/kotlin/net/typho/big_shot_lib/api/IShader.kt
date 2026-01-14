@@ -46,16 +46,21 @@ interface IShader : GlResourceInstance {
     companion object {
         @JvmStatic
         fun loadInclude(location: ResourceLocation): ByteArray {
-            val resource = Minecraft.getInstance().resourceManager.getResourceOrThrow(
-                location.withPath { path ->
-                    if (path.contains('.')) {
-                        return@withPath "${NeoShader.PATH}/$path"
-                    } else {
-                        return@withPath "${NeoShader.PATH}/$path.glsl"
-                    }
+            val path = location.withPath { path ->
+                if (path.contains('.')) {
+                    return@withPath "$path"
+                } else {
+                    return@withPath "$path.glsl"
                 }
-            )
-            return resource.open().use(InputStream::readAllBytes)
+            }
+
+            val resourceManager = Minecraft.getInstance().resourceManager
+
+            return resourceManager.getResource(path.withPrefix("${NeoShader.PATH}/"))
+                .or { resourceManager.getResource(path.withPrefix("shaders/include/")) }
+                .orElseThrow()
+                .open()
+                .use(InputStream::readAllBytes)
         }
 
         @JvmStatic
