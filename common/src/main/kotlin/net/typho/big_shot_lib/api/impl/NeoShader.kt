@@ -16,7 +16,6 @@ import org.lwjgl.opengl.GL20.*
 import java.util.*
 
 open class NeoShader(
-    private var locations: ShaderLocationsInfo?,
     val hasGeometryShader: Boolean,
     protected val location: ResourceLocation,
     protected val id: Int,
@@ -43,12 +42,6 @@ open class NeoShader(
     protected val uniforms = HashMap<String, DirectUniform?>()
     protected val samplers = HashMap<String, DirectSampler?>()
 
-    override fun getLocations() = locations
-
-    override fun setLocations(locations: ShaderLocationsInfo?) {
-        this.locations = locations
-    }
-
     override fun release() {
         glDeleteProgram(id())
     }
@@ -73,9 +66,7 @@ open class NeoShader(
     override fun id(): Int = id
 
     override fun getUniform(name: String) = uniforms.computeIfAbsent(name) {
-        val location = locations?.uniforms?.get(name) ?: glGetUniformLocation(id(), name)
-
-        locations?.uniforms?.map?.put(name, location)
+        val location = glGetUniformLocation(id(), name)
 
         if (location == -1) {
             return@computeIfAbsent null
@@ -151,7 +142,7 @@ open class NeoShader(
                 glDeleteShader(source)
             }
 
-            return NeoShader(locations, hasGeometryShader, location, id, format)
+            return NeoShader(hasGeometryShader, location, id, format)
         }
     }
 }
