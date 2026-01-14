@@ -8,16 +8,16 @@ interface GlResourceInstance {
 
     fun location(): ResourceLocation?
 
-    fun type(): GlResourceType?
+    fun type(): GlResourceType
 
     fun id(): Int
 
-    fun bind() = type()!!.bind(id())
+    fun bind() = type().bind(id())
 
     fun bind(stack: GlStack) {
         stack.bind(this)
         bind()
     }
 
-    fun unbind() = type()!!.unbind()
+    fun unbind() = type().unbind()
 }

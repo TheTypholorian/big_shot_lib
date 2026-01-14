@@ -11,8 +11,8 @@ interface IIndexedBuffer : IBuffer {
     }
 
     fun bindBase(stack: GlStack, index: Int) {
-        bindBase(index)
         stack.bindBase(this, index)
+        bindBase(index)
     }
 
     fun unbindBase(index: Int) {

@@ -8,13 +8,10 @@ import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.state.GlCapability
 import net.typho.big_shot_lib.gl.state.GlState
 import java.lang.AutoCloseable
-import java.util.*
 
 class GlStack : AutoCloseable {
     @JvmField
     val boundMap = HashMap<GlResourceType, GlResourceInstance>()
-    @JvmField
-    val miscBound = LinkedList<GlResourceInstance>()
     @JvmField
     val defaultStates = HashMap<GlState<*>, Any>()
     @JvmField
@@ -25,21 +22,14 @@ class GlStack : AutoCloseable {
     val boundBases = HashMap<GlIndexedBufferType, HashMap<Int, IIndexedBuffer>>()
 
     fun bind(resource: GlResourceInstance) {
-        val type = resource.type()
+        val bound = boundMap.put(resource.type(), resource)
 
-        if (type == null) {
-            miscBound.add(resource)
-        } else {
-            val bound = boundMap.put(type, resource)
-
-            if (bound is ExtraUnbind) {
-                bound.unbindExtra()
-            }
+        if (bound is ExtraUnbind) {
+            bound.unbindExtra()
         }
     }
 
     fun bindBase(resource: IIndexedBuffer, index: Int) {
-        bind(resource as GlResourceInstance)
         boundBases.computeIfAbsent(resource.type()) { HashMap() }.put(index, resource)
     }
 
@@ -88,9 +78,6 @@ class GlStack : AutoCloseable {
     override fun close() {
         boundMap.values.forEach { it.unbind() }
         boundMap.clear()
-
-        miscBound.forEach { it.unbind() }
-        miscBound.clear()
 
         boundBases.forEach { type ->
             type.value.forEach { base ->
