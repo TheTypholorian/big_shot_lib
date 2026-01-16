@@ -19,6 +19,8 @@ import org.lwjgl.system.MemoryUtil.memFree
 import org.lwjgl.system.MemoryUtil.memUTF8
 import org.lwjgl.util.shaderc.Shaderc.*
 import org.lwjgl.util.spvc.Spvc.*
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.*
 
 object ShaderMixinManager {
@@ -51,7 +53,10 @@ object ShaderMixinManager {
     val spvcContext: Long
 
     @JvmField
-    val enabled = Services.PLATFORM.shaderMixinsEnabled()
+    val enabled = Services.PLATFORM.isFlagEnabled(BigShotLib.id("require_shader_mixins"))
+
+    @JvmField
+    val debug = Services.PLATFORM.isFlagEnabled(BigShotLib.id("debug_shader_mixins"))
 
     init {
         if (enabled) {
@@ -106,6 +111,12 @@ object ShaderMixinManager {
             modified = callback.mixinPreCompile(shader, type, format, modified)
         }
 
+        if (debug) {
+            val path = Paths.get("shader_dump", "pre_spirv", shader.namespace, shader.path + "." + type.extension)
+            Files.createDirectories(path.parent)
+            Files.writeString(path, modified)
+        }
+
         val result = shaderc_compile_into_spv(
             compiler,
             modified,
@@ -128,6 +139,13 @@ object ShaderMixinManager {
 
         for (callback in callbacks) {
             callback.mixinPostCompile(shader, type, format, context, locations)
+        }
+
+        if (debug) {
+            val array = ByteArray(context.code.capacity()) { i -> context.code.get(i) }
+            val path = Paths.get("shader_dump", "spirv", shader.namespace, shader.path + "." + type.extension + ".bin")
+            Files.createDirectories(path.parent)
+            Files.write(path, array)
         }
 
         val nativeBuffer = MemoryUtil.memAlloc(context.code.capacity())
@@ -231,8 +249,15 @@ object ShaderMixinManager {
             }
 
             memFree(nativeBuffer)
+            val finalCode = memUTF8(pCompiled.get(0))
 
-            return memUTF8(pCompiled.get(0))
+            if (debug) {
+                val path = Paths.get("shader_dump", "post_spirv", shader.namespace, shader.path + "." + type.extension)
+                Files.createDirectories(path.parent)
+                Files.writeString(path, finalCode)
+            }
+
+            return finalCode
         }
     }
 }
