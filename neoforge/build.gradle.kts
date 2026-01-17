@@ -79,24 +79,12 @@ dependencies {
 
     fun lwjglInclude(dependency: Any) {
         jarJar(dependency)
-        api(dependency)
-        additionalRuntimeClasspath(dependency)
-    }
-
-    fun lwjglNatives(dependency: Any) {
-        jarJar(dependency)
-        api(dependency)
+        implementation(dependency)
         additionalRuntimeClasspath(dependency)
     }
 
     lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
-    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
-    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
-    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
     lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3")
-    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-windows")
-    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
-    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
     implementation(libs.sodium)
 }

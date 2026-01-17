@@ -55,13 +55,7 @@ dependencies {
     }
 
     lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
-    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
-    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
-    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
     lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3")
-    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3:natives-windows")
-    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
-    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
     modImplementation(libs.sodium)
 }
