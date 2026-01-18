@@ -15,7 +15,7 @@ base {
 }
 
 modrinth {
-    token = Files.readString(project.rootDir.parentFile.resolve("modrinth_token.txt").toPath())
+//    token = Files.readString(project.rootDir.parentFile.resolve("modrinth_token.txt").toPath())
     projectId = "big-shot-lib"
     versionName = "$modName $version for Fabric 1.21"
     versionNumber = "mc1.21-$version-fabric"
