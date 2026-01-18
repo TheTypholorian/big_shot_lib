@@ -28,14 +28,5 @@ enum class ShaderType(
             Program.Type.VERTEX -> VERTEX
             Program.Type.FRAGMENT -> FRAGMENT
         }
-
-        @JvmStatic
-        fun fromSodiumType(type: net.caffeinemc.mods.sodium.client.gl.shader.ShaderType) = when (type) {
-            net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.VERTEX -> VERTEX
-            net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.GEOMETRY -> GEOMETRY
-            net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.TESS_CONTROL -> throw UnsupportedOperationException("Sodium tesselation control shaders are not supported by Big Shot Lib")
-            net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.TESS_EVALUATION -> throw UnsupportedOperationException("Sodium tesselation evaluation shaders are not supported by Big Shot Lib")
-            net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.FRAGMENT -> FRAGMENT
-        }
     }
 }

@@ -31,7 +31,13 @@ public class GlShaderMixin {
             @Local(argsOnly = true) String src
     ) {
         if (ShaderMixinManager.enabled) {
-            ShaderType type1 = ShaderType.fromSodiumType(type);
+            ShaderType type1 = switch (type) {
+                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.VERTEX -> ShaderType.VERTEX;
+                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.GEOMETRY -> ShaderType.GEOMETRY;
+                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.TESS_CONTROL -> throw new UnsupportedOperationException("Sodium tesselation control shaders are not supported by Big Shot Lib");
+                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.TESS_EVALUATION -> throw new UnsupportedOperationException("Sodium tesselation evaluation shaders are not supported by Big Shot Lib");
+                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.FRAGMENT -> ShaderType.FRAGMENT;
+            };
             return ShaderMixinManager.apply(
                     location.withPath(path -> path.substring(0, path.lastIndexOf('.'))),
                     type1,
