@@ -1,4 +1,5 @@
 import org.gradle.internal.extensions.stdlib.capitalized
+import java.io.FileNotFoundException
 import java.nio.file.Files
 
 plugins {
@@ -16,7 +17,12 @@ base {
 }
 
 modrinth {
-    token = Files.readString(project.rootDir.parentFile.resolve("modrinth_token.txt").toPath())
+    try {
+        token = Files.readString(project.rootDir.parentFile.resolve("modrinth_token.txt").toPath())
+    } catch (e: FileNotFoundException) {
+        e.printStackTrace()
+    }
+
     projectId = "big-shot-lib"
     versionName = "$modName $version for NeoForge 1.21"
     versionNumber = "mc1.21-$version-neoforge"
@@ -89,14 +95,14 @@ dependencies {
     }
 
     lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
-    //lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
-    //lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
-    //lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
+    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
+    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
+    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
 
     lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3")
-    //lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-windows")
-    //lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
-    //lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
+    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-windows")
+    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
+    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
     implementation(libs.sodium)
 }
