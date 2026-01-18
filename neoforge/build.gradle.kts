@@ -87,24 +87,13 @@ dependencies {
         jarJar(dependency)
         api(dependency)
         additionalRuntimeClasspath(dependency)
-        implementation(dependency)
-    }
-
-    fun lwjglNatives(dependency: Any) {
-        jarJar(dependency)
-        additionalRuntimeClasspath(dependency)
-        implementation(dependency)
     }
 
     lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
-    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
-    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
-    lwjglNatives("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
 
     lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3")
-    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-windows")
-    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
-    lwjglNatives("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
+
+    // natives for neoforge are in src/main/resources because neoforge is stupid
 
     implementation(libs.sodium)
 }
