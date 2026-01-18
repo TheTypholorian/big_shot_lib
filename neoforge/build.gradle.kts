@@ -87,11 +87,13 @@ dependencies {
         jarJar(dependency)
         api(dependency)
         additionalRuntimeClasspath(dependency)
+        implementation(dependency)
     }
 
     fun lwjglNatives(dependency: Any) {
         jarJar(dependency)
         additionalRuntimeClasspath(dependency)
+        implementation(dependency)
     }
 
     lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
