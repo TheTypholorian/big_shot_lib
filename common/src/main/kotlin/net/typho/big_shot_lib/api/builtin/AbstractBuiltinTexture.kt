@@ -2,10 +2,15 @@ package net.typho.big_shot_lib.api.builtin
 
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.typho.big_shot_lib.api.ITexture
+import net.typho.big_shot_lib.gl.InterpolationType
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import org.lwjgl.opengl.GL30.glFramebufferTexture2D
 
 abstract class AbstractBuiltinTexture<T : AbstractTexture>(val inner: T) : ITexture {
+    override fun setInterpolation(interpolation: InterpolationType) {
+        inner.setFilter(interpolation == InterpolationType.LINEAR, true)
+    }
+
     override fun type() = GlResourceType.TEXTURE_2D
 
     override fun release() {

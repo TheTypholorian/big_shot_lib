@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.impl
 
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.ITexture
+import net.typho.big_shot_lib.gl.InterpolationType
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.lwjgl.opengl.GL11.*
@@ -31,6 +32,13 @@ open class NeoTexture(
         glTexParameteri(type.glName, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
         unbind()
         type().label(id(), location().toString())
+    }
+
+    override fun setInterpolation(interpolation: InterpolationType) {
+        bind()
+        glTexParameteri(type.glName, GL_TEXTURE_MIN_FILTER, interpolation.id)
+        glTexParameteri(type.glName, GL_TEXTURE_MAG_FILTER, interpolation.id)
+        unbind()
     }
 
     override fun release() {

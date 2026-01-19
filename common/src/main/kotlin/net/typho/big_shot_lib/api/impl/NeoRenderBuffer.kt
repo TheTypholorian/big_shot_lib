@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.impl
 
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.api.ITexture
+import net.typho.big_shot_lib.api.IRenderBuffer
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.lwjgl.opengl.GL11.glDeleteTextures
@@ -11,7 +11,7 @@ open class NeoRenderBuffer(
     protected val location: ResourceLocation,
     protected val id: Int,
     protected val format: TextureFormat
-) : ITexture {
+) : IRenderBuffer {
     constructor(
         location: ResourceLocation,
         format: TextureFormat
