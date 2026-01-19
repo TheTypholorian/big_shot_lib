@@ -107,6 +107,9 @@ open class NeoFramebuffer(
         depthAttachment?.resize2D(width, height)
 
         unbind()
+
+        this.width = width
+        this.height = height
     }
 
     override fun clearColor(color: Vector4f) {
