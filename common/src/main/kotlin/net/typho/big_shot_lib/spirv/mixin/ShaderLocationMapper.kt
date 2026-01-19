@@ -33,8 +33,6 @@ object ShaderLocationMapper : ShaderMixinCallback {
                                 val storageClass = context.code.getInt((opcode1.index + 3) * WORD_SIZE_BYTES)
 
                                 locations.getMapper(storageClass, type)?.let { mapper ->
-                                    var name: String? = null
-
                                     for (opcode2 in context) {
                                         if (opcode2.id == Opcode.OP_NAME) {
                                             val checkId1 = context.code.getInt((opcode2.index + 1) * WORD_SIZE_BYTES)
@@ -42,23 +40,46 @@ object ShaderLocationMapper : ShaderMixinCallback {
                                             if (checkId1 == id) {
                                                 val contents = context.getOpcodeData(opcode2)
                                                 val contentsArray = contents.array()
-                                                name = String(
+                                                val name = String(
                                                     contentsArray,
                                                     WORD_SIZE_BYTES,
                                                     contentsArray.size - 2 * WORD_SIZE_BYTES
                                                 ).trim(0.toChar())
-                                                break
+
+                                                val typePointer = context.code.getInt((opcode1.index + 1) * WORD_SIZE_BYTES)
+
+                                                for (opcode3 in context) {
+                                                    if (opcode3.id == Opcode.OP_TYPE_POINTER) {
+                                                        val checkTypePointer = context.code.getInt((opcode3.index + 1) * WORD_SIZE_BYTES)
+
+                                                        if (checkTypePointer == typePointer) {
+                                                            val type = context.code.getInt((opcode3.index + 3) * WORD_SIZE_BYTES)
+                                                            var size = 1
+
+                                                            for (opcode4 in context) {
+                                                                if (opcode4.id == Opcode.OP_TYPE_MATRIX) {
+                                                                    val checkType = context.code.getInt((opcode4.index + 1) * WORD_SIZE_BYTES)
+
+                                                                    if (checkType == type) {
+                                                                        size = context.code.getInt((opcode4.index + 2) * WORD_SIZE_BYTES)
+                                                                        break
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            val index = (opcode.index + 3) * WORD_SIZE_BYTES
+                                                            val location = context.code.getInt(index)
+                                                            context.code.putInt(index, mapper.map(name, size, location))
+
+                                                            return@let
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
 
-                                    if (name == null) {
-                                        throw IllegalStateException("Shader variable of storage class $storageClass in $type shader of program $shader is missing an OpName, fix that")
-                                    }
-
-                                    val index = (opcode.index + 3) * WORD_SIZE_BYTES
-                                    val location = context.code.getInt(index)
-                                    context.code.putInt(index, mapper.map(name, location))
+                                    throw IllegalStateException("Shader variable of storage class $storageClass in $type shader of program $shader is missing an OpName, fix that")
                                 }
 
                                 break

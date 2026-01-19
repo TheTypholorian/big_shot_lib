@@ -56,7 +56,7 @@ object ShaderMixinManager {
     val enabled = Services.PLATFORM.isFlagEnabled(BigShotLib.id("require_shader_mixins"))
 
     @JvmField
-    val debug = Services.PLATFORM.isFlagEnabled(BigShotLib.id("debug_shader_mixins"))
+    val debug = Services.PLATFORM.isFlagEnabled(BigShotLib.id("debug_shader_mixins")) && Services.PLATFORM.isDevelopmentEnvironment()
 
     init {
         if (enabled) {

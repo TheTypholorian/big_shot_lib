@@ -36,36 +36,52 @@ class ShaderLocationsInfo(@JvmField val hasGeometryShader: Boolean) {
     }
 
     class Mapper {
-        @JvmField
-        val map = HashMap<String, Int>()
-
-        fun findUnboundLocation(): Int {
-            repeat(map.size) { i ->
-                if (!map.values.contains(i)) {
-                    return i
-                }
+        data class Mapped(val location: Int, val size: Int) {
+            fun overlaps(other: Mapped): Boolean {
+                val aStart = location
+                val aEnd = location + size - 1
+                val bStart = other.location
+                val bEnd = other.location + other.size - 1
+                return aStart <= bEnd && bStart <= aEnd
             }
-
-            return map.size
         }
 
-        fun map(id: String, attempt: Int? = null): Int {
+        @JvmField
+        val map = HashMap<String, Mapped>()
+
+        fun findUnboundLocation(size: Int): Mapped {
+            var check = 0
+
+            while (true) {
+                val mapped = Mapped(check, size)
+
+                if (map.values.none { other -> mapped.overlaps(other) }) {
+                    return mapped
+                }
+
+                check++
+            }
+        }
+
+        fun map(id: String, size: Int, attempt: Int? = null): Int {
             return map.computeIfAbsent(id) { key ->
                 if (attempt != null) {
+                    val attemptMapped = Mapped(attempt, size)
+
                     for (entry in map) {
-                        if (entry.value == attempt) {
-                            return@computeIfAbsent findUnboundLocation()
+                        if (entry.value.overlaps(attemptMapped)) {
+                            return@computeIfAbsent findUnboundLocation(size)
                         }
                     }
 
-                    return@computeIfAbsent attempt
+                    return@computeIfAbsent attemptMapped
                 }
 
-                return@computeIfAbsent findUnboundLocation()
-            }
+                return@computeIfAbsent findUnboundLocation(size)
+            }.location
         }
 
-        fun get(id: String) = map.get(id)
+        fun get(id: String) = map[id]?.location
 
         override fun toString() = map.toString()
     }
