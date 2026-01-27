@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.gl
 
-import net.typho.big_shot_lib.api.IIndexedBuffer
+import net.typho.big_shot_lib.buffers.IIndexedBuffer
 import net.typho.big_shot_lib.gl.resource.ExtraUnbind
 import net.typho.big_shot_lib.gl.resource.GlIndexedBufferType
 import net.typho.big_shot_lib.gl.resource.GlResourceInstance
@@ -30,7 +30,7 @@ class GlStack : AutoCloseable {
     }
 
     fun bindBase(resource: IIndexedBuffer, index: Int) {
-        boundBases.computeIfAbsent(resource.type()) { HashMap() }.put(index, resource)
+        boundBases.computeIfAbsent(resource.type()) { HashMap() }[index] = resource
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -40,18 +40,18 @@ class GlStack : AutoCloseable {
 
     fun <T, S : GlState<T>> set(state: S, value: T) {
         state.set(value)
-        states.put(state, value as Any)
+        states[state] = value as Any
         defaultStates.computeIfAbsent(state) { it.default() as Any }
     }
 
     fun enable(cap: GlCapability) {
         cap.enable()
-        capabilities.put(cap, true)
+        capabilities[cap] = true
     }
 
     fun disable(cap: GlCapability) {
         cap.disable()
-        capabilities.put(cap, false)
+        capabilities[cap] = false
     }
 
     fun restoreDefaultCapabilities() {

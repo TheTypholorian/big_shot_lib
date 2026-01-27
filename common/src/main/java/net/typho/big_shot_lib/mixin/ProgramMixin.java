@@ -5,7 +5,7 @@ import com.mojang.blaze3d.shaders.Program;
 import kotlin.collections.CollectionsKt;
 import net.minecraft.resources.ResourceLocation;
 import net.typho.big_shot_lib.gl.resource.ShaderType;
-import net.typho.big_shot_lib.spirv.ShaderMixinManager;
+import net.typho.big_shot_lib.shaders.mixins.ShaderMixinManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
