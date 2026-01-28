@@ -9,19 +9,19 @@ enum class ShaderPrimitiveType(
     val width: Int? = null,
     val signed: Boolean? = null
 ) : ShaderVariableType {
-    VOID(Opcode.Companion.OP_TYPE_VOID),
-    BOOLEAN(Opcode.Companion.OP_TYPE_BOOL),
+    VOID(Opcode.OP_TYPE_VOID),
+    BOOLEAN(Opcode.OP_TYPE_BOOL),
 
-    INT_8(Opcode.Companion.OP_TYPE_INT, 8, true),
-    UINT_8(Opcode.Companion.OP_TYPE_INT, 8, false),
-    INT_16(Opcode.Companion.OP_TYPE_INT, 16, true),
-    UINT_16(Opcode.Companion.OP_TYPE_INT, 16, false),
-    INT_32(Opcode.Companion.OP_TYPE_INT, 32, true),
-    UINT_32(Opcode.Companion.OP_TYPE_INT, 32, false),
+    INT_8(Opcode.OP_TYPE_INT, 8, true),
+    UINT_8(Opcode.OP_TYPE_INT, 8, false),
+    INT_16(Opcode.OP_TYPE_INT, 16, true),
+    UINT_16(Opcode.OP_TYPE_INT, 16, false),
+    INT_32(Opcode.OP_TYPE_INT, 32, true),
+    UINT_32(Opcode.OP_TYPE_INT, 32, false),
 
-    FLOAT_8(Opcode.Companion.OP_TYPE_FLOAT, 8),
-    FLOAT_16(Opcode.Companion.OP_TYPE_FLOAT, 16),
-    FLOAT_32(Opcode.Companion.OP_TYPE_FLOAT, 32);
+    FLOAT_8(Opcode.OP_TYPE_FLOAT, 8),
+    FLOAT_16(Opcode.OP_TYPE_FLOAT, 16),
+    FLOAT_32(Opcode.OP_TYPE_FLOAT, 32);
 
     override fun matches(
         opcode: Opcode,
@@ -32,14 +32,14 @@ enum class ShaderPrimitiveType(
             return false
         }
 
-        if (id != null && context.code.getInt((opcode.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES) != id) {
+        if (id != null && context.code.getInt((opcode.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES) != id) {
             return false
         }
 
         var pointer = opcode.index + 2
 
         width?.let {
-            if (context.code.getInt(pointer * ShaderMixinContext.Companion.WORD_SIZE_BYTES) != width) {
+            if (context.code.getInt(pointer * ShaderMixinContext.WORD_SIZE_BYTES) != width) {
                 return false
             }
 
@@ -47,7 +47,7 @@ enum class ShaderPrimitiveType(
         }
 
         signed?.let {
-            if (context.code.getInt(pointer * ShaderMixinContext.Companion.WORD_SIZE_BYTES) == 1 != signed) {
+            if (context.code.getInt(pointer * ShaderMixinContext.WORD_SIZE_BYTES) == 1 != signed) {
                 return false
             }
         }
@@ -61,8 +61,8 @@ enum class ShaderPrimitiveType(
         width?.let { size++ }
         signed?.let { size++ }
 
-        val buffer = ByteBuffer.allocate(size * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
-            .order(ShaderMixinContext.Companion.BYTE_ORDER)
+        val buffer = ByteBuffer.allocate(size * ShaderMixinContext.WORD_SIZE_BYTES)
+            .order(ShaderMixinContext.BYTE_ORDER)
 
             .putInt((size shl 16) or this.id)
             .putInt(id)

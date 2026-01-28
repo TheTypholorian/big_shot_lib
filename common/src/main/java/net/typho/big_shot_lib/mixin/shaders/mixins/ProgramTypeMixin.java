@@ -1,6 +1,7 @@
-package net.typho.big_shot_lib.mixin;
+package net.typho.big_shot_lib.mixin.shaders.mixins;
 
 import com.mojang.blaze3d.shaders.Program;
+import net.typho.big_shot_lib.shaders.mixins.ShaderMixinManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,6 +18,8 @@ public class ProgramTypeMixin {
             cancellable = true
     )
     private void getPrograms(CallbackInfoReturnable<Map<String, Program>> cir) {
-        cir.setReturnValue(new HashMap<>());
+        if (ShaderMixinManager.enabled) {
+            cir.setReturnValue(new HashMap<>());
+        }
     }
 }

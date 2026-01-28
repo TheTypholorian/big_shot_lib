@@ -1,10 +1,10 @@
-package net.typho.big_shot_lib
+package net.typho.big_shot_lib.windows
 
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.renderer.MultiBufferSource
+import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.framebuffers.NeoFramebuffer
 import net.typho.big_shot_lib.gl.resource.TextureFormat
-import net.typho.big_shot_lib.windows.NeoWindow
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Experimental

@@ -5,18 +5,19 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
   "mixins": [
-    "GlShaderMixin",
-    "ShaderChunkRendererMixin"
+    "shaders.mixins.GlShaderMixin",
+    "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
-    "EffectInstanceMixin",
-    "GameRendererMixin",
-    "GlDebugMixin",
-    "LevelRendererMixin",
-    "MinecraftMixin",
-    "ProgramMixin",
-    "ProgramTypeMixin",
-    "SimpleTextureAccessor"
+    "errors.GlDebugMixin",
+    "framebuffers.LevelRendererMixin",
+    "framebuffers.MinecraftMixin",
+    "shaders.MinecraftMixin",
+    "shaders.mixins.EffectInstanceMixin",
+    "shaders.mixins.ProgramMixin",
+    "shaders.mixins.ProgramTypeMixin",
+    "textures.SimpleTextureAccessor",
+    "windows.GameRendererMixin"
   ],
   "server": [],
   "injectors": {

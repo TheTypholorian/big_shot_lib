@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin;
+package net.typho.big_shot_lib.mixin.framebuffers;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;

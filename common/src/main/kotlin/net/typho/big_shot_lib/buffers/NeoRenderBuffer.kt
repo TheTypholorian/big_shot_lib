@@ -30,9 +30,9 @@ open class NeoRenderBuffer(
 
     override fun id() = id
 
-    override fun format() = format
+    override fun getFormat() = format
 
-    override fun attach2D(attachment: Int, target: Int) {
+    override fun attachToFramebuffer(attachment: Int, target: Int) {
         glFramebufferRenderbuffer(
             target,
             attachment,
@@ -41,11 +41,11 @@ open class NeoRenderBuffer(
         )
     }
 
-    override fun resize2D(width: Int, height: Int) {
+    override fun resize(width: Int, height: Int) {
         bind()
         glRenderbufferStorage(
             type().glName,
-            format().id,
+            getFormat().id,
             width,
             height
         )

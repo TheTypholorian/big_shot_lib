@@ -2,8 +2,8 @@ package net.typho.big_shot_lib.shaders
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.error.ShaderCompileException
-import net.typho.big_shot_lib.error.ShaderLinkException
+import net.typho.big_shot_lib.errors.ShaderCompileException
+import net.typho.big_shot_lib.errors.ShaderLinkException
 import net.typho.big_shot_lib.gl.resource.ExtraUnbind
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.ShaderType

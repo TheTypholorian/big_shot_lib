@@ -4,8 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.BigShotLib
-import net.typho.big_shot_lib.error.SPVCException
-import net.typho.big_shot_lib.error.ShaderCompileException
+import net.typho.big_shot_lib.errors.SPVCException
+import net.typho.big_shot_lib.errors.ShaderCompileException
 import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.platform.Services
 import net.typho.big_shot_lib.shaders.mixins.builtin.BreezeWindShaderFix

@@ -10,12 +10,12 @@ import net.typho.big_shot_lib.resource.SynchronousReloadListener
 
 object NeoShaderLoader : SynchronousReloadListener {
     @JvmField
-    val jsonIdConverter: FileToIdConverter = FileToIdConverter.json(NeoShader.Companion.PATH)
+    val jsonIdConverter: FileToIdConverter = FileToIdConverter.json(NeoShader.PATH)
 
     override fun reload(manager: ResourceManager) {
         var loaded = 0
 
-        NeoShader.Companion.REGISTRY.values.removeIf { shader ->
+        NeoShader.REGISTRY.values.removeIf { shader ->
             shader.release()
             true
         }
@@ -25,11 +25,11 @@ object NeoShaderLoader : SynchronousReloadListener {
                 val id = jsonIdConverter.fileToId(entry.key)
 
                 val json = JsonParser.parseReader(jsonReader).asJsonObject
-                val format = json.get("format") ?: throw NullPointerException("Shader $id is missing vertex format")
+                val format = json.get("getFormat") ?: throw NullPointerException("Shader $id is missing vertex getFormat")
 
                 val builder = NeoShader.Builder(
                     id,
-                    IShader.Companion.parseFormat(format)!!,
+                    IShader.parseFormat(format)!!,
                     json.has(ShaderType.GEOMETRY.key)
                 )
 
@@ -51,7 +51,7 @@ object NeoShaderLoader : SynchronousReloadListener {
                     }
                 }
 
-                NeoShader.Companion.register(builder.build())
+                NeoShader.register(builder.build())
                 loaded++
             }
         }

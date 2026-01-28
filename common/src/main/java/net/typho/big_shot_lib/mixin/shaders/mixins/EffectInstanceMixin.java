@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin;
+package net.typho.big_shot_lib.mixin.shaders.mixins;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.renderer.EffectInstance;

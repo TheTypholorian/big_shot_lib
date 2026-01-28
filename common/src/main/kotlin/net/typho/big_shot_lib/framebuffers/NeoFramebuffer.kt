@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager
 import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.buffers.NeoRenderBuffer
-import net.typho.big_shot_lib.error.IncompleteFramebufferException
+import net.typho.big_shot_lib.errors.IncompleteFramebufferException
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.TextureFormat
 import net.typho.big_shot_lib.textures.NeoTexture
@@ -50,20 +50,20 @@ open class NeoFramebuffer(
         bind()
 
         colorAttachments.forEachIndexed { i, attachment ->
-            attachment.resize2D(width, height)
-            attachment.attach2D(GL_COLOR_ATTACHMENT0 + i, type().glName)
+            attachment.resize(width, height)
+            attachment.attachToFramebuffer(GL_COLOR_ATTACHMENT0 + i, type().glName)
         }
         depthAttachment?.let { attachment ->
-            attachment.resize2D(width, height)
+            attachment.resize(width, height)
 
-            val depth = attachment.format().depth
-            val stencil = attachment.format().stencil
+            val depth = attachment.getFormat().depth
+            val stencil = attachment.getFormat().stencil
 
             when {
-                depth && stencil -> attachment.attach2D(GL_DEPTH_STENCIL_ATTACHMENT, type().glName)
-                depth && !stencil -> attachment.attach2D(GL_DEPTH_ATTACHMENT, type().glName)
-                !depth && stencil -> attachment.attach2D(GL_STENCIL_ATTACHMENT, type().glName)
-                else -> throw IllegalStateException("Illegal depth format ${attachment.format()} for framebuffer $location")
+                depth && stencil -> attachment.attachToFramebuffer(GL_DEPTH_STENCIL_ATTACHMENT, type().glName)
+                depth && !stencil -> attachment.attachToFramebuffer(GL_DEPTH_ATTACHMENT, type().glName)
+                !depth && stencil -> attachment.attachToFramebuffer(GL_STENCIL_ATTACHMENT, type().glName)
+                else -> throw IllegalStateException("Illegal depth getFormat ${attachment.getFormat()} for framebuffer $location")
             }
         }
 
@@ -92,9 +92,9 @@ open class NeoFramebuffer(
 
     override fun id() = id
 
-    override fun colorFormat() = colorAttachments[0].format()
+    override fun colorFormat() = colorAttachments[0].getFormat()
 
-    override fun depthFormat() = depthAttachment?.format()
+    override fun depthFormat() = depthAttachment?.getFormat()
 
     override fun width() = width
 
@@ -103,8 +103,8 @@ open class NeoFramebuffer(
     override fun resize(width: Int, height: Int) {
         bind()
 
-        colorAttachments.forEach { it.resize2D(width, height) }
-        depthAttachment?.resize2D(width, height)
+        colorAttachments.forEach { it.resize(width, height) }
+        depthAttachment?.resize(width, height)
 
         unbind()
 

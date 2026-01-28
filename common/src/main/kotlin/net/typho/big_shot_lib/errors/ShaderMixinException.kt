@@ -1,6 +1,6 @@
-package net.typho.big_shot_lib.error
+package net.typho.big_shot_lib.errors
 
-class ShaderCompileException : RuntimeException {
+class ShaderMixinException : RuntimeException {
     constructor() : super()
 
     constructor(message: String?) : super(message)

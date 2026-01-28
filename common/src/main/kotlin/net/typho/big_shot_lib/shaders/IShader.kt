@@ -113,7 +113,7 @@ interface IShader : GlResourceInstance {
                             "UV1", "UV_1" -> VertexFormatElement.UV1
                             "UV2", "UV_2" -> VertexFormatElement.UV2
                             "Normal" -> VertexFormatElement.NORMAL
-                            else -> throw IllegalStateException("Invalid vertex format element $s")
+                            else -> throw IllegalStateException("Invalid vertex getFormat element $s")
                         }
                     )
                 }
@@ -136,7 +136,7 @@ interface IShader : GlResourceInstance {
                     "POSITION_COLOR_TEXTURE_LIGHT", "POSITION_COLOR_TEX_LIGHTMAP" -> DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP
                     "POSITION_TEXTURE_LIGHT_COLOR", "POSITION_TEX_LIGHTMAP_COLOR" -> DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR
                     "POSITION_TEXTURE_COLOR_NORMAL", "POSITION_TEX_COLOR_NORMAL" -> DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL
-                    else -> throw IllegalStateException("Invalid vertex format $name")
+                    else -> throw IllegalStateException("Invalid vertex getFormat $name")
                 }
             }
         }

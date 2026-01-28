@@ -1,10 +1,10 @@
-package net.typho.big_shot_lib.mixin;
+package net.typho.big_shot_lib.mixin.errors;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.platform.GlDebug;
-import net.typho.big_shot_lib.error.GlError;
+import net.typho.big_shot_lib.errors.GlError;
 import net.typho.big_shot_lib.platform.Services;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;

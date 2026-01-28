@@ -18,55 +18,55 @@ object ShaderLocationMapper : ShaderMixinCallback {
         locations: ShaderLocationsInfo
     ) {
         for (opcode in context) {
-            if (opcode.id == Opcode.Companion.OP_DECORATE) {
-                val id = context.code.getInt((opcode.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+            if (opcode.id == Opcode.OP_DECORATE) {
+                val id = context.code.getInt((opcode.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                 for (opcode1 in context) {
-                    if (opcode1.id == Opcode.Companion.OP_VARIABLE) {
-                        val checkId = context.code.getInt((opcode1.index + 2) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                    if (opcode1.id == Opcode.OP_VARIABLE) {
+                        val checkId = context.code.getInt((opcode1.index + 2) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                         if (checkId == id) {
-                            val decoration = context.code.getInt((opcode.index + 2) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                            val decoration = context.code.getInt((opcode.index + 2) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                             if (decoration == 30) { // Location
-                                val storageClass = context.code.getInt((opcode1.index + 3) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                                val storageClass = context.code.getInt((opcode1.index + 3) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                                 locations.getMapper(storageClass, type)?.let { mapper ->
                                     for (opcode2 in context) {
-                                        if (opcode2.id == Opcode.Companion.OP_NAME) {
-                                            val checkId1 = context.code.getInt((opcode2.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                                        if (opcode2.id == Opcode.OP_NAME) {
+                                            val checkId1 = context.code.getInt((opcode2.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                                             if (checkId1 == id) {
                                                 val contents = context.getOpcodeData(opcode2)
                                                 val contentsArray = contents.array()
                                                 val name = String(
                                                     contentsArray,
-                                                    ShaderMixinContext.Companion.WORD_SIZE_BYTES,
-                                                    contentsArray.size - 2 * ShaderMixinContext.Companion.WORD_SIZE_BYTES
+                                                    ShaderMixinContext.WORD_SIZE_BYTES,
+                                                    contentsArray.size - 2 * ShaderMixinContext.WORD_SIZE_BYTES
                                                 ).trim(0.toChar())
 
-                                                val typePointer = context.code.getInt((opcode1.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                                                val typePointer = context.code.getInt((opcode1.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                                                 for (opcode3 in context) {
-                                                    if (opcode3.id == Opcode.Companion.OP_TYPE_POINTER) {
-                                                        val checkTypePointer = context.code.getInt((opcode3.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                                                    if (opcode3.id == Opcode.OP_TYPE_POINTER) {
+                                                        val checkTypePointer = context.code.getInt((opcode3.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                                                         if (checkTypePointer == typePointer) {
-                                                            val type = context.code.getInt((opcode3.index + 3) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                                                            val type = context.code.getInt((opcode3.index + 3) * ShaderMixinContext.WORD_SIZE_BYTES)
                                                             var size = 1
 
                                                             for (opcode4 in context) {
-                                                                if (opcode4.id == Opcode.Companion.OP_TYPE_MATRIX) {
-                                                                    val checkType = context.code.getInt((opcode4.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                                                                if (opcode4.id == Opcode.OP_TYPE_MATRIX) {
+                                                                    val checkType = context.code.getInt((opcode4.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                                                                     if (checkType == type) {
-                                                                        size = context.code.getInt((opcode4.index + 2) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                                                                        size = context.code.getInt((opcode4.index + 2) * ShaderMixinContext.WORD_SIZE_BYTES)
                                                                         break
                                                                     }
                                                                 }
                                                             }
 
-                                                            val index = (opcode.index + 3) * ShaderMixinContext.Companion.WORD_SIZE_BYTES
+                                                            val index = (opcode.index + 3) * ShaderMixinContext.WORD_SIZE_BYTES
                                                             val location = context.code.getInt(index)
                                                             context.code.putInt(index, mapper.map(name, size, location))
 
@@ -92,8 +92,8 @@ object ShaderLocationMapper : ShaderMixinCallback {
         val toRemove = LinkedList<Opcode>()
 
         for (opcode in context) {
-            if (opcode.id == Opcode.Companion.OP_DECORATE) {
-                val decoration = context.code.getInt((opcode.index + 2) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+            if (opcode.id == Opcode.OP_DECORATE) {
+                val decoration = context.code.getInt((opcode.index + 2) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                 if (decoration == 33) { // Binding
                     toRemove.add(opcode)
@@ -104,7 +104,7 @@ object ShaderLocationMapper : ShaderMixinCallback {
         var offset = 0
 
         for (opcode in toRemove) {
-            context.splice(opcode.index - offset, opcode.length * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+            context.splice(opcode.index - offset, opcode.length * ShaderMixinContext.WORD_SIZE_BYTES)
             offset += opcode.length
         }
     }

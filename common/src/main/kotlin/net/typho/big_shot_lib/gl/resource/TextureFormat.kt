@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.gl.resource
 
 import com.mojang.blaze3d.platform.NativeImage
+import com.mojang.serialization.Codec
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL31.*
@@ -110,5 +111,11 @@ enum class TextureFormat(
             NativeImage.Format.LUMINANCE_ALPHA -> RG
             NativeImage.Format.LUMINANCE -> RED
         }
+
+        @JvmField
+        val CODEC: Codec<TextureFormat> = Codec.STRING.xmap(
+            { string -> enumValueOf(string) },
+            { format -> format.name }
+        )
     }
 }

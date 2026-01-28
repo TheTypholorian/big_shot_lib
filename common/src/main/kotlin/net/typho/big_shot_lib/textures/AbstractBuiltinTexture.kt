@@ -18,7 +18,7 @@ abstract class AbstractBuiltinTexture<T : AbstractTexture>(val inner: T) : IText
 
     override fun id() = inner.id
 
-    override fun attach2D(attachment: Int, target: Int) {
+    override fun attachToFramebuffer(attachment: Int, target: Int) {
         glFramebufferTexture2D(
             target,
             attachment,
@@ -28,7 +28,7 @@ abstract class AbstractBuiltinTexture<T : AbstractTexture>(val inner: T) : IText
         )
     }
 
-    override fun resize2D(width: Int, height: Int) {
+    override fun resize(width: Int, height: Int) {
         throw UnsupportedOperationException("Builtin minecraft textures aren't resizable, only big shot textures are")
     }
 }

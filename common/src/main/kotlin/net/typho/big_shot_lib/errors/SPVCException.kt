@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.error
+package net.typho.big_shot_lib.errors
 
 import org.lwjgl.util.spvc.Spvc.spvc_context_get_last_error_string
 

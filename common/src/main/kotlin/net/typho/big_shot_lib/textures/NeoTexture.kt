@@ -2,57 +2,36 @@ package net.typho.big_shot_lib.textures
 
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.gl.InterpolationType
+import net.typho.big_shot_lib.gl.WrappingType
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE
-import org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R
 import org.lwjgl.opengl.GL30.glFramebufferTexture2D
 import org.lwjgl.system.MemoryUtil
 
 open class NeoTexture(
     protected val location: ResourceLocation,
-    protected val type: GlResourceType,
-    protected val id: Int,
-    protected val format: TextureFormat
-) : ITexture {
+    protected var id: Int? = null
+) : ITextureSettings.Storage(), ITexture {
     constructor(
         location: ResourceLocation,
-        type: GlResourceType,
-        format: TextureFormat
-    ) : this(location, type, glGenTextures(), format)
-
-    init {
-        bind()
-        glTexParameteri(type.glName, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(type.glName, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(type.glName, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE)
-        glTexParameteri(type.glName, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-        glTexParameteri(type.glName, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-        unbind()
-        type().label(id(), location().toString())
-    }
-
-    override fun setInterpolation(interpolation: InterpolationType) {
-        bind()
-        glTexParameteri(type.glName, GL_TEXTURE_MIN_FILTER, interpolation.id)
-        glTexParameteri(type.glName, GL_TEXTURE_MAG_FILTER, interpolation.id)
-        unbind()
+        settings: ITextureSettings
+    ) : this(location, glGenTextures()) {
+        copy(settings)
     }
 
     override fun release() {
-        glDeleteTextures(id)
+        id?.let(::glDeleteTextures)
+        id = null
     }
 
     override fun location() = location
 
-    override fun type() = type
+    override fun type() = GlResourceType.TEXTURE_2D
 
-    override fun id() = id
+    override fun id() = requireNotNull(id) { "Texture ${location()} has already been released" }
 
-    override fun format() = format
-
-    override fun attach2D(attachment: Int, target: Int) {
+    override fun attachToFramebuffer(attachment: Int, target: Int) {
         glFramebufferTexture2D(
             target,
             attachment,
@@ -62,19 +41,71 @@ open class NeoTexture(
         )
     }
 
-    override fun resize2D(width: Int, height: Int) {
+    protected fun uploadSettings() {
         bind()
         glTexImage2D(
             type().glName,
             0,
-            format().internal,
-            width,
-            height,
+            getFormat().internal,
+            width!!,
+            height!!,
             0,
-            format().id,
-            format().type,
+            getFormat().id,
+            getFormat().type,
             MemoryUtil.NULL
         )
         unbind()
+    }
+
+    override fun setSize(width: Int, height: Int): NeoTexture {
+        super.setSize(width, height)
+
+        uploadSettings()
+
+        return this
+    }
+
+    override fun resize(width: Int, height: Int) {
+        setSize(width, height)
+    }
+
+    override fun setFormat(format: TextureFormat): NeoTexture {
+        super.setFormat(format)
+
+        uploadSettings()
+
+        return this
+    }
+
+    override fun setInterpolation(min: InterpolationType, mag: InterpolationType): NeoTexture {
+        super.setInterpolation(min, mag)
+
+        bind()
+        glTexParameteri(type().glName, GL_TEXTURE_MIN_FILTER, min.id)
+        glTexParameteri(type().glName, GL_TEXTURE_MAG_FILTER, mag.id)
+        unbind()
+
+        return this
+    }
+
+    override fun setWrapping(s: WrappingType, t: WrappingType): NeoTexture {
+        super.setWrapping(s, t)
+
+        bind()
+        glTexParameteri(type().glName, GL_TEXTURE_WRAP_S, s.id)
+        glTexParameteri(type().glName, GL_TEXTURE_WRAP_T, t.id)
+        unbind()
+
+        return this
+    }
+
+    override fun copy(other: ITextureSettings): NeoTexture {
+        width = other.getWidth()
+        height = other.getHeight()
+        format = other.getFormat()
+        uploadSettings()
+        setInterpolation(other.getMinInterpolation(), other.getMagInterpolation())
+        setWrapping(other.getSWrapping(), other.getTWrapping())
+        return this
     }
 }

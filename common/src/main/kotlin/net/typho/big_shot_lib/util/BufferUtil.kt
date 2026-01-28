@@ -1,11 +1,11 @@
-package net.typho.big_shot_lib
+package net.typho.big_shot_lib.util
 
 import net.typho.big_shot_lib.shaders.mixins.ShaderMixinContext
 import java.nio.*
 
 object BufferUtil {
     @JvmStatic
-    fun concat(first: ByteBuffer, second: ByteBuffer, order: ByteOrder = ShaderMixinContext.BYTE_ORDER): ByteBuffer {
+    fun concat(first: ByteBuffer, second: ByteBuffer, order: ByteOrder = ShaderMixinContext.Companion.BYTE_ORDER): ByteBuffer {
         return ByteBuffer.allocate(first.capacity() + second.capacity())
             .order(order)
             .put(first)

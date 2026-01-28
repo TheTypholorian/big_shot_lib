@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin;
+package net.typho.big_shot_lib.mixin.textures;
 
 import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.resources.ResourceLocation;

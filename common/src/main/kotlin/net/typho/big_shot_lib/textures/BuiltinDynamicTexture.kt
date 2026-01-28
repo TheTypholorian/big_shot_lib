@@ -7,5 +7,5 @@ import net.typho.big_shot_lib.gl.resource.TextureFormat
 class BuiltinDynamicTexture(inner: DynamicTexture) : AbstractBuiltinTexture<DynamicTexture>(inner) {
     override fun location(): ResourceLocation? = null
 
-    override fun format(): TextureFormat = TextureFormat.get(inner.pixels!!.format())
+    override fun getFormat(): TextureFormat = TextureFormat.get(inner.pixels!!.format())
 }

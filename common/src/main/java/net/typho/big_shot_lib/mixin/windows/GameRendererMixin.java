@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin;
+package net.typho.big_shot_lib.mixin.windows;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;

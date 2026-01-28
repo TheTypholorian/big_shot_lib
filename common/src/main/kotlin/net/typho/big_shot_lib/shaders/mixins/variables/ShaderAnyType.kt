@@ -14,7 +14,7 @@ object ShaderAnyType : ShaderVariableType {
             return false
         }
 
-        if (id != null && context.code.getInt((opcode.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES) != id) {
+        if (id != null && context.code.getInt((opcode.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES) != id) {
             return false
         }
 

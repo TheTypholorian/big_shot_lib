@@ -7,7 +7,7 @@ open class DirectSampler(
     val unit: Int
 ) {
     fun set(id: Int) {
-        GlResourceType.Companion.SAMPLERS[unit].bind(id)
+        GlResourceType.SAMPLERS[unit].bind(id)
         uniform.set(unit)
     }
 }

@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.shaders.mixins.variables
 
-import net.typho.big_shot_lib.BufferUtil
 import net.typho.big_shot_lib.shaders.mixins.Opcode
 import net.typho.big_shot_lib.shaders.mixins.ShaderMixinContext
+import net.typho.big_shot_lib.util.BufferUtil
 import java.nio.ByteBuffer
 
 open class ShaderMultiType(
@@ -19,19 +19,19 @@ open class ShaderMultiType(
             return false
         }
 
-        if (context.code.getInt((opcode.index + 3) * ShaderMixinContext.Companion.WORD_SIZE_BYTES) != size) {
+        if (context.code.getInt((opcode.index + 3) * ShaderMixinContext.WORD_SIZE_BYTES) != size) {
             return false
         }
 
-        if (id != null && context.code.getInt((opcode.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES) != id) {
+        if (id != null && context.code.getInt((opcode.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES) != id) {
             return false
         }
 
-        val inner = context.code.getInt((opcode.index + 2) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+        val inner = context.code.getInt((opcode.index + 2) * ShaderMixinContext.WORD_SIZE_BYTES)
 
         for (opcode1 in context) {
             if (component.matches(opcode1, context)) {
-                if (context.code.getInt((opcode1.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES) == inner) {
+                if (context.code.getInt((opcode1.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES) == inner) {
                     return true
                 }
             }
@@ -43,7 +43,7 @@ open class ShaderMultiType(
     override fun findOrInject(context: ShaderMixinContext, words: Int): Int {
         for (opcode in context) {
             if (matches(opcode, context)) {
-                return context.code.getInt((opcode.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                return context.code.getInt((opcode.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES)
             }
         }
 
@@ -51,7 +51,7 @@ open class ShaderMultiType(
             if (component.matches(opcode, context)) {
                 val id = context.bound++
                 context.putBound()
-                val id1 = context.code.getInt((opcode.index + 1) * ShaderMixinContext.Companion.WORD_SIZE_BYTES)
+                val id1 = context.code.getInt((opcode.index + 1) * ShaderMixinContext.WORD_SIZE_BYTES)
 
                 context.inject(
                     words,

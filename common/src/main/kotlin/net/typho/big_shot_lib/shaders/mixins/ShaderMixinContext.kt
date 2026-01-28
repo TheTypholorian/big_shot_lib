@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.shaders.mixins
 
 import net.typho.big_shot_lib.BigShotLib
-import net.typho.big_shot_lib.error.ShaderMixinException
+import net.typho.big_shot_lib.errors.ShaderMixinException
 import net.typho.big_shot_lib.shaders.mixins.variables.ShaderAnyType
 import net.typho.big_shot_lib.shaders.mixins.variables.ShaderVariable
 import net.typho.big_shot_lib.shaders.mixins.variables.ShaderVariableType
