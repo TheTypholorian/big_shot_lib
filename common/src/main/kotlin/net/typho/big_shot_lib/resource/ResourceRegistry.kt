@@ -20,7 +20,7 @@ open class ResourceRegistry<T>(
     val codec: Codec<T>
 ) : Registry<T> {
     protected val values: BiMap<ResourceKey<T?>, T> = HashBiMap.create()
-    protected val tags: BiMap<TagKey<T?>, Set<ResourceKey<T?>>> = HashBiMap.create()
+    protected val tags: BiMap<TagKey<T?>, MutableList<ResourceKey<T?>>> = HashBiMap.create()
     protected val ids: MutableList<T> = LinkedList()
 
     constructor(location: ResourceLocation, codec: Codec<T>) : this(ResourceKey.createRegistryKey(location), codec)
@@ -69,11 +69,11 @@ open class ResourceRegistry<T>(
 
     override fun registryKeySet(): Set<ResourceKey<T?>> = values.keys
 
-    override fun getRandom(p0: RandomSource): Optional<Holder.Reference<T>> {
+    override fun getRandom(p0: RandomSource): Optional<Holder.Reference<T?>> {
         return if (ids.isEmpty()) {
             Optional.empty()
         } else {
-            Optional.of<Holder.Reference<T>>(createIntrusiveHolder(ids[p0.nextInt(ids.size)]))
+            Optional.of(createIntrusiveHolder(ids[p0.nextInt(ids.size)]))
         }
     }
 
@@ -98,7 +98,7 @@ open class ResourceRegistry<T>(
 
     override fun wrapAsHolder(p0: T): Holder<T?> = createIntrusiveHolder(p0)
 
-    override fun holders(): Stream<Holder.Reference<T?>?> = values.entries.stream()
+    override fun holders(): Stream<Holder.Reference<T?>> = values.entries.stream()
         .map { entry ->
             KeyValueHolderReference(
                 holderOwner(),
@@ -108,47 +108,88 @@ open class ResourceRegistry<T>(
             )
         }
 
-    override fun getTag(p0: TagKey<T?>): Optional<HolderSet.Named<T?>?> {
-        TODO("Not yet implemented")
+    override fun getTag(p0: TagKey<T?>): Optional<HolderSet.Named<T?>> {
+        return Optional.ofNullable(tags[p0]).map { values ->
+            TagWithValues(
+                holderOwner(),
+                p0,
+                values.stream()
+                    .map { key -> getHolderOrThrow(key) }
+                    .collect(Collectors.toList())
+            )
+        }
     }
 
-    override fun getOrCreateTag(p0: TagKey<T?>): HolderSet.Named<T?> {
-        TODO("Not yet implemented")
+    override fun getOrCreateTag(p0: TagKey<T?>): HolderSet.Named<T> {
+        return TagWithValues(
+            holderOwner(),
+            p0,
+            tags.computeIfAbsent(p0) { key -> LinkedList() }
+                .stream()
+                .map { key -> getHolderOrThrow(key) }
+                .collect(Collectors.toList())
+        )
     }
 
-    override fun getTags(): Stream<Pair<TagKey<T?>?, HolderSet.Named<T?>?>?> {
-        TODO("Not yet implemented")
+    override fun getTags(): Stream<Pair<TagKey<T?>, HolderSet.Named<T?>>> {
+        return tags.entries.stream()
+            .map { entry ->
+                Pair(
+                    entry.key,
+                    TagWithValues(
+                        holderOwner(),
+                        entry.key,
+                        entry.value.stream()
+                            .map { key -> getHolderOrThrow(key) }
+                            .collect(Collectors.toList())
+                    )
+                )
+            }
     }
 
-    override fun getTagNames(): Stream<TagKey<T?>?> {
-        TODO("Not yet implemented")
-    }
+    override fun getTagNames(): Stream<TagKey<T?>> = tags.keys.stream()
 
     override fun resetTags() {
-        TODO("Not yet implemented")
+        tags.values.forEach { list -> list.clear() }
     }
 
-    override fun bindTags(p0: Map<TagKey<T?>?, List<Holder<T?>?>?>) {
-        TODO("Not yet implemented")
+    override fun bindTags(p0: Map<TagKey<T?>, List<Holder<T?>>>) {
+        throw UnsupportedOperationException()
     }
 
-    override fun holderOwner(): HolderOwner<T?> {
-        TODO("Not yet implemented")
+    override fun holderOwner(): HolderOwner<T?> = object : HolderOwner<T?> {
     }
 
     override fun asLookup(): HolderLookup.RegistryLookup<T?> {
-        TODO("Not yet implemented")
+        return object : HolderLookup.RegistryLookup<T?> {
+            override fun key() = key
+
+            override fun registryLifecycle() = Lifecycle.stable()
+
+            override fun listElements() = holders()
+
+            override fun listTags(): Stream<HolderSet.Named<T?>> = getTags().map { pair -> pair.second }
+
+            override fun get(p0: ResourceKey<T?>): Optional<Holder.Reference<T?>> = getHolder(p0)
+
+            override fun get(p0: TagKey<T?>): Optional<HolderSet.Named<T?>> = getTag(p0)
+        }
     }
 
-    override fun byId(p0: Int): T? {
-        TODO("Not yet implemented")
-    }
+    override fun byId(p0: Int): T? = ids[p0]
 
-    override fun size(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun size(): Int = values.size
 
-    override fun iterator(): MutableIterator<T?> {
-        TODO("Not yet implemented")
+    override fun iterator() = object : MutableIterator<T?> {
+        var id: Int = 0
+
+        override fun remove() {
+            val removed = ids.removeAt(id)
+            values.entries.removeIf { entry -> entry.value == removed }
+        }
+
+        override fun hasNext() = id < ids.size
+
+        override fun next() = ids[id++]
     }
 }

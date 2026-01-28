@@ -1,3 +1,5 @@
 accessWidener v2 named
 
 accessible method net/minecraft/core/Holder$Reference bindTags (Ljava/util/Collection;)V
+accessible method net/minecraft/core/HolderSet$Named bind (Ljava/util/List;)V
+accessible method net/minecraft/core/HolderSet$Named <init> (Lnet/minecraft/core/HolderOwner;Lnet/minecraft/tags/TagKey;)V
