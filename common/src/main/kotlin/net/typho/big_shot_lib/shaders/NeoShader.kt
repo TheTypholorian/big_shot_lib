@@ -1,12 +1,13 @@
 package net.typho.big_shot_lib.shaders
 
+import com.google.gson.JsonObject
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.errors.ShaderCompileException
 import net.typho.big_shot_lib.errors.ShaderLinkException
-import net.typho.big_shot_lib.gl.resource.ExtraUnbind
 import net.typho.big_shot_lib.gl.resource.GlResourceType
-import net.typho.big_shot_lib.gl.resource.ShaderType
+import net.typho.big_shot_lib.resource.ResourceRegistry
 import net.typho.big_shot_lib.shaders.mixins.ShaderLocationsInfo
 import net.typho.big_shot_lib.shaders.mixins.ShaderMixinManager
 import org.lwjgl.opengl.GL20.*
@@ -17,19 +18,41 @@ open class NeoShader(
     protected val location: ResourceLocation,
     protected val id: Int,
     protected val format: VertexFormat
-) : IShader, ExtraUnbind {
-    companion object {
-        const val PATH = "neo/shaders"
-        @JvmField
-        val REGISTRY = HashMap<ResourceLocation, NeoShader>()
+) : IShader {
+    companion object : ResourceRegistry<NeoShader>("shaders") {
+        override fun decode(
+            id: ResourceLocation,
+            json: JsonObject,
+            manager: ResourceManager
+        ): NeoShader {
+            val format = json.get("format") ?: throw NullPointerException("Shader $id is missing vertex format")
 
-        @JvmStatic
-        fun register(shader: NeoShader) {
-            REGISTRY[shader.location()] = shader
+            val builder = Builder(
+                id,
+                IShader.parseFormat(format)!!,
+                json.has(ShaderType.GEOMETRY.key)
+            )
+
+            for (type in ShaderType.entries) {
+                val sourceKeyJson = json.getAsJsonPrimitive(type.key)
+
+                if (sourceKeyJson != null) {
+                    val sourceKey = ResourceLocation.parse(sourceKeyJson.asString)
+                    val withExtension = type.idConverter.idToFile(sourceKey)
+                    val source = manager.getResourceOrThrow(withExtension)
+
+                    source.openAsReader().use { sourceReader ->
+                        builder.attach(
+                            type,
+                            withExtension.toString(),
+                            sourceReader.readText()
+                        )
+                    }
+                }
+            }
+
+            return builder.build()
         }
-
-        @JvmStatic
-        fun get(location: ResourceLocation) = REGISTRY.get(location)
     }
 
     init {
@@ -45,16 +68,15 @@ open class NeoShader(
 
     override fun unbind() {
         super.unbind()
-        unbindExtra()
-    }
 
-    override fun unbindExtra() {
         for (sampler in samplers.values) {
             sampler?.let {
                 GlResourceType.SAMPLERS[it.unit].unbind()
             }
         }
     }
+
+    override fun canHotswapBind() = false
 
     override fun location() = location
 

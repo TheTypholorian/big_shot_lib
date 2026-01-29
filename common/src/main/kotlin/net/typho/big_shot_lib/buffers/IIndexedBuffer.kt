@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.buffers
 
-import net.typho.big_shot_lib.gl.GlStack
 import net.typho.big_shot_lib.gl.resource.GlIndexedBufferType
 
 interface IIndexedBuffer : IBuffer {
@@ -8,11 +7,6 @@ interface IIndexedBuffer : IBuffer {
 
     fun bindBase(index: Int) {
         type().bindBase(id(), index)
-    }
-
-    fun bindBase(stack: GlStack, index: Int) {
-        stack.bindBase(this, index)
-        bindBase(index)
     }
 
     fun unbindBase(index: Int) {

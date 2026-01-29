@@ -6,8 +6,8 @@ import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.errors.SPVCException
 import net.typho.big_shot_lib.errors.ShaderCompileException
-import net.typho.big_shot_lib.gl.resource.ShaderType
 import net.typho.big_shot_lib.platform.Services
+import net.typho.big_shot_lib.shaders.ShaderType
 import net.typho.big_shot_lib.shaders.mixins.builtin.BreezeWindShaderFix
 import net.typho.big_shot_lib.shaders.mixins.builtin.ShaderLocationMapper
 import net.typho.big_shot_lib.shaders.mixins.builtin.ShaderVersionUpdater

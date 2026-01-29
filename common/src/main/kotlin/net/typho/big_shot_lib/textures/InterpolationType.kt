@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.gl
+package net.typho.big_shot_lib.textures
 
 import com.mojang.serialization.Codec
 import org.lwjgl.opengl.GL11.GL_LINEAR
@@ -9,6 +9,20 @@ enum class InterpolationType(val id: Int) {
     LINEAR(GL_LINEAR);
 
     companion object {
+        @JvmStatic
+        fun from(id: Int): InterpolationType? {
+            for (type in entries) {
+                if (type.id == id) {
+                    return type
+                }
+            }
+
+            return null
+        }
+
+        @JvmStatic
+        fun from(blur: Boolean) = if (blur) LINEAR else NEAREST
+
         @JvmField
         val CODEC: Codec<InterpolationType> = Codec.STRING.xmap(
             { string -> enumValueOf(string) },

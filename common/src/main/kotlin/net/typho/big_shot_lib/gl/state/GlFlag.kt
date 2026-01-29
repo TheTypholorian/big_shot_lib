@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*
 
-enum class GlCapability(
+enum class GlFlag(
     val id: Int,
     val default: Boolean = false,
     private val enable: Runnable = Runnable { glEnable(id) },

@@ -4,7 +4,7 @@ import net.minecraft.client.DeltaTracker
 import net.minecraft.client.renderer.MultiBufferSource
 import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.framebuffers.NeoFramebuffer
-import net.typho.big_shot_lib.gl.resource.TextureFormat
+import net.typho.big_shot_lib.textures.TextureFormat
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Experimental

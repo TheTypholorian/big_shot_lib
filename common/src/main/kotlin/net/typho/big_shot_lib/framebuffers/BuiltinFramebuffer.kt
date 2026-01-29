@@ -4,7 +4,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget
 import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.gl.resource.GlResourceType
-import net.typho.big_shot_lib.gl.resource.TextureFormat
+import net.typho.big_shot_lib.textures.TextureFormat
 import org.joml.Vector4f
 
 class BuiltinFramebuffer(val inner: RenderTarget) : IFramebuffer {

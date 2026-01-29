@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.buffers
 
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.gl.resource.BufferUsage
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 import org.lwjgl.opengl.GL15.*
 import java.nio.ByteBuffer

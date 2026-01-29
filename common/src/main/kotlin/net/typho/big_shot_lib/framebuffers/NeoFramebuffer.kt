@@ -6,8 +6,8 @@ import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.buffers.NeoRenderBuffer
 import net.typho.big_shot_lib.errors.IncompleteFramebufferException
 import net.typho.big_shot_lib.gl.resource.GlResourceType
-import net.typho.big_shot_lib.gl.resource.TextureFormat
 import net.typho.big_shot_lib.textures.NeoTexture
+import net.typho.big_shot_lib.textures.TextureFormat
 import org.joml.Vector4f
 import org.lwjgl.opengl.GL30.*
 import java.util.*

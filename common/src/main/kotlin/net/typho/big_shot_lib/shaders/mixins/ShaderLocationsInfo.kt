@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.shaders.mixins
 
-import net.typho.big_shot_lib.gl.resource.ShaderType
+import net.typho.big_shot_lib.shaders.ShaderType
 
 class ShaderLocationsInfo(@JvmField val hasGeometryShader: Boolean) {
     @JvmField

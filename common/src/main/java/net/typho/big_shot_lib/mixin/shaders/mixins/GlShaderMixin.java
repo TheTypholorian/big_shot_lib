@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.mixin.shaders.mixins;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.caffeinemc.mods.sodium.client.gl.shader.GlShader;
 import net.minecraft.resources.ResourceLocation;
-import net.typho.big_shot_lib.gl.resource.ShaderType;
+import net.typho.big_shot_lib.shaders.ShaderType;
 import net.typho.big_shot_lib.shaders.mixins.ShaderMixinManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;

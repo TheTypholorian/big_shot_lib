@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.shaders.mixins.builtin
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.gl.resource.ShaderType
+import net.typho.big_shot_lib.shaders.ShaderType
 import net.typho.big_shot_lib.shaders.mixins.Opcode
 import net.typho.big_shot_lib.shaders.mixins.ShaderLocationsInfo
 import net.typho.big_shot_lib.shaders.mixins.ShaderMixinCallback

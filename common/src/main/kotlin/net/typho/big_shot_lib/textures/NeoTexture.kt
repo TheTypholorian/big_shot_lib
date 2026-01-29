@@ -1,20 +1,17 @@
 package net.typho.big_shot_lib.textures
 
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.gl.InterpolationType
-import net.typho.big_shot_lib.gl.WrappingType
 import net.typho.big_shot_lib.gl.resource.GlResourceType
-import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.glFramebufferTexture2D
 import org.lwjgl.system.MemoryUtil
 
 open class NeoTexture(
-    protected val location: ResourceLocation,
+    protected var location: ResourceLocation?,
     protected var id: Int? = null
 ) : ITextureSettings.Storage(), ITexture {
     constructor(
-        location: ResourceLocation,
+        location: ResourceLocation?,
         settings: ITextureSettings
     ) : this(location, glGenTextures()) {
         copy(settings)

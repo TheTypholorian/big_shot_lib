@@ -1,11 +1,15 @@
-package net.typho.big_shot_lib.gl.resource
+package net.typho.big_shot_lib.textures
 
 import com.mojang.blaze3d.platform.NativeImage
 import com.mojang.serialization.Codec
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL12.GL_BGR
+import org.lwjgl.opengl.GL12.GL_BGRA
+import org.lwjgl.opengl.GL14.*
+import org.lwjgl.opengl.GL21.*
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL31.*
-import org.lwjgl.opengl.GL41.GL_RGB10_A2UI
+import org.lwjgl.opengl.GL33.GL_RGB10_A2UI
 import org.lwjgl.opengl.GL41.GL_RGB565
 
 /**

@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.buffers
 
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.gl.resource.BufferUsage
 import net.typho.big_shot_lib.gl.resource.GlIndexedBufferType
 
 open class NeoIndexedBuffer : NeoBuffer, IIndexedBuffer {

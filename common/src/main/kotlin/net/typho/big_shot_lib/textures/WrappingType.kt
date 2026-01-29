@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.gl
+package net.typho.big_shot_lib.textures
 
 import com.mojang.serialization.Codec
 import org.lwjgl.opengl.GL11.GL_REPEAT
@@ -15,6 +15,17 @@ enum class WrappingType(val id: Int) {
     MIRROR_CLAMP_TO_EDGE(GL_MIRROR_CLAMP_TO_EDGE);
 
     companion object {
+        @JvmStatic
+        fun from(id: Int): WrappingType? {
+            for (type in WrappingType.entries) {
+                if (type.id == id) {
+                    return type
+                }
+            }
+
+            return null
+        }
+
         @JvmField
         val CODEC: Codec<WrappingType> = Codec.STRING.xmap(
             { string -> enumValueOf(string) },

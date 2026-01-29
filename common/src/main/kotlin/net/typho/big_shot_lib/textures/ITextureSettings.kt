@@ -3,9 +3,6 @@ package net.typho.big_shot_lib.textures
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.typho.big_shot_lib.gl.InterpolationType
-import net.typho.big_shot_lib.gl.WrappingType
-import net.typho.big_shot_lib.gl.resource.TextureFormat
 import org.joml.Vector2i
 import org.joml.Vector2ic
 
