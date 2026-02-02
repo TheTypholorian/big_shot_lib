@@ -23,7 +23,7 @@ public class EffectInstanceMixin {
     private void setThreadLocal(ResourceProvider resourceProvider, String name, CallbackInfo ci) {
         if (ShaderMixinManager.enabled) {
             ShaderMixinManager.currentVertexFormat.set(DefaultVertexFormat.BLIT_SCREEN);
-            ShaderMixinManager.currentLocationsInfo.set(ShaderMixinManager.enabled ? new ShaderLocationsInfo(false) : null);
+            ShaderMixinManager.currentLocationsInfo.set(ShaderMixinManager.enabled ? new ShaderLocationsInfo(DefaultVertexFormat.BLIT_SCREEN, false) : null);
         }
     }
 

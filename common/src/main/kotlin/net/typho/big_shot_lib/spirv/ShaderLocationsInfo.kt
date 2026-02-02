@@ -1,8 +1,14 @@
 package net.typho.big_shot_lib.spirv
 
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.typho.big_shot_lib.gl.resource.ShaderType
 
-class ShaderLocationsInfo(@JvmField val hasGeometryShader: Boolean) {
+class ShaderLocationsInfo(
+    @JvmField
+    val format: VertexFormat,
+    @JvmField
+    val hasGeometryShader: Boolean
+) {
     @JvmField
     val uniforms = Mapper()
     @JvmField
@@ -13,6 +19,14 @@ class ShaderLocationsInfo(@JvmField val hasGeometryShader: Boolean) {
     val fragmentInputs = if (hasGeometryShader) Mapper() else vertexOutputs
     @JvmField
     val fragmentOutputs = Mapper()
+
+    init {
+        var i = 0
+
+        for (element in format.elements) {
+            vertexInputs.map[format.getElementName(element)] = Mapper.Mapped(i++, 1)
+        }
+    }
 
     fun getMapper(storageClass: Int, stage: ShaderType): Mapper? {
         if (stage == ShaderType.GEOMETRY && !hasGeometryShader) {

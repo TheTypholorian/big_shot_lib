@@ -23,7 +23,7 @@ public class ShaderInstanceMixin {
     private void setThreadLocal(ResourceProvider resourceProvider, String name, VertexFormat vertexFormat, CallbackInfo ci) {
         if (ShaderMixinManager.enabled) {
             ShaderMixinManager.currentVertexFormat.set(vertexFormat);
-            ShaderMixinManager.currentLocationsInfo.set(ShaderMixinManager.enabled ? new ShaderLocationsInfo(false) : null);
+            ShaderMixinManager.currentLocationsInfo.set(ShaderMixinManager.enabled ? new ShaderLocationsInfo(vertexFormat, false) : null);
         }
     }
 

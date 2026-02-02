@@ -90,7 +90,7 @@ open class NeoShader(
         val format: VertexFormat,
         val hasGeometryShader: Boolean
     ) {
-        val locations = if (ShaderMixinManager.enabled) ShaderLocationsInfo(hasGeometryShader) else null
+        val locations = if (ShaderMixinManager.enabled) ShaderLocationsInfo(format, hasGeometryShader) else null
         val sources = LinkedList<Int>()
 
         fun attach(
