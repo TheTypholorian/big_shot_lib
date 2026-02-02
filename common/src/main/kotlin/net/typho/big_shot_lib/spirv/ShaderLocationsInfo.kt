@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import net.typho.big_shot_lib.gl.resource.ShaderType
 
 class ShaderLocationsInfo(
-    @JvmField
-    val format: VertexFormat,
+    format: VertexFormat?,
     @JvmField
     val hasGeometryShader: Boolean
 ) {
@@ -21,10 +20,12 @@ class ShaderLocationsInfo(
     val fragmentOutputs = Mapper()
 
     init {
-        var i = 0
+        if (format != null) {
+            var i = 0
 
-        for (element in format.elements) {
-            vertexInputs.map[format.getElementName(element)] = Mapper.Mapped(i++, 1)
+            for (element in format.elements) {
+                vertexInputs.map[format.getElementName(element)] = Mapper.Mapped(i++, 1)
+            }
         }
     }
 
