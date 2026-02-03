@@ -66,6 +66,10 @@ data class ShaderOpcode(
 
     fun getWord(offset: Int) = parent.buffer.get(index + 1 + offset)
 
+    fun putWord(offset: Int, word: Int) {
+        parent.buffer.put(index + 1 + offset, word)
+    }
+
     fun getString(offset: Int): String {
         val array = ByteArray(length - offset)
         memByteBuffer(parent.buffer).get(index + 1 + offset, array)
