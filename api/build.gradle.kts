@@ -6,7 +6,7 @@ plugins {
 val modId: String by project
 
 base {
-    archivesName = "$modId-common"
+    archivesName = "$modId-api"
 }
 
 neoForge {
@@ -31,14 +31,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.mixin)
-    // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
-    compileOnly(libs.mixinExtras.common)
-    annotationProcessor(libs.mixinExtras.common)
-
     api("org.lwjgl:lwjgl-shaderc:3.3.3")
     api("org.lwjgl:lwjgl-spvc:3.3.3")
-    implementation(libs.sodium)
 }
 
 configurations {

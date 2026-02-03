@@ -110,19 +110,11 @@ processResources {
             'version'                      : version,
             'group'                        : project.group, //Else we target the task's group.
             'minecraft_version'            : libs.versions.minecraft.get(),
-            'minecraft_version_range'      : libs.versions.minecraftRange.get(),
-            'fabric_version'               : libs.versions.fabricApi.get(),
-            'fabric_loader_version'        : libs.versions.fabricLoader.get(),
-            'flk_version'                  : libs.versions.flk.get(),
             'mod_name'                     : modName,
             'mod_author'                   : modAuthor,
             'mod_id'                       : modId,
             'license'                      : license,
             'description'                  : project.description,
-            'neoforge_version'             : libs.versions.neoforge.get(),
-            'neoforge_range'               : libs.versions.neoforgeRange.get(),
-            'kff_version'                  : libs.versions.kff.get(),
-            'kff_version_range'            : libs.versions.kffRange.get(),
             'credits'                      : credits,
             'java_version'                 : libs.versions.java.get()
     ]
