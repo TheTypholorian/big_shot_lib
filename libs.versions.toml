@@ -15,6 +15,9 @@ parchmentMC = "1.21"
 ## https://projects.neoforged.net/neoforged/neoform
 neoForm = "1.21.1-20240808.144430"
 
+[libraries]
+minecraft = { group = "com.mojang", name = "minecraft", version.ref = "minecraft" }
+
 [plugins]
 moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
 loom = { id = "fabric-loom", version.ref = "loom" }
