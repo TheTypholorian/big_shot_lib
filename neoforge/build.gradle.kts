@@ -56,9 +56,6 @@ neoForge {
         register("client") {
             client()
         }
-        register("data") {
-            data()
-        }
         register("server") {
             server()
         }

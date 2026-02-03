@@ -15,8 +15,7 @@
     "LevelRendererMixin",
     "MinecraftMixin",
     "ShaderManagerCompilationCacheMixin",
-    "ShaderManagerMixin",
-    "SimpleTextureAccessor"
+    "ShaderManagerMixin"
   ],
   "server": [],
   "injectors": {
