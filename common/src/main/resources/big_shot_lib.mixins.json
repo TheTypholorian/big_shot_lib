@@ -9,13 +9,13 @@
     "ShaderChunkRendererMixin"
   ],
   "client": [
-    "EffectInstanceMixin",
+    "CompiledShaderMixin",
     "GameRendererMixin",
     "GlDebugMixin",
     "LevelRendererMixin",
     "MinecraftMixin",
-    "ProgramMixin",
-    "ProgramTypeMixin",
+    "ShaderManagerCompilationCacheMixin",
+    "ShaderManagerMixin",
     "SimpleTextureAccessor"
   ],
   "server": [],

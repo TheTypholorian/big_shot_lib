@@ -2,21 +2,26 @@ package net.typho.big_shot_lib.api.builtin
 
 import com.mojang.blaze3d.shaders.AbstractUniform
 import com.mojang.blaze3d.vertex.VertexFormat
-import net.minecraft.client.renderer.ShaderInstance
+import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.CompiledShaderProgram
+import net.minecraft.client.renderer.ShaderProgram
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.IShader
 import net.typho.big_shot_lib.gl.resource.ExtraUnbind
 import net.typho.big_shot_lib.gl.resource.GlResourceType
 
-class BuiltinShader(val inner: ShaderInstance) : IShader, ExtraUnbind {
-    override fun getUniform(name: String): AbstractUniform? = inner.getUniform(name)
+class BuiltinShader(
+    val config: ShaderProgram,
+    val compiled: CompiledShaderProgram = Minecraft.getInstance().shaderManager.getProgram(config)!!
+) : IShader, ExtraUnbind {
+    override fun getUniform(name: String): AbstractUniform? = compiled.getUniform(name)
 
-    override fun setSampler(name: String, id: Int) = inner.setSampler(name, id)
+    override fun setSampler(name: String, id: Int) = compiled.bindSampler(name, id)
 
-    override fun vertexFormat(): VertexFormat? = inner.vertexFormat
+    override fun vertexFormat(): VertexFormat? = config.vertexFormat
 
     override fun bind() {
-        inner.apply()
+        compiled.apply()
     }
 
     override fun unbind() {
@@ -24,16 +29,16 @@ class BuiltinShader(val inner: ShaderInstance) : IShader, ExtraUnbind {
     }
 
     override fun unbindExtra() {
-        inner.clear()
+        compiled.clear()
     }
 
     override fun release() {
-        inner.close()
+        compiled.close()
     }
 
-    override fun location(): ResourceLocation = ResourceLocation.withDefaultNamespace(inner.name)
+    override fun location(): ResourceLocation = config.configId
 
     override fun type() = GlResourceType.PROGRAM
 
-    override fun id() = inner.id
+    override fun id() = compiled.programId
 }

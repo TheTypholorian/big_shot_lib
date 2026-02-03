@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib
 
+import com.mojang.blaze3d.buffers.BufferUsage
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.*
 import net.minecraft.client.Camera
@@ -16,7 +17,7 @@ object BigShotLib {
     @JvmField
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
     val SCREEN_VBO: VertexBuffer by lazy {
-        val vbo = VertexBuffer(VertexBuffer.Usage.STATIC)
+        val vbo = VertexBuffer(BufferUsage.STATIC_WRITE)
         val blitBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
 
         blitBuilder.quad(

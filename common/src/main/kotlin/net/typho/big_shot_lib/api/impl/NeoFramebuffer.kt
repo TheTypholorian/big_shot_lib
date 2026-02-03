@@ -114,7 +114,7 @@ open class NeoFramebuffer(
 
     override fun clearColor(color: Vector4f) {
         GlStateManager._clearColor(color.x, color.y, color.z, color.w)
-        GlStateManager._clear(GL_COLOR_BUFFER_BIT, false)
+        GlStateManager._clear(GL_COLOR_BUFFER_BIT)
     }
 
     open class TextureBacked(

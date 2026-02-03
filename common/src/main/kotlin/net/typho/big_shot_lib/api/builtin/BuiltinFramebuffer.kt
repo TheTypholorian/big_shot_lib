@@ -18,12 +18,12 @@ class BuiltinFramebuffer(val inner: RenderTarget) : IFramebuffer {
     override fun height() = inner.height
 
     override fun resize(width: Int, height: Int) {
-        inner.resize(width, height, false)
+        inner.resize(width, height)
     }
 
     override fun clearColor(color: Vector4f) {
         inner.setClearColor(color.x, color.y, color.z, color.w)
-        inner.clear(false)
+        inner.clear()
     }
 
     override fun unbind() {

@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.gl.resource
 
-import com.mojang.blaze3d.shaders.Program
+import com.mojang.blaze3d.shaders.CompiledShader
 import net.minecraft.resources.FileToIdConverter
 import org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER
 import org.lwjgl.opengl.GL20.GL_VERTEX_SHADER
@@ -24,9 +24,9 @@ enum class ShaderType(
 
     companion object {
         @JvmStatic
-        fun fromVanillaType(type: Program.Type) = when (type) {
-            Program.Type.VERTEX -> VERTEX
-            Program.Type.FRAGMENT -> FRAGMENT
+        fun fromVanillaType(type: CompiledShader.Type) = when (type) {
+            CompiledShader.Type.VERTEX -> VERTEX
+            CompiledShader.Type.FRAGMENT -> FRAGMENT
         }
     }
 }
