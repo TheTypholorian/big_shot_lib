@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.meshes
 
 import com.mojang.blaze3d.vertex.VertexConsumer
 
-class BuiltinVertexConsumer(val inner: VertexConsumer) : IVertexConsumer {
+open class BuiltinVertexConsumer(val inner: VertexConsumer) : IVertexConsumer {
     override fun vertex(
         x: Float,
         y: Float,

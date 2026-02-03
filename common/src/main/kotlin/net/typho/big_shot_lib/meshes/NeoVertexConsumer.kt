@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.meshes
 
 import com.mojang.blaze3d.vertex.VertexConsumer
 
-class NeoVertexConsumer(val inner: IVertexConsumer) : VertexConsumer {
+open class NeoVertexConsumer(val inner: IVertexConsumer) : VertexConsumer {
     override fun addVertex(
         p0: Float,
         p1: Float,

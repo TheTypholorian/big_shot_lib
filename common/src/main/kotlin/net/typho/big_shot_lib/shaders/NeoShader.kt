@@ -6,8 +6,8 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.errors.ShaderCompileException
 import net.typho.big_shot_lib.errors.ShaderLinkException
-import net.typho.big_shot_lib.gl.resource.GlResourceType
-import net.typho.big_shot_lib.resource.ResourceRegistry
+import net.typho.big_shot_lib.files.ResourceRegistry
+import net.typho.big_shot_lib.resource.GlResourceType
 import net.typho.big_shot_lib.shaders.mixins.ShaderLocationsInfo
 import net.typho.big_shot_lib.shaders.mixins.ShaderMixinManager
 import org.lwjgl.opengl.GL20.*
@@ -56,7 +56,7 @@ open class NeoShader(
     }
 
     init {
-        type().label(id(), location().toString())
+        type().label(id(), location())
     }
 
     protected val uniforms = HashMap<String, DirectUniform?>()

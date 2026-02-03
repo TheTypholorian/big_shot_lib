@@ -18,7 +18,7 @@ open class NeoBuffer(
     ) : this(location, type, glGenBuffers(), usage)
 
     init {
-        location()?.let { type().label(id(), it.toString()) }
+        location()?.let { type().label(id(), it) }
     }
 
     override fun release() {

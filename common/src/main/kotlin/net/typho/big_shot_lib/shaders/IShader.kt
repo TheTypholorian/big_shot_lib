@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.gl.resource.GlResourceInstance
+import net.typho.big_shot_lib.resource.GlResourceInstance
 import net.typho.big_shot_lib.textures.ITexture
 import org.joml.Matrix4f
 import org.lwjgl.glfw.GLFW
@@ -55,7 +55,7 @@ interface IShader : GlResourceInstance {
             }
 
             val resourceManager = Minecraft.getInstance().resourceManager
-            var code = String(resourceManager.getResource(path.withPrefix("${NeoShader.PATH}/"))
+            var code = String(resourceManager.getResource(path.withPrefix("neo/shaders/"))
                 .or { resourceManager.getResource(path.withPrefix("shaders/include/")) }
                 .orElseThrow()
                 .open()

@@ -10,13 +10,15 @@
   ],
   "client": [
     "errors.GlDebugMixin",
+    "files.ReloadableResourceManagerMixin",
     "framebuffers.LevelRendererMixin",
     "framebuffers.MinecraftMixin",
-    "resource.ReloadableResourceManagerMixin",
     "shaders.mixins.EffectInstanceMixin",
     "shaders.mixins.ProgramMixin",
     "shaders.mixins.ProgramTypeMixin",
     "textures.SimpleTextureAccessor",
+    "textures.SimpleTextureMixin",
+    "textures.TextureAtlasMixin",
     "windows.GameRendererMixin"
   ],
   "server": [],

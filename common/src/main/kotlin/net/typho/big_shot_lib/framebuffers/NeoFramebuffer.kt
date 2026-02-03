@@ -75,7 +75,7 @@ open class NeoFramebuffer(
 
         unbind()
 
-        type().label(id(), location().toString())
+        type().label(id(), location())
     }
 
     override fun unbind() {

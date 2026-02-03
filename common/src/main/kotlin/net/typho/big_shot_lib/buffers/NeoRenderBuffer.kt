@@ -17,7 +17,7 @@ open class NeoRenderBuffer(
     ) : this(location, glGenRenderbuffers(), format)
 
     init {
-        type().label(id(), location().toString())
+        type().label(id(), location())
     }
 
     override fun release() {
