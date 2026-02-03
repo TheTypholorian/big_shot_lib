@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api
 
-import com.mojang.blaze3d.shaders.AbstractUniform
+import com.mojang.blaze3d.opengl.AbstractUniform
 import org.joml.Matrix3f
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -67,29 +67,29 @@ open class DirectUniform(
         GL20.glUniformMatrix4fv(location, false, buffer)
     }
 
-    override fun set(matrix: Matrix3f) {
+    fun set(matrix: Matrix3f) {
         val buffer = FloatArray(9)
         matrix.get(buffer)
         GL20.glUniformMatrix3fv(location, false, buffer)
     }
 
-    override fun setSafe(x: Float, y: Float, z: Float, w: Float) {
+    fun setSafe(x: Float, y: Float, z: Float, w: Float) {
         GL20.glUniform4f(location, x, y, z, w)
     }
 
-    override fun setSafe(x: Int, y: Int, z: Int, w: Int) {
+    fun setSafe(x: Int, y: Int, z: Int, w: Int) {
         GL20.glUniform4i(location, x, y, z, w)
     }
 
-    override fun setMat2x2(m00: Float, m01: Float, m10: Float, m11: Float) {
+    fun setMat2x2(m00: Float, m01: Float, m10: Float, m11: Float) {
         GL20.glUniformMatrix2fv(location, false, floatArrayOf(m00, m01, m10, m11))
     }
 
-    override fun setMat2x3(m00: Float, m01: Float, m02: Float, m10: Float, m11: Float, m12: Float) {
+    fun setMat2x3(m00: Float, m01: Float, m02: Float, m10: Float, m11: Float, m12: Float) {
         GL21.glUniformMatrix2x3fv(location, false, floatArrayOf(m00, m01, m02, m10, m11, m12))
     }
 
-    override fun setMat2x4(
+    fun setMat2x4(
         m00: Float,
         m01: Float,
         m02: Float,
@@ -102,11 +102,11 @@ open class DirectUniform(
         GL21.glUniformMatrix2x4fv(location, false, floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13))
     }
 
-    override fun setMat3x2(m00: Float, m01: Float, m10: Float, m11: Float, m20: Float, m21: Float) {
+    fun setMat3x2(m00: Float, m01: Float, m10: Float, m11: Float, m20: Float, m21: Float) {
         GL21.glUniformMatrix3x2fv(location, false, floatArrayOf(m00, m01, m10, m11, m20, m21))
     }
 
-    override fun setMat3x3(
+    fun setMat3x3(
         m00: Float,
         m01: Float,
         m02: Float,
@@ -120,7 +120,7 @@ open class DirectUniform(
         GL20.glUniformMatrix3fv(location, false, floatArrayOf(m00, m01, m02, m10, m11, m12, m20, m21, m22))
     }
 
-    override fun setMat3x4(
+    fun setMat3x4(
         m00: Float,
         m01: Float,
         m02: Float,
@@ -141,7 +141,7 @@ open class DirectUniform(
         )
     }
 
-    override fun setMat4x2(
+    fun setMat4x2(
         m00: Float,
         m01: Float,
         m02: Float,
@@ -154,7 +154,7 @@ open class DirectUniform(
         GL21.glUniformMatrix4x2fv(location, false, floatArrayOf(m00, m01, m02, m03, m10, m11, m12, m13))
     }
 
-    override fun setMat4x3(
+    fun setMat4x3(
         m00: Float,
         m01: Float,
         m02: Float,
@@ -175,7 +175,7 @@ open class DirectUniform(
         )
     }
 
-    override fun setMat4x4(
+    fun setMat4x4(
         m00: Float,
         m01: Float,
         m02: Float,

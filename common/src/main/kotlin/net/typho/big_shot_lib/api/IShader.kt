@@ -1,9 +1,10 @@
 package net.typho.big_shot_lib.api
 
 import com.google.gson.JsonElement
+import com.mojang.blaze3d.opengl.AbstractUniform
+import com.mojang.blaze3d.opengl.GlTexture
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.platform.Window
-import com.mojang.blaze3d.shaders.AbstractUniform
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
@@ -23,9 +24,11 @@ interface IShader : GlResourceInstance {
 
     fun setSampler(name: String, id: Int)
 
-    fun setSampler(name: String, target: RenderTarget) = setSampler(name, target.colorTextureId)
+    fun setSampler(name: String, target: RenderTarget) = setSampler(name, target.colorTexture as GlTexture)
 
-    fun setSampler(name: String, texture: AbstractTexture) = setSampler(name, texture.id)
+    fun setSampler(name: String, texture: AbstractTexture) = setSampler(name, texture.texture as GlTexture)
+
+    fun setSampler(name: String, texture: GlTexture) = setSampler(name, texture.glId())
 
     fun setSampler(name: String, texture: ITexture) = setSampler(name, texture.id())
 

@@ -1,8 +1,13 @@
 package net.typho.big_shot_lib
 
+import com.mojang.blaze3d.buffers.BufferType
 import com.mojang.blaze3d.buffers.BufferUsage
+import com.mojang.blaze3d.buffers.GpuBuffer
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.*
+import com.mojang.blaze3d.vertex.DefaultVertexFormat
+import com.mojang.blaze3d.vertex.Tesselator
+import com.mojang.blaze3d.vertex.VertexConsumer
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.client.Camera
 import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
@@ -16,8 +21,7 @@ object BigShotLib {
     const val MOD_ID = "big_shot_lib"
     @JvmField
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
-    val SCREEN_VBO: VertexBuffer by lazy {
-        val vbo = VertexBuffer(BufferUsage.STATIC_WRITE)
+    val SCREEN_VBO: GpuBuffer by lazy {
         val blitBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
 
         blitBuilder.quad(
@@ -28,10 +32,7 @@ object BigShotLib {
             Vector3f(0f, 0f, -1f)
         )
 
-        vbo.bind()
-        vbo.upload(blitBuilder.buildOrThrow())
-        VertexBuffer.unbind()
-        return@lazy vbo
+        return@lazy RenderSystem.getDevice().createBuffer(null, BufferType.VERTICES, BufferUsage.STATIC_WRITE, blitBuilder.buildOrThrow().vertexBuffer())
     }
 
     fun init() = Unit

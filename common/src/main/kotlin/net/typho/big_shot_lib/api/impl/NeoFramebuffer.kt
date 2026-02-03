@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.impl
 
-import com.mojang.blaze3d.platform.GlStateManager
-import net.minecraft.client.Minecraft
+import com.mojang.blaze3d.opengl.GlStateManager
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.IFramebuffer
 import net.typho.big_shot_lib.api.IFramebufferAttachment
@@ -76,10 +75,6 @@ open class NeoFramebuffer(
         unbind()
 
         type().label(id(), location().toString())
-    }
-
-    override fun unbind() {
-        Minecraft.getInstance().mainRenderTarget.bindWrite(true)
     }
 
     override fun release() {
