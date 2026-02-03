@@ -105,7 +105,7 @@ object ShaderMixinManager {
         code: String,
         entrypoint: String = DEFAULT_ENTRYPOINT
     ): String {
-        var modified = code
+        var modified = code.trim()
 
         for (callback in callbacks) {
             modified = callback.mixinPreCompile(shader, type, format, modified)

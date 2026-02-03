@@ -23,7 +23,7 @@ public class ShaderChunkRendererMixin {
     private void createShader1(String path, ChunkShaderOptions options, CallbackInfoReturnable<GlProgram<ChunkShaderInterface>> cir) {
         if (ShaderMixinManager.enabled) {
             ShaderMixinManager.currentVertexFormat.set(DefaultVertexFormat.POSITION_TEX_COLOR);
-            ShaderMixinManager.currentLocationsInfo.set(new ShaderLocationsInfo(false));
+            ShaderMixinManager.currentLocationsInfo.set(new ShaderLocationsInfo(null, false));
         }
     }
 
