@@ -16,11 +16,11 @@ import java.util.function.Function
 import java.util.function.Supplier
 
 interface ShaderMixinManager {
-    fun registerMixin(mixin: ShaderMixin.Factory)
+    fun register(mixin: ShaderMixin.Factory)
 
-    fun registerMixin(mixin: ShaderMixin) = registerMixin { mixin }
+    fun register(mixin: ShaderMixin) = register { mixin }
 
-    fun applyMixins(key: ShaderSourceKey, code: String): String
+    fun apply(key: ShaderSourceKey, code: String): String
 
     companion object : ShaderMixinManager {
         private val INSTANCE = ServiceLoader.load(ShaderMixinManager::class.java).findFirst().orElseThrow()
@@ -28,14 +28,14 @@ interface ShaderMixinManager {
         const val WORD_SIZE_BYTES = 4
         val BYTE_ORDER: ByteOrder = ByteOrder.nativeOrder()
 
-        override fun registerMixin(mixin: ShaderMixin.Factory) = INSTANCE.registerMixin(mixin)
+        override fun register(mixin: ShaderMixin.Factory) = INSTANCE.register(mixin)
 
-        override fun registerMixin(mixin: ShaderMixin) = INSTANCE.registerMixin(mixin)
+        override fun register(mixin: ShaderMixin) = INSTANCE.register(mixin)
 
-        override fun applyMixins(key: ShaderSourceKey, code: String) = INSTANCE.applyMixins(key, code)
+        override fun apply(key: ShaderSourceKey, code: String) = INSTANCE.apply(key, code)
 
         @ApiStatus.Internal
-        fun applyMixinsInternal(
+        fun applyInternal(
             key: ShaderSourceKey,
             code: String,
             mixins: Iterable<ShaderMixin>,

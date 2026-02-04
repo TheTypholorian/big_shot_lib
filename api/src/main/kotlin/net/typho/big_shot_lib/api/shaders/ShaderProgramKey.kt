@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.shaders
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceLocation
+import net.typho.big_shot_lib.api.Named
 
 @JvmRecord
 data class ShaderProgramKey(
@@ -13,4 +14,6 @@ data class ShaderProgramKey(
     val format: VertexFormat,
     @JvmField
     val sources: Set<ShaderSourceType>
-)
+) : Named {
+    override fun location() = location
+}
