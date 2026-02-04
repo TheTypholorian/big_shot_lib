@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec
 import org.joml.*
 import java.util.function.Function
 
-object VectorCodecs {
+object NeoCodecs {
     @JvmField
     val VEC2I: Codec<Vector2ic> = of(2, Codec.INT, { Vector2i(it[0], it[1]) }, { listOf(it.x(), it.y()) })
     @JvmField
@@ -28,5 +28,12 @@ object VectorCodecs {
 
     fun <V, T> of(size: Int, codec: Codec<T>, to: Function<List<T>, V>, from: Function<V, List<T>>): Codec<V> {
         return codec.listOf(size, size).xmap(to, from)
+    }
+
+    inline fun <reified E : Enum<E>> enumCodec(): Codec<E> {
+        return Codec.STRING.xmap(
+            { key -> enumValueOf<E>(key) },
+            { entry -> entry.name }
+        )
     }
 }

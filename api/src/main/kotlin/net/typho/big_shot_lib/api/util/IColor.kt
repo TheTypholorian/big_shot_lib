@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.util
 
+import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import org.joml.*
 import java.awt.Color
@@ -15,24 +16,41 @@ interface IColor {
             { color -> color.toRGBA() }
         )
         @JvmField
-        val CODEC_3I: Codec<IColor> = VectorCodecs.VEC3I.xmap(
+        val CODEC_3I: Codec<IColor> = NeoCodecs.VEC3I.xmap(
             { vec -> from(vec) },
             { color -> color.toVec3() }
         )
         @JvmField
-        val CODEC_4I: Codec<IColor> = VectorCodecs.VEC4I.xmap(
+        val CODEC_4I: Codec<IColor> = NeoCodecs.VEC4I.xmap(
             { vec -> from(vec) },
             { color -> color.toVec4() }
         )
         @JvmField
-        val CODEC_3F: Codec<IColor> = VectorCodecs.VEC3F.xmap(
+        val CODEC_3F: Codec<IColor> = NeoCodecs.VEC3F.xmap(
             { vec -> from(vec) },
             { color -> color.toVec3F() }
         )
         @JvmField
-        val CODEC_4F: Codec<IColor> = VectorCodecs.VEC4F.xmap(
+        val CODEC_4F: Codec<IColor> = NeoCodecs.VEC4F.xmap(
             { vec -> from(vec) },
             { color -> color.toVec4F() }
+        )
+        @JvmField
+        val CODEC_ANY: Codec<IColor> = Codec.either(
+            CODEC_PACKED,
+            Codec.either(
+                CODEC_3I,
+                Codec.either(
+                    CODEC_4I,
+                    Codec.either(
+                        CODEC_3F,
+                        CODEC_4F
+                    )
+                )
+            )
+        ).xmap(
+            { either -> either.map({ l -> l }, { r -> r.map({ l -> l }, { r1 -> r1.map({ l -> l }, { r2 -> r2.map({ l -> l }, { r3 -> r3 }) }) }) }) },
+            { color -> Either.left(color) }
         )
 
         fun from(argb: Int) = RGBA(argb shl 16 and 0xFF, argb shl 8 and 0xFF, argb and 0xFF, argb ushr 24)

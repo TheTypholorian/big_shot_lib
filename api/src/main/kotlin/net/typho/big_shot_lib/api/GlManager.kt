@@ -1,8 +1,6 @@
 package net.typho.big_shot_lib.api
 
-import net.typho.big_shot_lib.api.render_queue.shards.BlendEquation
-import net.typho.big_shot_lib.api.render_queue.shards.BlendFactor
-import net.typho.big_shot_lib.api.render_queue.shards.GlFlag
+import net.typho.big_shot_lib.api.render_queue.shards.*
 import net.typho.big_shot_lib.api.util.IColor
 import java.util.*
 
@@ -14,6 +12,10 @@ interface GlManager {
     fun blendFunc(src: BlendFactor, dst: BlendFactor)
 
     fun blendFuncSeparate(src: BlendFactor, dst: BlendFactor, srcA: BlendFactor, dstA: BlendFactor)
+
+    fun colorMask(mask: ColorMask)
+
+    fun cullFace(face: CullFace)
 
     fun enable(flag: GlFlag)
 
@@ -29,6 +31,10 @@ interface GlManager {
         override fun blendFunc(src: BlendFactor, dst: BlendFactor) = INSTANCE.blendFunc(src, dst)
 
         override fun blendFuncSeparate(src: BlendFactor, dst: BlendFactor, srcA: BlendFactor, dstA: BlendFactor) = INSTANCE.blendFuncSeparate(src, dst, srcA, dstA)
+
+        override fun colorMask(mask: ColorMask) = INSTANCE.colorMask(mask)
+
+        override fun cullFace(face: CullFace) = INSTANCE.cullFace(face)
 
         override fun enable(flag: GlFlag) = INSTANCE.enable(flag)
 

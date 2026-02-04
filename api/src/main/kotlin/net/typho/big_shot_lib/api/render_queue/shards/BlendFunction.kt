@@ -1,9 +1,15 @@
 package net.typho.big_shot_lib.api.render_queue.shards
 
+import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.Bindable
 import net.typho.big_shot_lib.api.GlManager
 
 sealed interface BlendFunction : Bindable {
+    companion object {
+        @JvmField
+        val CODEC: Codec<BlendFunction>
+    }
+
     @JvmRecord
     data class Basic(
         @JvmField

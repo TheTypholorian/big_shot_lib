@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.render_queue
 
-import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 import net.typho.big_shot_lib.api.Bindable
 import net.typho.big_shot_lib.api.Named
 
@@ -10,7 +10,7 @@ interface RenderSettingShard : Bindable {
     interface Type<S : RenderSettingShard> : Named {
         fun getDefault(): S
 
-        fun codec(): Codec<S>
+        fun codec(): MapCodec<S>
     }
 
     open class Basic(
