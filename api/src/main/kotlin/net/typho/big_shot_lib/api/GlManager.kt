@@ -5,6 +5,10 @@ import net.typho.big_shot_lib.api.util.IColor
 import java.util.*
 
 interface GlManager {
+    fun enable(flag: GlFlag)
+
+    fun disable(flag: GlFlag)
+
     fun blendColor(color: IColor)
 
     fun blendEquation(eq: BlendEquation)
@@ -17,12 +21,16 @@ interface GlManager {
 
     fun cullFace(face: CullFace)
 
-    fun enable(flag: GlFlag)
+    fun depthMask(mask: Boolean)
 
-    fun disable(flag: GlFlag)
+    fun depthFunc(func: DepthFunction)
 
     companion object : GlManager {
         private val INSTANCE = ServiceLoader.load(GlManager::class.java).findFirst().orElseThrow()
+
+        override fun enable(flag: GlFlag) = INSTANCE.enable(flag)
+
+        override fun disable(flag: GlFlag) = INSTANCE.disable(flag)
 
         override fun blendColor(color: IColor) = INSTANCE.blendColor(color)
 
@@ -36,8 +44,8 @@ interface GlManager {
 
         override fun cullFace(face: CullFace) = INSTANCE.cullFace(face)
 
-        override fun enable(flag: GlFlag) = INSTANCE.enable(flag)
+        override fun depthMask(mask: Boolean) = INSTANCE.depthMask(mask)
 
-        override fun disable(flag: GlFlag) = INSTANCE.disable(flag)
+        override fun depthFunc(func: DepthFunction) = INSTANCE.depthFunc(func)
     }
 }
