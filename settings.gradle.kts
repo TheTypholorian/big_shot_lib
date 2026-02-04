@@ -19,6 +19,9 @@ pluginManagement {
                 includeGroup("fabric-loom")
             }
         }
+        maven {
+            url = uri("https://jitpack.io")
+        }
     }
 }
 
