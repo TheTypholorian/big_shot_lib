@@ -3,10 +3,15 @@ plugins {
     alias(libs.plugins.moddev)
 }
 
+val version: String by project
 val modId: String by project
 
 base {
-    archivesName = "$modId-api"
+    archivesName = "$modId-api$version"
+}
+
+tasks.withType<Jar>().configureEach {
+    archiveVersion.set("")
 }
 
 neoForge {
