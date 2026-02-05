@@ -96,4 +96,6 @@ dependencies {
     // natives for neoforge are in src/main/resources because neoforge is stupid
 
     implementation(libs.sodium)
+
+    jarJar(fileTree("../libs/"))
 }

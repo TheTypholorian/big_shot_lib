@@ -71,6 +71,8 @@ dependencies {
     lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
     modImplementation(libs.sodium)
+
+    include(fileTree("../libs/"))
 }
 
 loom {
