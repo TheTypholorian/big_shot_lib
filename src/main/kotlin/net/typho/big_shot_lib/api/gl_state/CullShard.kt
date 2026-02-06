@@ -1,11 +1,10 @@
-package net.typho.big_shot_lib.api.render_queue.shards
+package net.typho.big_shot_lib.api.gl_state
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.GlManager
-import net.typho.big_shot_lib.api.render_queue.RenderSettingShard
+import net.typho.big_shot_lib.api.NeoGlStateManager
 import net.typho.big_shot_lib.api.util.NeoCodecs
 
 open class CullShard(
@@ -17,7 +16,7 @@ open class CullShard(
     CullShard,
     if (enabled) listOf(
         GlFlag.CULL_FACE.bindable,
-        Bindable.ofState(GlManager::cullFace, face, CullFace.DEFAULT)
+        Bindable.ofState(NeoGlStateManager::cullFace, face, CullFace.DEFAULT)
     ) else listOf()
 ) {
     companion object : RenderSettingShard.Type<CullShard> {

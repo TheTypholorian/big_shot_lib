@@ -1,11 +1,11 @@
-package net.typho.big_shot_lib.api.render_queue.shards
+package net.typho.big_shot_lib.api.gl_state
 
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.GlManager
+import net.typho.big_shot_lib.api.NeoGlStateManager
 import net.typho.big_shot_lib.api.util.NeoCodecs
 
 sealed interface BlendFunction : Bindable {
@@ -34,7 +34,7 @@ sealed interface BlendFunction : Bindable {
         val dst: BlendFactor
     ) : BlendFunction {
         override fun bind() {
-            GlManager.blendFunc(src, dst)
+            NeoGlStateManager.blendFunc(src, dst)
         }
 
         override fun unbind() {
@@ -63,7 +63,7 @@ sealed interface BlendFunction : Bindable {
         val dstA: BlendFactor
     ) : BlendFunction {
         override fun bind() {
-            GlManager.blendFuncSeparate(src, dst, srcA, dstA)
+            NeoGlStateManager.blendFuncSeparate(src, dst, srcA, dstA)
         }
 
         override fun unbind() {

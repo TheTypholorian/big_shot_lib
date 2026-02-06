@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.render_queue.shards
+package net.typho.big_shot_lib.api.gl_state
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec

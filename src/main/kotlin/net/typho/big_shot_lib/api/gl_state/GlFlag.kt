@@ -1,9 +1,9 @@
-package net.typho.big_shot_lib.api.render_queue.shards
+package net.typho.big_shot_lib.api.gl_state
 
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.GlManager
 import net.typho.big_shot_lib.api.Named
+import net.typho.big_shot_lib.api.NeoGlStateManager
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*
 
@@ -58,10 +58,10 @@ enum class GlFlag(
     }
 
     fun enable() {
-        GlManager.enable(this)
+        NeoGlStateManager.enable(this)
     }
 
     fun disable() {
-        GlManager.disable(this)
+        NeoGlStateManager.disable(this)
     }
 }

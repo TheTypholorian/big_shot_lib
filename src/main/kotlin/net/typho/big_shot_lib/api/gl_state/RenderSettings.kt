@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.render_queue
+package net.typho.big_shot_lib.api.gl_state
 
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
@@ -13,10 +13,15 @@ open class RenderSettings(
     override fun location() = location
 
     override fun bind() {
-        TODO("Not yet implemented")
+        shards.forEach(RenderSettingShard::bind)
     }
 
     override fun unbind() {
-        TODO("Not yet implemented")
+        shards.forEach(RenderSettingShard::unbind)
+    }
+
+    companion object {
+        @JvmField
+        val REGISTRY = HashMap<ResourceLocation, RenderSettings>()
     }
 }

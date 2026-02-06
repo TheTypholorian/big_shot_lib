@@ -1,11 +1,10 @@
-package net.typho.big_shot_lib.api.render_queue.shards
+package net.typho.big_shot_lib.api.gl_state
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.GlManager
-import net.typho.big_shot_lib.api.render_queue.RenderSettingShard
+import net.typho.big_shot_lib.api.NeoGlStateManager
 import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.NeoCodecs
 
@@ -22,7 +21,7 @@ open class BlendShard(
     BlendShard,
     if (enabled) listOf(
         GlFlag.BLEND.bindable,
-        Bindable.ofState(GlManager::blendColor, color, IColor.BLACK),
+        Bindable.ofState(NeoGlStateManager::blendColor, color, IColor.BLACK),
         equation,
         function
     ) else listOf()

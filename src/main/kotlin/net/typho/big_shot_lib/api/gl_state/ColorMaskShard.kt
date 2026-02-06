@@ -1,17 +1,16 @@
-package net.typho.big_shot_lib.api.render_queue.shards
+package net.typho.big_shot_lib.api.gl_state
 
 import com.mojang.serialization.MapCodec
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.GlManager
-import net.typho.big_shot_lib.api.render_queue.RenderSettingShard
+import net.typho.big_shot_lib.api.NeoGlStateManager
 
 open class ColorMaskShard(
     @JvmField
     val mask: ColorMask
 ) : RenderSettingShard.Basic(
     ColorMaskShard,
-    listOf(Bindable.ofState(GlManager::colorMask, mask, ColorMask.DEFAULT))
+    listOf(Bindable.ofState(NeoGlStateManager::colorMask, mask, ColorMask.DEFAULT))
 ) {
     companion object : RenderSettingShard.Type<ColorMaskShard> {
         override fun getDefault() = ColorMaskShard(ColorMask.DEFAULT)

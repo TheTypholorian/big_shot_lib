@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.render_queue.shards
+package net.typho.big_shot_lib.api.gl_state
 
 import net.typho.big_shot_lib.api.GlNamed
 import org.lwjgl.opengl.GL14.*

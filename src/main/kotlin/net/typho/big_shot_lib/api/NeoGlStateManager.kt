@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.api
 
-import net.typho.big_shot_lib.api.render_queue.shards.*
+import net.typho.big_shot_lib.api.gl_state.*
 import net.typho.big_shot_lib.api.util.IColor
 import java.util.*
 
-interface GlManager {
+interface NeoGlStateManager {
     fun enable(flag: GlFlag)
 
     fun disable(flag: GlFlag)
@@ -25,8 +25,8 @@ interface GlManager {
 
     fun depthFunc(func: DepthFunction)
 
-    companion object : GlManager {
-        private val INSTANCE = ServiceLoader.load(GlManager::class.java).findFirst().orElseThrow()
+    companion object : NeoGlStateManager {
+        private val INSTANCE = ServiceLoader.load(NeoGlStateManager::class.java).findFirst().orElseThrow()
 
         override fun enable(flag: GlFlag) = INSTANCE.enable(flag)
 

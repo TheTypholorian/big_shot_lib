@@ -1,18 +1,17 @@
-package net.typho.big_shot_lib.api.render_queue.shards
+package net.typho.big_shot_lib.api.gl_state
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.GlManager
-import net.typho.big_shot_lib.api.render_queue.RenderSettingShard
+import net.typho.big_shot_lib.api.NeoGlStateManager
 
 open class DepthMaskShard(
     @JvmField
     val mask: Boolean
 ) : RenderSettingShard.Basic(
     DepthMaskShard,
-    listOf(Bindable.ofState(GlManager::depthMask, mask, true))
+    listOf(Bindable.ofState(NeoGlStateManager::depthMask, mask, true))
 ) {
     companion object : RenderSettingShard.Type<DepthMaskShard> {
         override fun getDefault() = DepthMaskShard(true)
