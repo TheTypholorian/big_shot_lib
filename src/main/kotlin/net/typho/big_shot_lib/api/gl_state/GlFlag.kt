@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
 import net.typho.big_shot_lib.api.GlNamed
 import net.typho.big_shot_lib.api.Named
-import net.typho.big_shot_lib.api.StateManager
+import net.typho.big_shot_lib.api.OpenGL
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*
 
@@ -62,10 +62,10 @@ enum class GlFlag(
     }
 
     fun enable() {
-        StateManager.INSTANCE.enable(this)
+        OpenGL.INSTANCE.enable(this)
     }
 
     fun disable() {
-        StateManager.INSTANCE.disable(this)
+        OpenGL.INSTANCE.disable(this)
     }
 }

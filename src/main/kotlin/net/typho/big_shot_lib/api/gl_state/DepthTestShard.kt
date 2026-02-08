@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.StateManager
+import net.typho.big_shot_lib.api.OpenGL
 import net.typho.big_shot_lib.api.util.NeoCodecs
 
 open class DepthTestShard(
@@ -16,7 +16,7 @@ open class DepthTestShard(
     DepthTestShard,
     if (enabled) listOf(
         GlFlag.DEPTH_TEST.bindable,
-        Bindable.ofState(StateManager::depthFunc, func, DepthFunction.LEQUAL)
+        Bindable.ofState(OpenGL::depthFunc, func, DepthFunction.LEQUAL)
     ) else listOf()
 ) {
     companion object : RenderSettingShard.Type<DepthTestShard> {

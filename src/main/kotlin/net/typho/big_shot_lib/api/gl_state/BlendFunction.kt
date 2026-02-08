@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.StateManager
+import net.typho.big_shot_lib.api.OpenGL
 import net.typho.big_shot_lib.api.util.NeoCodecs
 
 sealed interface BlendFunction : Bindable {
@@ -34,7 +34,7 @@ sealed interface BlendFunction : Bindable {
         val dst: BlendFactor
     ) : BlendFunction {
         override fun bind() {
-            StateManager.INSTANCE.blendFunc(src, dst)
+            OpenGL.INSTANCE.blendFunc(src, dst)
         }
 
         override fun unbind() {
@@ -63,7 +63,7 @@ sealed interface BlendFunction : Bindable {
         val dstA: BlendFactor
     ) : BlendFunction {
         override fun bind() {
-            StateManager.INSTANCE.blendFuncSeparate(src, dst, srcA, dstA)
+            OpenGL.INSTANCE.blendFuncSeparate(src, dst, srcA, dstA)
         }
 
         override fun unbind() {

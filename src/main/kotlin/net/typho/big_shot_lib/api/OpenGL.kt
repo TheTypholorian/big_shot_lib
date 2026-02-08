@@ -10,7 +10,7 @@ import net.typho.big_shot_lib.api.util.IColor
 import java.nio.ByteBuffer
 import java.util.*
 
-interface StateManager {
+interface OpenGL {
     fun enable(flag: GlFlag)
 
     fun disable(flag: GlFlag)
@@ -80,6 +80,6 @@ interface StateManager {
 
     companion object {
         @JvmField
-        val INSTANCE: StateManager = ServiceLoader.load(StateManager::class.java).findFirst().orElseThrow()
+        val INSTANCE: OpenGL = ServiceLoader.load(OpenGL::class.java).findFirst().orElseThrow()
     }
 }

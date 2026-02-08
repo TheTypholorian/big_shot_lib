@@ -4,14 +4,14 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.StateManager
+import net.typho.big_shot_lib.api.OpenGL
 
 open class DepthMaskShard(
     @JvmField
     val mask: Boolean
 ) : RenderSettingShard.Basic(
     DepthMaskShard,
-    listOf(Bindable.ofState(StateManager::depthMask, mask, true))
+    listOf(Bindable.ofState(OpenGL::depthMask, mask, true))
 ) {
     companion object : RenderSettingShard.Type<DepthMaskShard> {
         override fun getDefault() = DepthMaskShard(true)
