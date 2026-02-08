@@ -3,12 +3,9 @@ package net.typho.big_shot_lib.api.meshes
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
-import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.GlNamed
-import org.lwjgl.opengl.GL11.glDrawArrays
-import org.lwjgl.opengl.GL15.*
-import org.lwjgl.opengl.GL30.glBindVertexArray
-import org.lwjgl.opengl.GL30.glGenVertexArrays
+import net.typho.big_shot_lib.api.buffers.BufferType
+import net.typho.big_shot_lib.api.buffers.BufferUsage
+import net.typho.big_shot_lib.api.buffers.GlBuffer
 import org.lwjgl.system.MemoryUtil.*
 
 open class Mesh(
@@ -19,27 +16,21 @@ open class Mesh(
     @JvmField
     val usage: BufferUsage,
     @JvmField
-    val vao: Int = glGenVertexArrays(),
+    val vao: GlVertexArray = GlVertexArray(),
     @JvmField
-    val vbo: Int = glGenBuffers()
-) : Bindable, GlNamed {
+    val vbo: GlBuffer = GlBuffer(BufferType.ARRAY, usage)
+) {
     @JvmField
     protected var vertices = 0
 
     init {
-        glBindBuffer(GL_ARRAY_BUFFER, vbo)
+        vbo.bind()
         format.setupBufferState()
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
+        vbo.unbind()
     }
 
-    override fun bind() = glBindVertexArray(vao)
-
-    override fun unbind() = glBindVertexArray(0)
-
-    override fun glId() = vao
-
-    fun draw() {
-        glDrawArrays(mode.asGLMode, 0, vertices)
+    fun drawArrays() {
+        vao.drawArrays(mode, vertices)
     }
 
     inner class Builder(
@@ -129,9 +120,9 @@ open class Mesh(
             this@Mesh.vertices = vertices
 
             builder.build()?.let { result ->
-                glBindBuffer(GL_ARRAY_BUFFER, vbo)
-                glBufferData(GL_ARRAY_BUFFER, result.byteBuffer(), usage.id)
-                glBindBuffer(GL_ARRAY_BUFFER, 0)
+                vbo.bind()
+                vbo.upload(result.byteBuffer())
+                vbo.unbind()
             }
         }
     }

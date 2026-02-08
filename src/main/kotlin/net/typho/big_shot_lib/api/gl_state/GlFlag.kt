@@ -2,14 +2,16 @@ package net.typho.big_shot_lib.api.gl_state
 
 import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.Bindable
+import net.typho.big_shot_lib.api.GlNamed
 import net.typho.big_shot_lib.api.Named
-import net.typho.big_shot_lib.api.NeoGlStateManager
+import net.typho.big_shot_lib.api.StateManager
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*
 
 enum class GlFlag(
-    val id: Int
-) : Named {
+    @JvmField
+    val glId: Int
+) : GlNamed, Named {
     BLEND(GL_BLEND),
     COLOR_LOGIC_OP(GL_COLOR_LOGIC_OP),
     CULL_FACE(GL_CULL_FACE),
@@ -45,9 +47,11 @@ enum class GlFlag(
         override fun unbind() = disable()
     }
 
+    override fun glId() = glId
+
     override fun location() = location
 
-    fun queryValue() = glIsEnabled(id)
+    fun queryValue() = glIsEnabled(glId)
 
     fun set(value: Boolean) {
         if (value) {
@@ -58,10 +62,10 @@ enum class GlFlag(
     }
 
     fun enable() {
-        NeoGlStateManager.enable(this)
+        StateManager.INSTANCE.enable(this)
     }
 
     fun disable() {
-        NeoGlStateManager.disable(this)
+        StateManager.INSTANCE.disable(this)
     }
 }

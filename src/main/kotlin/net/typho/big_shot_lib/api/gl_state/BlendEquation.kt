@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.gl_state
 
 import net.typho.big_shot_lib.api.Bindable
 import net.typho.big_shot_lib.api.GlNamed
-import net.typho.big_shot_lib.api.NeoGlStateManager
+import net.typho.big_shot_lib.api.StateManager
 import org.lwjgl.opengl.GL14.*
 
 enum class BlendEquation(
@@ -17,7 +17,7 @@ enum class BlendEquation(
 
     override fun glId() = glId
 
-    override fun bind() = NeoGlStateManager.blendEquation(this)
+    override fun bind() = StateManager.INSTANCE.blendEquation(this)
 
     override fun unbind() {
     }
