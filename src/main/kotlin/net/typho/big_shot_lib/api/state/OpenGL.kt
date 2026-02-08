@@ -1,8 +1,7 @@
-package net.typho.big_shot_lib.api
+package net.typho.big_shot_lib.api.state
 
 import net.typho.big_shot_lib.api.buffers.BufferType
 import net.typho.big_shot_lib.api.buffers.BufferUsage
-import net.typho.big_shot_lib.api.gl_state.*
 import net.typho.big_shot_lib.api.textures.InterpolationType
 import net.typho.big_shot_lib.api.textures.TextureFormat
 import net.typho.big_shot_lib.api.textures.WrappingType
@@ -29,7 +28,17 @@ interface OpenGL {
 
     fun depthMask(mask: Boolean)
 
-    fun depthFunc(func: DepthFunction)
+    fun depthFunc(func: ComparisonMode)
+
+    fun polygonMode(mode: PolygonMode)
+
+    fun scissor(x: Int, y: Int, width: Int, height: Int)
+
+    fun stencilFunc(func: StencilFunc)
+
+    fun stencilMask(mask: Int)
+
+    fun stencilOp(op: StencilOp)
 
     fun createBuffer(): Int
 
@@ -80,6 +89,6 @@ interface OpenGL {
 
     companion object {
         @JvmField
-        val INSTANCE: OpenGL = ServiceLoader.load(OpenGL::class.java).findFirst().orElseThrow()
+        val INSTANCE: OpenGL = ServiceLoader.load(OpenGL.INSTANCE::class.java).findFirst().orElseThrow()
     }
 }

@@ -1,8 +1,8 @@
-package net.typho.big_shot_lib.api.gl_state
+package net.typho.big_shot_lib.api.state
 
 import org.lwjgl.opengl.GL11.*
 
-enum class DepthFunction(
+enum class ComparisonMode(
     @JvmField
     val glId: Int
 ) {

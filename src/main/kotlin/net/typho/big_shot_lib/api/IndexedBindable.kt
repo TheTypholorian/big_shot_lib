@@ -17,5 +17,14 @@ interface IndexedBindable {
                 setter.accept(index, unbound)
             }
         }
+
+        fun <T> ofState(setter: BiConsumer<Int, T>, bound: T) = object : IndexedBindable {
+            override fun bindBase(index: Int) {
+                setter.accept(index, bound)
+            }
+
+            override fun unbindBase(index: Int) {
+            }
+        }
     }
 }

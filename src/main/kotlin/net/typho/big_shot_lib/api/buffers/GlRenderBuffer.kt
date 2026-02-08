@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.buffers
 
 import net.typho.big_shot_lib.api.GlResource
-import net.typho.big_shot_lib.api.OpenGL
+import net.typho.big_shot_lib.api.state.OpenGL
 import net.typho.big_shot_lib.api.textures.TextureFormat
 
 open class GlRenderBuffer(

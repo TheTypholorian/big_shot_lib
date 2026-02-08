@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.gl_state
+package net.typho.big_shot_lib.api.state
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec

@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.gl_state
+package net.typho.big_shot_lib.api.state
 
 import com.mojang.serialization.MapCodec
 import net.minecraft.resources.ResourceLocation
@@ -46,6 +46,8 @@ interface RenderSettingShard : Bindable {
             REGISTRY[CullShard.location()] = CullShard
             REGISTRY[DepthMaskShard.location()] = DepthMaskShard
             REGISTRY[DepthTestShard.location()] = DepthTestShard
+            REGISTRY[PolygonModeShard.location()] = PolygonModeShard
+            REGISTRY[StencilShard.location()] = StencilShard
         }
     }
 }

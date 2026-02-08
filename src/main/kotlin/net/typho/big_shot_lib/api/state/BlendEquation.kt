@@ -1,8 +1,7 @@
-package net.typho.big_shot_lib.api.gl_state
+package net.typho.big_shot_lib.api.state
 
 import net.typho.big_shot_lib.api.Bindable
 import net.typho.big_shot_lib.api.GlNamed
-import net.typho.big_shot_lib.api.OpenGL
 import org.lwjgl.opengl.GL14.*
 
 enum class BlendEquation(

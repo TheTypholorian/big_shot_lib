@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.textures
 
 import net.typho.big_shot_lib.api.BufferUploader
 import net.typho.big_shot_lib.api.GlResource
-import net.typho.big_shot_lib.api.OpenGL
+import net.typho.big_shot_lib.api.state.OpenGL
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 import java.nio.ByteBuffer
 

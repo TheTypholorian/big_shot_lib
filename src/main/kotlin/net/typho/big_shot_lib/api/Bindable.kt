@@ -17,5 +17,14 @@ interface Bindable {
                 setter.accept(unbound)
             }
         }
+
+        fun <T> ofState(setter: Consumer<T>, bound: T) = object : Bindable {
+            override fun bind() {
+                setter.accept(bound)
+            }
+
+            override fun unbind() {
+            }
+        }
     }
 }
