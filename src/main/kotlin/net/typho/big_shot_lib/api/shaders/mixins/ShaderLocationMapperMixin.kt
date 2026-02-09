@@ -22,7 +22,7 @@ object ShaderLocationMapperMixin : ShaderMixin.Factory {
 
                 ShaderStorageClass.entries.firstOrNull { it.id == storageClassId }?.let { storageClass ->
                     locations.getMapper(storageClass, key.type)?.let { mapper ->
-                        val opName = code.findOpcode(ShaderOpcode.OP_NAME, 1 to id)
+                        val opName = code.findOpcode(ShaderOpcode.OP_NAME, 0 to id)
                             ?: throw IllegalStateException("Shader variable id $id of storage class $storageClass in $key is missing an OpName")
                         val name = opName.getString(1)
 
