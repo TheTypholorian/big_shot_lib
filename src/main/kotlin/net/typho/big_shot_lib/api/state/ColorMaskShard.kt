@@ -14,7 +14,7 @@ open class ColorMaskShard(
     companion object : RenderSettingShard.Type<ColorMaskShard> {
         override fun getDefault() = ColorMaskShard(ColorMask.DEFAULT)
 
-        override fun codec(): MapCodec<ColorMaskShard> = ColorMask.CODEC.xmap(
+        override fun codec(): MapCodec<ColorMaskShard>? = ColorMask.CODEC.xmap(
             { mask -> ColorMaskShard(mask) },
             { shard -> shard.mask }
         )

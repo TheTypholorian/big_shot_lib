@@ -15,7 +15,7 @@ open class DepthMaskShard(
     companion object : RenderSettingShard.Type<DepthMaskShard> {
         override fun getDefault() = DepthMaskShard(true)
 
-        override fun codec(): MapCodec<DepthMaskShard> = Codec.BOOL.fieldOf("mask").xmap(
+        override fun codec(): MapCodec<DepthMaskShard>? = Codec.BOOL.fieldOf("mask").xmap(
             { mask -> DepthMaskShard(mask) },
             { shard -> shard.mask }
         )

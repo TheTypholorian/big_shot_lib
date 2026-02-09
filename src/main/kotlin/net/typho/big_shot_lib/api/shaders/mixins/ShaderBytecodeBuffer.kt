@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.shaders.mixins
 
-import net.typho.big_shot_lib.api.shaders.errors.ShaderOpcodeNotFoundException
+import net.typho.big_shot_lib.api.errors.ShaderOpcodeNotFoundException
 import net.typho.big_shot_lib.api.shaders.variables.ShaderVariable
 import net.typho.big_shot_lib.api.shaders.variables.ShaderVariableType
 import java.nio.ByteBuffer

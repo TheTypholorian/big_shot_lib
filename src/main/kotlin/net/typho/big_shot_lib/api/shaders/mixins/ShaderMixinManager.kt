@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.api.shaders.mixins
 
+import net.typho.big_shot_lib.api.errors.ShaderCompileException
+import net.typho.big_shot_lib.api.errors.ShaderDecompileException
 import net.typho.big_shot_lib.api.shaders.ShaderProgramKey
 import net.typho.big_shot_lib.api.shaders.ShaderSourceKey
 import net.typho.big_shot_lib.api.shaders.ShaderSourceType
-import net.typho.big_shot_lib.api.shaders.errors.ShaderCompilationException
-import net.typho.big_shot_lib.api.shaders.errors.ShaderDecompilationException
 import org.lwjgl.PointerBuffer
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil.memFree
@@ -90,7 +90,7 @@ object ShaderMixinManager {
         )
 
         if (shaderc_result_get_compilation_status(compileResult) != shaderc_compilation_status_success) {
-            throw ShaderCompilationException(
+            throw ShaderCompileException(
                 "SPIR-V compilation of ${key.type.name.lowercase()} shader of ${key.program.location} failed:\n${
                     shaderc_result_get_error_message(compileResult)?.trim()
                 }"
@@ -103,7 +103,7 @@ object ShaderMixinManager {
         MemoryStack.stackPush().use { stack ->
             fun spvcRun(op: Supplier<Int>) {
                 if (op.get() != SPVC_SUCCESS) {
-                    throw ShaderDecompilationException(
+                    throw ShaderDecompileException(
                         "SPIR-V decompilation of ${key.type.name.lowercase()} shader of ${key.program.location} failed:\n${
                             spvc_context_get_last_error_string(spvcContext)
                         }"

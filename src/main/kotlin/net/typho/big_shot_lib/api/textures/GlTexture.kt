@@ -20,11 +20,11 @@ open class GlTexture(
     }
 
     fun setInterpolation(min: InterpolationType, mag: InterpolationType = min) {
-        OpenGL.INSTANCE.textureInterpolation(GL_TEXTURE_2D, min, mag, glId)
+        OpenGL.INSTANCE.textureInterpolation(GL_TEXTURE_2D, min, mag)
     }
 
     fun setWrapping(s: WrappingType, t: WrappingType = s) {
-        OpenGL.INSTANCE.textureWrapping(GL_TEXTURE_2D, s, t, glId)
+        OpenGL.INSTANCE.textureWrapping(GL_TEXTURE_2D, s, t)
     }
 
     fun size(width: Int, height: Int): BufferUploader {

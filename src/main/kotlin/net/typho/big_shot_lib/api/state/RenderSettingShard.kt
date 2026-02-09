@@ -11,7 +11,7 @@ interface RenderSettingShard : Bindable {
     interface Type<S : RenderSettingShard> : Named {
         fun getDefault(): S
 
-        fun codec(): MapCodec<S>
+        fun codec(): MapCodec<S>?
     }
 
     open class Basic(
