@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.GlStateManager
 import net.minecraft.client.Minecraft
 import net.typho.big_shot_lib.api.buffers.BufferType
 import net.typho.big_shot_lib.api.buffers.BufferUsage
+import net.typho.big_shot_lib.api.errors.ShaderCompileException
+import net.typho.big_shot_lib.api.errors.ShaderLinkException
 import net.typho.big_shot_lib.api.shaders.ShaderSourceType
 import net.typho.big_shot_lib.api.state.*
 import net.typho.big_shot_lib.api.textures.InterpolationType
@@ -161,6 +163,12 @@ class OpenGLImpl : OpenGL {
 
     override fun compileShaderSource(glId: Int) {
         GlStateManager.glCompileShader(glId)
+
+        val status = GlStateManager.glGetShaderi(glId, GL_COMPILE_STATUS)
+
+        if (status == GL_FALSE) {
+            throw ShaderCompileException("Error compiling <type> shader <name>:\n${glGetShaderInfoLog(glId).trim()}")
+        }
     }
 
     override fun createBuffer(): Int {
@@ -241,6 +249,12 @@ class OpenGLImpl : OpenGL {
 
     override fun linkShaderProgram(glId: Int) {
         GlStateManager.glLinkProgram(glId)
+
+        val status = GlStateManager.glGetProgrami(glId, GL_LINK_STATUS)
+
+        if (status == GL_FALSE) {
+            throw ShaderLinkException("Error linking shader program <name>:\n${glGetProgramInfoLog(glId).trim()}")
+        }
     }
 
     override fun polygonMode(mode: PolygonMode) {
