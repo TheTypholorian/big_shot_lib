@@ -11,7 +11,6 @@ fun interface PostProcessEvent {
         @JvmStatic
         fun register(callback: PostProcessEvent) = callbacks.add(callback)
 
-        @JvmStatic
         override fun invoke(data: RenderData) {
             callbacks.forEach { it.invoke(data) }
         }

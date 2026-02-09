@@ -11,7 +11,6 @@ fun interface WindowResizeEvent {
         @JvmStatic
         fun register(callback: WindowResizeEvent) = callbacks.add(callback)
 
-        @JvmStatic
         override fun invoke(width: Int, height: Int) {
             callbacks.forEach { it.invoke(width, height) }
         }
