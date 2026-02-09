@@ -2,15 +2,13 @@ package net.typho.big_shot_lib.mixin.shaders.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.caffeinemc.mods.sodium.client.gl.shader.GlShader;
-import net.minecraft.resources.ResourceLocation;
-import net.typho.big_shot_lib.shaders.ShaderType;
-import net.typho.big_shot_lib.shaders.mixins.ShaderMixinManager;
+import net.caffeinemc.mods.sodium.client.gl.shader.ShaderType;
+import net.typho.big_shot_lib.api.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-
-import java.util.Objects;
 
 @Pseudo
 @Mixin(value = GlShader.class, remap = false)
@@ -26,29 +24,17 @@ public class GlShaderMixin {
     )
     private static CharSequence init(
             CharSequence source,
-            @Local(argsOnly = true) net.caffeinemc.mods.sodium.client.gl.shader.ShaderType type,
-            @Local(argsOnly = true) ResourceLocation location,
-            @Local(argsOnly = true) String src
+            @Local(argsOnly = true) ShaderType type
     ) {
-        if (ShaderMixinManager.enabled) {
-            ShaderType type1 = switch (type) {
-                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.VERTEX -> ShaderType.VERTEX;
-                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.GEOMETRY -> ShaderType.GEOMETRY;
-                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.TESS_CONTROL -> throw new UnsupportedOperationException("Sodium tesselation control shaders are not supported by Big Shot Lib");
-                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.TESS_EVALUATION -> throw new UnsupportedOperationException("Sodium tesselation evaluation shaders are not supported by Big Shot Lib");
-                case net.caffeinemc.mods.sodium.client.gl.shader.ShaderType.FRAGMENT -> ShaderType.FRAGMENT;
-            };
-            return ShaderMixinManager.apply(
-                    location.withPath(path -> path.substring(0, path.lastIndexOf('.'))),
-                    type1,
-                    ShaderMixinManager.currentVertexFormat.get(),
-                    Objects.requireNonNull(ShaderMixinManager.currentLocationsInfo.get()),
-                    location + "." + type1.getExtension(),
-                    src,
-                    ShaderMixinManager.DEFAULT_ENTRYPOINT
-            );
-        }
-
-        return source;
+        return ShaderMixinThreadLocal.INSTANCE.get().apply(
+                switch (type) {
+                    case ShaderType.VERTEX -> ShaderSourceType.VERTEX;
+                    case ShaderType.GEOMETRY -> ShaderSourceType.GEOMETRY;
+                    case ShaderType.TESS_CONTROL -> throw new UnsupportedOperationException("Sodium tesselation control shaders are not supported by Big Shot Lib");
+                    case ShaderType.TESS_EVALUATION -> throw new UnsupportedOperationException("Sodium tesselation evaluation shaders are not supported by Big Shot Lib");
+                    case ShaderType.FRAGMENT -> ShaderSourceType.FRAGMENT;
+                },
+                source.toString()
+        );
     }
 }

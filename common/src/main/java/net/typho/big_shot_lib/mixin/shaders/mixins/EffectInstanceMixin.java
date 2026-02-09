@@ -1,14 +1,20 @@
 package net.typho.big_shot_lib.mixin.shaders.mixins;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import kotlin.collections.CollectionsKt;
 import net.minecraft.client.renderer.EffectInstance;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.typho.big_shot_lib.shaders.mixins.ShaderLocationsInfo;
-import net.typho.big_shot_lib.shaders.mixins.ShaderMixinManager;
+import net.typho.big_shot_lib.api.shaders.ShaderLoaderType;
+import net.typho.big_shot_lib.api.shaders.ShaderProgramKey;
+import net.typho.big_shot_lib.api.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.HashSet;
 
 @Mixin(EffectInstance.class)
 public class EffectInstanceMixin {
@@ -21,10 +27,12 @@ public class EffectInstanceMixin {
             )
     )
     private void setThreadLocal(ResourceProvider resourceProvider, String name, CallbackInfo ci) {
-        if (ShaderMixinManager.enabled) {
-            ShaderMixinManager.currentVertexFormat.set(DefaultVertexFormat.BLIT_SCREEN);
-            ShaderMixinManager.currentLocationsInfo.set(ShaderMixinManager.enabled ? new ShaderLocationsInfo(DefaultVertexFormat.BLIT_SCREEN, false) : null);
-        }
+        ShaderMixinThreadLocal.push(new ShaderProgramKey(
+                ShaderLoaderType.MINECRAFT,
+                ResourceLocation.parse(name),
+                DefaultVertexFormat.BLIT_SCREEN,
+                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT))
+        ));
     }
 
     @Inject(
@@ -35,9 +43,6 @@ public class EffectInstanceMixin {
             )
     )
     private void clearThreadLocal(ResourceProvider resourceProvider, String name, CallbackInfo ci) {
-        if (ShaderMixinManager.enabled) {
-            ShaderMixinManager.currentVertexFormat.remove();
-            ShaderMixinManager.currentLocationsInfo.remove();
-        }
+        ShaderMixinThreadLocal.pop();
     }
 }

@@ -3,15 +3,13 @@ package net.typho.big_shot_lib.mixin.shaders.mixins;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.shaders.Program;
 import kotlin.collections.CollectionsKt;
-import net.minecraft.resources.ResourceLocation;
-import net.typho.big_shot_lib.shaders.ShaderType;
-import net.typho.big_shot_lib.shaders.mixins.ShaderMixinManager;
+import net.typho.big_shot_lib.api.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import java.util.List;
-import java.util.Objects;
 
 @Mixin(Program.class)
 public class ProgramMixin {
@@ -29,18 +27,14 @@ public class ProgramMixin {
             @Local(argsOnly = true) Program.Type type,
             @Local(argsOnly = true, ordinal = 0) String name
     ) {
-        if (ShaderMixinManager.enabled) {
-            return CollectionsKt.listOf(ShaderMixinManager.apply(
-                    ResourceLocation.parse(name),
-                    ShaderType.fromVanillaType(type),
-                    ShaderMixinManager.currentVertexFormat.get(),
-                    Objects.requireNonNull(ShaderMixinManager.currentLocationsInfo.get()),
-                    name + type.getExtension(),
-                    String.join("", list),
-                    ShaderMixinManager.DEFAULT_ENTRYPOINT
-            ));
-        }
-
-        return list;
+        return CollectionsKt.listOf(
+                ShaderMixinThreadLocal.INSTANCE.get().apply(
+                        switch (type) {
+                            case VERTEX -> ShaderSourceType.VERTEX;
+                            case FRAGMENT -> ShaderSourceType.FRAGMENT;
+                        },
+                        String.join("\n", list)
+                )
+        );
     }
 }

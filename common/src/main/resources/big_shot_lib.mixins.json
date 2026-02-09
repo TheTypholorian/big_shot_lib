@@ -9,17 +9,11 @@
     "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
-    "errors.GlDebugMixin",
-    "files.ReloadableResourceManagerMixin",
-    "framebuffers.LevelRendererMixin",
+    "files.MinecraftMixin",
     "framebuffers.MinecraftMixin",
     "shaders.mixins.EffectInstanceMixin",
     "shaders.mixins.ProgramMixin",
-    "shaders.mixins.ProgramTypeMixin",
-    "textures.SimpleTextureAccessor",
-    "textures.SimpleTextureMixin",
-    "textures.TextureAtlasMixin",
-    "windows.GameRendererMixin"
+    "shaders.mixins.ProgramTypeMixin"
   ],
   "server": [],
   "injectors": {

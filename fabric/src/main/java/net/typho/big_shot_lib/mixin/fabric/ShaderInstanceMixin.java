@@ -1,14 +1,20 @@
 package net.typho.big_shot_lib.mixin.fabric;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
+import kotlin.collections.CollectionsKt;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.typho.big_shot_lib.shaders.mixins.ShaderLocationsInfo;
-import net.typho.big_shot_lib.shaders.mixins.ShaderMixinManager;
+import net.typho.big_shot_lib.api.shaders.ShaderLoaderType;
+import net.typho.big_shot_lib.api.shaders.ShaderProgramKey;
+import net.typho.big_shot_lib.api.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.HashSet;
 
 @Mixin(ShaderInstance.class)
 public class ShaderInstanceMixin {
@@ -20,11 +26,13 @@ public class ShaderInstanceMixin {
                     ordinal = 0
             )
     )
-    private void setThreadLocal(ResourceProvider resourceProvider, String name, VertexFormat vertexFormat, CallbackInfo ci) {
-        if (ShaderMixinManager.enabled) {
-            ShaderMixinManager.currentVertexFormat.set(vertexFormat);
-            ShaderMixinManager.currentLocationsInfo.set(ShaderMixinManager.enabled ? new ShaderLocationsInfo(vertexFormat, false) : null);
-        }
+    private void setThreadLocal(ResourceProvider resourceProvider, String name, VertexFormat format, CallbackInfo ci) {
+        ShaderMixinThreadLocal.push(new ShaderProgramKey(
+                ShaderLoaderType.MINECRAFT,
+                ResourceLocation.parse(name),
+                format,
+                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT))
+        ));
     }
 
     @Inject(
@@ -35,9 +43,6 @@ public class ShaderInstanceMixin {
             )
     )
     private void clearThreadLocal(ResourceProvider resourceProvider, String name, VertexFormat vertexFormat, CallbackInfo ci) {
-        if (ShaderMixinManager.enabled) {
-            ShaderMixinManager.currentVertexFormat.remove();
-            ShaderMixinManager.currentLocationsInfo.remove();
-        }
+        ShaderMixinThreadLocal.pop();
     }
 }
