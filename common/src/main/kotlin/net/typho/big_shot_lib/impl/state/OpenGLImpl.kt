@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.impl.state
 
 import com.mojang.blaze3d.platform.GlStateManager
 import net.minecraft.client.Minecraft
+import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.buffers.BufferType
 import net.typho.big_shot_lib.api.buffers.BufferUsage
 import net.typho.big_shot_lib.api.errors.ShaderCompileException
@@ -161,13 +162,13 @@ class OpenGLImpl : OpenGL {
         GlStateManager._colorMask(mask.red, mask.green, mask.blue, mask.alpha)
     }
 
-    override fun compileShaderSource(glId: Int) {
+    override fun compileShaderSource(glId: Int, type: ShaderSourceType, name: ResourceLocation) {
         GlStateManager.glCompileShader(glId)
 
         val status = GlStateManager.glGetShaderi(glId, GL_COMPILE_STATUS)
 
         if (status == GL_FALSE) {
-            throw ShaderCompileException("Error compiling <type> shader <name>:\n${glGetShaderInfoLog(glId).trim()}")
+            throw ShaderCompileException("Error compiling ${type.name.lowercase()} shader $name:\n${glGetShaderInfoLog(glId).trim()}")
         }
     }
 
@@ -247,13 +248,13 @@ class OpenGLImpl : OpenGL {
         return GlStateManager._glGetUniformLocation(programId, name)
     }
 
-    override fun linkShaderProgram(glId: Int) {
+    override fun linkShaderProgram(glId: Int, name: ResourceLocation) {
         GlStateManager.glLinkProgram(glId)
 
         val status = GlStateManager.glGetProgrami(glId, GL_LINK_STATUS)
 
         if (status == GL_FALSE) {
-            throw ShaderLinkException("Error linking shader program <name>:\n${glGetProgramInfoLog(glId).trim()}")
+            throw ShaderLinkException("Error linking shader program $name:\n${glGetProgramInfoLog(glId).trim()}")
         }
     }
 
