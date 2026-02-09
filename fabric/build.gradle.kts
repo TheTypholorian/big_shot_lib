@@ -72,7 +72,7 @@ dependencies {
 
     modImplementation(libs.sodium)
 
-    include(fileTree("../libs/"))
+    include(libs.bigShotApi)
 }
 
 loom {

@@ -97,5 +97,5 @@ dependencies {
 
     implementation(libs.sodium)
 
-    jarJar(fileTree("../libs/"))
+    jarJar(libs.bigShotApi)
 }
