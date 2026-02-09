@@ -71,8 +71,8 @@ data class ShaderOpcode(
     }
 
     fun getString(offset: Int): String {
-        val array = ByteArray(length - offset)
-        memByteBuffer(parent.buffer).get(index + 1 + offset, array)
+        val array = ByteArray((length - offset) * ShaderMixinManager.WORD_SIZE_BYTES)
+        memByteBuffer(parent.buffer).get((index + 1 + offset) * ShaderMixinManager.WORD_SIZE_BYTES, array)
         return String(array).trim(0.toChar())
     }
 

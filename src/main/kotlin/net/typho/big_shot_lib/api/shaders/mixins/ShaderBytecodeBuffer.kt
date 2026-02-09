@@ -44,13 +44,7 @@ open class ShaderBytecodeBuffer(
     fun findOpcode(
         predicate: Predicate<ShaderOpcode>
     ): ShaderOpcode? {
-        for (opcode in opcodes()) {
-            if (predicate.test(opcode)) {
-                return opcode
-            }
-        }
-
-        return null
+        return opcodes().firstOrNull { predicate.test(it) }
     }
 
     fun findOpcode(
