@@ -156,7 +156,7 @@ object ShaderMixinManager {
             }
 
             val parsed = spvcGet {
-                val buffer = bytecodeBuffer.ensureDirect()
+                val buffer = bytecodeBuffer.ensureDirect().flip()
                 spvc_context_parse_spirv(spvcContext, buffer, buffer.capacity().toLong(), it)
             }
             val spvcCompiler = spvcGet { spvc_context_create_compiler(spvcContext, SPVC_BACKEND_GLSL, parsed, SPVC_CAPTURE_MODE_TAKE_OWNERSHIP, it) }
