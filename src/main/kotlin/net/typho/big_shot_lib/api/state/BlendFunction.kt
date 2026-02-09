@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.typho.big_shot_lib.api.Bindable
+import net.typho.big_shot_lib.api.util.Bindable
 import net.typho.big_shot_lib.api.util.NeoCodecs
 
 sealed interface BlendFunction : Bindable {

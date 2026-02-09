@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.buffers
 
-import net.typho.big_shot_lib.api.BufferUploader
-import net.typho.big_shot_lib.api.GlResource
 import net.typho.big_shot_lib.api.errors.InvalidEnumException
 import net.typho.big_shot_lib.api.state.OpenGL
+import net.typho.big_shot_lib.api.util.BufferUploader
+import net.typho.big_shot_lib.api.util.GlResource
 import java.nio.ByteBuffer
 
 open class GlBuffer(

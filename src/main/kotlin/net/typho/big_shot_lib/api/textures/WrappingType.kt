@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.textures
 
-import net.typho.big_shot_lib.api.GlNamed
+import net.typho.big_shot_lib.api.util.GlNamed
 import org.lwjgl.opengl.GL11.GL_REPEAT
 import org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE
 import org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER

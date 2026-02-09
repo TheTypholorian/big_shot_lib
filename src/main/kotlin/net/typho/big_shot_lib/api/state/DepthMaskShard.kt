@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.state
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.api.Bindable
+import net.typho.big_shot_lib.api.util.Bindable
 
 open class DepthMaskShard(
     @JvmField

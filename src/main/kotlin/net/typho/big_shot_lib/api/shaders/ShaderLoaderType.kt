@@ -6,5 +6,6 @@ enum class ShaderLoaderType {
     VEIL,
     IRIS,
     BIG_SHOT,
+    NULL,
     OTHER
 }

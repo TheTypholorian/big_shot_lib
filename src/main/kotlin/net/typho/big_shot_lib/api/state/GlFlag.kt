@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.state
 
 import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.api.Bindable
-import net.typho.big_shot_lib.api.GlNamed
-import net.typho.big_shot_lib.api.Named
+import net.typho.big_shot_lib.api.util.Bindable
+import net.typho.big_shot_lib.api.util.GlNamed
+import net.typho.big_shot_lib.api.util.Named
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*
 

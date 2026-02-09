@@ -1,13 +1,18 @@
 package net.typho.big_shot_lib.api.meshes
 
 import com.mojang.blaze3d.vertex.VertexFormat
-import net.typho.big_shot_lib.api.GlResource
 import net.typho.big_shot_lib.api.state.OpenGL
+import net.typho.big_shot_lib.api.util.GlResource
 import org.lwjgl.opengl.GL11.glDrawArrays
 
 open class GlVertexArray(
     glId: Int
 ) : GlResource(glId) {
+    companion object {
+        @JvmField
+        val NULL = GlVertexArray(0)
+    }
+
     constructor() : this(OpenGL.INSTANCE.createVertexArray())
 
     override fun bind(glId: Int) = OpenGL.INSTANCE.bindVertexArray(glId)

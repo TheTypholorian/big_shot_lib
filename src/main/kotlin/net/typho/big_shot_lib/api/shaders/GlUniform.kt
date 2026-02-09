@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.shaders
 
-import net.typho.big_shot_lib.api.GlNamed
 import net.typho.big_shot_lib.api.state.OpenGL
 import net.typho.big_shot_lib.api.textures.GlTexture
+import net.typho.big_shot_lib.api.util.GlNamed
 import org.joml.*
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 

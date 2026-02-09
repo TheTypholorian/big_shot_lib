@@ -130,6 +130,18 @@ interface OpenGL {
     fun bindRenderBuffer(glId: Int)
 
     /**
+     * ```
+     * glRenderbufferStorage(
+     *     GL_RENDERBUFFER
+     *     format.internalId,
+     *     width,
+     *     height
+     * )
+     * ```
+     */
+    fun resizeRenderBuffer(format: TextureFormat, width: Int, height: Int)
+
+    /**
      * `glDeleteRenderbuffers(glId)`
      */
     fun deleteRenderBuffer(glId: Int)
@@ -186,6 +198,51 @@ interface OpenGL {
      * `glDeleteTextures(glId)`
      */
     fun deleteTexture(glId: Int)
+
+    /**
+     * `glGenFramebuffers()`
+     */
+    fun createFramebuffer(): Int
+
+    /**
+     * `glBindFramebuffer(glId)`
+     */
+    fun bindFramebuffer(glId: Int)
+
+    /**
+     * ```
+     * glFramebufferTexture2D(
+     *     GL_FRAMEBUFFER,
+     *     attachment,
+     *     type,
+     *     glId,
+     *     0
+     * )
+     * ```
+     */
+    fun attachFramebufferTexture(attachment: Int, type: Int, glId: Int)
+
+    /**
+     * ```
+     * glFramebufferRenderbuffer(
+     *     GL_FRAMEBUFFER,
+     *     attachment,
+     *     GL_RENDERBUFFER,
+     *     glId
+     * )
+     * ```
+     */
+    fun attachFramebufferRenderBuffer(attachment: Int, glId: Int)
+
+    /**
+     * `glCheckFramebufferStatus(GL_FRAMEBUFFER)`
+     */
+    fun checkFramebufferStatus(): Int
+
+    /**
+     * `glDeleteFramebuffers(glId)`
+     */
+    fun deleteFramebuffer(glId: Int)
 
     /**
      * `glGenVertexArrays()`
@@ -368,4 +425,24 @@ interface OpenGL {
      * `glUniformMatrix4x3dv(location, transpose, mat.get(DoubleArray(12)))`
      */
     fun setUniformValue(location: Int, mat: Matrix4x3d, transpose: Boolean = false)
+
+    /**
+     * `glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)`
+     */
+    fun clearColor(color: IColor)
+
+    /**
+     * `glClearDepth(depth)`
+     */
+    fun clearDepth(depth: Float)
+
+    /**
+     * `glClearStencil(stencil)`
+     */
+    fun clearStencil(stencil: Int)
+
+    /**
+     * `glClear(mask)`
+     */
+    fun clear(vararg mask: Int)
 }

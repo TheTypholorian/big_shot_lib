@@ -1,17 +1,22 @@
 package net.typho.big_shot_lib.api.shaders
 
-import net.typho.big_shot_lib.api.GlResource
-import net.typho.big_shot_lib.api.Named
 import net.typho.big_shot_lib.api.errors.IllegalShaderSourceException
 import net.typho.big_shot_lib.api.errors.MissingShaderSourceException
 import net.typho.big_shot_lib.api.shaders.mixins.ShaderMixinManager
 import net.typho.big_shot_lib.api.state.OpenGL
+import net.typho.big_shot_lib.api.util.GlResource
+import net.typho.big_shot_lib.api.util.Named
 
 open class GlShader(
     glId: Int,
     @JvmField
     val key: ShaderProgramKey
 ) : GlResource(glId), Named {
+    companion object {
+        @JvmField
+        val NULL = GlShader(0, ShaderProgramKey.NULL)
+    }
+
     @JvmField
     protected val sources = HashMap<ShaderSourceType, Int>()
     @JvmField

@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.state
 
-import net.typho.big_shot_lib.api.GlNamed
+import net.typho.big_shot_lib.api.util.GlNamed
 import org.lwjgl.opengl.GL11.*
 
 enum class PolygonMode(

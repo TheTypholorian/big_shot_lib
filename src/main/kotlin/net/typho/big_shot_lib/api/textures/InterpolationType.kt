@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.textures
 
-import net.typho.big_shot_lib.api.GlNamed
+import net.typho.big_shot_lib.api.util.GlNamed
 import org.lwjgl.opengl.GL11.GL_LINEAR
 import org.lwjgl.opengl.GL11.GL_NEAREST
 

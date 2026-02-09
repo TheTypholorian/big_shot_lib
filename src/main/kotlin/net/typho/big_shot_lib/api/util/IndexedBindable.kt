@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api
+package net.typho.big_shot_lib.api.util
 
 import java.util.function.BiConsumer
 

@@ -1,17 +1,32 @@
 package net.typho.big_shot_lib.api.textures
 
-import net.typho.big_shot_lib.api.BufferUploader
-import net.typho.big_shot_lib.api.GlResource
 import net.typho.big_shot_lib.api.state.OpenGL
+import net.typho.big_shot_lib.api.util.BufferUploader
+import net.typho.big_shot_lib.api.util.GlResource
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 import java.nio.ByteBuffer
 
 open class GlTexture(
     glId: Int,
     @JvmField
-    val format: TextureFormat
-) : GlResource(glId) {
+    val format: TextureFormat,
+    defaultParams: Boolean = true
+) : GlResource(glId), GlFramebufferAttachment {
+    companion object {
+        @JvmField
+        val NULL = GlTexture(0, TextureFormat.NULL)
+    }
+
     constructor(format: TextureFormat) : this(OpenGL.INSTANCE.createTexture(), format)
+
+    init {
+        if (defaultParams) {
+            bind()
+            setInterpolation(InterpolationType.NEAREST, InterpolationType.NEAREST)
+            setWrapping(WrappingType.CLAMP_TO_EDGE, WrappingType.CLAMP_TO_EDGE)
+            unbind()
+        }
+    }
 
     override fun bind(glId: Int) = OpenGL.INSTANCE.bindTexture(GL_TEXTURE_2D, glId)
 
@@ -27,10 +42,18 @@ open class GlTexture(
         OpenGL.INSTANCE.textureWrapping(GL_TEXTURE_2D, s, t)
     }
 
-    fun size(width: Int, height: Int): BufferUploader {
+    override fun getFormat() = format
+
+    override fun attachToFramebuffer(attachment: Int) {
+        OpenGL.INSTANCE.attachFramebufferTexture(attachment, GL_TEXTURE_2D, glId)
+    }
+
+    override fun resize(width: Int, height: Int): BufferUploader {
         return object : BufferUploader {
             override fun upload(buffer: ByteBuffer) {
+                bind()
                 OpenGL.INSTANCE.textureData2D(format, width, height, buffer)
+                unbind()
             }
         }
     }

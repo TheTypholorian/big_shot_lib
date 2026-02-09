@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.textures
 
-import net.typho.big_shot_lib.api.GlNamed
+import net.typho.big_shot_lib.api.util.GlNamed
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL12.GL_BGR
 import org.lwjgl.opengl.GL12.GL_BGRA
@@ -25,6 +25,8 @@ enum class TextureFormat(
     @JvmField
     val hasStencil: Boolean = false
 ) : GlNamed {
+    NULL(0, 0),
+
     RED(GL_RED, GL_RED, hasColor = true),
     RG(GL_RG, GL_RG, hasColor = true),
     RGB(GL_RGB, GL_RGB, hasColor = true),

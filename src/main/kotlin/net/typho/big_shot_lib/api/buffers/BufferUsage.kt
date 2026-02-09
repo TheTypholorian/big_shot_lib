@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.buffers
 
-import net.typho.big_shot_lib.api.GlNamed
+import net.typho.big_shot_lib.api.util.GlNamed
 import org.lwjgl.opengl.GL15.*
 
 enum class BufferUsage(

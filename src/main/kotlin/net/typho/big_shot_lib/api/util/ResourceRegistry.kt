@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.mojang.serialization.Codec
 import net.minecraft.resources.FileToIdConverter
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.ResourceManager
@@ -18,7 +19,10 @@ abstract class ResourceRegistry<T>(
         val registries = LinkedList<ResourceRegistry<*>>()
     }
 
+    @JvmField
     val map: BiMap<ResourceLocation, T> = HashBiMap.create()
+    @JvmField
+    val lookupCodec: Codec<T> = ResourceLocation.CODEC.xmap(this::get, this::getKey)
 
     constructor(name: String) : this(BigShotModUtil.id(name), FileToIdConverter.json("neo/$name"))
 
