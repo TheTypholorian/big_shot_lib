@@ -3,10 +3,12 @@ plugins {
     alias(libs.plugins.moddev)
 }
 
+project.version = libs.versions.bigShot.get()
+
 val modId: String by project
 
 base {
-    archivesName = "$modId-common"
+    archivesName = "$modId-mc${libs.versions.minecraft.get()}-common"
 }
 
 neoForge {

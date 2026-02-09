@@ -8,12 +8,13 @@ plugins {
     id("com.modrinth.minotaur") version "2.+"
 }
 
+project.version = libs.versions.bigShot.get()
+
 val modName: String by project
 val modId: String by project
-val version: String by project
 
 base {
-    archivesName = "$modId-neoforge"
+    archivesName = "$modId-mc${libs.versions.minecraft.get()}-neoforge"
 }
 
 modrinth {
