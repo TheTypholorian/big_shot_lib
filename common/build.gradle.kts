@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.moddev)
 }
 
-project.version = libs.versions.bigShot.get()
-
 val modId: String by project
 
 base {
