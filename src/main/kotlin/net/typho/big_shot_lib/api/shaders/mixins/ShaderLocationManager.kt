@@ -4,7 +4,7 @@ import net.typho.big_shot_lib.api.errors.InvalidEnumException
 import net.typho.big_shot_lib.api.shaders.ShaderProgramKey
 import net.typho.big_shot_lib.api.shaders.ShaderSourceType
 
-class ShaderLocationManager(
+open class ShaderLocationManager(
     @JvmField
     val key: ShaderProgramKey
 ) {
@@ -45,7 +45,7 @@ class ShaderLocationManager(
         }
     }
 
-    class Mapper {
+    open class Mapper {
         @JvmField
         val locations = ArrayList<String?>()
 

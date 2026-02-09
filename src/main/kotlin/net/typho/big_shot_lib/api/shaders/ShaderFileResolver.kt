@@ -50,7 +50,7 @@ fun interface ShaderFileResolver {
         }
     }
 
-    class ResourceBacked(
+    open class ResourceBacked(
         @JvmField
         val manager: ResourceManager
     ) : ShaderFileResolver {

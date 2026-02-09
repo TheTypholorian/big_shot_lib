@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.errors
 
-class ShaderOpcodeNotFoundException : RuntimeException {
+open class ShaderOpcodeNotFoundException : RuntimeException {
     constructor() : super()
 
     constructor(message: String?) : super(message)

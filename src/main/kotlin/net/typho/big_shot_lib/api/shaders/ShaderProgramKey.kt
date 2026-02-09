@@ -27,4 +27,8 @@ data class ShaderProgramKey(
     }
 
     override fun location() = location
+
+    override fun toString(): String {
+        return location.toString()
+    }
 }

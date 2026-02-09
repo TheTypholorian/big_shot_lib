@@ -25,8 +25,6 @@ interface ShaderMixin {
     }
 
     fun interface Factory {
-        fun create(key: ShaderProgramKey): ShaderMixin
-
-        fun then(other: Factory) = Factory { key -> create(key).then(other.create(key)) }
+        fun create(key: ShaderProgramKey): ShaderMixin?
     }
 }

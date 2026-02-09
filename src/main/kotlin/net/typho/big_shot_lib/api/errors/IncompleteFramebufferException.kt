@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.errors
 
-class IncompleteFramebufferException : RuntimeException {
+open class IncompleteFramebufferException : RuntimeException {
     constructor() : super()
 
     constructor(message: String?) : super(message)

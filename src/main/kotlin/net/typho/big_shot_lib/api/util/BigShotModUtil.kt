@@ -11,4 +11,9 @@ object BigShotModUtil {
 
     @JvmStatic
     fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
+
+    @JvmStatic
+    fun ResourceLocation.equals(namespace: String, path: String): Boolean {
+        return this.namespace == namespace && this.path == path
+    }
 }

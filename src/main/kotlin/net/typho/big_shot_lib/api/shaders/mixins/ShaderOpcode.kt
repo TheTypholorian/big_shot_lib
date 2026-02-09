@@ -76,7 +76,7 @@ data class ShaderOpcode(
         return String(array).trim(0.toChar())
     }
 
-    class Builder(val id: Int) {
+    open class Builder(val id: Int) {
         val tokens = LinkedList<Consumer<ByteBuffer>>()
         var words = 1
 

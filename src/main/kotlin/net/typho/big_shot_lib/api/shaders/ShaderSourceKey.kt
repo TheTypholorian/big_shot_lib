@@ -8,4 +8,8 @@ data class ShaderSourceKey(
     val type: ShaderSourceType
 ) {
     fun fileName(): String = "${program.location}.${type.extension}"
+
+    override fun toString(): String {
+        return "$program/${type.name.lowercase()}"
+    }
 }

@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.errors
 
-class InvalidEnumException : RuntimeException {
+open class InvalidEnumException : RuntimeException {
     constructor() : super()
 
     constructor(message: String?) : super(message)

@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.util.GlNamed
 import org.joml.*
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 
-class GlUniform(
+open class GlUniform(
     @JvmField
     val location: Int,
     @JvmField

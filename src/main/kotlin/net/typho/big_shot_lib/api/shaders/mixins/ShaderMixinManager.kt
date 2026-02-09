@@ -12,6 +12,7 @@ import org.lwjgl.system.MemoryUtil.memUTF8
 import org.lwjgl.util.shaderc.Shaderc.*
 import org.lwjgl.util.spvc.Spvc.*
 import java.nio.ByteOrder
+import java.util.*
 import java.util.function.Function
 import java.util.function.Supplier
 
@@ -41,11 +42,19 @@ object ShaderMixinManager {
         }
     }
 
-    private var factory = ShaderMixin.Factory { object : ShaderMixin { } }
+    private var mixins = LinkedList<ShaderMixin.Factory>(listOf(
+        ShaderVersionUpdaterMixin,
+        ShaderLocationMapperMixin,
+        BreezeWindShaderMixin
+    ))
 
     @JvmStatic
     fun register(mixin: ShaderMixin.Factory) {
-        factory = factory.then(mixin)
+        if (mixins.contains(mixin)) {
+            throw IllegalStateException()
+        }
+
+        mixins.add(mixin)
     }
 
     @JvmStatic
@@ -53,18 +62,44 @@ object ShaderMixinManager {
 
     @JvmStatic
     fun create(key: ShaderProgramKey): Instance {
-        val mixin = factory.create(key)
-        return Instance { source, code ->
-            applyImpl(
-                ShaderSourceKey(key, source),
-                code,
-                arrayOf(mixin).asList()
-            )
-        }
+        return Instance(key)
     }
 
-    fun interface Instance {
-        fun apply(type: ShaderSourceType, code: String): String
+    class Instance(
+        @JvmField
+        val key: ShaderProgramKey
+    ) {
+        private val mixins = LinkedList<Pair<ShaderMixin.Factory, ShaderMixin?>>()
+
+        init {
+            for (factory in this@ShaderMixinManager.mixins) {
+                getOrCreateMixinInstance(factory)
+            }
+        }
+
+        fun apply(type: ShaderSourceType, code: String): String {
+            return applyImpl(
+                ShaderSourceKey(key, type),
+                code,
+                mixins.mapNotNull { it.second }
+            )
+        }
+
+        fun getOrCreateMixinInstance(factory: ShaderMixin.Factory): ShaderMixin? {
+            for (pair in mixins) {
+                if (pair.first == factory) {
+                    return pair.second
+                }
+            }
+
+            if (this@ShaderMixinManager.mixins.contains(factory)) {
+                val mixin = factory.create(key)
+                mixins.add(factory to mixin)
+                return mixin
+            }
+
+            return null
+        }
     }
 
     @JvmStatic

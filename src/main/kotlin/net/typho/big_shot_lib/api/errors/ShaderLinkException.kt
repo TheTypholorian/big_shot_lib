@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.errors
 
-class ShaderLinkException : RuntimeException {
+open class ShaderLinkException : RuntimeException {
     constructor() : super()
 
     constructor(message: String?) : super(message)

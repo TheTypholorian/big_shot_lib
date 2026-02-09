@@ -7,7 +7,7 @@ import java.nio.ByteBuffer
 import java.nio.IntBuffer
 import java.util.function.Predicate
 
-class ShaderBytecodeBuffer(
+open class ShaderBytecodeBuffer(
     @JvmField
     var buffer: IntBuffer
 ) {

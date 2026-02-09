@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.errors
 
-class ShaderDecompileException : RuntimeException {
+open class ShaderDecompileException : RuntimeException {
     constructor() : super()
 
     constructor(message: String?) : super(message)
