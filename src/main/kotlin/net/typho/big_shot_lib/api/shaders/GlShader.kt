@@ -72,7 +72,7 @@ open class GlShader(
         val glId = OpenGL.INSTANCE.createShaderSource(type)
 
         OpenGL.INSTANCE.shaderSourceCode(glId, code)
-        OpenGL.INSTANCE.compileShaderSource(glId)
+        OpenGL.INSTANCE.compileShaderSource(glId, type, key.location)
 
         attach(type, glId)
     }
@@ -92,7 +92,7 @@ open class GlShader(
             throw MissingShaderSourceException("$this is missing sources $missing")
         }
 
-        OpenGL.INSTANCE.linkShaderProgram(glId)
+        OpenGL.INSTANCE.linkShaderProgram(glId, key.location)
 
         for (entry in sources) {
             OpenGL.INSTANCE.detachShaderSource(glId, entry.value)
