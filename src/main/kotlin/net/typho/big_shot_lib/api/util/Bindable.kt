@@ -8,6 +8,7 @@ interface Bindable {
     fun unbind()
 
     companion object {
+        @JvmStatic
         fun <T> ofState(setter: Consumer<T>, bound: T, unbound: T) = object : Bindable {
             override fun bind() {
                 setter.accept(bound)
@@ -18,6 +19,7 @@ interface Bindable {
             }
         }
 
+        @JvmStatic
         fun <T> ofState(setter: Consumer<T>, bound: T) = object : Bindable {
             override fun bind() {
                 setter.accept(bound)

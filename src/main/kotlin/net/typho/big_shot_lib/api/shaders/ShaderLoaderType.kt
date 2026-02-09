@@ -1,11 +1,14 @@
 package net.typho.big_shot_lib.api.shaders
 
-enum class ShaderLoaderType {
-    MINECRAFT,
-    SODIUM,
-    VEIL,
-    IRIS,
-    BIG_SHOT,
-    NULL,
-    OTHER
+enum class ShaderLoaderType(
+    @JvmField
+    val autoBindLocations: Boolean
+) {
+    MINECRAFT(true),
+    SODIUM(false),
+    VEIL(true),
+    IRIS(true),
+    BIG_SHOT(true),
+    NULL(false),
+    OTHER(false)
 }

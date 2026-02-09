@@ -25,8 +25,10 @@ enum class ShaderSourceType(
     COMPUTE(false, "csh", GL_COMPUTE_SHADER, shaderc_compute_shader, null);
 
     companion object {
+        @JvmStatic
         fun fromExtension(ext: String) = entries.first { type -> type.extension == ext }
 
+        @JvmStatic
         fun fromGlId(id: Int) = entries.first { type -> type.glId == id }
     }
 }

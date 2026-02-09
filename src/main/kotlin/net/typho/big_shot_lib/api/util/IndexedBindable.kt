@@ -8,6 +8,7 @@ interface IndexedBindable {
     fun unbindBase(index: Int)
 
     companion object {
+        @JvmStatic
         fun <T> ofState(setter: BiConsumer<Int, T>, bound: T, unbound: T) = object : IndexedBindable {
             override fun bindBase(index: Int) {
                 setter.accept(index, bound)
@@ -18,6 +19,7 @@ interface IndexedBindable {
             }
         }
 
+        @JvmStatic
         fun <T> ofState(setter: BiConsumer<Int, T>, bound: T) = object : IndexedBindable {
             override fun bindBase(index: Int) {
                 setter.accept(index, bound)

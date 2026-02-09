@@ -43,12 +43,15 @@ object ShaderMixinManager {
 
     private var factory = ShaderMixin.Factory { object : ShaderMixin { } }
 
+    @JvmStatic
     fun register(mixin: ShaderMixin.Factory) {
         factory = factory.then(mixin)
     }
 
+    @JvmStatic
     fun register(mixin: ShaderMixin) = register { mixin }
 
+    @JvmStatic
     fun create(key: ShaderProgramKey): Instance {
         val mixin = factory.create(key)
         return Instance { source, code ->
@@ -64,6 +67,7 @@ object ShaderMixinManager {
         fun apply(type: ShaderSourceType, code: String): String
     }
 
+    @JvmStatic
     fun applyImpl(
         key: ShaderSourceKey,
         code: String,
