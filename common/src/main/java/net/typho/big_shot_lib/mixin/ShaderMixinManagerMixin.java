@@ -36,6 +36,8 @@ public class ShaderMixinManagerMixin {
 
             @Override
             public @NotNull ShaderBytecodeBuffer mixinBytecode(@NotNull ShaderSourceKey shaderSourceKey, @NotNull ShaderBytecodeBuffer shaderBytecodeBuffer) {
+                System.out.println("Shader dump " + shaderSourceKey);
+
                 try {
                     byte[] arr = new byte[shaderBytecodeBuffer.buffer.capacity() * 4];
                     MemoryUtil.memByteBuffer(shaderBytecodeBuffer.buffer).get(0, arr, 0, arr.length);
@@ -55,6 +57,7 @@ public class ShaderMixinManagerMixin {
 
             @Override
             public @NotNull String mixinPostCompile(@NotNull ShaderSourceKey shaderSourceKey, @NotNull String s) {
+                System.out.println("Shader code:\n" + s);
                 return s;
             }
 
