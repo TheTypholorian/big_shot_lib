@@ -3,9 +3,11 @@ package net.typho.big_shot_lib
 import net.typho.big_shot_lib.api.shaders.ShaderSourceKey
 import net.typho.big_shot_lib.api.shaders.mixins.ShaderMixin
 import net.typho.big_shot_lib.api.shaders.mixins.ShaderMixinManager
+import net.typho.big_shot_lib.impl.shaders.mixins.BreezeWindShaderMixin
 
 object BigShotLib {
     fun init() {
+        ShaderMixinManager.register(BreezeWindShaderMixin)
         ShaderMixinManager.register { key ->
             println("Creating mixin for $key")
 

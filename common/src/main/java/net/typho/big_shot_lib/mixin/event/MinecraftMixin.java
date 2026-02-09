@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.framebuffers;
+package net.typho.big_shot_lib.mixin.event;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;

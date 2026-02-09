@@ -5,12 +5,14 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
   "mixins": [
+    "ShaderMixinManagerMixin",
     "shaders.mixins.GlShaderMixin",
     "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
+    "event.LevelRendererMixin",
+    "event.MinecraftMixin",
     "files.MinecraftMixin",
-    "framebuffers.MinecraftMixin",
     "shaders.mixins.EffectInstanceMixin",
     "shaders.mixins.ProgramMixin",
     "shaders.mixins.ProgramTypeMixin"
