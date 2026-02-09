@@ -110,7 +110,6 @@ open class ShaderBytecodeBuffer(
             val direct = ByteBuffer.allocateDirect(buffer.capacity() * Int.SIZE_BYTES)
                 .asIntBuffer()
                 .put(0, buffer, 0, buffer.capacity())
-                .flip()
             buffer = direct
             return direct
         }
