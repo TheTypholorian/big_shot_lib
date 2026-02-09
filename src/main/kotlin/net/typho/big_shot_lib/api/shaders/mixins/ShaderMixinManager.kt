@@ -42,10 +42,9 @@ object ShaderMixinManager {
         }
     }
 
-    private var mixins = LinkedList<ShaderMixin.Factory>(listOf(
-        ShaderVersionUpdaterMixin,
-        ShaderLocationMapperMixin,
-        BreezeWindShaderMixin
+    private var mixins = LinkedList(listOf(
+        ShaderMixin.Factory { ShaderVersionUpdaterMixin },
+        ShaderLocationMapperMixin
     ))
 
     @JvmStatic
