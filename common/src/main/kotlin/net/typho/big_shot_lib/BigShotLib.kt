@@ -37,6 +37,11 @@ object BigShotLib {
 
                 return code
             }
+
+            override fun mixinPostCompile(key: ShaderSourceKey, code: String): String {
+                println(code)
+                return super.mixinPostCompile(key, code)
+            }
         })
     }
 }
