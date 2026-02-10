@@ -7,9 +7,9 @@ import net.typho.big_shot_lib.api.buffers.BufferType
 import net.typho.big_shot_lib.api.buffers.BufferUsage
 import net.typho.big_shot_lib.api.buffers.GlBuffer
 import net.typho.big_shot_lib.api.util.Bindable
-import org.lwjgl.system.MemoryUtil.memByteBuffer
 import org.lwjgl.system.NativeResource
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.stream.IntStream
 
 open class Mesh(
@@ -110,23 +110,41 @@ open class Mesh(
             vbo.unbind()
 
             ebo.bind()
-            ebo.upload(
-                built.indexBuffer() ?: if (indexType == VertexFormat.IndexType.INT) {
-                    memByteBuffer(
-                        ByteBuffer.allocateDirect(indexCount * Int.SIZE_BYTES)
-                            .asIntBuffer()
-                            .put(IntStream.range(0, indexCount).toArray())
-                            .flip()
-                    )
-                } else {
-                    memByteBuffer(
-                        ByteBuffer.allocateDirect(indexCount * Short.SIZE_BYTES)
-                            .asShortBuffer()
-                            .put(IntStream.range(0, indexCount).toArray().map { it.toShort() }.toShortArray())
-                            .flip()
-                    )
+
+            val buffer = built.indexBuffer()
+
+            if (buffer != null) {
+                ebo.upload(buffer)
+            } else {
+                val stream = when (mode) {
+                    VertexFormat.Mode.QUADS -> IntStream.range(0, indexCount / 6)
+                        .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 2, i + 3, i) }
+                    VertexFormat.Mode.LINES -> IntStream.range(0, indexCount / 6)
+                        .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 3, i + 2, i + 1) }
+                    else -> IntStream.range(0, indexCount)
                 }
-            )
+
+                when (indexType) {
+                    VertexFormat.IndexType.SHORT -> {
+                        ebo.upload(
+                            ByteBuffer.allocateDirect(indexCount * Short.SIZE_BYTES)
+                                .asShortBuffer()
+                                .put(stream.toArray().map { it.toShort() }.toShortArray())
+                                .flip()
+                        )
+                    }
+
+                    VertexFormat.IndexType.INT -> {
+                        ebo.upload(
+                            ByteBuffer.allocateDirect(indexCount * 4)
+                                .order(ByteOrder.nativeOrder())
+                                .asIntBuffer()
+                                .put(stream.toArray())
+                                .flip()
+                        )
+                    }
+                }
+            }
 
             vao.unbind()
         }
