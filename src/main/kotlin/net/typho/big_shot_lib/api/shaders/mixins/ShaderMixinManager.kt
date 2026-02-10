@@ -41,10 +41,12 @@ object ShaderMixinManager {
         }
     }
 
-    private var mixins = LinkedList(listOf(
-        ShaderMixin.Factory { ShaderVersionUpdaterMixin },
-        ShaderLocationMapperMixin
-    ))
+    private var mixins = LinkedList<ShaderMixin.Factory>()
+
+    init {
+        register(ShaderVersionUpdaterMixin)
+        register(ShaderLocationMapperMixin)
+    }
 
     @JvmStatic
     fun register(mixin: ShaderMixin.Factory) {
@@ -56,7 +58,7 @@ object ShaderMixinManager {
     }
 
     @JvmStatic
-    fun register(mixin: ShaderMixin) = register { mixin }
+    fun register(mixin: ShaderMixin) = register { key, parent -> mixin }
 
     @JvmStatic
     fun create(key: ShaderProgramKey): Instance {
@@ -91,7 +93,7 @@ object ShaderMixinManager {
             }
 
             if (this@ShaderMixinManager.mixins.contains(factory)) {
-                val mixin = factory.create(key)
+                val mixin = factory.create(key, this)
                 mixins.add(factory to mixin)
                 return mixin
             }

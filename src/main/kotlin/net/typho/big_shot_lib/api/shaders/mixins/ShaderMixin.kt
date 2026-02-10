@@ -25,6 +25,6 @@ interface ShaderMixin {
     }
 
     fun interface Factory {
-        fun create(key: ShaderProgramKey): ShaderMixin?
+        fun create(key: ShaderProgramKey, parent: ShaderMixinManager.Instance): ShaderMixin?
     }
 }

@@ -4,7 +4,7 @@ import net.typho.big_shot_lib.api.shaders.ShaderProgramKey
 import net.typho.big_shot_lib.api.shaders.ShaderSourceKey
 
 object ShaderLocationMapperMixin : ShaderMixin.Factory {
-    override fun create(key: ShaderProgramKey): ShaderMixin {
+    override fun create(key: ShaderProgramKey, parent: ShaderMixinManager.Instance): ShaderMixin {
         return Instance(ShaderLocationManager(key))
     }
 
