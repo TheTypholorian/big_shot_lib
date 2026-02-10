@@ -16,7 +16,7 @@ object GlShaderRegistry : ResourceRegistry<GlShader>("shaders") {
     ): GlShader {
         val format = json.get("format") ?: throw JsonParseException("Shader $id is missing vertex format")
         val sourcesObject = json.getAsJsonObject("sources") ?: throw JsonParseException("Shader $id is missing sources")
-        val sources = sourcesObject.keySet().map(ShaderSourceType::valueOf).toSet()
+        val sources = sourcesObject.keySet().map { ShaderSourceType.valueOf(it.uppercase()) } .toSet()
 
         val builder = GlShader.Builder(ShaderProgramKey(
             ShaderLoaderType.BIG_SHOT,
