@@ -116,16 +116,17 @@ open class Mesh(
                         ByteBuffer.allocateDirect(indexCount * Int.SIZE_BYTES)
                             .asIntBuffer()
                             .put(IntStream.range(0, indexCount).toArray())
+                            .flip()
                     )
                 } else {
                     memByteBuffer(
                         ByteBuffer.allocateDirect(indexCount * Short.SIZE_BYTES)
                             .asShortBuffer()
                             .put(IntStream.range(0, indexCount).toArray().map { it.toShort() }.toShortArray())
+                            .flip()
                     )
                 }
             )
-            ebo.unbind()
 
             vao.unbind()
         }
