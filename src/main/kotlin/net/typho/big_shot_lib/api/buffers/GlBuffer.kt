@@ -35,6 +35,10 @@ open class GlBuffer(
         OpenGL.INSTANCE.bufferData(type, buffer, usage)
     }
 
+    override fun uploadNull() {
+        OpenGL.INSTANCE.bufferData(type, 0L, usage)
+    }
+
     override fun toString(): String {
         return "${javaClass.simpleName}(glId=$glId, type=$type, usage=$usage)"
     }

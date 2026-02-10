@@ -55,6 +55,12 @@ open class GlTexture(
                 OpenGL.INSTANCE.textureData2D(format, width, height, buffer)
                 unbind()
             }
+
+            override fun uploadNull() {
+                bind()
+                OpenGL.INSTANCE.textureData2D(format, width, height, 0L)
+                unbind()
+            }
         }
     }
 

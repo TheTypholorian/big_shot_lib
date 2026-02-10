@@ -116,6 +116,11 @@ interface OpenGL {
     fun bufferData(type: BufferType, buffer: ByteBuffer, usage: BufferUsage)
 
     /**
+     * `glBufferData(type.glId, size, usage.glId)`
+     */
+    fun bufferData(type: BufferType, size: Long, usage: BufferUsage)
+
+    /**
      * `glDeleteBuffers(glId)`
      */
     fun deleteBuffer(glId: Int)
@@ -194,6 +199,23 @@ interface OpenGL {
      * ```
      */
     fun textureData2D(format: TextureFormat, width: Int, height: Int, buffer: ByteBuffer)
+
+    /**
+     * ```
+     * glTexImage2D(
+     *     GL_TEXTURE_2D,
+     *     0,
+     *     format.internalId,
+     *     width,
+     *     height,
+     *     0,
+     *     format.glId,
+     *     format.type,
+     *     size
+     * )
+     * ```
+     */
+    fun textureData2D(format: TextureFormat, width: Int, height: Int, size: Long)
 
     /**
      * `glDeleteTextures(glId)`

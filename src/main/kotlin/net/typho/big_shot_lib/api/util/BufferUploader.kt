@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.util
 
 import org.lwjgl.system.MemoryUtil
-import org.lwjgl.system.MemoryUtil.NULL
 import java.nio.*
 
 interface BufferUploader {
@@ -21,5 +20,5 @@ interface BufferUploader {
 
     fun upload(address: Long, size: Int) = upload(MemoryUtil.memByteBuffer(address, size))
 
-    fun uploadNull() = upload(NULL, 0)
+    fun uploadNull()
 }
