@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.mixin.event;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -53,7 +54,9 @@ public class LevelRendererMixin {
                 level,
                 projectionMatrix,
                 frustumMatrix,
-                new FrustumIntersection(projectionMatrix.mul(frustumMatrix.translate(camera.getPosition().toVector3f().mul(-1)), new Matrix4f()))
+                new FrustumIntersection(projectionMatrix.mul(frustumMatrix.translate(camera.getPosition().toVector3f().mul(-1)), new Matrix4f())),
+                Minecraft.getInstance().getMainRenderTarget().width,
+                Minecraft.getInstance().getMainRenderTarget().height
         ));
     }
 }
