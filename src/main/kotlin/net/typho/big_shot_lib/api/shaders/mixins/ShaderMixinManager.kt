@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.shaders.ShaderSourceKey
 import net.typho.big_shot_lib.api.shaders.ShaderSourceType
 import org.lwjgl.PointerBuffer
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.system.MemoryUtil.*
+import org.lwjgl.system.MemoryUtil.memUTF8
 import org.lwjgl.util.shaderc.Shaderc.*
 import org.lwjgl.util.spvc.Spvc.*
 import java.nio.ByteOrder
@@ -168,10 +168,6 @@ object ShaderMixinManager {
             spvcRun { spvc_compiler_set_entry_point(spvcCompiler, entrypoint, key.type.spvcId!!) }
 
             val compiled = spvcGet { spvc_compiler_compile(spvcCompiler, it) }
-
-            if (memAddress(bytecodeBuffer) != memAddress(nativeBytecodeBuffer)) {
-                memFree(bytecodeBuffer)
-            }
 
             return mixins.fold(memUTF8(compiled)) { code, mixin -> mixin.mixinPostCompile(key, code) }
         }
