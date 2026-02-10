@@ -17,6 +17,13 @@ open class GlFramebuffer(
     @JvmField
     protected var height: Int
 ) : GlResource(glId) {
+    constructor(
+        colorAttachments: Array<GlFramebufferAttachment>,
+        depthAttachment: GlFramebufferAttachment?,
+        width: Int,
+        height: Int
+    ) : this(OpenGL.INSTANCE.createFramebuffer(), colorAttachments, depthAttachment, width, height)
+
     init {
         bind()
 
