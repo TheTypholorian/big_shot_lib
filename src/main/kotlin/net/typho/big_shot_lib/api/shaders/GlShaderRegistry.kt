@@ -32,7 +32,7 @@ object GlShaderRegistry : ResourceRegistry<GlShader>("shaders") {
             builder.attach(
                 source,
                 resolves.loadFile(
-                    file,
+                    "$file.${source.extension}",
                     id.toString()
                 ) ?: throw ResourceNotFoundException("Couldn't find shader file $file, requested by $id. Searched in ${ShaderFileResolver.includeKeys}"),
                 resolves

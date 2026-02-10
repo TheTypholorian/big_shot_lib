@@ -7,8 +7,7 @@ import net.typho.big_shot_lib.api.shaders.ShaderSourceKey
 import net.typho.big_shot_lib.api.shaders.ShaderSourceType
 import org.lwjgl.PointerBuffer
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.system.MemoryUtil.memFree
-import org.lwjgl.system.MemoryUtil.memUTF8
+import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.util.shaderc.Shaderc.*
 import org.lwjgl.util.spvc.Spvc.*
 import java.nio.ByteOrder
@@ -137,6 +136,8 @@ object ShaderMixinManager {
 
         val nativeBytecodeBuffer = shaderc_result_get_bytes(compileResult)!!
         val bytecodeBuffer = mixins.fold(ShaderBytecodeBuffer(nativeBytecodeBuffer)) { buffer, mixin -> mixin.mixinBytecode(key, buffer) }
+            .ensureDirect()
+            .clear()
 
         MemoryStack.stackPush().use { stack ->
             fun spvcRun(op: Supplier<Int>) {
@@ -155,10 +156,7 @@ object ShaderMixinManager {
                 return pointer.get(0)
             }
 
-            val parsed = spvcGet {
-                val buffer = bytecodeBuffer.ensureDirect().clear()
-                spvc_context_parse_spirv(spvcContext, buffer, buffer.capacity().toLong(), it)
-            }
+            val parsed = spvcGet { spvc_context_parse_spirv(spvcContext, bytecodeBuffer, bytecodeBuffer.capacity().toLong(), it) }
             val spvcCompiler = spvcGet { spvc_context_create_compiler(spvcContext, SPVC_BACKEND_GLSL, parsed, SPVC_CAPTURE_MODE_TAKE_OWNERSHIP, it) }
             val spvcOptions = spvcGet { spvc_compiler_create_compiler_options(spvcCompiler, it) }
 
@@ -171,7 +169,10 @@ object ShaderMixinManager {
 
             val compiled = spvcGet { spvc_compiler_compile(spvcCompiler, it) }
 
-            memFree(nativeBytecodeBuffer)
+            if (memAddress(bytecodeBuffer) != memAddress(nativeBytecodeBuffer)) {
+                memFree(bytecodeBuffer)
+            }
+
             return mixins.fold(memUTF8(compiled)) { code, mixin -> mixin.mixinPostCompile(key, code) }
         }
     }
