@@ -57,6 +57,16 @@ open class ShaderLocationManager(
             locations[index] = value
         }
 
+        fun get(name: String): Int? {
+            locations.forEachIndexed { location, bound ->
+                if (name == bound) {
+                    return location
+                }
+            }
+
+            return null
+        }
+
         fun map(size: Int, name: String): Int {
             var foundLocation: Int? = null
             var foundSize: Int? = null

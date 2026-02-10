@@ -65,6 +65,53 @@ open class ShaderBytecodeBuffer(
         return@findOpcode true
     }
 
+    fun findOpcodeInMethod(
+        method: String,
+        predicate: Predicate<ShaderOpcode>
+    ): ShaderOpcode? {
+        val methodId = (findOpcode(ShaderOpcode.OP_NAME) { opcode ->
+            opcode.getString(1) == method
+        } ?: return null).getWord(0)
+
+        var inMethod = false
+
+        for (opcode in opcodes()) {
+            if (opcode.id == ShaderOpcode.OP_FUNCTION) {
+                if (inMethod) {
+                    break
+                }
+
+                if (opcode.getWord(0) == methodId) {
+                    inMethod = true
+                }
+            } else if (inMethod && predicate.test(opcode)) {
+                return opcode
+            }
+        }
+
+        return null
+    }
+
+    fun findOpcodeInMethod(
+        method: String,
+        id: Int,
+        predicate: Predicate<ShaderOpcode>
+    ) = findOpcodeInMethod(method, Predicate<ShaderOpcode> { opcode -> opcode.id == id }.and(predicate))
+
+    fun findOpcodeInMethod(
+        method: String,
+        id: Int,
+        vararg expectedValues: Pair<Int, Int>
+    ) = findOpcodeInMethod(method, id) { opcode ->
+        for (pair in expectedValues) {
+            if (opcode.getWord(pair.first) != pair.second) {
+                return@findOpcodeInMethod false
+            }
+        }
+
+        return@findOpcodeInMethod true
+    }
+
     fun findVariable(
         name: String? = null,
         location: Int? = null,
