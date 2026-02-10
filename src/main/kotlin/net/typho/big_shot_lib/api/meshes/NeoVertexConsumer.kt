@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.meshes
 
 import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.phys.AABB
 import net.typho.big_shot_lib.api.util.IColor
 import org.joml.*
 import java.awt.Color
@@ -90,6 +91,45 @@ interface NeoVertexConsumer {
 
     fun normal(pose: PoseStack.Pose, normal: Vector3fc): NeoVertexConsumer {
         normal(pose, normal.x(), normal.y(), normal.z())
+        return this
+    }
+
+    fun cube(
+        box: AABB,
+    ): NeoVertexConsumer {
+        val vertices = arrayOf(
+            Vector3f(box.maxX.toFloat(), box.maxY.toFloat(), box.maxZ.toFloat()),
+            Vector3f(box.minX.toFloat(), box.maxY.toFloat(), box.maxZ.toFloat()),
+            Vector3f(box.minX.toFloat(), box.minY.toFloat(), box.maxZ.toFloat()),
+            Vector3f(box.maxX.toFloat(), box.minY.toFloat(), box.maxZ.toFloat()),
+            Vector3f(box.maxX.toFloat(), box.maxY.toFloat(), box.minZ.toFloat()),
+            Vector3f(box.minX.toFloat(), box.maxY.toFloat(), box.minZ.toFloat()),
+            Vector3f(box.minX.toFloat(), box.minY.toFloat(), box.minZ.toFloat()),
+            Vector3f(box.maxX.toFloat(), box.minY.toFloat(), box.minZ.toFloat()),
+        )
+
+        quad(vertices[0], vertices[1], vertices[2], vertices[3], Vector3f(0f, 0f, 1f))
+        quad(vertices[1], vertices[5], vertices[6], vertices[2], Vector3f(-1f, 0f, 0f))
+        quad(vertices[5], vertices[4], vertices[7], vertices[6], Vector3f(0f, 0f, -1f))
+        quad(vertices[4], vertices[0], vertices[3], vertices[7], Vector3f(1f, 0f, 0f))
+        quad(vertices[1], vertices[0], vertices[4], vertices[5], Vector3f(0f, 1f, 0f))
+        quad(vertices[3], vertices[2], vertices[6], vertices[7], Vector3f(0f, -1f, 0f))
+
+        return this
+    }
+
+    fun quad(
+        v0: Vector3f,
+        v1: Vector3f,
+        v2: Vector3f,
+        v3: Vector3f,
+        normal: Vector3f
+    ): NeoVertexConsumer {
+        vertex(v0).textureUV(0f, 1f).normal(normal)
+        vertex(v1).textureUV(1f, 1f).normal(normal)
+        vertex(v2).textureUV(1f, 0f).normal(normal)
+        vertex(v3).textureUV(0f, 0f).normal(normal)
+
         return this
     }
 }

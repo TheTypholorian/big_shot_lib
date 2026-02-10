@@ -18,5 +18,9 @@ data class RenderData(
     @JvmField
     val modelViewMat: Matrix4f,
     @JvmField
-    val frustum: FrustumIntersection
+    val frustum: FrustumIntersection,
+    @JvmField
+    val windowWidth: Int,
+    @JvmField
+    val windowHeight: Int
 )

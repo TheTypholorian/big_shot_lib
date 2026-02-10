@@ -33,12 +33,24 @@ open class GlUniform(
         OpenGL.INSTANCE.setUniformValue(location, f1, f2)
     }
 
+    fun setValue(f: Vector2f) {
+        setValue(f.x, f.y)
+    }
+
     fun setValue(f1: Float, f2: Float, f3: Float) {
         OpenGL.INSTANCE.setUniformValue(location, f1, f2, f3)
     }
 
+    fun setValue(f: Vector3f) {
+        setValue(f.x, f.y, f.z)
+    }
+
     fun setValue(f1: Float, f2: Float, f3: Float, f4: Float) {
         OpenGL.INSTANCE.setUniformValue(location, f1, f2, f3, f4)
+    }
+
+    fun setValue(f: Vector4f) {
+        setValue(f.x, f.y, f.z, f.w)
     }
 
     fun setValue(i1: Int) {
@@ -49,12 +61,24 @@ open class GlUniform(
         OpenGL.INSTANCE.setUniformValue(location, i1, i2)
     }
 
+    fun setValue(i: Vector2i) {
+        setValue(i.x, i.y)
+    }
+
     fun setValue(i1: Int, i2: Int, i3: Int) {
         OpenGL.INSTANCE.setUniformValue(location, i1, i2, i3)
     }
 
+    fun setValue(i: Vector3i) {
+        setValue(i.x, i.y, i.z)
+    }
+
     fun setValue(i1: Int, i2: Int, i3: Int, i4: Int) {
         OpenGL.INSTANCE.setUniformValue(location, i1, i2, i3, i4)
+    }
+
+    fun setValue(i: Vector4i) {
+        setValue(i.x, i.y, i.z, i.w)
     }
 
     fun setValue(d1: Double) {
@@ -65,12 +89,24 @@ open class GlUniform(
         OpenGL.INSTANCE.setUniformValue(location, d1, d2)
     }
 
+    fun setValue(d: Vector2d) {
+        setValue(d.x, d.y)
+    }
+
     fun setValue(d1: Double, d2: Double, d3: Double) {
         OpenGL.INSTANCE.setUniformValue(location, d1, d2, d3)
     }
 
+    fun setValue(d: Vector3d) {
+        setValue(d.x, d.y, d.z)
+    }
+
     fun setValue(d1: Double, d2: Double, d3: Double, d4: Double) {
         OpenGL.INSTANCE.setUniformValue(location, d1, d2, d3, d4)
+    }
+
+    fun setValue(d: Vector4d) {
+        setValue(d.x, d.y, d.z, d.w)
     }
 
     fun setValue(mat: Matrix2f, transpose: Boolean = false) {

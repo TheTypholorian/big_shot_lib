@@ -2,10 +2,12 @@ package net.typho.big_shot_lib.api.shaders
 
 import net.typho.big_shot_lib.api.errors.IllegalShaderSourceException
 import net.typho.big_shot_lib.api.errors.MissingShaderSourceException
+import net.typho.big_shot_lib.api.event.RenderData
 import net.typho.big_shot_lib.api.shaders.mixins.ShaderMixinManager
 import net.typho.big_shot_lib.api.state.OpenGL
 import net.typho.big_shot_lib.api.util.GlResource
 import net.typho.big_shot_lib.api.util.Named
+import org.lwjgl.glfw.GLFW.glfwGetTime
 
 open class GlShader(
     glId: Int,
@@ -46,6 +48,16 @@ open class GlShader(
 
             return@computeIfAbsent samplerUnits.size
         }
+    }
+
+    fun setCommonUniforms(
+        data: RenderData,
+        time: Float = glfwGetTime().toFloat()
+    ) {
+        getUniform("GLFWTime")?.setValue(time)
+        getUniform("ScreenSize")?.setValue(data.windowWidth.toFloat(), data.windowHeight.toFloat())
+        getUniform("ProjMat")?.setValue(data.projMat)
+        getUniform("ModelViewMat")?.setValue(data.modelViewMat)
     }
 
     fun getUniform(name: String): GlUniform? {

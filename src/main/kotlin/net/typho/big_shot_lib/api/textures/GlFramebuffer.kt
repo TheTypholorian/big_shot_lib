@@ -81,6 +81,10 @@ open class GlFramebuffer(
         OpenGL.INSTANCE.clear(mask)
     }
 
+    fun width() = width
+
+    fun height() = height
+
     override fun bind(glId: Int) = OpenGL.INSTANCE.bindFramebuffer(glId)
 
     override fun free() {
