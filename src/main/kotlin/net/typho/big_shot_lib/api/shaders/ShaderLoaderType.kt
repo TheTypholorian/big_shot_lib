@@ -5,7 +5,7 @@ enum class ShaderLoaderType(
     val autoBindLocations: Boolean
 ) {
     MINECRAFT(true),
-    SODIUM(false),
+    SODIUM(true),
     VEIL(true),
     IRIS(true),
     BIG_SHOT(true),
