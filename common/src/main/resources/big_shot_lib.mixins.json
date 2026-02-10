@@ -6,6 +6,7 @@
   "compatibilityLevel": "JAVA_18",
   "mixins": [
     "shaders.mixins.GlShaderMixin",
+    "shaders.mixins.GlVertexFormatAccessor",
     "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
