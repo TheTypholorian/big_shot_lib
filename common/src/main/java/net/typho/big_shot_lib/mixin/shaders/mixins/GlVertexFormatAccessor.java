@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.Map;
 
 @Pseudo
-@Mixin(GlVertexFormat.class)
+@Mixin(value = GlVertexFormat.class, remap = false)
 public interface GlVertexFormatAccessor {
     @Accessor("attributesKeyed")
     Map<VertexFormatAttribute, GlVertexAttribute> getAttributes();
