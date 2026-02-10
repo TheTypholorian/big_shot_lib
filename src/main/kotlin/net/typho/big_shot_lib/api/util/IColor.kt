@@ -72,7 +72,7 @@ interface IColor {
 
     fun blueF(): Float = blue() / 255f
 
-    fun alphaF(): Float? = alphaF()?.div(255f)
+    fun alphaF(): Float? = alpha()?.div(255f)
 
     fun toVec3F() = Vector3f(redF(), greenF(), blueF())
 
