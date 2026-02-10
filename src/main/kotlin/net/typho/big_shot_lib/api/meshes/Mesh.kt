@@ -128,6 +128,7 @@ open class Mesh(
                     VertexFormat.IndexType.SHORT -> {
                         ebo.upload(
                             ByteBuffer.allocateDirect(indexCount * Short.SIZE_BYTES)
+                                .order(ByteOrder.nativeOrder())
                                 .asShortBuffer()
                                 .put(stream.toArray().map { it.toShort() }.toShortArray())
                                 .flip()
