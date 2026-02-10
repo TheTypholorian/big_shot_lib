@@ -23,12 +23,6 @@ open class Mesh(
     @JvmField
     protected var vertices = 0
 
-    init {
-        vbo.bind()
-        format.setupBufferState()
-        vbo.unbind()
-    }
-
     fun drawArrays() {
         vao.drawArrays(mode, vertices)
     }
@@ -120,9 +114,12 @@ open class Mesh(
             this@Mesh.vertices = vertices
 
             builder.build()?.let { result ->
+                vao.bind()
                 vbo.bind()
                 vbo.upload(result.byteBuffer())
+                format.setupBufferState()
                 vbo.unbind()
+                vao.unbind()
             }
         }
     }
