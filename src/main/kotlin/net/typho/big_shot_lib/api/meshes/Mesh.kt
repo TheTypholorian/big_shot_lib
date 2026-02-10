@@ -1,12 +1,16 @@
 package net.typho.big_shot_lib.api.meshes
 
+import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.VertexFormat
-import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.typho.big_shot_lib.api.buffers.BufferType
 import net.typho.big_shot_lib.api.buffers.BufferUsage
 import net.typho.big_shot_lib.api.buffers.GlBuffer
-import org.lwjgl.system.MemoryUtil.*
+import net.typho.big_shot_lib.api.util.Bindable
+import org.lwjgl.system.MemoryUtil.memByteBuffer
+import org.lwjgl.system.NativeResource
+import java.nio.ByteBuffer
+import java.util.stream.IntStream
 
 open class Mesh(
     @JvmField
@@ -18,33 +22,43 @@ open class Mesh(
     @JvmField
     val vao: GlVertexArray = GlVertexArray(),
     @JvmField
-    val vbo: GlBuffer = GlBuffer(BufferType.ARRAY, usage)
-) {
+    val vbo: GlBuffer = GlBuffer(BufferType.ARRAY, usage),
     @JvmField
-    protected var vertices = 0
+    val ebo: GlBuffer = GlBuffer(BufferType.ELEMENT_ARRAY, usage)
+) : Bindable, NativeResource {
+    @JvmField
+    protected var indexCount = 0
+    @JvmField
+    protected var indexType: VertexFormat.IndexType = VertexFormat.IndexType.INT
 
-    fun drawArrays() {
-        vao.drawArrays(mode, vertices)
+    override fun free() {
+        vao.free()
+        vbo.free()
+        ebo.free()
+    }
+
+    override fun bind() {
+        vao.bind()
+    }
+
+    override fun unbind() {
+        vao.unbind()
+    }
+
+    fun draw() {
+        vao.drawElements(mode, indexCount, indexType)
     }
 
     inner class Builder(
         @JvmField
-        val builder: ByteBufferBuilder = ByteBufferBuilder(1536)
+        val builder: BufferBuilder = BufferBuilder(ByteBufferBuilder(1536), mode, format)
     ) : NeoVertexConsumer {
-        private var pointer: Long = 0
-        private var vertices: Int = 0
-
         override fun vertex(
             x: Float,
             y: Float,
             z: Float
         ): NeoVertexConsumer {
-            vertices++
-            pointer = builder.reserve(format.vertexSize)
-            val ptr = pointer + format.offsetsByElement[VertexFormatElement.POSITION.id]
-            memPutFloat(ptr, x)
-            memPutFloat(ptr + Float.SIZE_BYTES, y)
-            memPutFloat(ptr + 2 * Float.SIZE_BYTES, z)
+            builder.addVertex(x, y, z)
             return this
         }
 
@@ -54,44 +68,22 @@ open class Mesh(
             b: Float,
             a: Float
         ): NeoVertexConsumer {
-            if (format.contains(VertexFormatElement.COLOR)) {
-                val ptr = pointer + format.offsetsByElement[VertexFormatElement.COLOR.id]
-                memPutByte(ptr, (r * 255).toInt().toByte())
-                memPutByte(ptr + 1, (g * 255).toInt().toByte())
-                memPutByte(ptr + 2, (b * 255).toInt().toByte())
-                memPutByte(ptr + 3, (a * 255).toInt().toByte())
-            }
-
+            builder.setColor(r, g, b, a)
             return this
         }
 
         override fun textureUV(u: Float, v: Float): NeoVertexConsumer {
-            if (format.contains(VertexFormatElement.UV0)) {
-                val ptr = pointer + format.offsetsByElement[VertexFormatElement.UV0.id]
-                memPutFloat(ptr, u)
-                memPutFloat(ptr + Float.SIZE_BYTES, v)
-            }
-
+            builder.setUv(u, v)
             return this
         }
 
         override fun overlayUV(u: Int, v: Int): NeoVertexConsumer {
-            if (format.contains(VertexFormatElement.UV1)) {
-                val ptr = pointer + format.offsetsByElement[VertexFormatElement.UV1.id]
-                memPutShort(ptr, u.toShort())
-                memPutShort(ptr + Short.SIZE_BYTES, v.toShort())
-            }
-
+            builder.setUv1(u, v)
             return this
         }
 
         override fun lightUV(u: Int, v: Int): NeoVertexConsumer {
-            if (format.contains(VertexFormatElement.UV2)) {
-                val ptr = pointer + format.offsetsByElement[VertexFormatElement.UV2.id]
-                memPutShort(ptr, u.toShort())
-                memPutShort(ptr + Short.SIZE_BYTES, v.toShort())
-            }
-
+            builder.setUv2(u, v)
             return this
         }
 
@@ -100,27 +92,42 @@ open class Mesh(
             y: Float,
             z: Float
         ): NeoVertexConsumer {
-            if (format.contains(VertexFormatElement.NORMAL)) {
-                val ptr = pointer + format.offsetsByElement[VertexFormatElement.NORMAL.id]
-                memPutFloat(ptr, x)
-                memPutFloat(ptr + Float.SIZE_BYTES, y)
-                memPutFloat(ptr + 2 * Float.SIZE_BYTES, z)
-            }
-
+            builder.setNormal(x, y, z)
             return this
         }
 
         fun end() {
-            this@Mesh.vertices = vertices
+            val built = builder.buildOrThrow()
 
-            builder.build()?.let { result ->
-                vao.bind()
-                vbo.bind()
-                vbo.upload(result.byteBuffer())
-                format.setupBufferState()
-                vbo.unbind()
-                vao.unbind()
-            }
+            indexCount = built.drawState().indexCount
+            indexType = built.drawState().indexType
+
+            vao.bind()
+
+            vbo.bind()
+            vbo.upload(built.vertexBuffer())
+            format.setupBufferState()
+            vbo.unbind()
+
+            ebo.bind()
+            ebo.upload(
+                built.indexBuffer() ?: if (indexType == VertexFormat.IndexType.INT) {
+                    memByteBuffer(
+                        ByteBuffer.allocateDirect(indexCount * Int.SIZE_BYTES)
+                            .asIntBuffer()
+                            .put(IntStream.range(0, indexCount).toArray())
+                    )
+                } else {
+                    memByteBuffer(
+                        ByteBuffer.allocateDirect(indexCount * Short.SIZE_BYTES)
+                            .asShortBuffer()
+                            .put(IntStream.range(0, indexCount).toArray().map { it.toShort() }.toShortArray())
+                    )
+                }
+            )
+            ebo.unbind()
+
+            vao.unbind()
         }
     }
 }
