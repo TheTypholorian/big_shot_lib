@@ -138,6 +138,14 @@ class OpenGLImpl : OpenGL {
         GlStateManager._glBufferData(type.glId, buffer, usage.glId)
     }
 
+    override fun bufferData(
+        type: BufferType,
+        size: Long,
+        usage: BufferUsage
+    ) {
+        GlStateManager._glBufferData(type.glId, size, usage.glId)
+    }
+
     override fun checkFramebufferStatus(): Int {
         return GlStateManager.glCheckFramebufferStatus(GL_FRAMEBUFFER)
     }
@@ -411,6 +419,25 @@ class OpenGLImpl : OpenGL {
             format.glId,
             format.type,
             buffer
+        )
+    }
+
+    override fun textureData2D(
+        format: TextureFormat,
+        width: Int,
+        height: Int,
+        size: Long
+    ) {
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            format.internalId,
+            width,
+            height,
+            0,
+            format.glId,
+            format.type,
+            size
         )
     }
 
