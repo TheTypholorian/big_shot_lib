@@ -99,7 +99,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun bindTexture(type: Int, glId: Int) {
-        glBindTexture(GL_TEXTURE_2D, glId)
+        GlStateManager._bindTexture(glId)
     }
 
     override fun bindVertexArray(glId: Int) {
