@@ -118,8 +118,10 @@ open class Mesh(
             } else {
                 val stream = when (mode) {
                     VertexFormat.Mode.QUADS -> IntStream.range(0, indexCount / 6)
+                        .map { i -> i * 4 }
                         .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 2, i + 3, i) }
                     VertexFormat.Mode.LINES -> IntStream.range(0, indexCount / 6)
+                        .map { i -> i * 4 }
                         .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 3, i + 2, i + 1) }
                     else -> IntStream.range(0, indexCount)
                 }
