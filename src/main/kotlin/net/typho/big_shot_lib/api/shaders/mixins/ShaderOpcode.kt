@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.shaders.mixins
 
 import org.lwjgl.system.MemoryUtil.memByteBuffer
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.IntBuffer
 import java.util.*
 import java.util.function.Consumer
@@ -72,7 +73,7 @@ data class ShaderOpcode(
 
     fun getString(offset: Int): String {
         val array = ByteArray((length - offset - 1) * ShaderMixinManager.WORD_SIZE_BYTES)
-        memByteBuffer(parent.buffer).get((index + 1 + offset) * ShaderMixinManager.WORD_SIZE_BYTES, array)
+        memByteBuffer(parent.buffer).order(ByteOrder.BIG_ENDIAN).get((index + 1 + offset) * ShaderMixinManager.WORD_SIZE_BYTES, array)
         return String(array).trim(0.toChar())
     }
 

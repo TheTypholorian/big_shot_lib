@@ -19,7 +19,7 @@ object ShaderMixinManager {
     const val DEFAULT_ENTRYPOINT = "main"
     const val WORD_SIZE_BYTES = 4
     @JvmField
-    val BYTE_ORDER: ByteOrder = ByteOrder.nativeOrder()
+    val BYTE_ORDER: ByteOrder = ByteOrder.LITTLE_ENDIAN
     @JvmField
     val shadercContext = shaderc_compiler_initialize()
     @JvmField
