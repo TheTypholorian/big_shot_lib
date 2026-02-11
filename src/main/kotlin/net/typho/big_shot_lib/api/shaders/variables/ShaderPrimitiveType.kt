@@ -35,7 +35,7 @@ enum class ShaderPrimitiveType(
             return false
         }
 
-        var pointer = opcode.index + 2
+        var pointer = opcode.index + 1
 
         width?.let {
             if (opcode.parent.buffer.get(pointer) != width) {

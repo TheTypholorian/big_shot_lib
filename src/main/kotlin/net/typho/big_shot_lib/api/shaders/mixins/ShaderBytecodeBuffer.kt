@@ -81,7 +81,7 @@ open class ShaderBytecodeBuffer(
                     break
                 }
 
-                if (opcode.getWord(0) == methodId) {
+                if (opcode.getWord(1) == methodId) {
                     inMethod = true
                 }
             } else if (inMethod && predicate.test(opcode)) {
@@ -121,7 +121,7 @@ open class ShaderBytecodeBuffer(
             if (opcode.id == ShaderOpcode.OP_VARIABLE) {
                 val id = opcode.getWord(1)
                 val actualName = findOpcode(ShaderOpcode.OP_NAME, 0 to id)?.getString(1) ?: continue
-                val actualLocation = findOpcode(ShaderOpcode.OP_NAME, 0 to id, 1 to 30)?.getWord(2) ?: continue
+                val actualLocation = findOpcode(ShaderOpcode.OP_DECORATE, 0 to id, 1 to 30)?.getWord(2) ?: continue
                 val actualTypePointer = findOpcode(ShaderOpcode.OP_VARIABLE, 1 to id)?.getWord(0) ?: continue
                 val actualType = findOpcode(ShaderOpcode.OP_TYPE_POINTER, 0 to actualTypePointer)?.getWord(2) ?: continue
 
@@ -174,6 +174,11 @@ open class ShaderBytecodeBuffer(
                         val op = buffer.get(index)
                         val type = op and 0xFFFF
                         val length = (op ushr 16) and 0xFFFF
+
+                        if (length == 0) {
+                            throw IllegalStateException("Illegal opcode length 0 at index $index and id $type")
+                        }
+
                         val opcode = ShaderOpcode(this@ShaderBytecodeBuffer, index, type, length)
 
                         index += length
@@ -189,7 +194,7 @@ open class ShaderBytecodeBuffer(
         val opcode = findOpcode(ShaderOpcode.OP_ENTRY_POINT)
             ?: throw ShaderOpcodeNotFoundException("Unable to find OP_ENTRY_POINT to inject entrypoint variables")
 
-        opcode.putWord(0, ((opcode.length + ids.size) shl 16) or opcode.id)
+        opcode.putWord(-1, ((opcode.length + ids.size) shl 16) or opcode.id)
         insert(
             opcode.index + opcode.length,
             ByteBuffer.allocate(ids.size * Int.SIZE_BYTES)
@@ -200,7 +205,7 @@ open class ShaderBytecodeBuffer(
     }
 
     fun addStaticVar(
-        storageClass: Int,
+        storageClass: ShaderStorageClass,
         typeId: Int,
         name: String? = null,
         initializer: Int? = null
@@ -212,13 +217,13 @@ open class ShaderBytecodeBuffer(
             findOpcode(ShaderOpcode.OP_FUNCTION)!!.index,
             ShaderOpcode.Builder(ShaderOpcode.OP_TYPE_POINTER)
                 .putWord(typePointerId)
-                .putWord(storageClass)
+                .putWord(storageClass.id)
                 .putWord(typeId)
                 .build(),
             ShaderOpcode.Builder(ShaderOpcode.OP_VARIABLE)
                 .putWord(typePointerId)
                 .putWord(variableId)
-                .putWord(storageClass)
+                .putWord(storageClass.id)
                 .putWord(initializer)
                 .build()
         )

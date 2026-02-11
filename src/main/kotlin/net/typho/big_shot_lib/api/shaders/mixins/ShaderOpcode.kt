@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.shaders.mixins
 
-import org.lwjgl.system.MemoryUtil.memByteBuffer
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
 import java.util.*
@@ -71,9 +70,16 @@ data class ShaderOpcode(
     }
 
     fun getString(offset: Int): String {
-        val array = ByteArray((length - offset - 1) * ShaderMixinManager.WORD_SIZE_BYTES)
-        memByteBuffer(parent.buffer).order(ShaderMixinManager.BYTE_ORDER).get((index + 1 + offset) * ShaderMixinManager.WORD_SIZE_BYTES, array)
-        return String(array).trim(0.toChar())
+        val buffer = ByteBuffer.allocate((length - offset - 1) * ShaderMixinManager.WORD_SIZE_BYTES)
+            .order(ShaderMixinManager.BYTE_ORDER)
+        val array = IntArray(length - offset - 1)
+        parent.buffer.get(index + offset + 1, array)
+
+        for (i in array) {
+            buffer.putInt(i)
+        }
+
+        return String(buffer.flip().array()).trim(0.toChar())
     }
 
     open class Builder(val id: Int) {
@@ -90,7 +96,7 @@ data class ShaderOpcode(
                 token.accept(buffer)
             }
 
-            return buffer.asIntBuffer()
+            return buffer.flip().asIntBuffer()
         }
 
         fun putFloat(float: Float?): Builder {
