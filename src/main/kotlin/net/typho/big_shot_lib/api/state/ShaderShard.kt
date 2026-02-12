@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.state
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.shaders.GlShader
 import net.typho.big_shot_lib.api.shaders.GlShaderRegistry
 
@@ -22,6 +22,6 @@ open class ShaderShard(
             ).apply(it, ::ShaderShard)
         }
 
-        override fun location(): ResourceLocation = ResourceLocation.fromNamespaceAndPath("opengl", "shader")
+        override fun location(): ResourceIdentifier = ResourceIdentifier.fromNamespaceAndPath("opengl", "shader")
     }
 }

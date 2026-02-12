@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.state
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.Bindable
 import net.typho.big_shot_lib.api.util.NeoCodecs
 
@@ -22,6 +22,6 @@ open class PolygonModeShard(
             ).apply(it, ::PolygonModeShard)
         }
 
-        override fun location(): ResourceLocation = ResourceLocation.fromNamespaceAndPath("opengl", "polygon_mode")
+        override fun location(): ResourceIdentifier = ResourceIdentifier.fromNamespaceAndPath("opengl", "polygon_mode")
     }
 }

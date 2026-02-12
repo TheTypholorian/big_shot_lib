@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.util
+package net.typho.big_shot_lib.api.services
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import java.util.*

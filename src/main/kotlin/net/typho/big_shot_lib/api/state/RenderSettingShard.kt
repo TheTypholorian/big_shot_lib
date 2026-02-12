@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.state
 
 import com.mojang.serialization.MapCodec
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.Bindable
 import net.typho.big_shot_lib.api.util.Named
 
@@ -33,9 +33,9 @@ interface RenderSettingShard : Bindable {
 
     companion object {
         @JvmField
-        val REGISTRY = HashMap<ResourceLocation, Type<*>>()
+        val REGISTRY = HashMap<ResourceIdentifier, Type<*>>()
         @JvmField
-        val CODEC: MapCodec<RenderSettingShard> = ResourceLocation.CODEC.dispatchMap(
+        val CODEC: MapCodec<RenderSettingShard> = ResourceIdentifier.CODEC.dispatchMap(
             { shard -> shard.type().location() },
             { location -> REGISTRY[location]?.codec() }
         )

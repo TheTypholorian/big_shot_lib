@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.state
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.Bindable
 
 open class StencilShard(
@@ -40,6 +40,6 @@ open class StencilShard(
             ).apply(it) { func, mask, op -> StencilShard(true, func, mask, op) }
         }
 
-        override fun location(): ResourceLocation = ResourceLocation.fromNamespaceAndPath("opengl", "stencil")
+        override fun location(): ResourceIdentifier = ResourceIdentifier.fromNamespaceAndPath("opengl", "stencil")
     }
 }

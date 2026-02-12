@@ -5,26 +5,26 @@ import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.mojang.serialization.Codec
-import net.minecraft.resources.FileToIdConverter
-import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.packs.resources.ResourceManager
+import net.typho.big_shot_lib.api.services.NeoFileToIdConverter
+import net.typho.big_shot_lib.api.services.ResourceManagerReloadListenerWrapper
+import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
 import java.util.*
 
 abstract class ResourceRegistry<T>(
-    val name: ResourceLocation,
-    val idConverter: FileToIdConverter,
-) {
+    val name: ResourceIdentifier,
+    val idConverter: NeoFileToIdConverter,
+) : ResourceManagerReloadListenerWrapper {
     companion object {
         @JvmField
         val registries = LinkedList<ResourceRegistry<*>>()
     }
 
     @JvmField
-    val map: BiMap<ResourceLocation, T> = HashBiMap.create()
+    val map: BiMap<ResourceIdentifier, T> = HashBiMap.create()
     @JvmField
-    val lookupCodec: Codec<T> = ResourceLocation.CODEC.xmap(this::get, this::getKey)
+    val lookupCodec: Codec<T> = ResourceIdentifier.CODEC.xmap(this::get, this::getKey)
 
-    constructor(name: String) : this(BigShotModUtil.id(name), FileToIdConverter.json("neo/$name"))
+    constructor(name: String) : this(BigShotApi.id(name), NeoFileToIdConverter.json("neo/$name"))
 
     init {
         registries.add(this)
@@ -32,13 +32,11 @@ abstract class ResourceRegistry<T>(
 
     fun getKey(t: T) = map.inverse()[t]
 
-    fun get(id: ResourceLocation) = map[id]
+    fun get(id: ResourceIdentifier) = map[id]
 
-    abstract fun decode(id: ResourceLocation, json: JsonObject, manager: ResourceManager): T
+    abstract fun decode(id: ResourceIdentifier, json: JsonObject, manager: ResourceManagerWrapper): T
 
-    fun getReloadListener() = ResourceUtil.INSTANCE.createSimpleResourceReloader(this::reload)
-
-    fun reload(manager: ResourceManager) {
+    override fun onResourceManagerReload(manager: ResourceManagerWrapper) {
         map.values.forEach { value -> if (value is AutoCloseable) value.close() }
         map.clear()
 
@@ -51,6 +49,6 @@ abstract class ResourceRegistry<T>(
             }
         }
 
-        BigShotModUtil.LOGGER.info("Loaded ${map.size} entries of resource registry $name")
+        BigShotApi.LOGGER.info("Loaded ${map.size} entries of resource registry $name")
     }
 }

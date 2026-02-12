@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.shaders
 
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.Resource
-import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.errors.ResourceNotFoundException
+import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
+import net.typho.big_shot_lib.api.util.ResourceIdentifier
 import java.io.InputStream
 
 fun interface ShaderFileResolver {
@@ -52,10 +52,10 @@ fun interface ShaderFileResolver {
 
     open class ResourceBacked(
         @JvmField
-        val manager: ResourceManager
+        val manager: ResourceManagerWrapper
     ) : ShaderFileResolver {
         override fun loadFile(key: String, requester: String): String? {
-            val id = (ResourceLocation.tryParse(key) ?: return null).withPath { path ->
+            val id = ResourceIdentifier(key).withPath { path ->
                 if (path.contains('.')) {
                     return@withPath path
                 } else {

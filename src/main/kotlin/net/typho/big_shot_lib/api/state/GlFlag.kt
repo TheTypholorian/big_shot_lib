@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.state
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.Bindable
 import net.typho.big_shot_lib.api.util.GlNamed
 import net.typho.big_shot_lib.api.util.Named
@@ -39,7 +39,7 @@ enum class GlFlag(
     TEXTURE_CUBE_MAP_SEAMLESS(GL_TEXTURE_CUBE_MAP_SEAMLESS),
     PROGRAM_POINT_SIZE(GL_PROGRAM_POINT_SIZE);
 
-    val location: ResourceLocation = ResourceLocation.fromNamespaceAndPath("opengl", "flag/${name.lowercase()}")
+    val location: ResourceIdentifier = ResourceIdentifier.fromNamespaceAndPath("opengl", "flag/${name.lowercase()}")
     val bindable = object : Bindable {
         override fun bind() = enable()
 

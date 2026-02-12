@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.api.state
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.util.Bindable
 import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.NeoCodecs
@@ -41,6 +40,6 @@ open class BlendShard(
             ).apply(it) { color, eq, func -> BlendShard(true, color, eq, func) }
         }
 
-        override fun location(): ResourceLocation = ResourceLocation.fromNamespaceAndPath("opengl", "blend")
+        override fun location(): ResourceIdentifier = ResourceIdentifier.fromNamespaceAndPath("opengl", "blend")
     }
 }

@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.state
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.buffers.BufferType
 import net.typho.big_shot_lib.api.buffers.BufferUsage
 import net.typho.big_shot_lib.api.errors.ShaderCompileException
@@ -326,7 +326,7 @@ interface OpenGL {
      * `glLinkProgram(glId)`
      * @throws ShaderLinkException
      */
-    fun linkShaderProgram(glId: Int, name: ResourceLocation)
+    fun linkShaderProgram(glId: Int, name: ResourceIdentifier)
 
     /**
      * `glDeleteProgram(glId)`
@@ -347,7 +347,7 @@ interface OpenGL {
      * `glCompileShader(glId)`
      * @throws ShaderCompileException
      */
-    fun compileShaderSource(glId: Int, type: ShaderSourceType, name: ResourceLocation)
+    fun compileShaderSource(glId: Int, type: ShaderSourceType, name: ResourceIdentifier)
 
     /**
      * `glAttachShader(programId, glId)`

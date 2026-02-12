@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.meshes
 
 import com.mojang.blaze3d.vertex.VertexFormat
+import net.typho.big_shot_lib.api.services.GlUtil
 import net.typho.big_shot_lib.api.state.OpenGL
 import net.typho.big_shot_lib.api.util.GlResource
-import net.typho.big_shot_lib.api.util.GlUtil
 import org.lwjgl.opengl.GL11.glDrawElements
 
 open class GlVertexArray(

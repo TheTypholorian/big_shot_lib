@@ -2,17 +2,17 @@ package net.typho.big_shot_lib.api.shaders
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
-import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.errors.ResourceNotFoundException
+import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
+import net.typho.big_shot_lib.api.util.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.ResourceRegistry
 import net.typho.big_shot_lib.api.util.VertexFormatUtil
 
 object GlShaderRegistry : ResourceRegistry<GlShader>("shaders") {
     override fun decode(
-        id: ResourceLocation,
+        id: ResourceIdentifier,
         json: JsonObject,
-        manager: ResourceManager
+        manager: ResourceManagerWrapper
     ): GlShader {
         val format = json.get("format") ?: throw JsonParseException("Shader $id is missing vertex format")
         val sourcesObject = json.getAsJsonObject("sources") ?: throw JsonParseException("Shader $id is missing sources")
