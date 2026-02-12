@@ -278,6 +278,36 @@ interface OpenGL {
     fun bindVertexArray(glId: Int)
 
     /**
+     * `glEnableVertexAttribArray(index)`
+     */
+    fun enableVertexAttribArray(index: Int)
+
+    /**
+     * `glDisableVertexAttribArray(index)`
+     */
+    fun disableVertexAttribArray(index: Int)
+
+    /**
+     * `glVertexAttribPointer(index, size, type, normalized, stride, pointer)`
+     */
+    fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, pointer: ByteBuffer)
+
+    /**
+     * `glVertexAttribPointer(index, size, type, normalized, stride, pointer)`
+     */
+    fun vertexAttribPointer(index: Int, size: Int, type: Int, normalized: Boolean, stride: Int, pointer: Long)
+
+    /**
+     * `glVertexAttribIPointer(index, size, type, stride, pointer)`
+     */
+    fun vertexAttribIPointer(index: Int, size: Int, type: Int, stride: Int, pointer: ByteBuffer)
+
+    /**
+     * `glVertexAttribIPointer(index, size, type, stride, pointer)`
+     */
+    fun vertexAttribIPointer(index: Int, size: Int, type: Int, stride: Int, pointer: Long)
+
+    /**
      * `glDeleteVertexArrays(glId)`
      */
     fun deleteVertexArray(glId: Int)
