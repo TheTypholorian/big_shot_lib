@@ -5,7 +5,7 @@ moddev = "2.0.123"
 loom = "1.13-SNAPSHOT"
 dokka = "1.9.20"
 
-minecraft = "1.21.1"
+minecraft = "1.21.11"
 
 # The version of ParchmentMC that is used, see https://parchmentmc.org/docs/getting-started#choose-a-version for new versions
 parchment = "2025.12.20"
