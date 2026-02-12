@@ -106,6 +106,56 @@ class OpenGLImpl : OpenGL {
         GlStateManager._glBindVertexArray(glId)
     }
 
+    override fun enableVertexAttribArray(index: Int) {
+        glEnableVertexAttribArray(index)
+    }
+
+    override fun disableVertexAttribArray(index: Int) {
+        glDisableVertexAttribArray(index)
+    }
+
+    override fun vertexAttribPointer(
+        index: Int,
+        size: Int,
+        type: Int,
+        normalized: Boolean,
+        stride: Int,
+        pointer: ByteBuffer
+    ) {
+        glVertexAttribPointer(index, size, type, normalized, size, pointer)
+    }
+
+    override fun vertexAttribPointer(
+        index: Int,
+        size: Int,
+        type: Int,
+        normalized: Boolean,
+        stride: Int,
+        pointer: Long
+    ) {
+        glVertexAttribPointer(index, size, type, normalized, size, pointer)
+    }
+
+    override fun vertexAttribIPointer(
+        index: Int,
+        size: Int,
+        type: Int,
+        stride: Int,
+        pointer: ByteBuffer
+    ) {
+        glVertexAttribIPointer(index, size, type, size, pointer)
+    }
+
+    override fun vertexAttribIPointer(
+        index: Int,
+        size: Int,
+        type: Int,
+        stride: Int,
+        pointer: Long
+    ) {
+        glVertexAttribIPointer(index, size, type, size, pointer)
+    }
+
     override fun blendColor(color: IColor) {
         glBlendColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)
     }
