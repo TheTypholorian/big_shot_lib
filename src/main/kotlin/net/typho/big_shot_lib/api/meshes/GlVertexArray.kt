@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.meshes
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.typho.big_shot_lib.api.state.OpenGL
+import net.typho.big_shot_lib.api.util.GlConstUtil
 import net.typho.big_shot_lib.api.util.GlResource
 import org.lwjgl.opengl.GL11.glDrawArrays
 import org.lwjgl.opengl.GL11.glDrawElements
@@ -23,10 +24,10 @@ open class GlVertexArray(
     }
 
     fun drawArrays(mode: VertexFormat.Mode, vertices: Int) {
-        glDrawArrays(mode.asGLMode, 0, vertices)
+        glDrawArrays(GlConstUtil.toGlId(mode), 0, vertices)
     }
 
     fun drawElements(mode: VertexFormat.Mode, indices: Int, type: VertexFormat.IndexType) {
-        glDrawElements(mode.asGLMode, indices, type.asGLType, 0L)
+        glDrawElements(GlConstUtil.toGlId(mode), indices, GlConstUtil.toGlId(type), 0L)
     }
 }

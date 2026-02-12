@@ -36,7 +36,6 @@ object VertexFormatUtil {
                 "POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL", "NEW_ENTITY" -> DefaultVertexFormat.NEW_ENTITY
                 "POSITION_TEXTURE_COLOR_LIGHT", "PARTICLE" -> DefaultVertexFormat.PARTICLE
                 "POSITION" -> DefaultVertexFormat.POSITION
-                "BLIT_SCREEN" -> DefaultVertexFormat.BLIT_SCREEN
                 "POSITION_COLOR" -> DefaultVertexFormat.POSITION_COLOR
                 "LINES", "POSITION_COLOR_NORMAL" -> DefaultVertexFormat.POSITION_COLOR_NORMAL
                 "POSITION_COLOR_LIGHT", "POSITION_COLOR_LIGHTMAP" -> DefaultVertexFormat.POSITION_COLOR_LIGHTMAP
