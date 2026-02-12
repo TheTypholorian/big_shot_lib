@@ -3,13 +3,15 @@ package net.typho.big_shot_lib.api.util
 import com.mojang.blaze3d.vertex.VertexFormat
 import java.util.*
 
-interface GlConstUtil {
+interface GlUtil {
     fun toGlId(mode: VertexFormat.Mode): Int
 
     fun toGlId(type: VertexFormat.IndexType): Int
 
+    fun initBufferState(format: VertexFormat)
+
     companion object {
         @JvmField
-        val INSTANCE: GlConstUtil = ServiceLoader.load(GlConstUtil::class.java).findFirst().orElseThrow()
+        val INSTANCE: GlUtil = ServiceLoader.load(GlUtil::class.java).findFirst().orElseThrow()
     }
 }
