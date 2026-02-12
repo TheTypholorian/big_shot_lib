@@ -24,10 +24,10 @@ open class GlVertexArray(
     }
 
     fun drawArrays(mode: VertexFormat.Mode, vertices: Int) {
-        glDrawArrays(GlConstUtil.toGlId(mode), 0, vertices)
+        glDrawArrays(GlConstUtil.INSTANCE.toGlId(mode), 0, vertices)
     }
 
     fun drawElements(mode: VertexFormat.Mode, indices: Int, type: VertexFormat.IndexType) {
-        glDrawElements(GlConstUtil.toGlId(mode), indices, GlConstUtil.toGlId(type), 0L)
+        glDrawElements(GlConstUtil.INSTANCE.toGlId(mode), indices, GlConstUtil.INSTANCE.toGlId(type), 0L)
     }
 }
