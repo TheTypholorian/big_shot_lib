@@ -7,6 +7,7 @@ import net.typho.big_shot_lib.api.buffers.BufferType
 import net.typho.big_shot_lib.api.buffers.BufferUsage
 import net.typho.big_shot_lib.api.buffers.GlBuffer
 import net.typho.big_shot_lib.api.util.Bindable
+import net.typho.big_shot_lib.api.util.GlUtil
 import org.lwjgl.system.NativeResource
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -106,7 +107,7 @@ open class Mesh(
 
             vbo.bind()
             vbo.upload(built.vertexBuffer())
-            format.setupBufferState()
+            GlUtil.INSTANCE.initBufferState(format)
             vbo.unbind()
 
             ebo.bind()
