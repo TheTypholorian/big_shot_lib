@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.util
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -10,10 +10,10 @@ object BigShotModUtil {
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
 
     @JvmStatic
-    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
+    fun id(path: String): Identifier = Identifier.fromNamespaceAndPath(MOD_ID, path)
 
     @JvmStatic
-    fun ResourceLocation.equals(namespace: String, path: String): Boolean {
+    fun Identifier.equals(namespace: String, path: String): Boolean {
         return this.namespace == namespace && this.path == path
     }
 }

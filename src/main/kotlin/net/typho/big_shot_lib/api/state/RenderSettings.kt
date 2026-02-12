@@ -1,12 +1,12 @@
 package net.typho.big_shot_lib.api.state
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.util.Bindable
 import net.typho.big_shot_lib.api.util.Named
 
 open class RenderSettings(
     @JvmField
-    val location: ResourceLocation,
+    val location: Identifier,
     @JvmField
     val shards: List<RenderSettingShard>
 ) : Named, Bindable {
@@ -22,6 +22,6 @@ open class RenderSettings(
 
     companion object {
         @JvmField
-        val REGISTRY = HashMap<ResourceLocation, RenderSettings>()
+        val REGISTRY = HashMap<Identifier, RenderSettings>()
     }
 }

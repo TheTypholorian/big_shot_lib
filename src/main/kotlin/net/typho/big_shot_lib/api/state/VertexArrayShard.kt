@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.state
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.meshes.GlVertexArray
 
 open class VertexArrayShard(
@@ -15,6 +15,6 @@ open class VertexArrayShard(
 
         override fun codec() = null
 
-        override fun location(): ResourceLocation = ResourceLocation.fromNamespaceAndPath("opengl", "vertex_array")
+        override fun location(): Identifier = Identifier.fromNamespaceAndPath("opengl", "vertex_array")
     }
 }

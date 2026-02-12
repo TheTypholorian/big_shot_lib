@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.api.util
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import java.util.*
 
 interface TextureUtil {
-    fun getMinecraftTextureId(texture: ResourceLocation): Int
+    fun getMinecraftTextureId(texture: Identifier): Int
 
     companion object {
         @JvmField

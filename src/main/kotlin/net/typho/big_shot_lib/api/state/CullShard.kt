@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.state
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.util.Bindable
 import net.typho.big_shot_lib.api.util.NeoCodecs
 
@@ -30,6 +30,6 @@ open class CullShard(
             ).apply(it) { face -> CullShard(true, face) }
         }
 
-        override fun location(): ResourceLocation = ResourceLocation.fromNamespaceAndPath("opengl", "cull_face")
+        override fun location(): Identifier = Identifier.fromNamespaceAndPath("opengl", "cull_face")
     }
 }

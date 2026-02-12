@@ -6,12 +6,12 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.mojang.serialization.Codec
 import net.minecraft.resources.FileToIdConverter
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.server.packs.resources.ResourceManager
 import java.util.*
 
 abstract class ResourceRegistry<T>(
-    val name: ResourceLocation,
+    val name: Identifier,
     val idConverter: FileToIdConverter,
 ) {
     companion object {
@@ -20,9 +20,9 @@ abstract class ResourceRegistry<T>(
     }
 
     @JvmField
-    val map: BiMap<ResourceLocation, T> = HashBiMap.create()
+    val map: BiMap<Identifier, T> = HashBiMap.create()
     @JvmField
-    val lookupCodec: Codec<T> = ResourceLocation.CODEC.xmap(this::get, this::getKey)
+    val lookupCodec: Codec<T> = Identifier.CODEC.xmap(this::get, this::getKey)
 
     constructor(name: String) : this(BigShotModUtil.id(name), FileToIdConverter.json("neo/$name"))
 
@@ -32,9 +32,9 @@ abstract class ResourceRegistry<T>(
 
     fun getKey(t: T) = map.inverse()[t]
 
-    fun get(id: ResourceLocation) = map[id]
+    fun get(id: Identifier) = map[id]
 
-    abstract fun decode(id: ResourceLocation, json: JsonObject, manager: ResourceManager): T
+    abstract fun decode(id: Identifier, json: JsonObject, manager: ResourceManager): T
 
     fun getReloadListener() = ResourceUtil.INSTANCE.createSimpleResourceReloader(this::reload)
 

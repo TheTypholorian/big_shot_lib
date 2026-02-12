@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.shaders
 
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.errors.ResourceNotFoundException
@@ -55,7 +55,7 @@ fun interface ShaderFileResolver {
         val manager: ResourceManager
     ) : ShaderFileResolver {
         override fun loadFile(key: String, requester: String): String? {
-            val id = (ResourceLocation.tryParse(key) ?: return null).withPath { path ->
+            val id = (Identifier.tryParse(key) ?: return null).withPath { path ->
                 if (path.contains('.')) {
                     return@withPath path
                 } else {

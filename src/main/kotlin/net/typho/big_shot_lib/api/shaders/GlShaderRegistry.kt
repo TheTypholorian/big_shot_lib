@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.shaders
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.errors.ResourceNotFoundException
 import net.typho.big_shot_lib.api.util.ResourceRegistry
@@ -10,7 +10,7 @@ import net.typho.big_shot_lib.api.util.VertexFormatUtil
 
 object GlShaderRegistry : ResourceRegistry<GlShader>("shaders") {
     override fun decode(
-        id: ResourceLocation,
+        id: Identifier,
         json: JsonObject,
         manager: ResourceManager
     ): GlShader {

@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.shaders
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.util.Named
 
 @JvmRecord
@@ -10,7 +10,7 @@ data class ShaderProgramKey(
     @JvmField
     val loader: ShaderLoaderType,
     @JvmField
-    val location: ResourceLocation,
+    val location: Identifier,
     @JvmField
     val format: VertexFormat,
     @JvmField
@@ -20,7 +20,7 @@ data class ShaderProgramKey(
         @JvmField
         val NULL = ShaderProgramKey(
             ShaderLoaderType.NULL,
-            ResourceLocation.fromNamespaceAndPath("opengl", "null"),
+            Identifier.fromNamespaceAndPath("opengl", "null"),
             DefaultVertexFormat.POSITION,
             setOf()
         )
