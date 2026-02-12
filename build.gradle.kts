@@ -7,7 +7,7 @@ val version: String by project
 val modId: String by project
 
 base {
-    archivesName = "$modId-$version"
+    archivesName = "$modId-mc${libs.versions.minecraft.get()}-$version"
 }
 
 tasks.withType<Jar>().configureEach {
