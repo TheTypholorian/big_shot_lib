@@ -9,10 +9,5 @@ object BigShotApi {
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
 
     @JvmStatic
-    fun id(path: String): ResourceIdentifier = ResourceIdentifier.fromNamespaceAndPath(MOD_ID, path)
-
-    @JvmStatic
-    fun ResourceIdentifier.equals(namespace: String, path: String): Boolean {
-        return this.namespace == namespace && this.path == path
-    }
+    fun id(path: String): ResourceIdentifier = ResourceIdentifier(MOD_ID, path)
 }

@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.state
 
 import com.mojang.serialization.MapCodec
-import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.Bindable
+import net.typho.big_shot_lib.api.util.ResourceIdentifier
 
 open class ColorMaskShard(
     @JvmField
@@ -19,6 +19,6 @@ open class ColorMaskShard(
             { shard -> shard.mask }
         )
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier.fromNamespaceAndPath("opengl", "color_mask")
+        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "color_mask")
     }
 }

@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.state
 
-import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.Bindable
 import net.typho.big_shot_lib.api.util.Named
+import net.typho.big_shot_lib.api.util.ResourceIdentifier
 
 open class RenderSettings(
     @JvmField

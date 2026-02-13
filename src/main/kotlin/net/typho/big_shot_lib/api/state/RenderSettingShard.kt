@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.state
 
 import com.mojang.serialization.MapCodec
-import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.Bindable
 import net.typho.big_shot_lib.api.util.Named
+import net.typho.big_shot_lib.api.util.ResourceIdentifier
 
 interface RenderSettingShard : Bindable {
     fun type(): Type<*>

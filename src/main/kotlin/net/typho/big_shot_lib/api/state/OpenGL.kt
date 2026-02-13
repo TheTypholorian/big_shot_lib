@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.state
 
-import net.minecraft.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.buffers.BufferType
 import net.typho.big_shot_lib.api.buffers.BufferUsage
 import net.typho.big_shot_lib.api.errors.ShaderCompileException
@@ -10,6 +9,7 @@ import net.typho.big_shot_lib.api.textures.InterpolationType
 import net.typho.big_shot_lib.api.textures.TextureFormat
 import net.typho.big_shot_lib.api.textures.WrappingType
 import net.typho.big_shot_lib.api.util.IColor
+import net.typho.big_shot_lib.api.util.ResourceIdentifier
 import org.joml.*
 import java.nio.ByteBuffer
 import java.util.*
