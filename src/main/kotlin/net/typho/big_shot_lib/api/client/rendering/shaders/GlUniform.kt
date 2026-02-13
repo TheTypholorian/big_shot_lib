@@ -6,30 +6,54 @@ import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
 import org.joml.*
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 
-open class GlUniform(
+abstract class GlUniform(
+    @JvmField
+    val name: String,
     @JvmField
     val location: Int,
     @JvmField
-    val parent: GlShader
+    val type: ShaderVariableType
 ) : GlNamed {
     override fun glId() = location
 
+    fun assertType(vararg allowed: ShaderVariableType) {
+        if (type !in allowed) {
+            throw IllegalArgumentException("Uniform $name in program ${programKey()} is $type but expected ${allowed.joinToString(" or ")}")
+        }
+    }
+
+    protected abstract fun pickSamplerUnit(): Int
+
+    abstract fun programKey(): ShaderProgramKey
+
     fun setSampler(type: Int, textureId: Int) {
-        val unit = parent.pickSamplerUnit(location)
+        if (this.type.category != ShaderVariableCategory.SAMPLER) {
+            throw UnsupportedOperationException("Uniform $name in program ${programKey()} is of type ${this.type} which isn't a sampler")
+        }
+
+        val expectedType = this.type.expectedSamplerType()
+
+        if (expectedType != type) {
+            throw IllegalStateException("Expected a texture of type 0x${expectedType.toString(16)}, got type 0x${type.toString(16)}")
+        }
+
+        val unit = pickSamplerUnit()
         OpenGL.INSTANCE.activeTexture(unit)
         OpenGL.INSTANCE.bindTexture(type, textureId)
         setValue(unit)
     }
 
     fun setSampler(texture: GlTexture) {
-        setSampler( GL_TEXTURE_2D, texture.glId)
+        setSampler(GL_TEXTURE_2D, texture.glId)
     }
 
     fun setValue(f1: Float) {
+        assertType(ShaderVariableType.FLOAT)
         OpenGL.INSTANCE.setUniformValue(location, f1)
     }
 
     fun setValue(f1: Float, f2: Float) {
+        assertType(ShaderVariableType.FLOAT_VEC2)
         OpenGL.INSTANCE.setUniformValue(location, f1, f2)
     }
 
@@ -38,6 +62,7 @@ open class GlUniform(
     }
 
     fun setValue(f1: Float, f2: Float, f3: Float) {
+        assertType(ShaderVariableType.FLOAT_VEC3)
         OpenGL.INSTANCE.setUniformValue(location, f1, f2, f3)
     }
 
@@ -46,6 +71,7 @@ open class GlUniform(
     }
 
     fun setValue(f1: Float, f2: Float, f3: Float, f4: Float) {
+        assertType(ShaderVariableType.FLOAT_VEC4)
         OpenGL.INSTANCE.setUniformValue(location, f1, f2, f3, f4)
     }
 
@@ -54,10 +80,12 @@ open class GlUniform(
     }
 
     fun setValue(i1: Int) {
+        assertType(ShaderVariableType.INT)
         OpenGL.INSTANCE.setUniformValue(location, i1)
     }
 
     fun setValue(i1: Int, i2: Int) {
+        assertType(ShaderVariableType.INT_VEC2)
         OpenGL.INSTANCE.setUniformValue(location, i1, i2)
     }
 
@@ -66,6 +94,7 @@ open class GlUniform(
     }
 
     fun setValue(i1: Int, i2: Int, i3: Int) {
+        assertType(ShaderVariableType.INT_VEC3)
         OpenGL.INSTANCE.setUniformValue(location, i1, i2, i3)
     }
 
@@ -74,6 +103,7 @@ open class GlUniform(
     }
 
     fun setValue(i1: Int, i2: Int, i3: Int, i4: Int) {
+        assertType(ShaderVariableType.INT_VEC4)
         OpenGL.INSTANCE.setUniformValue(location, i1, i2, i3, i4)
     }
 
@@ -81,11 +111,33 @@ open class GlUniform(
         setValue(i.x, i.y, i.z, i.w)
     }
 
+    fun setValue(b1: Boolean) {
+        assertType(ShaderVariableType.BOOL)
+        OpenGL.INSTANCE.setUniformValue(location, b1)
+    }
+
+    fun setValue(b1: Boolean, b2: Boolean) {
+        assertType(ShaderVariableType.BOOL_VEC2)
+        OpenGL.INSTANCE.setUniformValue(location, b1, b2)
+    }
+
+    fun setValue(b1: Boolean, b2: Boolean, b3: Boolean) {
+        assertType(ShaderVariableType.BOOL_VEC3)
+        OpenGL.INSTANCE.setUniformValue(location, b1, b2, b3)
+    }
+
+    fun setValue(b1: Boolean, b2: Boolean, b3: Boolean, b4: Boolean) {
+        assertType(ShaderVariableType.BOOL_VEC4)
+        OpenGL.INSTANCE.setUniformValue(location, b1, b2, b3, b4)
+    }
+
     fun setValue(d1: Double) {
+        assertType(ShaderVariableType.FLOAT)
         OpenGL.INSTANCE.setUniformValue(location, d1)
     }
 
     fun setValue(d1: Double, d2: Double) {
+        assertType(ShaderVariableType.FLOAT_VEC2)
         OpenGL.INSTANCE.setUniformValue(location, d1, d2)
     }
 
@@ -94,6 +146,7 @@ open class GlUniform(
     }
 
     fun setValue(d1: Double, d2: Double, d3: Double) {
+        assertType(ShaderVariableType.FLOAT_VEC3)
         OpenGL.INSTANCE.setUniformValue(location, d1, d2, d3)
     }
 
@@ -102,6 +155,7 @@ open class GlUniform(
     }
 
     fun setValue(d1: Double, d2: Double, d3: Double, d4: Double) {
+        assertType(ShaderVariableType.FLOAT_VEC4)
         OpenGL.INSTANCE.setUniformValue(location, d1, d2, d3, d4)
     }
 
@@ -110,14 +164,17 @@ open class GlUniform(
     }
 
     fun setValue(mat: Matrix2f, transpose: Boolean = false) {
+        assertType(ShaderVariableType.MAT2)
         OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
     }
 
     fun setValue(mat: Matrix3f, transpose: Boolean = false) {
+        assertType(ShaderVariableType.MAT3)
         OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
     }
 
     fun setValue(mat: Matrix4f, transpose: Boolean = false) {
+        assertType(ShaderVariableType.MAT4)
         OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
     }
 

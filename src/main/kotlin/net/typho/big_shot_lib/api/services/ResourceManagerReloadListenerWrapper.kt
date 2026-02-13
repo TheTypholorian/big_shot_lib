@@ -5,7 +5,7 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener
 
 interface ResourceManagerReloadListenerWrapper : ResourceManagerReloadListener {
     override fun onResourceManagerReload(manager: ResourceManager) {
-        onResourceManagerReload(ConstructorUtil.INSTANCE.wrap(manager))
+        onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
     }
 
     fun onResourceManagerReload(manager: ResourceManagerWrapper)

@@ -112,4 +112,13 @@ enum class TextureFormat(
     DEPTH32F_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH32F_STENCIL8, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, hasDepth = true, hasStencil = true);
 
     override fun glId() = glId
+
+    fun getDepthStencilAttachmentId(): Int? {
+        return when {
+            hasDepth && hasStencil -> GL_DEPTH_STENCIL_ATTACHMENT
+            hasDepth && !hasStencil -> GL_DEPTH_ATTACHMENT
+            !hasDepth && hasStencil -> GL_STENCIL_ATTACHMENT
+            else -> null
+        }
+    }
 }

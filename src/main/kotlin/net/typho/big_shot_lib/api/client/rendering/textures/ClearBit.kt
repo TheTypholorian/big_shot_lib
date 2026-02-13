@@ -9,6 +9,30 @@ sealed interface ClearBit {
 
     fun run()
 
+    companion object {
+        @JvmStatic
+        fun Iterator<ClearBit>.initAndGetClearMask(): Int {
+            var mask = 0
+
+            for (bit in this) {
+                bit.run()
+                mask = mask or bit.mask()
+            }
+
+            return mask
+        }
+
+        @JvmStatic
+        fun Iterable<ClearBit>.initAndGetClearMask(): Int {
+            return iterator().initAndGetClearMask()
+        }
+
+        @JvmStatic
+        fun Array<out ClearBit>.initAndGetClearMask(): Int {
+            return iterator().initAndGetClearMask()
+        }
+    }
+
     data class Color(
         @JvmField
         val color: IColor

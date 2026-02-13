@@ -2,23 +2,25 @@ package net.typho.big_shot_lib.api.client.rendering.shaders
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.util.VertexFormatUtil
 import net.typho.big_shot_lib.api.errors.ResourceNotFoundException
+import net.typho.big_shot_lib.api.services.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 
-object GlShaderRegistry : ResourceRegistry<GlShader>("shaders") {
+object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")) {
     override fun decode(
         id: ResourceIdentifier,
         json: JsonObject,
         manager: ResourceManagerWrapper
-    ): GlShader {
+    ): NeoShader {
         val format = json.get("format") ?: throw JsonParseException("Shader $id is missing vertex format")
         val sourcesObject = json.getAsJsonObject("sources") ?: throw JsonParseException("Shader $id is missing sources")
         val sources = sourcesObject.keySet().map { ShaderSourceType.valueOf(it.uppercase()) } .toSet()
 
-        val builder = GlShader.Builder(ShaderProgramKey(
+        val builder = NeoShader.Builder(ShaderProgramKey(
             ShaderLoaderType.BIG_SHOT,
             id,
             VertexFormatUtil.fromJson(format),

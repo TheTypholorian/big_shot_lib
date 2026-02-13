@@ -5,6 +5,7 @@ import net.typho.big_shot_lib.api.client.rendering.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.rendering.errors.ShaderCompileException
 import net.typho.big_shot_lib.api.client.rendering.errors.ShaderLinkException
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderVariableType
 import net.typho.big_shot_lib.api.client.rendering.textures.InterpolationType
 import net.typho.big_shot_lib.api.client.rendering.textures.TextureFormat
 import net.typho.big_shot_lib.api.client.rendering.textures.WrappingType
@@ -263,6 +264,31 @@ interface OpenGL {
     fun checkFramebufferStatus(): Int
 
     /**
+     * `glViewport(x, y, width, height)`
+     */
+    fun viewport(x: Int, y: Int, width: Int, height: Int)
+
+    /**
+     * `glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)`
+     */
+    fun clearColor(color: IColor)
+
+    /**
+     * `glClearDepth(depth)`
+     */
+    fun clearDepth(depth: Float)
+
+    /**
+     * `glClearStencil(stencil)`
+     */
+    fun clearStencil(stencil: Int)
+
+    /**
+     * `glClear(mask)`
+     */
+    fun clear(vararg mask: Int)
+
+    /**
      * `glDeleteFramebuffers(glId)`
      */
     fun deleteFramebuffer(glId: Int)
@@ -410,6 +436,26 @@ interface OpenGL {
     fun setUniformValue(location: Int, i1: Int, i2: Int, i3: Int, i4: Int)
 
     /**
+     * `glUniform1i(location, if (b1) 1 else 0)`
+     */
+    fun setUniformValue(location: Int, b1: Boolean)
+
+    /**
+     * `glUniform2i(location, if (b1) 1 else 0, if (b2) 1 else 0)`
+     */
+    fun setUniformValue(location: Int, b1: Boolean, b2: Boolean)
+
+    /**
+     * `glUniform3i(location, if (b1) 1 else 0, if (b2) 1 else 0, if (b3) 1 else 0)`
+     */
+    fun setUniformValue(location: Int, b1: Boolean, b2: Boolean, b3: Boolean)
+
+    /**
+     * `glUniform4i(location, if (b1) 1 else 0, if (b2) 1 else 0, if (b3) 1 else 0), if (b4) 1 else 0))`
+     */
+    fun setUniformValue(location: Int, b1: Boolean, b2: Boolean, b3: Boolean, b4: Boolean)
+
+    /**
      * `glUniform1d(location, d1)`
      */
     fun setUniformValue(location: Int, d1: Double)
@@ -479,23 +525,5 @@ interface OpenGL {
      */
     fun setUniformValue(location: Int, mat: Matrix4x3d, transpose: Boolean = false)
 
-    /**
-     * `glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)`
-     */
-    fun clearColor(color: IColor)
-
-    /**
-     * `glClearDepth(depth)`
-     */
-    fun clearDepth(depth: Float)
-
-    /**
-     * `glClearStencil(stencil)`
-     */
-    fun clearStencil(stencil: Int)
-
-    /**
-     * `glClear(mask)`
-     */
-    fun clear(vararg mask: Int)
+    fun getUniformType(programId: Int, index: Int): ShaderVariableType
 }

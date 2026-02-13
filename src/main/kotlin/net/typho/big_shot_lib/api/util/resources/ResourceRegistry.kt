@@ -25,8 +25,6 @@ abstract class ResourceRegistry<T>(
     @JvmField
     val lookupCodec: Codec<T> = ResourceIdentifier.CODEC.xmap(this::get, this::getKey)
 
-    constructor(name: String) : this(BigShotApi.id(name), NeoFileToIdConverter.json("neo/$name"))
-
     init {
         registries.add(this)
     }
