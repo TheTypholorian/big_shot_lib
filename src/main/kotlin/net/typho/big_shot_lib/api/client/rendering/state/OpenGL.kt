@@ -5,7 +5,7 @@ import net.typho.big_shot_lib.api.client.rendering.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.rendering.errors.ShaderCompileException
 import net.typho.big_shot_lib.api.client.rendering.errors.ShaderLinkException
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderVariableType
+import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.rendering.textures.InterpolationType
 import net.typho.big_shot_lib.api.client.rendering.textures.TextureFormat
 import net.typho.big_shot_lib.api.client.rendering.textures.WrappingType
@@ -500,30 +500,5 @@ interface OpenGL {
      */
     fun setUniformValue(location: Int, mat: Matrix4x3f, transpose: Boolean = false)
 
-    /**
-     * `glUniformMatrix2dv(location, transpose, mat.get(DoubleArray(4)))`
-     */
-    fun setUniformValue(location: Int, mat: Matrix2d, transpose: Boolean = false)
-
-    /**
-     * `glUniformMatrix3dv(location, transpose, mat.get(DoubleArray(9)))`
-     */
-    fun setUniformValue(location: Int, mat: Matrix3d, transpose: Boolean = false)
-
-    /**
-     * `glUniformMatrix4dv(location, transpose, mat.get(DoubleArray(16)))`
-     */
-    fun setUniformValue(location: Int, mat: Matrix4d, transpose: Boolean = false)
-
-    /**
-     * `glUniformMatrix3x2dv(location, transpose, mat.get(DoubleArray(6)))`
-     */
-    fun setUniformValue(location: Int, mat: Matrix3x2d, transpose: Boolean = false)
-
-    /**
-     * `glUniformMatrix4x3dv(location, transpose, mat.get(DoubleArray(12)))`
-     */
-    fun setUniformValue(location: Int, mat: Matrix4x3d, transpose: Boolean = false)
-
-    fun getUniformType(programId: Int, index: Int): ShaderVariableType
+    fun getUniformInfo(programId: Int, index: Int): Pair<String, ShaderVariableType>
 }

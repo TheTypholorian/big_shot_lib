@@ -1,5 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.shaders
 
+import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
+
 open class NeoUniform(
     name: String,
     location: Int,

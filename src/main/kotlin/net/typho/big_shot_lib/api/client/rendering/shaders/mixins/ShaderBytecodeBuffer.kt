@@ -133,7 +133,7 @@ open class ShaderBytecodeBuffer(
                     continue
                 }
 
-                if (type != null && !opcodes().any { type.matches(it, actualType) }) {
+                if (type != null && !opcodes().any { type.matchesBytecode(it, actualType) }) {
                     continue
                 }
 

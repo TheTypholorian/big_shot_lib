@@ -2,8 +2,11 @@ package net.typho.big_shot_lib.api.client.rendering.shaders
 
 import net.typho.big_shot_lib.api.client.rendering.errors.IllegalShaderSourceException
 import net.typho.big_shot_lib.api.client.rendering.errors.MissingShaderSourceException
+import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
+import org.lwjgl.opengl.GL20.GL_ACTIVE_UNIFORMS
+import org.lwjgl.opengl.GL20.glGetProgrami
 
 open class NeoShader(
     glId: Int,
@@ -20,11 +23,18 @@ open class NeoShader(
     @JvmField
     protected val uniforms = HashMap<String, GlUniform?>()
     @JvmField
-    protected val uniformTypes = HashMap<String, SVTy>()
+    protected val uniformTypes = HashMap<String, ShaderVariableType>()
     @JvmField
     protected val samplerUnits = HashMap<Int, Int>()
 
     constructor(key: ShaderProgramKey) : this(OpenGL.INSTANCE.createShaderProgram(), key)
+
+    init {
+        repeat(glGetProgrami(glId, GL_ACTIVE_UNIFORMS)) { i ->
+            val pair = OpenGL.INSTANCE.getUniformInfo(glId, i)
+            uniformTypes[pair.first] = pair.second
+        }
+    }
 
     override fun bind(glId: Int) {
         OpenGL.INSTANCE.bindShaderProgram(glId)
@@ -48,6 +58,8 @@ open class NeoShader(
         }
     }
 
+    override fun key() = key
+
     override fun getUniform(name: String): GlUniform? {
         return uniforms.computeIfAbsent(name) { key ->
             val location = OpenGL.INSTANCE.getUniformLocation(glId, key)
@@ -58,6 +70,7 @@ open class NeoShader(
                 return@computeIfAbsent NeoUniform(
                     name,
                     location,
+                    uniformTypes[name]!!,
                     this
                 )
             }

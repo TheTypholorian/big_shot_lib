@@ -1,5 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.shaders
 
+import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
+import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableTypeInfo
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.textures.GlTexture
 import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
@@ -27,7 +29,7 @@ abstract class GlUniform(
     abstract fun programKey(): ShaderProgramKey
 
     fun setSampler(type: Int, textureId: Int) {
-        if (this.type.category != ShaderVariableCategory.SAMPLER) {
+        if (this.type.info !is ShaderVariableTypeInfo.Sampler) {
             throw UnsupportedOperationException("Uniform $name in program ${programKey()} is of type ${this.type} which isn't a sampler")
         }
 
@@ -179,30 +181,12 @@ abstract class GlUniform(
     }
 
     fun setValue(mat: Matrix3x2f, transpose: Boolean = false) {
+        assertType(ShaderVariableType.MAT3X2)
         OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
     }
 
     fun setValue(mat: Matrix4x3f, transpose: Boolean = false) {
-        OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
-    }
-
-    fun setValue(mat: Matrix2d, transpose: Boolean = false) {
-        OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
-    }
-
-    fun setValue(mat: Matrix3d, transpose: Boolean = false) {
-        OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
-    }
-
-    fun setValue(mat: Matrix4d, transpose: Boolean = false) {
-        OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
-    }
-
-    fun setValue(mat: Matrix3x2d, transpose: Boolean = false) {
-        OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
-    }
-
-    fun setValue(mat: Matrix4x3d, transpose: Boolean = false) {
+        assertType(ShaderVariableType.MAT4X3)
         OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
     }
 }

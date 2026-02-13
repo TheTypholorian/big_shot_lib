@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.shaders.mixins
 
+import org.lwjgl.system.MemoryUtil.memByteBuffer
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
 import java.util.*
@@ -27,6 +28,7 @@ data class ShaderOpcode(
         const val OP_TYPE_FLOAT = 22
         const val OP_TYPE_VECTOR = 23
         const val OP_TYPE_MATRIX = 24
+        const val OP_TYPE_IMAGE = 25
         const val OP_TYPE_POINTER = 32
         const val OP_TYPE_FUNCTION = 33
 
@@ -140,6 +142,16 @@ data class ShaderOpcode(
                     val start = buffer.position()
                     buffer.put(string.toByteArray())
                     buffer.position(start + length * ShaderMixinManager.WORD_SIZE_BYTES)
+                }
+            }
+            return this
+        }
+
+        fun putBuffer(intBuffer: IntBuffer?): Builder {
+            intBuffer?.let {
+                words += intBuffer.capacity()
+                tokens.add { buffer ->
+                    buffer.put(memByteBuffer(intBuffer))
                 }
             }
             return this
