@@ -22,19 +22,20 @@ open class NeoShader(
     protected val sources = HashMap<ShaderSourceType, Int>()
     @JvmField
     protected val uniforms = HashMap<String, GlUniform?>()
-    @JvmField
-    protected val uniformTypes = HashMap<String, ShaderVariableType>()
+    protected val uniformTypes: MutableMap<String, ShaderVariableType> by lazy {
+        val map = HashMap<String, ShaderVariableType>()
+
+        repeat(glGetProgrami(glId, GL_ACTIVE_UNIFORMS)) { i ->
+            val pair = OpenGL.INSTANCE.getUniformInfo(glId, i)
+            map[pair.first] = pair.second
+        }
+
+        return@lazy map
+    }
     @JvmField
     protected val samplerUnits = HashMap<Int, Int>()
 
     constructor(key: ShaderProgramKey) : this(OpenGL.INSTANCE.createShaderProgram(), key)
-
-    init {
-        repeat(glGetProgrami(glId, GL_ACTIVE_UNIFORMS)) { i ->
-            val pair = OpenGL.INSTANCE.getUniformInfo(glId, i)
-            uniformTypes[pair.first] = pair.second
-        }
-    }
 
     override fun bind(glId: Int) {
         OpenGL.INSTANCE.bindShaderProgram(glId)
