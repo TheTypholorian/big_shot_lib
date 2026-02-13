@@ -3,8 +3,8 @@ package net.typho.big_shot_lib.api.services
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
-import net.typho.big_shot_lib.api.shaders.ShaderSourceType
-import net.typho.big_shot_lib.api.util.ResourceIdentifier
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 @JvmRecord
 data class NeoFileToIdConverter(

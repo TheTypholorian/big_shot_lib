@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.util
 
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
+import net.typho.big_shot_lib.api.util.resources.NeoCodecs
 import org.joml.*
 import java.awt.Color
 

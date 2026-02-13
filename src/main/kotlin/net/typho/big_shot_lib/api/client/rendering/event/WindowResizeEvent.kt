@@ -1,0 +1,18 @@
+package net.typho.big_shot_lib.api.client.rendering.event
+
+import java.util.*
+
+fun interface WindowResizeEvent {
+    fun invoke(width: Int, height: Int)
+
+    companion object : WindowResizeEvent {
+        private val callbacks = LinkedList<WindowResizeEvent>()
+
+        @JvmStatic
+        fun register(callback: WindowResizeEvent) = callbacks.add(callback)
+
+        override fun invoke(width: Int, height: Int) {
+            callbacks.forEach { it.invoke(width, height) }
+        }
+    }
+}

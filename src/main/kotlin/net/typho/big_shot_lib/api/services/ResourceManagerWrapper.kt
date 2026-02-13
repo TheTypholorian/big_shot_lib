@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.services
 
 import net.minecraft.server.packs.PackResources
 import net.minecraft.server.packs.resources.Resource
-import net.typho.big_shot_lib.api.util.ResourceIdentifier
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.IOException
