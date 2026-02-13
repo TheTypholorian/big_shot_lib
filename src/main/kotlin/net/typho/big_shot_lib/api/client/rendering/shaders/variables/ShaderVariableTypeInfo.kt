@@ -70,7 +70,7 @@ sealed interface ShaderVariableTypeInfo {
 
         override fun findOrInjectBytecode(buffer: ShaderBytecodeBuffer, index: Int): Int {
             for (opcode in buffer.opcodes()) {
-                if (component.matchesBytecode(opcode)) {
+                if (matchesBytecode(opcode)) {
                     return opcode.getWord(0)
                 }
             }
@@ -125,7 +125,7 @@ sealed interface ShaderVariableTypeInfo {
 
         override fun findOrInjectBytecode(buffer: ShaderBytecodeBuffer, index: Int): Int {
             for (opcode in buffer.opcodes()) {
-                if (component.matchesBytecode(opcode)) {
+                if (matchesBytecode(opcode)) {
                     return opcode.getWord(0)
                 }
             }
