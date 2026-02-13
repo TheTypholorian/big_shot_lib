@@ -10,23 +10,23 @@ open class DepthTestShard(
     @JvmField
     val enabled: Boolean,
     @JvmField
-    val func: ComparisonMode
+    val func: ComparisonFunc
 ) : RenderSettingShard.Basic(
     DepthTestShard,
     if (enabled) listOf(
         GlFlag.DEPTH_TEST.bindable,
-        GlBindable.ofState(OpenGL.Companion.INSTANCE::depthFunc, func, ComparisonMode.LEQUAL)
+        GlBindable.ofState(OpenGL.Companion.INSTANCE::depthFunc, func, ComparisonFunc.LEQUAL)
     ) else listOf()
 ) {
     companion object : RenderSettingShard.Type<DepthTestShard> {
         override fun getDefault() = DepthTestShard(
             false,
-            ComparisonMode.LEQUAL
+            ComparisonFunc.LEQUAL
         )
 
         override fun codec(): MapCodec<DepthTestShard> = RecordCodecBuilder.mapCodec {
             it.group(
-                NeoCodecs.enumCodec<ComparisonMode>().fieldOf("func").forGetter { shard -> shard.func }
+                NeoCodecs.enumCodec<ComparisonFunc>().fieldOf("func").forGetter { shard -> shard.func }
             ).apply(it) { func -> DepthTestShard(true, func) }
         }
 

@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.state
 
 import org.lwjgl.opengl.GL11.*
 
-enum class ComparisonMode(
+enum class ComparisonFunc(
     @JvmField
     val glId: Int
 ) {

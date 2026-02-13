@@ -27,7 +27,7 @@ open class StencilShard(
     companion object : RenderSettingShard.Type<StencilShard> {
         override fun getDefault() = StencilShard(
             false,
-            StencilFunc(ComparisonMode.ALWAYS, 0, 0),
+            StencilFunc(ComparisonFunc.ALWAYS, 0, 0),
             0,
             StencilOp(IntAction.KEEP, IntAction.KEEP, IntAction.KEEP)
         )

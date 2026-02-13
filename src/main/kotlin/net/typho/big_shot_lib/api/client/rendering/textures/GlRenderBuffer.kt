@@ -24,7 +24,7 @@ open class GlRenderBuffer(
         OpenGL.INSTANCE.deleteRenderBuffer(glId)
     }
 
-    override fun getFormat() = format
+    override fun format() = format
 
     override fun attachToFramebuffer(attachment: Int) {
         OpenGL.INSTANCE.attachFramebufferRenderBuffer(attachment, glId)

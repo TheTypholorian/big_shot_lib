@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering.shaders
 import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableTypeInfo
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
-import net.typho.big_shot_lib.api.client.rendering.textures.GlTexture
+import net.typho.big_shot_lib.api.client.rendering.textures.NeoTexture2D
 import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
 import org.joml.*
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
@@ -45,7 +45,7 @@ abstract class GlUniform(
         setValue(unit)
     }
 
-    fun setSampler(texture: GlTexture) {
+    fun setSampler(texture: NeoTexture2D) {
         setSampler(GL_TEXTURE_2D, texture.glId)
     }
 

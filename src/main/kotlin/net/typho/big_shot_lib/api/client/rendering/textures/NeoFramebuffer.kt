@@ -5,22 +5,34 @@ import net.typho.big_shot_lib.api.client.rendering.errors.IncompleteFramebufferE
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
+import org.lwjgl.opengl.GL11.GL_NONE
 import org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0
 import org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_COMPLETE
 
 open class NeoFramebuffer(
     glId: Int,
-    @JvmField
-    val colorAttachments: Array<GlFramebufferAttachment>,
-    @JvmField
-    val depthAttachment: GlFramebufferAttachment?,
+    colorAttachments: List<GlFramebufferAttachment>,
+    depthAttachment: GlFramebufferAttachment?,
     @JvmField
     protected var width: Int,
     @JvmField
     protected var height: Int
 ) : GlResource(glId), GlFramebuffer {
+    override var colorAttachments: List<GlFramebufferAttachment> = colorAttachments
+        set(value) {
+            field = value
+            attachColor()
+            checkStatus()
+        }
+    override var depthAttachment: GlFramebufferAttachment? = depthAttachment
+        set(value) {
+            field = value
+            attachDepth()
+            checkStatus()
+        }
+
     constructor(
-        colorAttachments: Array<GlFramebufferAttachment>,
+        colorAttachments: List<GlFramebufferAttachment>,
         depthAttachment: GlFramebufferAttachment?,
         width: Int,
         height: Int
@@ -29,25 +41,41 @@ open class NeoFramebuffer(
     init {
         bind()
 
+        attachColor()
+        attachDepth()
+        checkStatus()
+
+        unbind()
+    }
+
+    protected fun attachColor() {
         colorAttachments.forEachIndexed { index, attachment ->
             attachment.resize(width, height)?.uploadNull()
             attachment.attachToFramebuffer(GL_COLOR_ATTACHMENT0 + index)
         }
+        OpenGL.INSTANCE.drawBuffers(
+            *List(colorAttachments.size) { index -> GL_COLOR_ATTACHMENT0 + index }
+                .ifEmpty { listOf(GL_NONE) }
+                .toIntArray()
+        )
+    }
+
+    protected fun attachDepth() {
         depthAttachment?.let { attachment ->
             attachment.resize(width, height)?.uploadNull()
             attachment.attachToFramebuffer(
-                attachment.getFormat().getDepthStencilAttachmentId()
-                    ?: throw IllegalTextureFormatException("${attachment.getFormat()} is neither a depth nor stencil format")
+                attachment.format().getDepthStencilAttachmentId()
+                    ?: throw IllegalTextureFormatException("${attachment.format()} is neither a depth nor stencil format")
             )
         }
+    }
 
+    protected fun checkStatus() {
         val status = OpenGL.INSTANCE.checkFramebufferStatus()
 
         if (status != GL_FRAMEBUFFER_COMPLETE) {
             throw IncompleteFramebufferException("0x${status.toString(16)}")
         }
-
-        unbind()
     }
 
     override fun resize(width: Int, height: Int) {

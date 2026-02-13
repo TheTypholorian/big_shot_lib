@@ -8,7 +8,7 @@ import net.typho.big_shot_lib.api.util.resources.NeoCodecs
 @JvmRecord
 data class StencilFunc(
     @JvmField
-    val func: ComparisonMode,
+    val func: ComparisonFunc,
     @JvmField
     val ref: Int,
     @JvmField
@@ -18,7 +18,7 @@ data class StencilFunc(
         @JvmField
         val CODEC: MapCodec<StencilFunc> = RecordCodecBuilder.mapCodec {
             it.group(
-                NeoCodecs.enumCodec<ComparisonMode>().fieldOf("func").forGetter { color -> color.func },
+                NeoCodecs.enumCodec<ComparisonFunc>().fieldOf("func").forGetter { color -> color.func },
                 Codec.INT.fieldOf("ref").forGetter { color -> color.ref },
                 Codec.INT.fieldOf("mask").forGetter { color -> color.mask }
             ).apply(it, ::StencilFunc)
