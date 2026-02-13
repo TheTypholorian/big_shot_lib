@@ -7,8 +7,8 @@ import net.typho.big_shot_lib.api.util.WidthAndHeight
 import org.lwjgl.system.NativeResource
 
 interface GlFramebuffer : GlBindable, NativeResource, WidthAndHeight {
-    val colorAttachments: List<GlFramebufferAttachment>
-    val depthAttachment: GlFramebufferAttachment?
+    var colorAttachments: List<GlFramebufferAttachment>
+    var depthAttachment: GlFramebufferAttachment?
 
     fun resize(width: Int, height: Int)
 

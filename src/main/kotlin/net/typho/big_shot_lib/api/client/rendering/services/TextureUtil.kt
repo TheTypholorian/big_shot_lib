@@ -1,10 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.services
 
+import net.typho.big_shot_lib.api.client.rendering.textures.GlTexture2D
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import java.util.*
 
 interface TextureUtil {
-    fun getMinecraftTextureId(texture: ResourceIdentifier): Int
+    fun getMinecraftTexture(texture: ResourceIdentifier): GlTexture2D
 
     companion object {
         @JvmField
