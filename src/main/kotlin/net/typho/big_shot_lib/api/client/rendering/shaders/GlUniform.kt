@@ -81,7 +81,10 @@ abstract class GlUniform(
     }
 
     fun setValue(i1: Int) {
-        assertType(ShaderVariableType.INT)
+        if (type.info !is ShaderVariableTypeInfo.Sampler) {
+            assertType(ShaderVariableType.INT)
+        }
+
         OpenGL.INSTANCE.setUniformValue(location, i1)
     }
 
