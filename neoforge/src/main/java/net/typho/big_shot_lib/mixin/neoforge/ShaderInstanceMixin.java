@@ -5,9 +5,10 @@ import kotlin.collections.CollectionsKt;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.typho.big_shot_lib.api.shaders.ShaderLoaderType;
-import net.typho.big_shot_lib.api.shaders.ShaderProgramKey;
-import net.typho.big_shot_lib.api.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.BigShotLib;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +30,7 @@ public class ShaderInstanceMixin {
     private void setThreadLocal(ResourceProvider p_173336_, ResourceLocation shaderLocation, VertexFormat p_173338_, CallbackInfo ci) {
         ShaderMixinThreadLocal.push(new ShaderProgramKey(
                 ShaderLoaderType.MINECRAFT,
-                shaderLocation,
+                BigShotLib.toNeo(shaderLocation),
                 p_173338_,
                 new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT))
         ));

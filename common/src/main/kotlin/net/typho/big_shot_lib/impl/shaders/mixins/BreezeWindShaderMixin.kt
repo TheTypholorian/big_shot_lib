@@ -1,8 +1,7 @@
 package net.typho.big_shot_lib.impl.shaders.mixins
 
-import net.typho.big_shot_lib.api.shaders.ShaderSourceKey
-import net.typho.big_shot_lib.api.shaders.mixins.ShaderMixin
-import net.typho.big_shot_lib.api.util.BigShotModUtil.equals
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceKey
+import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.ShaderMixin
 
 object BreezeWindShaderMixin : ShaderMixin {
     override fun mixinPreCompile(key: ShaderSourceKey, code: String): String {

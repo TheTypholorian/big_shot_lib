@@ -2,17 +2,19 @@ package net.typho.big_shot_lib.impl.state
 
 import com.mojang.blaze3d.platform.GlStateManager
 import net.minecraft.client.Minecraft
-import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.api.buffers.BufferType
-import net.typho.big_shot_lib.api.buffers.BufferUsage
-import net.typho.big_shot_lib.api.errors.ShaderCompileException
-import net.typho.big_shot_lib.api.errors.ShaderLinkException
-import net.typho.big_shot_lib.api.shaders.ShaderSourceType
-import net.typho.big_shot_lib.api.state.*
-import net.typho.big_shot_lib.api.textures.InterpolationType
-import net.typho.big_shot_lib.api.textures.TextureFormat
-import net.typho.big_shot_lib.api.textures.WrappingType
+import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
+import net.typho.big_shot_lib.api.client.rendering.buffers.BufferUsage
+import net.typho.big_shot_lib.api.client.rendering.errors.ShaderCompileException
+import net.typho.big_shot_lib.api.client.rendering.errors.ShaderLinkException
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType
+import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
+import net.typho.big_shot_lib.api.client.rendering.state.*
+import net.typho.big_shot_lib.api.client.rendering.textures.InterpolationType
+import net.typho.big_shot_lib.api.client.rendering.textures.TextureComparisonMode
+import net.typho.big_shot_lib.api.client.rendering.textures.TextureFormat
+import net.typho.big_shot_lib.api.client.rendering.textures.WrappingType
 import net.typho.big_shot_lib.api.util.IColor
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL14.GL_TEXTURE0
@@ -20,6 +22,7 @@ import org.lwjgl.opengl.GL14.glBlendColor
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL40.*
+import org.lwjgl.system.MemoryStack
 import java.nio.ByteBuffer
 
 class OpenGLImpl : OpenGL {
@@ -60,7 +63,11 @@ class OpenGLImpl : OpenGL {
         )
     }
 
-    override fun attachFramebufferTexture(attachment: Int, type: Int, glId: Int) {
+    override fun drawBuffers(vararg buffers: Int) {
+        glDrawBuffers(buffers)
+    }
+
+    override fun attachFramebufferTexture2D(attachment: Int, type: Int, glId: Int) {
         GlStateManager._glFramebufferTexture2D(
             GL_FRAMEBUFFER,
             attachment,
@@ -88,6 +95,15 @@ class OpenGLImpl : OpenGL {
 
     override fun bindFramebuffer(glId: Int) {
         GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, glId)
+    }
+
+    override fun attachFramebufferTexture(attachment: Int, glId: Int) {
+        glFramebufferTexture(
+            GL_FRAMEBUFFER,
+            attachment,
+            glId,
+            0
+        )
     }
 
     override fun bindRenderBuffer(glId: Int) {
@@ -200,6 +216,10 @@ class OpenGLImpl : OpenGL {
         return GlStateManager.glCheckFramebufferStatus(GL_FRAMEBUFFER)
     }
 
+    override fun viewport(x: Int, y: Int, width: Int, height: Int) {
+        GlStateManager._viewport(x, y, width, height)
+    }
+
     override fun clear(vararg mask: Int) {
         GlStateManager._clear(mask.fold(0) { a, b -> a or b }, Minecraft.ON_OSX)
     }
@@ -220,7 +240,7 @@ class OpenGLImpl : OpenGL {
         GlStateManager._colorMask(mask.red, mask.green, mask.blue, mask.alpha)
     }
 
-    override fun compileShaderSource(glId: Int, type: ShaderSourceType, name: ResourceLocation) {
+    override fun compileShaderSource(glId: Int, type: ShaderSourceType, name: ResourceIdentifier) {
         GlStateManager.glCompileShader(glId)
 
         val status = GlStateManager.glGetShaderi(glId, GL_COMPILE_STATUS)
@@ -290,7 +310,7 @@ class OpenGLImpl : OpenGL {
         GlStateManager._glDeleteVertexArrays(glId)
     }
 
-    override fun depthFunc(func: ComparisonMode) {
+    override fun depthFunc(func: ComparisonFunc) {
         GlStateManager._depthFunc(func.glId)
     }
 
@@ -306,7 +326,7 @@ class OpenGLImpl : OpenGL {
         return GlStateManager._glGetUniformLocation(programId, name)
     }
 
-    override fun linkShaderProgram(glId: Int, name: ResourceLocation) {
+    override fun linkShaderProgram(glId: Int, name: ResourceIdentifier) {
         GlStateManager.glLinkProgram(glId)
 
         val status = GlStateManager.glGetProgrami(glId, GL_LINK_STATUS)
@@ -375,6 +395,28 @@ class OpenGLImpl : OpenGL {
         glUniform4i(location, i1, i2, i3, i4)
     }
 
+    override fun setUniformValue(location: Int, b1: Boolean) {
+        setUniformValue(location, if (b1) 1 else 0)
+    }
+
+    override fun setUniformValue(location: Int, b1: Boolean, b2: Boolean) {
+        setUniformValue(location, if (b1) 1 else 0, if (b2) 1 else 0)
+    }
+
+    override fun setUniformValue(location: Int, b1: Boolean, b2: Boolean, b3: Boolean) {
+        setUniformValue(location, if (b1) 1 else 0, if (b2) 1 else 0, if (b3) 1 else 0)
+    }
+
+    override fun setUniformValue(
+        location: Int,
+        b1: Boolean,
+        b2: Boolean,
+        b3: Boolean,
+        b4: Boolean
+    ) {
+        setUniformValue(location, if (b1) 1 else 0, if (b2) 1 else 0, if (b3) 1 else 0, if (b4) 1 else 0)
+    }
+
     override fun setUniformValue(location: Int, d1: Double) {
         glUniform1d(location, d1)
     }
@@ -417,24 +459,16 @@ class OpenGLImpl : OpenGL {
         glUniformMatrix4x3fv(location, transpose, mat.get(FloatArray(12)))
     }
 
-    override fun setUniformValue(location: Int, mat: Matrix2d, transpose: Boolean) {
-        glUniformMatrix2dv(location, transpose, mat.get(DoubleArray(4)))
-    }
-
-    override fun setUniformValue(location: Int, mat: Matrix3d, transpose: Boolean) {
-        glUniformMatrix3dv(location, transpose, mat.get(DoubleArray(9)))
-    }
-
-    override fun setUniformValue(location: Int, mat: Matrix4d, transpose: Boolean) {
-        glUniformMatrix4dv(location, transpose, mat.get(DoubleArray(16)))
-    }
-
-    override fun setUniformValue(location: Int, mat: Matrix3x2d, transpose: Boolean) {
-        glUniformMatrix3x2dv(location, transpose, mat.get(DoubleArray(6)))
-    }
-
-    override fun setUniformValue(location: Int, mat: Matrix4x3d, transpose: Boolean) {
-        glUniformMatrix4x3dv(location, transpose, mat.get(DoubleArray(12)))
+    override fun getUniformInfo(
+        programId: Int,
+        index: Int
+    ): Pair<String, ShaderVariableType> {
+        MemoryStack.stackPush().use { stack ->
+            val size = stack.mallocInt(1)
+            val type = stack.mallocInt(1)
+            val name = glGetActiveUniform(programId, index, size, type)
+            return name to ShaderVariableType.entries.first { it.glId == type.get(0) }
+        }
     }
 
     override fun shaderSourceCode(glId: Int, code: String) {
@@ -453,14 +487,51 @@ class OpenGLImpl : OpenGL {
         GlStateManager._stencilOp(op.stencilFail.glId, op.depthFail.glId, op.depthPass.glId)
     }
 
+    override fun textureData1D(
+        type: Int,
+        format: TextureFormat,
+        width: Int,
+        buffer: ByteBuffer
+    ) {
+        glTexImage1D(
+            type,
+            0,
+            format.internalId,
+            width,
+            0,
+            format.glId,
+            format.type,
+            buffer
+        )
+    }
+
+    override fun textureData1D(
+        type: Int,
+        format: TextureFormat,
+        width: Int,
+        size: Long
+    ) {
+        glTexImage1D(
+            type,
+            0,
+            format.internalId,
+            width,
+            0,
+            format.glId,
+            format.type,
+            size
+        )
+    }
+
     override fun textureData2D(
+        type: Int,
         format: TextureFormat,
         width: Int,
         height: Int,
         buffer: ByteBuffer
     ) {
         glTexImage2D(
-            GL_TEXTURE_2D,
+            type,
             0,
             format.internalId,
             width,
@@ -473,17 +544,62 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun textureData2D(
+        type: Int,
         format: TextureFormat,
         width: Int,
         height: Int,
         size: Long
     ) {
         glTexImage2D(
-            GL_TEXTURE_2D,
+            type,
             0,
             format.internalId,
             width,
             height,
+            0,
+            format.glId,
+            format.type,
+            size
+        )
+    }
+
+    override fun textureData3D(
+        type: Int,
+        format: TextureFormat,
+        width: Int,
+        height: Int,
+        depth: Int,
+        buffer: ByteBuffer
+    ) {
+        glTexImage3D(
+            type,
+            0,
+            format.internalId,
+            width,
+            height,
+            depth,
+            0,
+            format.glId,
+            format.type,
+            buffer
+        )
+    }
+
+    override fun textureData3D(
+        type: Int,
+        format: TextureFormat,
+        width: Int,
+        height: Int,
+        depth: Int,
+        size: Long
+    ) {
+        glTexImage3D(
+            type,
+            0,
+            format.internalId,
+            width,
+            height,
+            depth,
             0,
             format.glId,
             format.type,
@@ -502,10 +618,42 @@ class OpenGLImpl : OpenGL {
 
     override fun textureWrapping(
         type: Int,
+        s: WrappingType
+    ) {
+        glTexParameteri(type, GL_TEXTURE_WRAP_S, s.glId)
+    }
+
+    override fun textureWrapping(
+        type: Int,
         s: WrappingType,
         t: WrappingType
     ) {
         glTexParameteri(type, GL_TEXTURE_WRAP_S, s.glId)
         glTexParameteri(type, GL_TEXTURE_WRAP_T, t.glId)
+    }
+
+    override fun textureWrapping(
+        type: Int,
+        s: WrappingType,
+        t: WrappingType,
+        r: WrappingType
+    ) {
+        glTexParameteri(type, GL_TEXTURE_WRAP_S, s.glId)
+        glTexParameteri(type, GL_TEXTURE_WRAP_T, t.glId)
+        glTexParameteri(type, GL_TEXTURE_WRAP_R, r.glId)
+    }
+
+    override fun textureComparisonMode(
+        type: Int,
+        mode: TextureComparisonMode
+    ) {
+        glTexParameteri(type, GL_TEXTURE_COMPARE_MODE, mode.glId)
+    }
+
+    override fun textureComparisonFunc(
+        type: Int,
+        mode: ComparisonFunc
+    ) {
+        glTexParameteri(type, GL_TEXTURE_COMPARE_FUNC, mode.glId)
     }
 }

@@ -10,10 +10,10 @@ import net.caffeinemc.mods.sodium.client.render.chunk.ShaderChunkRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.shader.ChunkShaderInterface;
 import net.caffeinemc.mods.sodium.client.render.chunk.shader.ChunkShaderOptions;
 import net.caffeinemc.mods.sodium.client.render.vertex.VertexFormatAttribute;
-import net.minecraft.resources.ResourceLocation;
-import net.typho.big_shot_lib.api.shaders.ShaderLoaderType;
-import net.typho.big_shot_lib.api.shaders.ShaderProgramKey;
-import net.typho.big_shot_lib.api.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -57,7 +57,7 @@ public class ShaderChunkRendererMixin {
 
         ShaderMixinThreadLocal.push(new ShaderProgramKey(
                 ShaderLoaderType.SODIUM,
-                ResourceLocation.fromNamespaceAndPath("sodium", path),
+                new ResourceIdentifier("sodium", path),
                 formatBuilder.build(),
                 new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT))
         ));

@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.mixin.files;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.typho.big_shot_lib.api.shaders.GlShaderRegistry;
+import net.typho.big_shot_lib.api.client.rendering.shaders.NeoShaderRegistry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,6 +26,6 @@ public class MinecraftMixin {
             )
     )
     private void init(GameConfig gameConfig, CallbackInfo ci) {
-        resourceManager.registerReloadListener(GlShaderRegistry.INSTANCE.getReloadListener());
+        resourceManager.registerReloadListener(NeoShaderRegistry.INSTANCE);
     }
 }

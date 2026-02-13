@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.event;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
-import net.typho.big_shot_lib.api.event.WindowResizeEvent;
+import net.typho.big_shot_lib.api.client.rendering.event.WindowResizeEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

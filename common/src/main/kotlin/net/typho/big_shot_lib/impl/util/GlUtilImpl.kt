@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.vertex.VertexFormat
-import net.typho.big_shot_lib.api.util.GlUtil
+import net.typho.big_shot_lib.api.client.rendering.services.GlUtil
 
 class GlUtilImpl : GlUtil {
     override fun toGlId(mode: VertexFormat.Mode): Int {

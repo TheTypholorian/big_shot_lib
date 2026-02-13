@@ -1,11 +1,12 @@
 package net.typho.big_shot_lib.impl.util
 
 import net.minecraft.client.Minecraft
-import net.minecraft.resources.ResourceLocation
-import net.typho.big_shot_lib.api.util.TextureUtil
+import net.typho.big_shot_lib.BigShotLib.toMojang
+import net.typho.big_shot_lib.api.client.rendering.services.TextureUtil
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 class TextureUtilImpl : TextureUtil {
-    override fun getMinecraftTextureId(texture: ResourceLocation): Int {
-        return Minecraft.getInstance().textureManager.getTexture(texture).id
+    override fun getMinecraftTextureId(texture: ResourceIdentifier): Int {
+        return Minecraft.getInstance().textureManager.getTexture(texture.toMojang()).id
     }
 }

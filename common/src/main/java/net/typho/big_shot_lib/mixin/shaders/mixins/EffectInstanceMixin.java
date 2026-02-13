@@ -3,11 +3,11 @@ package net.typho.big_shot_lib.mixin.shaders.mixins;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import kotlin.collections.CollectionsKt;
 import net.minecraft.client.renderer.EffectInstance;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.typho.big_shot_lib.api.shaders.ShaderLoaderType;
-import net.typho.big_shot_lib.api.shaders.ShaderProgramKey;
-import net.typho.big_shot_lib.api.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +29,7 @@ public class EffectInstanceMixin {
     private void setThreadLocal(ResourceProvider resourceProvider, String name, CallbackInfo ci) {
         ShaderMixinThreadLocal.push(new ShaderProgramKey(
                 ShaderLoaderType.MINECRAFT,
-                ResourceLocation.parse(name),
+                new ResourceIdentifier(name),
                 DefaultVertexFormat.BLIT_SCREEN,
                 new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT))
         ));
