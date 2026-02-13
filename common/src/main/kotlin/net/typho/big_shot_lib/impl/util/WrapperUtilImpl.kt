@@ -68,10 +68,14 @@ class WrapperUtilImpl : WrapperUtil {
 
     override fun wrap(target: RenderTarget): GlFramebuffer {
         return object : GlFramebuffer {
-            override val colorAttachments: List<GlFramebufferAttachment>
-                get() = listOf(NeoTexture2D(target.colorTextureId, TextureFormat.RGBA8, false))
-            override val depthAttachment: GlFramebufferAttachment?
-                get() = if (target.useDepth) NeoTexture2D(target.depthTextureId, TextureFormat.DEPTH_COMPONENT, false) else null
+            override var colorAttachments: List<GlFramebufferAttachment> = listOf(NeoTexture2D(target.colorTextureId, TextureFormat.RGBA8, false))
+                set(value) {
+                    throw UnsupportedOperationException()
+                }
+            override var depthAttachment: GlFramebufferAttachment? = if (target.useDepth) NeoTexture2D(target.depthTextureId, TextureFormat.DEPTH_COMPONENT, false) else null
+                set(value) {
+                    throw UnsupportedOperationException()
+                }
 
             override fun resize(width: Int, height: Int) {
                 target.resize(width, height, Minecraft.ON_OSX)
