@@ -140,7 +140,12 @@ class OpenGLImpl : OpenGL {
 
     override fun bindTexture(type: Int, glId: Int) {
         debugPrint("glBindTexture", type, glId)
-        GlStateManager._bindTexture(glId)
+
+        if (type == GL_TEXTURE_2D) {
+            GlStateManager._bindTexture(glId)
+        } else {
+            glBindTexture(type, glId)
+        }
     }
 
     override fun bindVertexArray(glId: Int) {
