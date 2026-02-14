@@ -38,7 +38,9 @@ open class NeoTexture2D(
     override fun format() = format
 
     override fun attachToFramebuffer(attachment: Int) {
+        bind()
         OpenGL.INSTANCE.attachFramebufferTexture2D(attachment, type().glId, glId)
+        unbind()
     }
 
     override fun resize(width: Int, height: Int): BufferUploader {

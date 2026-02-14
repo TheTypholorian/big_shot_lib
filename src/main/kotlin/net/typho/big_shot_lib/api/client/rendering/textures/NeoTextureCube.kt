@@ -38,7 +38,9 @@ open class NeoTextureCube(
     override fun format() = format
 
     override fun attachToFramebuffer(attachment: Int) {
+        bind()
         OpenGL.INSTANCE.attachFramebufferTexture(attachment, glId)
+        unbind()
     }
 
     override fun resize(
