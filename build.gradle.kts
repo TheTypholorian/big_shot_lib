@@ -18,12 +18,10 @@ val namedJar = tasks.register<Jar>("namedJar") {
     group = "build"
     dependsOn(tasks.classes)
     from(sourceSets.main.get().output)
-    archiveClassifier.set("named")
 }
 
-tasks.register("buildBigShot") {
-    group = "build"
-    dependsOn(tasks.build, namedJar)
+tasks.build {
+    dependsOn(namedJar)
 }
 
 repositories {
