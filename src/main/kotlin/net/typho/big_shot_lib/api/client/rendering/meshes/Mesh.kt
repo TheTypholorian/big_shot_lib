@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.meshes
 
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
+import com.mojang.blaze3d.vertex.MeshData
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferUsage
@@ -50,107 +51,67 @@ open class Mesh(
         vao.drawElements(mode, indexCount, indexType)
     }
 
-    inner class Builder(
-        @JvmField
-        val builder: BufferBuilder = BufferBuilder(ByteBufferBuilder(1536), mode, format)
-    ) : NeoVertexConsumer {
-        override fun vertex(
-            x: Float,
-            y: Float,
-            z: Float
-        ): NeoVertexConsumer {
-            builder.addVertex(x, y, z)
-            return this
-        }
+    fun upload(built: MeshData) {
+        indexCount = built.drawState().indexCount
+        indexType = built.drawState().indexType
 
-        override fun color(
-            r: Float,
-            g: Float,
-            b: Float,
-            a: Float
-        ): NeoVertexConsumer {
-            builder.setColor(r, g, b, a)
-            return this
-        }
+        vao.bind()
 
-        override fun textureUV(u: Float, v: Float): NeoVertexConsumer {
-            builder.setUv(u, v)
-            return this
-        }
+        vbo.bind()
+        vbo.upload(built.vertexBuffer())
+        GlUtil.INSTANCE.initBufferState(format)
+        vbo.unbind()
 
-        override fun overlayUV(u: Int, v: Int): NeoVertexConsumer {
-            builder.setUv1(u, v)
-            return this
-        }
+        ebo.bind()
 
-        override fun lightUV(u: Int, v: Int): NeoVertexConsumer {
-            builder.setUv2(u, v)
-            return this
-        }
+        val buffer = built.indexBuffer()
 
-        override fun normal(
-            x: Float,
-            y: Float,
-            z: Float
-        ): NeoVertexConsumer {
-            builder.setNormal(x, y, z)
-            return this
-        }
-
-        fun end() {
-            val built = builder.buildOrThrow()
-
-            indexCount = built.drawState().indexCount
-            indexType = built.drawState().indexType
-
-            vao.bind()
-
-            vbo.bind()
-            vbo.upload(built.vertexBuffer())
-            GlUtil.INSTANCE.initBufferState(format)
-            vbo.unbind()
-
-            ebo.bind()
-
-            val buffer = built.indexBuffer()
-
-            if (buffer != null) {
-                ebo.upload(buffer)
-            } else {
-                val stream = when (mode) {
-                    VertexFormat.Mode.QUADS -> IntStream.range(0, indexCount / 6)
-                        .map { i -> i * 4 }
-                        .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 2, i + 3, i) }
-                    VertexFormat.Mode.LINES -> IntStream.range(0, indexCount / 6)
-                        .map { i -> i * 4 }
-                        .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 3, i + 2, i + 1) }
-                    else -> IntStream.range(0, indexCount)
-                }
-
-                when (indexType) {
-                    VertexFormat.IndexType.SHORT -> {
-                        ebo.upload(
-                            ByteBuffer.allocateDirect(indexCount * Short.SIZE_BYTES)
-                                .order(ByteOrder.nativeOrder())
-                                .asShortBuffer()
-                                .put(stream.toArray().map { it.toShort() }.toShortArray())
-                                .flip()
-                        )
-                    }
-
-                    VertexFormat.IndexType.INT -> {
-                        ebo.upload(
-                            ByteBuffer.allocateDirect(indexCount * 4)
-                                .order(ByteOrder.nativeOrder())
-                                .asIntBuffer()
-                                .put(stream.toArray())
-                                .flip()
-                        )
-                    }
-                }
+        if (buffer != null) {
+            ebo.upload(buffer)
+        } else {
+            val stream = when (mode) {
+                VertexFormat.Mode.QUADS -> IntStream.range(0, indexCount / 6)
+                    .map { i -> i * 4 }
+                    .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 2, i + 3, i) }
+                VertexFormat.Mode.LINES -> IntStream.range(0, indexCount / 6)
+                    .map { i -> i * 4 }
+                    .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 3, i + 2, i + 1) }
+                else -> IntStream.range(0, indexCount)
             }
 
-            vao.unbind()
+            when (indexType) {
+                VertexFormat.IndexType.SHORT -> {
+                    ebo.upload(
+                        ByteBuffer.allocateDirect(indexCount * Short.SIZE_BYTES)
+                            .order(ByteOrder.nativeOrder())
+                            .asShortBuffer()
+                            .put(stream.toArray().map { it.toShort() }.toShortArray())
+                            .flip()
+                    )
+                }
+
+                VertexFormat.IndexType.INT -> {
+                    ebo.upload(
+                        ByteBuffer.allocateDirect(indexCount * 4)
+                            .order(ByteOrder.nativeOrder())
+                            .asIntBuffer()
+                            .put(stream.toArray())
+                            .flip()
+                    )
+                }
+            }
+        }
+
+        vao.unbind()
+    }
+
+    inner class Builder(
+        @JvmField
+        val buffer: ByteBufferBuilder = ByteBufferBuilder(1536)
+    ) : NeoBufferBuilder(BufferBuilder(buffer, mode, format)) {
+        fun end() {
+            upload(buildOrThrow())
+            buffer.close()
         }
     }
 }
