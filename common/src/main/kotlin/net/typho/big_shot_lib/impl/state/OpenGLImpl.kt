@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.impl.state
 
 import com.mojang.blaze3d.platform.GlStateManager
 import net.minecraft.client.Minecraft
-import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.rendering.errors.ShaderCompileException
@@ -25,28 +24,17 @@ import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL40.*
 import org.lwjgl.system.MemoryStack
 import java.nio.ByteBuffer
+import java.util.*
 
 class OpenGLImpl : OpenGL {
-    fun debugPrint(name: String, vararg args: Any?) {
-        BigShotApi.LOGGER.info(
-            "$name(${
-                args.joinToString(", ") {
-                    when (it) {
-                        null -> "null"
-                        is Array<*> -> it.contentDeepToString()
-                        is BooleanArray -> it.contentToString()
-                        is ByteArray -> it.contentToString()
-                        is CharArray -> it.contentToString()
-                        is ShortArray -> it.contentToString()
-                        is IntArray -> it.contentToString()
-                        is LongArray -> it.contentToString()
-                        is FloatArray -> it.contentToString()
-                        is DoubleArray -> it.contentToString()
-                        else -> it.toString()
-                    }
-                }
-            })"
-        )
+    private val listeners = LinkedList<OpenGL.DebugListener>()
+
+    fun debugPrint(method: String, vararg args: Any?) {
+        listeners.forEach { it.accept(method, args) }
+    }
+
+    override fun addDebugListener(listener: OpenGL.DebugListener) {
+        listeners.add(listener)
     }
 
     override fun enable(flag: GlFlag) {
