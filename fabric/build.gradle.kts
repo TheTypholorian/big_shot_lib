@@ -73,7 +73,11 @@ dependencies {
     modImplementation(libs.sodium)
 
     modImplementation(libs.bigShotApi)
-    include(libs.bigShotApi)
+    include(libs.bigShotApi) {
+        artifact {
+            classifier = "intermediary"
+        }
+    }
 }
 
 loom {
