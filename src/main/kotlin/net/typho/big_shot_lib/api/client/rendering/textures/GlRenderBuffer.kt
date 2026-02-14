@@ -27,9 +27,7 @@ open class GlRenderBuffer(
     override fun format() = format
 
     override fun attachToFramebuffer(attachment: Int) {
-        bind()
         OpenGL.INSTANCE.attachFramebufferRenderBuffer(attachment, glId)
-        unbind()
     }
 
     override fun resize(width: Int, height: Int): BufferUploader? {

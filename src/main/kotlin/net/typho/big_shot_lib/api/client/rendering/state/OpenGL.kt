@@ -22,6 +22,12 @@ interface OpenGL {
         val INSTANCE: OpenGL = ServiceLoader.load(OpenGL::class.java).findFirst().orElseThrow()
     }
 
+    interface DebugListener {
+        fun accept(method: String, vararg args: Any)
+    }
+
+    fun addDebugListener(listener: DebugListener)
+
     /**
      * `glEnable(flag.glId)`
      */

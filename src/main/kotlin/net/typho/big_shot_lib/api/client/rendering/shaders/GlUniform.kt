@@ -82,14 +82,14 @@ abstract class GlUniform(
 
     fun setValue(i1: Int) {
         if (type.info !is ShaderVariableTypeInfo.Sampler) {
-            assertType(ShaderVariableType.INT)
+            assertType(ShaderVariableType.INT, ShaderVariableType.UINT)
         }
 
         OpenGL.INSTANCE.setUniformValue(location, i1)
     }
 
     fun setValue(i1: Int, i2: Int) {
-        assertType(ShaderVariableType.INT_VEC2)
+        assertType(ShaderVariableType.INT_VEC2, ShaderVariableType.UINT_VEC2)
         OpenGL.INSTANCE.setUniformValue(location, i1, i2)
     }
 
@@ -98,7 +98,7 @@ abstract class GlUniform(
     }
 
     fun setValue(i1: Int, i2: Int, i3: Int) {
-        assertType(ShaderVariableType.INT_VEC3)
+        assertType(ShaderVariableType.INT_VEC3, ShaderVariableType.UINT_VEC3)
         OpenGL.INSTANCE.setUniformValue(location, i1, i2, i3)
     }
 
@@ -107,7 +107,7 @@ abstract class GlUniform(
     }
 
     fun setValue(i1: Int, i2: Int, i3: Int, i4: Int) {
-        assertType(ShaderVariableType.INT_VEC4)
+        assertType(ShaderVariableType.INT_VEC4, ShaderVariableType.UINT_VEC4)
         OpenGL.INSTANCE.setUniformValue(location, i1, i2, i3, i4)
     }
 

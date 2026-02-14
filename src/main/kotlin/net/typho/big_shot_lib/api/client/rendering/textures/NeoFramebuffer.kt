@@ -21,14 +21,24 @@ open class NeoFramebuffer(
     override var colorAttachments: List<GlFramebufferAttachment> = colorAttachments
         set(value) {
             field = value
+
+            bind()
+
             attachColor()
             checkStatus()
+
+            unbind()
         }
     override var depthAttachment: GlFramebufferAttachment? = depthAttachment
         set(value) {
             field = value
+
+            bind()
+
             attachDepth()
             checkStatus()
+
+            unbind()
         }
 
     constructor(
