@@ -1,30 +1,29 @@
 plugins {
     id("multiloader-common")
-    alias(libs.plugins.moddev)
+    alias(libs.plugins.loom)
 }
 
 val version: String by project
 val modId: String by project
 
 base {
-    archivesName = "$modId-$version"
+    archivesName = modId
 }
 
-tasks.withType<Jar>().configureEach {
-    archiveVersion.set("")
+tasks.remapJar {
+    archiveClassifier.set("intermediary")
 }
 
-neoForge {
-    neoFormVersion = libs.versions.neoForm
-    // Automatically enable AccessTransformers if the file exists
-    val at = file("src/main/resources/META-INF/accesstransformer.cfg")
-    if (at.exists()) {
-        accessTransformers.from(at.absolutePath)
-    }
-    parchment {
-        minecraftVersion = libs.versions.parchmentMC
-        mappingsVersion = libs.versions.parchment
-    }
+val namedJar = tasks.register<Jar>("namedJar") {
+    group = "build"
+    dependsOn(tasks.classes)
+    from(sourceSets.main.get().output)
+    archiveClassifier.set("named")
+}
+
+tasks.register("buildBigShot") {
+    group = "build"
+    dependsOn(tasks.build, namedJar)
 }
 
 repositories {
@@ -36,6 +35,9 @@ repositories {
 }
 
 dependencies {
+    minecraft(libs.minecraft)
+    mappings(loom.officialMojangMappings())
+
     api("org.lwjgl:lwjgl-shaderc:3.3.3")
     api("org.lwjgl:lwjgl-spvc:3.3.3")
 }
