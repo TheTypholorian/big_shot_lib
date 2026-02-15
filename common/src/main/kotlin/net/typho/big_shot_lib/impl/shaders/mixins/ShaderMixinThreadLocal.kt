@@ -8,7 +8,7 @@ object ShaderMixinThreadLocal : ThreadLocal<ShaderMixinManager.Instance>() {
     @JvmStatic
     fun push(key: ShaderProgramKey) {
         if (get() != null) {
-            BigShotApi.LOGGER.warn("Pushing ShaderMixinThreadLocal with $key while ${get()} is already bound, this might result in issues with shader mixins.")
+            BigShotApi.LOGGER.warn("Pushing ShaderMixinThreadLocal with $key while ${get().key} is already bound, this might result in issues with shader mixins.")
         }
 
         set(ShaderMixinManager.create(key))
