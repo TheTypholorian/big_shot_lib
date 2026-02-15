@@ -10,12 +10,14 @@
     "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
+    "buffers.MinecraftMixin",
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
     "files.MinecraftMixin",
     "shaders.mixins.EffectInstanceMixin",
     "shaders.mixins.ProgramMixin",
-    "shaders.mixins.ProgramTypeMixin"
+    "shaders.mixins.ProgramTypeMixin",
+    "util.MainTargetMixin"
   ],
   "server": [],
   "injectors": {

@@ -31,7 +31,9 @@ public class EffectInstanceMixin {
                 ShaderLoaderType.MINECRAFT,
                 new ResourceIdentifier(name),
                 DefaultVertexFormat.BLIT_SCREEN,
-                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT))
+                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
+                new HashSet<>(),
+                new HashSet<>()
         ));
     }
 

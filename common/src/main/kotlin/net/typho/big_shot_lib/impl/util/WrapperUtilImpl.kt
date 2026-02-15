@@ -8,8 +8,10 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
-import net.typho.big_shot_lib.api.client.rendering.textures.*
+import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
+import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
+import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebufferAttachment
 import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
 import net.typho.big_shot_lib.api.services.WrapperUtil
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
@@ -68,13 +70,17 @@ class WrapperUtilImpl : WrapperUtil {
 
     override fun wrap(target: RenderTarget): GlFramebuffer {
         return object : GlFramebuffer {
-            override var colorAttachments: List<GlFramebufferAttachment> = listOf(NeoTexture2D(target.colorTextureId, TextureFormat.RGBA8, false))
+            override var colorAttachments: List<GlFramebufferAttachment> = listOf()
+                get() = (target as RenderTargetExtension).`big_shot_lib$getColorAttachments`()
                 set(value) {
-                    throw UnsupportedOperationException()
+                    field = value
+                    (target as RenderTargetExtension).`big_shot_lib$setColorAttachments`(value)
                 }
-            override var depthAttachment: GlFramebufferAttachment? = if (target.useDepth) NeoTexture2D(target.depthTextureId, TextureFormat.DEPTH_COMPONENT, false) else null
+            override var depthAttachment: GlFramebufferAttachment? = null
+                get() = (target as RenderTargetExtension).`big_shot_lib$getDepthAttachment`()
                 set(value) {
-                    throw UnsupportedOperationException()
+                    field = value
+                    (target as RenderTargetExtension).`big_shot_lib$setDepthAttachment`(value)
                 }
 
             override fun resize(width: Int, height: Int) {

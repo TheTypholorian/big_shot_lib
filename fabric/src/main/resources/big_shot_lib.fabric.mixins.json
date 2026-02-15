@@ -6,7 +6,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
-    "fabric.ShaderInstanceMixin"
+    "fabric.shaders.ShaderInstanceMixin",
+    "fabric.util.RenderTargetMixin"
   ],
   "server": [],
   "injectors": {

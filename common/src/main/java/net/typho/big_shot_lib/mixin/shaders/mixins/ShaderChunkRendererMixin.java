@@ -59,7 +59,9 @@ public class ShaderChunkRendererMixin {
                 ShaderLoaderType.SODIUM,
                 new ResourceIdentifier("sodium", path),
                 formatBuilder.build(),
-                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT))
+                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
+                new HashSet<>(),
+                new HashSet<>()
         ));
     }
 

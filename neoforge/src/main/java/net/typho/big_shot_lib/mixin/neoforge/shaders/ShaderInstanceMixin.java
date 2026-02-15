@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.neoforge;
+package net.typho.big_shot_lib.mixin.neoforge.shaders;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 import kotlin.collections.CollectionsKt;
@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import net.typho.big_shot_lib.BigShotLib;
+import net.typho.big_shot_lib.api.client.rendering.buffers.AlbedoDynamicBuffer;
+import net.typho.big_shot_lib.api.client.rendering.buffers.NormalsDynamicBuffer;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
@@ -32,7 +34,9 @@ public class ShaderInstanceMixin {
                 ShaderLoaderType.MINECRAFT,
                 BigShotLib.toNeo(shaderLocation),
                 p_173338_,
-                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT))
+                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
+                name.equals("rendertype_end_portal") ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>(),
+                (name.equals("rendertype_lines") || name.equals("particle")) ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>()
         ));
     }
 

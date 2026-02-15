@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.typho.big_shot_lib.api.client.rendering.event.PostProcessEvent;
 import net.typho.big_shot_lib.api.client.rendering.event.RenderData;
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
@@ -58,5 +59,6 @@ public class LevelRendererMixin {
                 Minecraft.getInstance().getMainRenderTarget().width,
                 Minecraft.getInstance().getMainRenderTarget().height
         ));
+        GlStateStack.ensureAllEmpty();
     }
 }
