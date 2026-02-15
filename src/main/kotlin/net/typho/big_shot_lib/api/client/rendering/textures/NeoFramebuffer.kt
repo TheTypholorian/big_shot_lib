@@ -4,7 +4,7 @@ import net.typho.big_shot_lib.api.client.rendering.errors.IllegalTextureFormatEx
 import net.typho.big_shot_lib.api.client.rendering.errors.IncompleteFramebufferException
 import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
-import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.initAndGetClearMask
+import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
 import org.lwjgl.opengl.GL11.GL_NONE
 import org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0
