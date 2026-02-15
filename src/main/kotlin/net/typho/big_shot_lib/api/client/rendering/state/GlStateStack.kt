@@ -64,7 +64,11 @@ open class GlStateStack(
     fun push(named: GlNamed) = push(named.glId())
 
     fun pop() {
-        val removed = bound.pop()
+        if (bound.isEmpty()) {
+            throw IllegalStateException("Tried to pop a GlStateStack that was already empty")
+        }
+
+        val removed = bound.removeLast()
         val current = bound.lastOrNull()
 
         if (current == null) {

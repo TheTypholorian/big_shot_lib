@@ -14,7 +14,7 @@ open class NeoTexture2D(
 ) : GlResource(glId, GlStateStack.textures[TextureType.TWO_D]!!), GlTexture2D {
     companion object {
         @JvmField
-        val NULL = NeoTexture2D(0, TextureFormat.NULL)
+        val NULL = NeoTexture2D(0, TextureFormat.NULL, false)
     }
 
     constructor(format: TextureFormat) : this(OpenGL.INSTANCE.createTexture(), format)
