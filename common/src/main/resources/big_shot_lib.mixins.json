@@ -5,6 +5,11 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
   "mixins": [
+    "buffers.sodium.BlockRendererMixin",
+    "buffers.sodium.ChunkVertexConsumerMixin",
+    "buffers.sodium.ChunkVertexEncoderVertexMixin",
+    "buffers.sodium.CompactChunkVertexMixin",
+    "buffers.sodium.DefaultFluidRendererMixin",
     "shaders.mixins.GlShaderMixin",
     "shaders.mixins.GlVertexFormatAccessor",
     "shaders.mixins.ShaderChunkRendererMixin"
