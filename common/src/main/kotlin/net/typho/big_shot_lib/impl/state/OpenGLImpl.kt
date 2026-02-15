@@ -9,10 +9,7 @@ import net.typho.big_shot_lib.api.client.rendering.errors.ShaderLinkException
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType
 import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.rendering.state.*
-import net.typho.big_shot_lib.api.client.rendering.textures.InterpolationType
-import net.typho.big_shot_lib.api.client.rendering.textures.TextureComparisonMode
-import net.typho.big_shot_lib.api.client.rendering.textures.TextureFormat
-import net.typho.big_shot_lib.api.client.rendering.textures.WrappingType
+import net.typho.big_shot_lib.api.client.rendering.textures.*
 import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.*
@@ -83,12 +80,12 @@ class OpenGLImpl : OpenGL {
         glDrawBuffers(buffers)
     }
 
-    override fun attachFramebufferTexture2D(attachment: Int, type: Int, glId: Int) {
+    override fun attachFramebufferTexture2D(attachment: Int, type: TextureType, glId: Int) {
         debugPrint("glFramebufferTexture2D", attachment, type, glId)
         GlStateManager._glFramebufferTexture2D(
             GL_FRAMEBUFFER,
             attachment,
-            type,
+            type.glId,
             glId,
             0
         )
@@ -138,13 +135,13 @@ class OpenGLImpl : OpenGL {
         GlStateManager._glUseProgram(glId)
     }
 
-    override fun bindTexture(type: Int, glId: Int) {
+    override fun bindTexture(type: TextureType, glId: Int) {
         debugPrint("glBindTexture", type, glId)
 
-        if (type == GL_TEXTURE_2D) {
+        if (type == TextureType.TWO_D) {
             GlStateManager._bindTexture(glId)
         } else {
-            glBindTexture(type, glId)
+            glBindTexture(type.glId, glId)
         }
     }
 
@@ -568,14 +565,14 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun textureData1D(
-        type: Int,
+        type: TextureType,
         format: TextureFormat,
         width: Int,
         buffer: ByteBuffer
     ) {
         debugPrint("glTexImage1D", type, format, width, buffer)
         glTexImage1D(
-            type,
+            type.glId,
             0,
             format.internalId,
             width,
@@ -587,14 +584,14 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun textureData1D(
-        type: Int,
+        type: TextureType,
         format: TextureFormat,
         width: Int,
         size: Long
     ) {
         debugPrint("glTexImage1D", type, format, width, size)
         glTexImage1D(
-            type,
+            type.glId,
             0,
             format.internalId,
             width,
@@ -606,7 +603,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun textureData2D(
-        type: Int,
+        type: TextureType,
         format: TextureFormat,
         width: Int,
         height: Int,
@@ -614,7 +611,7 @@ class OpenGLImpl : OpenGL {
     ) {
         debugPrint("glTexImage2D", type, format, width, height, buffer)
         glTexImage2D(
-            type,
+            type.glId,
             0,
             format.internalId,
             width,
@@ -627,7 +624,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun textureData2D(
-        type: Int,
+        type: TextureType,
         format: TextureFormat,
         width: Int,
         height: Int,
@@ -635,7 +632,49 @@ class OpenGLImpl : OpenGL {
     ) {
         debugPrint("glTexImage2D", type, format, width, height, size)
         glTexImage2D(
-            type,
+            type.glId,
+            0,
+            format.internalId,
+            width,
+            height,
+            0,
+            format.glId,
+            format.type,
+            size
+        )
+    }
+
+    override fun textureData2D(
+        face: GlTextureCube.Face,
+        format: TextureFormat,
+        width: Int,
+        height: Int,
+        buffer: ByteBuffer
+    ) {
+        debugPrint("glTexImage2D", face, format, width, height, buffer)
+        glTexImage2D(
+            face.glId,
+            0,
+            format.internalId,
+            width,
+            height,
+            0,
+            format.glId,
+            format.type,
+            buffer
+        )
+    }
+
+    override fun textureData2D(
+        face: GlTextureCube.Face,
+        format: TextureFormat,
+        width: Int,
+        height: Int,
+        size: Long
+    ) {
+        debugPrint("glTexImage2D", face, format, width, height, size)
+        glTexImage2D(
+            face.glId,
             0,
             format.internalId,
             width,
@@ -648,7 +687,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun textureData3D(
-        type: Int,
+        type: TextureType,
         format: TextureFormat,
         width: Int,
         height: Int,
@@ -657,7 +696,7 @@ class OpenGLImpl : OpenGL {
     ) {
         debugPrint("glTexImage3D", type, format, width, height, depth, buffer)
         glTexImage3D(
-            type,
+            type.glId,
             0,
             format.internalId,
             width,
@@ -671,7 +710,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun textureData3D(
-        type: Int,
+        type: TextureType,
         format: TextureFormat,
         width: Int,
         height: Int,
@@ -680,7 +719,7 @@ class OpenGLImpl : OpenGL {
     ) {
         debugPrint("glTexImage3D", type, format, width, height, depth, size)
         glTexImage3D(
-            type,
+            type.glId,
             0,
             format.internalId,
             width,
@@ -694,58 +733,58 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun textureInterpolation(
-        type: Int,
+        type: TextureType,
         min: InterpolationType,
         mag: InterpolationType
     ) {
-        debugPrint("glTextureInterpolation", min, mag)
-        glTexParameteri(type, GL_TEXTURE_MIN_FILTER, min.glId)
-        glTexParameteri(type, GL_TEXTURE_MAG_FILTER, mag.glId)
+        debugPrint("glTextureInterpolation", type, min, mag)
+        glTexParameteri(type.glId, GL_TEXTURE_MIN_FILTER, min.glId)
+        glTexParameteri(type.glId, GL_TEXTURE_MAG_FILTER, mag.glId)
     }
 
     override fun textureWrapping(
-        type: Int,
+        type: TextureType,
         s: WrappingType
     ) {
-        debugPrint("glTextureWrapping", s)
-        glTexParameteri(type, GL_TEXTURE_WRAP_S, s.glId)
+        debugPrint("glTextureWrapping", type, s)
+        glTexParameteri(type.glId, GL_TEXTURE_WRAP_S, s.glId)
     }
 
     override fun textureWrapping(
-        type: Int,
+        type: TextureType,
         s: WrappingType,
         t: WrappingType
     ) {
-        debugPrint("glTextureWrapping", s, t)
-        glTexParameteri(type, GL_TEXTURE_WRAP_S, s.glId)
-        glTexParameteri(type, GL_TEXTURE_WRAP_T, t.glId)
+        debugPrint("glTextureWrapping", type, s, t)
+        glTexParameteri(type.glId, GL_TEXTURE_WRAP_S, s.glId)
+        glTexParameteri(type.glId, GL_TEXTURE_WRAP_T, t.glId)
     }
 
     override fun textureWrapping(
-        type: Int,
+        type: TextureType,
         s: WrappingType,
         t: WrappingType,
         r: WrappingType
     ) {
-        debugPrint("glTextureWrapping", s, t, r)
-        glTexParameteri(type, GL_TEXTURE_WRAP_S, s.glId)
-        glTexParameteri(type, GL_TEXTURE_WRAP_T, t.glId)
-        glTexParameteri(type, GL_TEXTURE_WRAP_R, r.glId)
+        debugPrint("glTextureWrapping", type, s, t, r)
+        glTexParameteri(type.glId, GL_TEXTURE_WRAP_S, s.glId)
+        glTexParameteri(type.glId, GL_TEXTURE_WRAP_T, t.glId)
+        glTexParameteri(type.glId, GL_TEXTURE_WRAP_R, r.glId)
     }
 
     override fun textureComparisonMode(
-        type: Int,
+        type: TextureType,
         mode: TextureComparisonMode
     ) {
         debugPrint("glTextureComparisonMode", type, mode)
-        glTexParameteri(type, GL_TEXTURE_COMPARE_MODE, mode.glId)
+        glTexParameteri(type.glId, GL_TEXTURE_COMPARE_MODE, mode.glId)
     }
 
     override fun textureComparisonFunc(
-        type: Int,
+        type: TextureType,
         mode: ComparisonFunc
     ) {
         debugPrint("glTextureComparisonFunc", type, mode)
-        glTexParameteri(type, GL_TEXTURE_COMPARE_FUNC, mode.glId)
+        glTexParameteri(type.glId, GL_TEXTURE_COMPARE_FUNC, mode.glId)
     }
 }
