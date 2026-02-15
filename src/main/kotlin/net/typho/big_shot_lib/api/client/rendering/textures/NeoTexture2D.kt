@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.textures
 
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
@@ -10,7 +11,7 @@ open class NeoTexture2D(
     @JvmField
     val format: TextureFormat,
     defaultParams: Boolean = true
-) : GlResource(glId), GlTexture2D {
+) : GlResource(glId, GlStateStack.textures[TextureType.TWO_D]!!), GlTexture2D {
     companion object {
         @JvmField
         val NULL = NeoTexture2D(0, TextureFormat.NULL)
@@ -27,8 +28,6 @@ open class NeoTexture2D(
         }
     }
 
-    override fun bind(glId: Int) = OpenGL.INSTANCE.bindTexture(type().glId, glId)
-
     override fun free() {
         OpenGL.INSTANCE.deleteTexture(glId)
     }
@@ -38,20 +37,20 @@ open class NeoTexture2D(
     override fun format() = format
 
     override fun attachToFramebuffer(attachment: Int) {
-        OpenGL.INSTANCE.attachFramebufferTexture2D(attachment, type().glId, glId)
+        OpenGL.INSTANCE.attachFramebufferTexture2D(attachment, type(), glId)
     }
 
     override fun resize(width: Int, height: Int): BufferUploader {
         return object : BufferUploader {
             override fun upload(buffer: ByteBuffer) {
                 bind()
-                OpenGL.INSTANCE.textureData2D(type().glId, format, width, height, buffer)
+                OpenGL.INSTANCE.textureData2D(type(), format, width, height, buffer)
                 unbind()
             }
 
             override fun uploadNull() {
                 bind()
-                OpenGL.INSTANCE.textureData2D(type().glId, format, width, height, 0L)
+                OpenGL.INSTANCE.textureData2D(type(), format, width, height, 0L)
                 unbind()
             }
         }

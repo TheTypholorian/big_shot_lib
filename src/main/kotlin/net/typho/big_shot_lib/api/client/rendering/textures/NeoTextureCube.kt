@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.textures
 
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
@@ -10,7 +11,7 @@ open class NeoTextureCube(
     @JvmField
     val format: TextureFormat,
     defaultParams: Boolean = true
-) : GlResource(glId), GlTextureCube {
+) : GlResource(glId, GlStateStack.textures[TextureType.CUBE_MAP]!!), GlTextureCube {
     companion object {
         @JvmField
         val NULL = NeoTextureCube(0, TextureFormat.NULL)
@@ -26,8 +27,6 @@ open class NeoTextureCube(
             unbind()
         }
     }
-
-    override fun bind(glId: Int) = OpenGL.INSTANCE.bindTexture(type().glId, glId)
 
     override fun free() {
         OpenGL.INSTANCE.deleteTexture(glId)
@@ -49,13 +48,13 @@ open class NeoTextureCube(
         return object : BufferUploader {
             override fun upload(buffer: ByteBuffer) {
                 bind()
-                OpenGL.INSTANCE.textureData2D(face.glId, format, width, height, buffer)
+                OpenGL.INSTANCE.textureData2D(face, format, width, height, buffer)
                 unbind()
             }
 
             override fun uploadNull() {
                 bind()
-                OpenGL.INSTANCE.textureData2D(face.glId, format, width, height, 0L)
+                OpenGL.INSTANCE.textureData2D(face, format, width, height, 0L)
                 unbind()
             }
         }
@@ -67,7 +66,7 @@ open class NeoTextureCube(
                 bind()
 
                 for (face in GlTextureCube.Face.entries) {
-                    OpenGL.INSTANCE.textureData2D(face.glId, format, width, height, buffer)
+                    OpenGL.INSTANCE.textureData2D(face, format, width, height, buffer)
                 }
 
                 unbind()
@@ -77,7 +76,7 @@ open class NeoTextureCube(
                 bind()
 
                 for (face in GlTextureCube.Face.entries) {
-                    OpenGL.INSTANCE.textureData2D(face.glId, format, width, height, 0L)
+                    OpenGL.INSTANCE.textureData2D(face, format, width, height, 0L)
                 }
 
                 unbind()

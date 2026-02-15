@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.textures
 
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
@@ -10,7 +11,7 @@ open class NeoTexture3D(
     @JvmField
     val format: TextureFormat,
     defaultParams: Boolean = true
-) : GlResource(glId), GlTexture3D {
+) : GlResource(glId, GlStateStack.textures[TextureType.THREE_D]!!), GlTexture3D {
     companion object {
         @JvmField
         val NULL = NeoTexture3D(0, TextureFormat.NULL)
@@ -27,8 +28,6 @@ open class NeoTexture3D(
         }
     }
 
-    override fun bind(glId: Int) = OpenGL.INSTANCE.bindTexture(type().glId, glId)
-
     override fun free() {
         OpenGL.INSTANCE.deleteTexture(glId)
     }
@@ -41,13 +40,13 @@ open class NeoTexture3D(
         return object : BufferUploader {
             override fun upload(buffer: ByteBuffer) {
                 bind()
-                OpenGL.INSTANCE.textureData3D(type().glId, format, width, height, depth, buffer)
+                OpenGL.INSTANCE.textureData3D(type(), format, width, height, depth, buffer)
                 unbind()
             }
 
             override fun uploadNull() {
                 bind()
-                OpenGL.INSTANCE.textureData3D(type().glId, format, width, height, depth, 0L)
+                OpenGL.INSTANCE.textureData3D(type(), format, width, height, depth, 0L)
                 unbind()
             }
         }

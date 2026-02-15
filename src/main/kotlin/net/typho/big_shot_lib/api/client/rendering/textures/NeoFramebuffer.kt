@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.textures
 
 import net.typho.big_shot_lib.api.client.rendering.errors.IllegalTextureFormatException
 import net.typho.big_shot_lib.api.client.rendering.errors.IncompleteFramebufferException
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
@@ -17,7 +18,7 @@ open class NeoFramebuffer(
     protected var width: Int,
     @JvmField
     protected var height: Int
-) : GlResource(glId), GlFramebuffer {
+) : GlResource(glId, GlStateStack.framebuffer), GlFramebuffer {
     override var colorAttachments: List<GlFramebufferAttachment> = colorAttachments
         set(value) {
             field = value
@@ -115,8 +116,6 @@ open class NeoFramebuffer(
     override fun width() = width
 
     override fun height() = height
-
-    override fun bind(glId: Int) = OpenGL.INSTANCE.bindFramebuffer(glId)
 
     override fun free() {
         OpenGL.INSTANCE.deleteFramebuffer(glId)

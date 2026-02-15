@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.textures
 
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
@@ -8,17 +9,13 @@ open class GlRenderBuffer(
     glId: Int,
     @JvmField
     val format: TextureFormat
-) : GlResource(glId), GlFramebufferAttachment {
+) : GlResource(glId, GlStateStack.renderBuffer), GlFramebufferAttachment {
     companion object {
         @JvmField
         val NULL = GlRenderBuffer(0, TextureFormat.NULL)
     }
 
     constructor(format: TextureFormat) : this(OpenGL.INSTANCE.createRenderBuffer(), format)
-
-    override fun bind(glId: Int) {
-        OpenGL.INSTANCE.bindRenderBuffer(glId)
-    }
 
     override fun free() {
         OpenGL.INSTANCE.deleteRenderBuffer(glId)

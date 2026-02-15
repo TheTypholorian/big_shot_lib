@@ -12,10 +12,10 @@ interface GlTexture : GlBindable, GlNamed, NativeResource {
     fun type(): TextureType
 
     fun setCompareMode(mode: TextureComparisonMode) {
-        OpenGL.INSTANCE.textureComparisonMode(type().glId, mode)
+        OpenGL.INSTANCE.textureComparisonMode(type(), mode)
     }
 
     fun setCompareFunc(func: ComparisonFunc) {
-        OpenGL.INSTANCE.textureComparisonFunc(type().glId, func)
+        OpenGL.INSTANCE.textureComparisonFunc(type(), func)
     }
 }

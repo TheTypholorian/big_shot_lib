@@ -1,18 +1,19 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import org.lwjgl.system.NativeResource
 
 abstract class GlResource(
     @JvmField
-    val glId: Int
+    val glId: Int,
+    @JvmField
+    val stack: GlStateStack
 ) : GlNamed, GlBindable, NativeResource {
-    protected abstract fun bind(glId: Int)
-
     final override fun glId() = glId
 
-    override fun bind() = bind(glId)
+    override fun bind() = stack.push(this)
 
-    override fun unbind() = bind(0)
+    override fun unbind() = stack.pop()
 
     override fun toString(): String {
         return "${javaClass.simpleName}(glId=$glId)"
@@ -29,13 +30,5 @@ abstract class GlResource(
 
     override fun hashCode(): Int {
         return glId
-    }
-
-    abstract class Indexed(glId: Int) : GlResource(glId), GlIndexedBindable {
-        protected abstract fun bindBase(index: Int, glId: Int)
-
-        override fun bindBase(index: Int) = bindBase(index, glId)
-
-        override fun unbindBase(index: Int) = bindBase(index, 0)
     }
 }

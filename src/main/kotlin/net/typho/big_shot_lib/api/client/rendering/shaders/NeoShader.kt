@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering.shaders
 import net.typho.big_shot_lib.api.client.rendering.errors.IllegalShaderSourceException
 import net.typho.big_shot_lib.api.client.rendering.errors.MissingShaderSourceException
 import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
 import org.lwjgl.opengl.GL20.GL_ACTIVE_UNIFORMS
@@ -12,7 +13,7 @@ open class NeoShader(
     glId: Int,
     @JvmField
     val key: ShaderProgramKey
-) : GlResource(glId), GlShader {
+) : GlResource(glId, GlStateStack.shader), GlShader {
     companion object {
         @JvmField
         val NULL = NeoShader(0, ShaderProgramKey.NULL)
@@ -36,10 +37,6 @@ open class NeoShader(
     protected val samplerUnits = HashMap<Int, Int>()
 
     constructor(key: ShaderProgramKey) : this(OpenGL.INSTANCE.createShaderProgram(), key)
-
-    override fun bind(glId: Int) {
-        OpenGL.INSTANCE.bindShaderProgram(glId)
-    }
 
     override fun free() {
         OpenGL.INSTANCE.deleteShaderProgram(glId)

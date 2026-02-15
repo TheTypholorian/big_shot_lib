@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVaria
 import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableTypeInfo
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.textures.GlTexture
+import net.typho.big_shot_lib.api.client.rendering.textures.TextureType
 import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
 import org.joml.*
 
@@ -27,15 +28,15 @@ abstract class GlUniform(
 
     abstract fun programKey(): ShaderProgramKey
 
-    fun setSampler(type: Int, textureId: Int) {
+    fun setSampler(type: TextureType, textureId: Int) {
         if (this.type.info !is ShaderVariableTypeInfo.Sampler) {
             throw UnsupportedOperationException("Uniform $name in program ${programKey()} is of type ${this.type} which isn't a sampler")
         }
 
-        val expectedType = this.type.expectedSamplerType()
+        val expectedType = this.type.expectedTextureType()
 
         if (expectedType != type) {
-            throw IllegalStateException("Expected a texture of type 0x${expectedType.toString(16)}, got type 0x${type.toString(16)}")
+            throw IllegalStateException("Expected a texture of type $expectedType, got type $type")
         }
 
         val unit = pickSamplerUnit()
@@ -45,7 +46,7 @@ abstract class GlUniform(
     }
 
     fun setSampler(texture: GlTexture) {
-        setSampler(texture.type().glId, texture.glId())
+        setSampler(texture.type(), texture.glId())
     }
 
     fun setValue(f1: Float) {
