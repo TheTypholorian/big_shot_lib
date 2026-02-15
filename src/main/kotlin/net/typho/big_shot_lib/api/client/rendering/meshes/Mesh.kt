@@ -39,11 +39,11 @@ open class Mesh(
         ebo.free()
     }
 
-    override fun bind() {
+    override fun bind(pushStack: Boolean) {
         vao.bind()
     }
 
-    override fun unbind() {
+    override fun unbind(popStack: Boolean) {
         vao.unbind()
     }
 

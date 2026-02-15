@@ -10,7 +10,7 @@ open class DepthMaskShard(
     val mask: Boolean
 ) : RenderSettingShard.Basic(
     DepthMaskShard,
-    listOf(GlBindable.ofState(OpenGL.Companion.INSTANCE::depthMask, mask, true))
+    listOf(GlBindable.ofState(OpenGL.INSTANCE::depthMask, mask, true))
 ) {
     companion object : RenderSettingShard.Type<DepthMaskShard> {
         override fun getDefault() = DepthMaskShard(true)

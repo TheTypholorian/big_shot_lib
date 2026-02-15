@@ -41,9 +41,9 @@ enum class GlFlag(
 
     val location: ResourceIdentifier = ResourceIdentifier("opengl", "flag/${name.lowercase()}")
     val bindable = object : GlBindable {
-        override fun bind() = enable()
+        override fun bind(pushStack: Boolean) = enable()
 
-        override fun unbind() = disable()
+        override fun unbind(popStack: Boolean) = disable()
     }
 
     override fun glId() = glId
@@ -61,10 +61,10 @@ enum class GlFlag(
     }
 
     fun enable() {
-        OpenGL.Companion.INSTANCE.enable(this)
+        OpenGL.INSTANCE.enable(this)
     }
 
     fun disable() {
-        OpenGL.Companion.INSTANCE.disable(this)
+        OpenGL.INSTANCE.disable(this)
     }
 }

@@ -15,7 +15,7 @@ open class CullShard(
     CullShard,
     if (enabled) listOf(
         GlFlag.CULL_FACE.bindable,
-        GlBindable.ofState(OpenGL.Companion.INSTANCE::cullFace, face, CullFace.DEFAULT)
+        GlBindable.ofState(OpenGL.INSTANCE::cullFace, face, CullFace.DEFAULT)
     ) else listOf()
 ) {
     companion object : RenderSettingShard.Type<CullShard> {

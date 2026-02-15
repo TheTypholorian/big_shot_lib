@@ -32,11 +32,11 @@ sealed interface BlendFunction : GlBindable {
         @JvmField
         val dst: BlendFactor
     ) : BlendFunction {
-        override fun bind() {
-            OpenGL.Companion.INSTANCE.blendFunc(src, dst)
+        override fun bind(pushStack: Boolean) {
+            OpenGL.INSTANCE.blendFunc(src, dst)
         }
 
-        override fun unbind() {
+        override fun unbind(popStack: Boolean) {
         }
 
         companion object {
@@ -61,11 +61,11 @@ sealed interface BlendFunction : GlBindable {
         @JvmField
         val dstA: BlendFactor
     ) : BlendFunction {
-        override fun bind() {
-            OpenGL.Companion.INSTANCE.blendFuncSeparate(src, dst, srcA, dstA)
+        override fun bind(pushStack: Boolean) {
+            OpenGL.INSTANCE.blendFuncSeparate(src, dst, srcA, dstA)
         }
 
-        override fun unbind() {
+        override fun unbind(popStack: Boolean) {
         }
 
         companion object {

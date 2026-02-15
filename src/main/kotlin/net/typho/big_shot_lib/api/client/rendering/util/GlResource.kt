@@ -11,9 +11,21 @@ abstract class GlResource(
 ) : GlNamed, GlBindable, NativeResource {
     final override fun glId() = glId
 
-    override fun bind() = stack.push(this)
+    override fun bind(pushStack: Boolean) {
+        if (pushStack) {
+            stack.push(this)
+        } else {
+            stack.bind.accept(glId)
+        }
+    }
 
-    override fun unbind() = stack.pop()
+    override fun unbind(popStack: Boolean) {
+        if (popStack) {
+            stack.pop()
+        } else {
+            stack.bind.accept(0)
+        }
+    }
 
     override fun toString(): String {
         return "${javaClass.simpleName}(glId=$glId)"

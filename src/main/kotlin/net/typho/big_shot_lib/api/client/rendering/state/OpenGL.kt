@@ -19,7 +19,7 @@ interface OpenGL {
         val INSTANCE: OpenGL = ServiceLoader.load(OpenGL::class.java).findFirst().orElseThrow()
     }
 
-    interface DebugListener {
+    fun interface DebugListener {
         fun accept(method: String, vararg args: Any)
     }
 

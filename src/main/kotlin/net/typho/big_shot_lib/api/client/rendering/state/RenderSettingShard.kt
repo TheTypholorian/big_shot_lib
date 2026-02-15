@@ -20,11 +20,11 @@ interface RenderSettingShard : GlBindable {
         @JvmField
         val list: List<GlBindable>
     ) : RenderSettingShard {
-        override fun bind() {
+        override fun bind(pushStack: Boolean) {
             list.forEach { it.bind() }
         }
 
-        override fun unbind() {
+        override fun unbind(popStack: Boolean) {
             list.forEach { it.unbind() }
         }
 
@@ -47,7 +47,7 @@ interface RenderSettingShard : GlBindable {
             REGISTRY[DepthMaskShard.location()] = DepthMaskShard
             REGISTRY[DepthTestShard.location()] = DepthTestShard
             REGISTRY[PolygonModeShard.location()] = PolygonModeShard
-            REGISTRY[StencilShard.Companion.location()] = StencilShard.Companion
+            REGISTRY[StencilShard.location()] = StencilShard.Companion
         }
     }
 }

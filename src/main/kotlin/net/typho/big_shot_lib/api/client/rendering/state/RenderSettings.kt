@@ -12,11 +12,11 @@ open class RenderSettings(
 ) : Named, GlBindable {
     override fun location() = location
 
-    override fun bind() {
+    override fun bind(pushStack: Boolean) {
         shards.forEach(RenderSettingShard::bind)
     }
 
-    override fun unbind() {
+    override fun unbind(popStack: Boolean) {
         shards.forEach(RenderSettingShard::unbind)
     }
 

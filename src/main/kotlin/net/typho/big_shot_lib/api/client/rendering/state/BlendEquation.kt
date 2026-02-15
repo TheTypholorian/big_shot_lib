@@ -16,8 +16,8 @@ enum class BlendEquation(
 
     override fun glId() = glId
 
-    override fun bind() = OpenGL.Companion.INSTANCE.blendEquation(this)
+    override fun bind(pushStack: Boolean) = OpenGL.INSTANCE.blendEquation(this)
 
-    override fun unbind() {
+    override fun unbind(popStack: Boolean) {
     }
 }

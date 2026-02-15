@@ -20,7 +20,7 @@ open class BlendShard(
     BlendShard,
     if (enabled) listOf(
         GlFlag.BLEND.bindable,
-        GlBindable.ofState(OpenGL.Companion.INSTANCE::blendColor, color, IColor.BLACK),
+        GlBindable.ofState(OpenGL.INSTANCE::blendColor, color, IColor.BLACK),
         equation,
         function
     ) else listOf()
