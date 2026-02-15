@@ -7,9 +7,12 @@ import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
-import net.typho.big_shot_lib.api.client.rendering.textures.*
+import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
+import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
+import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebufferAttachment
 import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
 import net.typho.big_shot_lib.api.services.WrapperUtil
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
@@ -68,13 +71,17 @@ class WrapperUtilImpl : WrapperUtil {
 
     override fun wrap(target: RenderTarget): GlFramebuffer {
         return object : GlFramebuffer {
-            override var colorAttachments: List<GlFramebufferAttachment> = listOf(NeoTexture2D(target.colorTextureId, TextureFormat.RGBA8, false))
+            override var colorAttachments: List<GlFramebufferAttachment> = listOf()
+                get() = (target as RenderTargetExtension).`big_shot_lib$getColorAttachments`()
                 set(value) {
-                    throw UnsupportedOperationException()
+                    field = value
+                    (target as RenderTargetExtension).`big_shot_lib$setColorAttachments`(value)
                 }
-            override var depthAttachment: GlFramebufferAttachment? = if (target.useDepth) NeoTexture2D(target.depthTextureId, TextureFormat.DEPTH_COMPONENT, false) else null
+            override var depthAttachment: GlFramebufferAttachment? = null
+                get() = (target as RenderTargetExtension).`big_shot_lib$getDepthAttachment`()
                 set(value) {
-                    throw UnsupportedOperationException()
+                    field = value
+                    (target as RenderTargetExtension).`big_shot_lib$setDepthAttachment`(value)
                 }
 
             override fun resize(width: Int, height: Int) {
@@ -89,12 +96,20 @@ class WrapperUtilImpl : WrapperUtil {
                 OpenGL.INSTANCE.viewport(0, 0, target.viewWidth, target.viewHeight)
             }
 
-            override fun bind() {
-                target.bindWrite(false)
+            override fun bind(pushStack: Boolean) {
+                if (pushStack) {
+                    GlStateStack.framebuffer.push(target.frameBufferId)
+                } else {
+                    target.bindWrite(false)
+                }
             }
 
-            override fun unbind() {
-                target.unbindWrite()
+            override fun unbind(popStack: Boolean) {
+                if (popStack) {
+                    GlStateStack.framebuffer.pop()
+                } else {
+                    target.unbindWrite()
+                }
             }
 
             override fun free() {

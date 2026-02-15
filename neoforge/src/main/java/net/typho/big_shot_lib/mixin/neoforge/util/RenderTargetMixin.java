@@ -1,0 +1,185 @@
+package net.typho.big_shot_lib.mixin.neoforge.util;
+
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
+import net.typho.big_shot_lib.api.client.rendering.state.OpenGL;
+import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebufferAttachment;
+import net.typho.big_shot_lib.api.client.rendering.textures.GlTexture;
+import net.typho.big_shot_lib.api.client.rendering.textures.NeoTexture2D;
+import net.typho.big_shot_lib.api.client.rendering.textures.TextureFormat;
+import net.typho.big_shot_lib.api.util.buffers.BufferUploader;
+import net.typho.big_shot_lib.impl.util.RenderTargetExtension;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.NativeResource;
+import org.spongepowered.asm.mixin.*;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_NONE;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
+
+@Mixin(value = RenderTarget.class, remap = false)
+public abstract class RenderTargetMixin implements RenderTargetExtension {
+    @Shadow
+    @Final
+    public boolean useDepth;
+    @Unique
+    private List<? extends @NotNull GlFramebufferAttachment> big_shot_lib$colorAttachments = Collections.singletonList(new NeoTexture2D(TextureFormat.RGBA8));
+    @Unique
+    private GlFramebufferAttachment big_shot_lib$depthAttachment = useDepth ? new NeoTexture2D(TextureFormat.DEPTH_COMPONENT) : null;
+    @Shadow
+    public int viewWidth;
+    @Shadow
+    public int viewHeight;
+    @Shadow
+    protected int colorTextureId;
+    @Shadow
+    protected int depthBufferId;
+    @Shadow
+    public int frameBufferId;
+
+    @Shadow
+    public abstract void unbindRead();
+
+    @Shadow
+    public abstract void unbindWrite();
+
+    @Shadow
+    protected abstract void setFilterMode(int filterMode, boolean force);
+
+    @Shadow
+    public abstract void checkStatus();
+
+    @Shadow
+    public abstract void clear(boolean clearError);
+
+    @Shadow
+    public abstract void resize(int width, int height, boolean clearError);
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public @NotNull List<@NotNull GlFramebufferAttachment> big_shot_lib$getColorAttachments() {
+        return (List<GlFramebufferAttachment>) big_shot_lib$colorAttachments;
+    }
+
+    @Override
+    public void big_shot_lib$setColorAttachments(@NotNull List<? extends @NotNull GlFramebufferAttachment> attachments) {
+        big_shot_lib$colorAttachments = attachments;
+    }
+
+    @Override
+    public @Nullable GlFramebufferAttachment big_shot_lib$getDepthAttachment() {
+        return big_shot_lib$depthAttachment;
+    }
+
+    @Override
+    public void big_shot_lib$setDepthAttachment(@Nullable GlFramebufferAttachment attachment) {
+        big_shot_lib$depthAttachment = attachment;
+    }
+
+    /**
+     * @author The Typhothanian
+     * @reason Dynamically modifying the attachments of a RenderTarget (ex. for dynamic buffers)
+     */
+    @Overwrite
+    public void destroyBuffers() {
+        RenderSystem.assertOnRenderThreadOrInit();
+        unbindRead();
+        unbindWrite();
+
+        if (frameBufferId > -1) {
+            OpenGL.INSTANCE.bindFramebuffer(0);
+            OpenGL.INSTANCE.deleteFramebuffer(frameBufferId);
+            frameBufferId = -1;
+        }
+    }
+
+    /**
+     * @author The Typhothanian
+     * @reason Dynamically modifying the attachments of a RenderTarget (ex. for dynamic buffers)
+     */
+    @Overwrite
+    public void createBuffers(int width, int height, boolean clearError) {
+        frameBufferId = OpenGL.INSTANCE.createFramebuffer();
+        OpenGL.INSTANCE.bindFramebuffer(frameBufferId);
+
+        int i = 0;
+        List<Integer> buffers = new LinkedList<>();
+
+        for (GlFramebufferAttachment attachment : big_shot_lib$colorAttachments) {
+            int point = GL_COLOR_ATTACHMENT0 + i++;
+            buffers.add(point);
+            BufferUploader uploader = attachment.resize(width, height);
+
+            if (uploader != null) {
+                uploader.uploadNull();
+            }
+
+            attachment.attachToFramebuffer(point);
+        }
+
+        OpenGL.INSTANCE.drawBuffers(buffers.isEmpty() ? new int[]{GL_NONE} : buffers.stream().mapToInt(j -> j).toArray());
+
+        if (big_shot_lib$depthAttachment != null) {
+            BufferUploader uploader = big_shot_lib$depthAttachment.resize(width, height);
+
+            if (uploader != null) {
+                uploader.uploadNull();
+            }
+
+            big_shot_lib$depthAttachment.attachToFramebuffer(
+                    Objects.requireNonNull(
+                            big_shot_lib$depthAttachment.format().getDepthStencilAttachmentId(),
+                            big_shot_lib$depthAttachment.format() + " is neither a depth nor stencil format"
+                    )
+            );
+        } else {
+            NeoTexture2D.NULL.attachToFramebuffer(GL_DEPTH_ATTACHMENT);
+        }
+
+        colorTextureId = ((GlTexture) big_shot_lib$colorAttachments.getFirst()).glId();
+        depthBufferId = big_shot_lib$depthAttachment == null ? -1 : ((GlTexture) big_shot_lib$depthAttachment).glId();
+
+        setFilterMode(GL_NEAREST, true);
+
+        checkStatus();
+        clear(clearError);
+        unbindRead();
+    }
+
+    /**
+     * @author The Typhothanian
+     * @reason Dynamically modifying the attachments of a RenderTarget (ex. for dynamic buffers)
+     */
+    @Overwrite
+    public void enableStencil() {
+        if (!isStencilEnabled()) {
+            if (big_shot_lib$depthAttachment instanceof NativeResource depth) {
+                depth.free();
+            }
+
+            big_shot_lib$depthAttachment = useDepth ? new NeoTexture2D(TextureFormat.DEPTH32F_STENCIL8) : null;
+            resize(viewWidth, viewHeight, Minecraft.ON_OSX);
+        }
+    }
+
+    /**
+     * @author The Typhothanian
+     * @reason Dynamically modifying the attachments of a RenderTarget (ex. for dynamic buffers)
+     */
+    @Overwrite
+    public boolean isStencilEnabled() {
+        if (big_shot_lib$depthAttachment == null) {
+            return false;
+        }
+
+        return big_shot_lib$depthAttachment.format().hasStencil;
+    }
+}

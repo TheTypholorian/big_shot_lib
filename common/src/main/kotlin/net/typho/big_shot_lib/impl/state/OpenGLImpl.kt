@@ -138,7 +138,7 @@ class OpenGLImpl : OpenGL {
     override fun bindTexture(type: TextureType, glId: Int) {
         debugPrint("glBindTexture", type, glId)
 
-        if (type == TextureType.TWO_D) {
+        if (type == TextureType.TEXTURE_2D) {
             GlStateManager._bindTexture(glId)
         } else {
             glBindTexture(type.glId, glId)
