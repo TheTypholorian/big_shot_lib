@@ -21,10 +21,8 @@ open class NeoTextureCube(
 
     init {
         if (defaultParams) {
-            bind()
             setInterpolation(InterpolationType.NEAREST, InterpolationType.NEAREST)
             setWrapping(WrappingType.CLAMP_TO_EDGE, WrappingType.CLAMP_TO_EDGE)
-            unbind()
         }
     }
 

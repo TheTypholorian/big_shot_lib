@@ -22,6 +22,8 @@ open class GlVertexArray(
     }
 
     fun drawElements(mode: VertexFormat.Mode, indices: Int, type: VertexFormat.IndexType) {
+        bind()
         glDrawElements(GlUtil.INSTANCE.toGlId(mode), indices, GlUtil.INSTANCE.toGlId(type), 0L)
+        unbind()
     }
 }

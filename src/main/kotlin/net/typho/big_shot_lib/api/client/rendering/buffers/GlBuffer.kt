@@ -38,11 +38,15 @@ open class GlBuffer(
     }
 
     override fun upload(buffer: ByteBuffer) {
+        bind()
         OpenGL.INSTANCE.bufferData(type, buffer, usage)
+        unbind()
     }
 
     override fun uploadNull() {
+        bind()
         OpenGL.INSTANCE.bufferData(type, 0L, usage)
+        unbind()
     }
 
     override fun toString(): String {

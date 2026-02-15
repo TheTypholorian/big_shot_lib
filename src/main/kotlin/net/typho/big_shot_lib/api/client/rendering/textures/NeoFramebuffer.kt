@@ -60,6 +60,8 @@ open class NeoFramebuffer(
     }
 
     protected fun attachColor() {
+        bind()
+
         colorAttachments.forEachIndexed { index, attachment ->
             attachment.resize(width, height)?.uploadNull()
             attachment.attachToFramebuffer(GL_COLOR_ATTACHMENT0 + index)
@@ -69,9 +71,13 @@ open class NeoFramebuffer(
                 .ifEmpty { listOf(GL_NONE) }
                 .toIntArray()
         )
+
+        unbind()
     }
 
     protected fun attachDepth() {
+        bind()
+
         depthAttachment?.let { attachment ->
             attachment.resize(width, height)?.uploadNull()
             attachment.attachToFramebuffer(
@@ -79,14 +85,20 @@ open class NeoFramebuffer(
                     ?: throw IllegalTextureFormatException("${attachment.format()} is neither a depth nor stencil format")
             )
         }
+
+        unbind()
     }
 
     protected fun checkStatus() {
+        bind()
+
         val status = OpenGL.INSTANCE.checkFramebufferStatus()
 
         if (status != GL_FRAMEBUFFER_COMPLETE) {
             throw IncompleteFramebufferException("0x${status.toString(16)}")
         }
+
+        unbind()
     }
 
     override fun resize(width: Int, height: Int) {
@@ -102,15 +114,23 @@ open class NeoFramebuffer(
     }
 
     override fun clear(vararg bits: ClearBit) {
+        bind()
+
         if (bits.isEmpty()) {
             throw IllegalArgumentException()
         }
 
         OpenGL.INSTANCE.clear(bits.initAndGetClearMask())
+
+        unbind()
     }
 
     override fun viewport() {
+        bind()
+
         OpenGL.INSTANCE.viewport(0, 0, width(), height())
+
+        unbind()
     }
 
     override fun width() = width
