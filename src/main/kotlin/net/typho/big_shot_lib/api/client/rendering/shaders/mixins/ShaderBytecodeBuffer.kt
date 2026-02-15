@@ -204,6 +204,71 @@ open class ShaderBytecodeBuffer(
         )
     }
 
+    fun setVariableLocation(
+        id: Int,
+        location: Int
+    ) {
+        insert(
+            findOpcode(ShaderOpcode.OP_DECORATE)!!.index,
+            ShaderOpcode.Builder(ShaderOpcode.OP_DECORATE)
+                .putWord(id)
+                .putWord(30) // Location
+                .putWord(location)
+                .build()
+        )
+    }
+
+    fun setVariableToOther(
+        inputId: Int,
+        outputId: Int,
+        typeId: Int
+    ) {
+        val tempVar = bound++
+        insert(
+            findOpcodeInMethod("main", ShaderOpcode.OP_RETURN)!!.index,
+            ShaderOpcode.Builder(ShaderOpcode.OP_LOAD)
+                .putWord(typeId)
+                .putWord(tempVar)
+                .putWord(inputId)
+                .build(),
+            ShaderOpcode.Builder(ShaderOpcode.OP_STORE)
+                .putWord(outputId)
+                .putWord(tempVar)
+                .build()
+        )
+    }
+
+    fun addPassthroughOutput(
+        type: Int,
+        inId: Int,
+        outName: String,
+        outLocation: Int
+    ) {
+        val output = addStaticVar(ShaderStorageClass.OUTPUT, type, outName)
+        addEntrypointVars(output.id)
+        setVariableLocation(output.id, outLocation)
+
+        setVariableToOther(inId, output.id, type)
+    }
+
+    fun addPassthroughInputOutput(
+        type: Int,
+        inName: String,
+        inLocation: Int,
+        outName: String,
+        outLocation: Int
+    ) {
+        val normalVar = addStaticVar(ShaderStorageClass.INPUT, type, inName)
+        addEntrypointVars(normalVar.id)
+        setVariableLocation(normalVar.id, inLocation)
+
+        val output = addStaticVar(ShaderStorageClass.OUTPUT, type, outName)
+        addEntrypointVars(output.id)
+        setVariableLocation(output.id, outLocation)
+
+        setVariableToOther(normalVar.id, output.id, type)
+    }
+
     fun addStaticVar(
         storageClass: ShaderStorageClass,
         typeId: Int,

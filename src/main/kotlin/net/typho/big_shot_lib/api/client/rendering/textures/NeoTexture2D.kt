@@ -11,7 +11,7 @@ open class NeoTexture2D(
     @JvmField
     val format: TextureFormat,
     defaultParams: Boolean = true
-) : GlResource(glId, GlStateStack.textures[TextureType.TWO_D]!!), GlTexture2D {
+) : GlResource(glId, GlStateStack.textures[TextureType.TEXTURE_2D]!!), GlTexture2D {
     companion object {
         @JvmField
         val NULL = NeoTexture2D(0, TextureFormat.NULL, false)
@@ -30,7 +30,7 @@ open class NeoTexture2D(
         OpenGL.INSTANCE.deleteTexture(glId)
     }
 
-    override fun type() = TextureType.TWO_D
+    override fun type() = TextureType.TEXTURE_2D
 
     override fun format() = format
 

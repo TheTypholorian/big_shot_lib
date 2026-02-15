@@ -14,7 +14,11 @@ data class ShaderProgramKey(
     @JvmField
     val format: VertexFormat,
     @JvmField
-    val sources: Set<ShaderSourceType>
+    val sources: Set<ShaderSourceType>,
+    @JvmField
+    val builtinDynamicBuffers: Set<ResourceIdentifier>,
+    @JvmField
+    val disabledDynamicBuffers: Set<ResourceIdentifier>
 ) : Named {
     companion object {
         @JvmField
@@ -22,6 +26,8 @@ data class ShaderProgramKey(
             ShaderLoaderType.NULL,
             ResourceIdentifier("opengl", "null"),
             DefaultVertexFormat.POSITION,
+            setOf(),
+            setOf(),
             setOf()
         )
     }

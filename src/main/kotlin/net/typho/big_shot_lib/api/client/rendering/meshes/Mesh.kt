@@ -24,9 +24,9 @@ open class Mesh(
     @JvmField
     val vao: GlVertexArray = GlVertexArray(),
     @JvmField
-    val vbo: GlBuffer = GlBuffer(BufferType.ARRAY, usage),
+    val vbo: GlBuffer = GlBuffer(BufferType.ARRAY_BUFFER, usage),
     @JvmField
-    val ebo: GlBuffer = GlBuffer(BufferType.ELEMENT_ARRAY, usage)
+    val ebo: GlBuffer = GlBuffer(BufferType.ELEMENT_ARRAY_BUFFER, usage)
 ) : GlBindable, NativeResource {
     @JvmField
     protected var indexCount = 0
@@ -103,6 +103,7 @@ open class Mesh(
         }
 
         vao.unbind()
+        ebo.unbind()
     }
 
     inner class Builder(

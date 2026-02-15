@@ -18,14 +18,24 @@ object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"),
     ): NeoShader {
         val format = json.get("format") ?: throw JsonParseException("Shader $id is missing vertex format")
         val sourcesObject = json.getAsJsonObject("sources") ?: throw JsonParseException("Shader $id is missing sources")
-        val sources = sourcesObject.keySet().map { ShaderSourceType.valueOf(it.uppercase()) } .toSet()
+        val sources = sourcesObject.keySet().map { ShaderSourceType.valueOf(it.uppercase()) }.toSet()
+        val builtinDynamicBuffers = json.getAsJsonArray("builtinDynamicBuffers")
+            ?.map { ResourceIdentifier(it.asString) }
+            ?.toSet() ?: setOf()
+        val disabledDynamicBuffers = json.getAsJsonArray("disabledDynamicBuffers")
+            ?.map { ResourceIdentifier(it.asString) }
+            ?.toSet() ?: setOf()
 
-        val builder = NeoShader.Builder(ShaderProgramKey(
-            ShaderLoaderType.BIG_SHOT,
-            id,
-            VertexFormatUtil.fromJson(format),
-            sources
-        ))
+        val builder = NeoShader.Builder(
+            ShaderProgramKey(
+                ShaderLoaderType.BIG_SHOT,
+                id,
+                VertexFormatUtil.fromJson(format),
+                sources,
+                builtinDynamicBuffers,
+                disabledDynamicBuffers
+            )
+        )
         val resolves = ShaderFileResolver.ResourceBacked(manager)
 
         for (source in sources) {
@@ -36,7 +46,8 @@ object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"),
                 resolves.loadFile(
                     "$file.${source.extension}",
                     id.toString()
-                ) ?: throw ResourceNotFoundException("Couldn't find shader file $file, requested by $id. Searched in ${ShaderFileResolver.includeKeys}"),
+                )
+                    ?: throw ResourceNotFoundException("Couldn't find shader file $file, requested by $id. Searched in ${ShaderFileResolver.includeKeys}"),
                 resolves
             )
         }

@@ -11,7 +11,7 @@ open class NeoTextureCube(
     @JvmField
     val format: TextureFormat,
     defaultParams: Boolean = true
-) : GlResource(glId, GlStateStack.textures[TextureType.CUBE_MAP]!!), GlTextureCube {
+) : GlResource(glId, GlStateStack.textures[TextureType.TEXTURE_CUBE_MAP]!!), GlTextureCube {
     companion object {
         @JvmField
         val NULL = NeoTextureCube(0, TextureFormat.NULL)
@@ -30,7 +30,7 @@ open class NeoTextureCube(
         OpenGL.INSTANCE.deleteTexture(glId)
     }
 
-    override fun type() = TextureType.CUBE_MAP
+    override fun type() = TextureType.TEXTURE_CUBE_MAP
 
     override fun format() = format
 

@@ -11,7 +11,7 @@ open class NeoTexture1D(
     @JvmField
     val format: TextureFormat,
     defaultParams: Boolean = true
-) : GlResource(glId, GlStateStack.textures[TextureType.ONE_D]!!), GlTexture1D {
+) : GlResource(glId, GlStateStack.textures[TextureType.TEXTURE_1D]!!), GlTexture1D {
     companion object {
         @JvmField
         val NULL = NeoTexture1D(0, TextureFormat.NULL)
@@ -30,7 +30,7 @@ open class NeoTexture1D(
         OpenGL.INSTANCE.deleteTexture(glId)
     }
 
-    override fun type() = TextureType.ONE_D
+    override fun type() = TextureType.TEXTURE_1D
 
     override fun format() = format
 

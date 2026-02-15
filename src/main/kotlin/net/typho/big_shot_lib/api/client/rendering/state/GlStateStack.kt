@@ -6,43 +6,56 @@ import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.Consumer
+import java.util.function.Function
 import java.util.function.Predicate
 import kotlin.enums.enumEntries
 
 open class GlStateStack(
     @JvmField
+    val name: String,
+    @JvmField
     val bind: Consumer<Int>
 ) {
     companion object {
         @JvmField
-        val buffers = createMap<BufferType>(OpenGL.INSTANCE::bindBuffer)
+        val buffers = createMap<BufferType>(BufferType::name, OpenGL.INSTANCE::bindBuffer)
         @JvmField
-        val renderBuffer = GlStateStack(OpenGL.INSTANCE::bindRenderBuffer)
+        val renderBuffer = GlStateStack("RENDER_BUFFER", OpenGL.INSTANCE::bindRenderBuffer)
         @JvmField
-        val textures = createMap<TextureType>(OpenGL.INSTANCE::bindTexture)
+        val textures = createMap<TextureType>(TextureType::name, OpenGL.INSTANCE::bindTexture)
         @JvmField
-        val framebuffer = GlStateStack(OpenGL.INSTANCE::bindFramebuffer)
+        val framebuffer = GlStateStack("FRAMEBUFFER", OpenGL.INSTANCE::bindFramebuffer)
         @JvmField
-        val vertexArray = GlStateStack(OpenGL.INSTANCE::bindVertexArray)
+        val vertexArray = GlStateStack("VERTEX_ARRAY", OpenGL.INSTANCE::bindVertexArray)
         @JvmField
-        val shader = GlStateStack(OpenGL.INSTANCE::bindShaderProgram)
+        val shader = GlStateStack("SHADER", OpenGL.INSTANCE::bindShaderProgram)
 
         @JvmStatic
-        inline fun <reified T : Enum<T>> createMap(bind: BiConsumer<T, Int>): Map<T, GlStateStack> {
-            return createMap({ true }, bind)
+        inline fun <reified T : Enum<T>> createMap(name: Function<T, String>, bind: BiConsumer<T, Int>): Map<T, GlStateStack> {
+            return createMap(name, { true }, bind)
         }
 
         @JvmStatic
-        inline fun <reified T : Enum<T>> createMap(predicate: Predicate<T>, bind: BiConsumer<T, Int>): Map<T, GlStateStack> {
+        inline fun <reified T : Enum<T>> createMap(name: Function<T, String>, predicate: Predicate<T>, bind: BiConsumer<T, Int>): Map<T, GlStateStack> {
             val map = HashMap<T, GlStateStack>()
 
             for (entry in enumEntries<T>()) {
                 if (predicate.test(entry)) {
-                    map[entry] = GlStateStack { bind.accept(entry, it) }
+                    map[entry] = GlStateStack(name.apply(entry)) { bind.accept(entry, it) }
                 }
             }
 
             return map
+        }
+
+        @JvmStatic
+        fun ensureAllEmpty() {
+            buffers.values.forEach { it.ensureEmpty() }
+            renderBuffer.ensureEmpty()
+            textures.values.forEach { it.ensureEmpty() }
+            framebuffer.ensureEmpty()
+            vertexArray.ensureEmpty()
+            shader.ensureEmpty()
         }
     }
 
@@ -65,11 +78,11 @@ open class GlStateStack(
 
     fun pop() {
         if (bound.isEmpty()) {
-            throw IllegalStateException("Tried to pop a GlStateStack that was already empty")
+            throw IllegalStateException("Tried to pop GlStateStack $name that was already empty")
         }
 
         val removed = bound.removeLast()
-        val current = bound.lastOrNull()
+        val current = getBound()
 
         if (current == null) {
             bind.accept(0)
@@ -79,6 +92,14 @@ open class GlStateStack(
     }
 
     fun rebind() {
-        bind.accept(bound.lastOrNull() ?: 0)
+        bind.accept(getBound() ?: 0)
+    }
+
+    fun getBound(): Int? = bound.lastOrNull()
+
+    fun ensureEmpty() {
+        if (bound.isNotEmpty()) {
+            throw IllegalStateException("Someone pushed and forgot to pop GlStateStack $name")
+        }
     }
 }

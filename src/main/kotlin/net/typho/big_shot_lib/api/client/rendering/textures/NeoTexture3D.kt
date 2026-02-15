@@ -11,7 +11,7 @@ open class NeoTexture3D(
     @JvmField
     val format: TextureFormat,
     defaultParams: Boolean = true
-) : GlResource(glId, GlStateStack.textures[TextureType.THREE_D]!!), GlTexture3D {
+) : GlResource(glId, GlStateStack.textures[TextureType.TEXTURE_3D]!!), GlTexture3D {
     companion object {
         @JvmField
         val NULL = NeoTexture3D(0, TextureFormat.NULL)
@@ -30,7 +30,7 @@ open class NeoTexture3D(
         OpenGL.INSTANCE.deleteTexture(glId)
     }
 
-    override fun type() = TextureType.THREE_D
+    override fun type() = TextureType.TEXTURE_3D
 
     override fun format() = format
 
