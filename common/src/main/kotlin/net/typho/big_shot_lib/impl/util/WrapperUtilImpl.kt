@@ -7,6 +7,7 @@ import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
@@ -95,12 +96,20 @@ class WrapperUtilImpl : WrapperUtil {
                 OpenGL.INSTANCE.viewport(0, 0, target.viewWidth, target.viewHeight)
             }
 
-            override fun bind() {
-                target.bindWrite(false)
+            override fun bind(pushStack: Boolean) {
+                if (pushStack) {
+                    GlStateStack.framebuffer.push(target.frameBufferId)
+                } else {
+                    target.bindWrite(false)
+                }
             }
 
-            override fun unbind() {
-                target.unbindWrite()
+            override fun unbind(popStack: Boolean) {
+                if (popStack) {
+                    GlStateStack.framebuffer.pop()
+                } else {
+                    target.unbindWrite()
+                }
             }
 
             override fun free() {
