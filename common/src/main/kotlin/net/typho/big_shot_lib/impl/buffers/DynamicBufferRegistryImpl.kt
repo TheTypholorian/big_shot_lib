@@ -5,6 +5,9 @@ import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBuffer
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import org.lwjgl.opengl.GL11.GL_BLEND
+import org.lwjgl.opengl.GL30.glDisablei
+import org.lwjgl.opengl.GL30.glEnablei
 import java.util.*
 
 class DynamicBufferRegistryImpl : DynamicBufferRegistry {
@@ -33,5 +36,21 @@ class DynamicBufferRegistryImpl : DynamicBufferRegistry {
         }
 
         toAdd.clear()
+    }
+
+    fun enableBlend() {
+        for (entry in buffers) {
+            if (entry.value.blend()) {
+                glEnablei(GL_BLEND, entry.key)
+            } else {
+                glDisablei(GL_BLEND, entry.key)
+            }
+        }
+    }
+
+    fun disableBlend() {
+        for (entry in buffers) {
+            glDisablei(GL_BLEND, entry.key)
+        }
     }
 }
