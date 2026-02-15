@@ -31,9 +31,9 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
     @Final
     public boolean useDepth;
     @Unique
-    private List<? extends @NotNull GlFramebufferAttachment> big_shot_lib$colorAttachments = Collections.singletonList(new NeoTexture2D(TextureFormat.RGBA8));
+    private List<? extends @NotNull GlFramebufferAttachment> big_shot_lib$colorAttachments;
     @Unique
-    private GlFramebufferAttachment big_shot_lib$depthAttachment = useDepth ? new NeoTexture2D(TextureFormat.DEPTH_COMPONENT) : null;
+    private GlFramebufferAttachment big_shot_lib$depthAttachment;
     @Shadow
     public int viewWidth;
     @Shadow
@@ -66,6 +66,10 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
     @Override
     @SuppressWarnings("unchecked")
     public @NotNull List<@NotNull GlFramebufferAttachment> big_shot_lib$getColorAttachments() {
+        if (big_shot_lib$colorAttachments == null) {
+            big_shot_lib$colorAttachments = Collections.singletonList(new NeoTexture2D(TextureFormat.RGBA8));
+        }
+
         return (List<GlFramebufferAttachment>) big_shot_lib$colorAttachments;
     }
 
@@ -76,6 +80,10 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
 
     @Override
     public @Nullable GlFramebufferAttachment big_shot_lib$getDepthAttachment() {
+        if (big_shot_lib$depthAttachment == null && useDepth) {
+            big_shot_lib$depthAttachment = new NeoTexture2D(TextureFormat.DEPTH_COMPONENT);
+        }
+
         return big_shot_lib$depthAttachment;
     }
 
@@ -127,17 +135,19 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
 
         OpenGL.INSTANCE.drawBuffers(buffers.isEmpty() ? new int[]{GL_NONE} : buffers.stream().mapToInt(j -> j).toArray());
 
-        if (big_shot_lib$depthAttachment != null) {
-            BufferUploader uploader = big_shot_lib$depthAttachment.resize(width, height);
+        GlFramebufferAttachment depth = big_shot_lib$getDepthAttachment();
+
+        if (depth != null) {
+            BufferUploader uploader = depth.resize(width, height);
 
             if (uploader != null) {
                 uploader.uploadNull();
             }
 
-            big_shot_lib$depthAttachment.attachToFramebuffer(
+            depth.attachToFramebuffer(
                     Objects.requireNonNull(
-                            big_shot_lib$depthAttachment.format().getDepthStencilAttachmentId(),
-                            big_shot_lib$depthAttachment.format() + " is neither a depth nor stencil format"
+                            depth.format().getDepthStencilAttachmentId(),
+                            depth.format() + " is neither a depth nor stencil format"
                     )
             );
         } else {
@@ -145,7 +155,7 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
         }
 
         colorTextureId = ((GlTexture) big_shot_lib$colorAttachments.getFirst()).glId();
-        depthBufferId = big_shot_lib$depthAttachment == null ? -1 : ((GlTexture) big_shot_lib$depthAttachment).glId();
+        depthBufferId = depth == null ? -1 : ((GlTexture) depth).glId();
 
         setFilterMode(GL_NEAREST, true);
 

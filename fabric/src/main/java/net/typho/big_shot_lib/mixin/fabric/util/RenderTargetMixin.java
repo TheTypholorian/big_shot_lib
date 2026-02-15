@@ -123,7 +123,6 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
 
         int i = 0;
         List<Integer> buffers = new LinkedList<>();
-        System.out.println(big_shot_lib$getColorAttachments());
 
         for (GlFramebufferAttachment attachment : big_shot_lib$getColorAttachments()) {
             int point = GL_COLOR_ATTACHMENT0 + i++;
@@ -140,7 +139,6 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
         OpenGL.INSTANCE.drawBuffers(buffers.isEmpty() ? new int[]{GL_NONE} : buffers.stream().mapToInt(j -> j).toArray());
 
         GlFramebufferAttachment depth = big_shot_lib$getDepthAttachment();
-        System.out.println(depth);
 
         if (depth != null) {
             BufferUploader uploader = depth.resize(width, height);
