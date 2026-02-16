@@ -33,11 +33,19 @@ interface GlBindable {
         @JvmStatic
         fun <T> ofStack(stack: GlStateStack<T>, bound: T) = object : GlBindable {
             override fun bind(pushStack: Boolean) {
-                stack.push(bound)
+                if (pushStack) {
+                    stack.push(bound)
+                } else {
+                    stack.bind.accept(bound)
+                }
             }
 
             override fun unbind(popStack: Boolean) {
-                stack.pop()
+                if (popStack) {
+                    stack.pop()
+                } else {
+                    stack.bind.accept(null)
+                }
             }
         }
     }

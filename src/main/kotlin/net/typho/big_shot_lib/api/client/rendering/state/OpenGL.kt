@@ -25,6 +25,8 @@ interface OpenGL {
 
     fun addDebugListener(listener: DebugListener)
 
+    fun recordRenderCall(task: Runnable)
+
     /**
      * `glEnable(flag)`
      */
