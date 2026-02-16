@@ -22,7 +22,6 @@ import java.util.Objects;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_NONE;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
-import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 
 @Mixin(value = RenderTarget.class, remap = false)
 public abstract class RenderTargetMixin implements RenderTargetExtension {
@@ -121,6 +120,14 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
         frameBufferId = OpenGL.INSTANCE.createFramebuffer();
         OpenGL.INSTANCE.bindFramebuffer(frameBufferId);
 
+        if (width <= 0) {
+            width = viewWidth <= 0 ? 1 : viewWidth;
+        }
+
+        if (height <= 0) {
+            height = viewHeight <= 0 ? 1 : viewHeight;
+        }
+
         int i = 0;
         List<Integer> buffers = new LinkedList<>();
 
@@ -153,8 +160,6 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
                             depth.format() + " is neither a depth nor stencil format"
                     )
             );
-        } else {
-            NeoTexture2D.NULL.attachToFramebuffer(GL_DEPTH_ATTACHMENT);
         }
 
         colorTextureId = ((GlTexture) big_shot_lib$getColorAttachments().getFirst()).glId();
