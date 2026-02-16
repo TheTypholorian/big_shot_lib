@@ -134,12 +134,7 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
         for (GlFramebufferAttachment attachment : big_shot_lib$getColorAttachments()) {
             int point = GL_COLOR_ATTACHMENT0 + i++;
             buffers.add(point);
-            BufferUploader uploader = attachment.resize(width, height);
-
-            if (uploader != null) {
-                uploader.uploadNull();
-            }
-
+            attachment.resize(width, height, BufferUploader::uploadNull);
             attachment.attachToFramebuffer(point);
         }
 
@@ -148,12 +143,7 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
         GlFramebufferAttachment depth = big_shot_lib$getDepthAttachment();
 
         if (depth != null) {
-            BufferUploader uploader = depth.resize(width, height);
-
-            if (uploader != null) {
-                uploader.uploadNull();
-            }
-
+            depth.resize(width, height, BufferUploader::uploadNull);
             depth.attachToFramebuffer(
                     Objects.requireNonNull(
                             depth.format().getDepthStencilAttachmentId(),

@@ -13,9 +13,9 @@ import net.typho.big_shot_lib.api.client.rendering.textures.*
 import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.*
+import org.lwjgl.opengl.ARBImaging.GL_BLEND_COLOR
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL14.GL_TEXTURE0
-import org.lwjgl.opengl.GL14.glBlendColor
+import org.lwjgl.opengl.GL14.*
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL40.*
@@ -60,6 +60,10 @@ class OpenGLImpl : OpenGL {
         }
     }
 
+    override fun isEnabled(flag: GlFlag): Boolean {
+        return glIsEnabled(flag.glId)
+    }
+
     override fun activeTexture(unit: Int) {
         debugPrint("glActiveTexture", unit)
         GlStateManager._activeTexture(GL_TEXTURE0 + unit)
@@ -96,23 +100,31 @@ class OpenGLImpl : OpenGL {
         GlStateManager.glAttachShader(programId, glId)
     }
 
-    override fun bindBuffer(type: BufferType, glId: Int) {
+    override fun bindBuffer(type: BufferType, glId: Int?) {
         debugPrint("glBindBuffer", type, glId)
-        GlStateManager._glBindBuffer(type.glId, glId)
+        GlStateManager._glBindBuffer(type.glId, glId ?: 0)
+    }
+
+    override fun getBoundBuffer(type: BufferType): Int {
+        return glGetInteger(type.bindingId)
     }
 
     override fun bindBufferBase(
         type: BufferType,
         index: Int,
-        glId: Int
+        glId: Int?
     ) {
         debugPrint("glBindBufferBase", type, index, glId)
-        glBindBufferBase(type.glId, index, glId)
+        glBindBufferBase(type.glId, index, glId ?: 0)
     }
 
-    override fun bindFramebuffer(glId: Int) {
+    override fun bindFramebuffer(glId: Int?) {
         debugPrint("glBindFramebuffer", glId)
-        GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, glId)
+        GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, glId ?: 0)
+    }
+
+    override fun getBoundFramebuffer(): Int {
+        return glGetInteger(GL_DRAW_FRAMEBUFFER_BINDING)
     }
 
     override fun attachFramebufferTexture(attachment: Int, glId: Int) {
@@ -125,29 +137,45 @@ class OpenGLImpl : OpenGL {
         )
     }
 
-    override fun bindRenderBuffer(glId: Int) {
+    override fun bindRenderBuffer(glId: Int?) {
         debugPrint("glBindRenderBuffer", glId)
-        GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, glId)
+        GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, glId ?: 0)
     }
 
-    override fun bindShaderProgram(glId: Int) {
+    override fun getBoundRenderBuffer(): Int {
+        return glGetInteger(GL_RENDERBUFFER_BINDING)
+    }
+
+    override fun bindShaderProgram(glId: Int?) {
         debugPrint("glUseProgram", glId)
-        GlStateManager._glUseProgram(glId)
+        GlStateManager._glUseProgram(glId ?: 0)
     }
 
-    override fun bindTexture(type: TextureType, glId: Int) {
+    override fun getBoundShaderProgram(): Int {
+        return glGetInteger(GL_CURRENT_PROGRAM)
+    }
+
+    override fun bindTexture(type: TextureType, glId: Int?) {
         debugPrint("glBindTexture", type, glId)
 
         if (type == TextureType.TEXTURE_2D) {
-            GlStateManager._bindTexture(glId)
+            GlStateManager._bindTexture(glId ?: 0)
         } else {
-            glBindTexture(type.glId, glId)
+            glBindTexture(type.glId, glId ?: 0)
         }
     }
 
-    override fun bindVertexArray(glId: Int) {
+    override fun getBoundTexture(type: TextureType): Int {
+        return glGetInteger(type.bindingId)
+    }
+
+    override fun bindVertexArray(glId: Int?) {
         debugPrint("glBindVertexArray", glId)
-        GlStateManager._glBindVertexArray(glId)
+        GlStateManager._glBindVertexArray(glId ?: 0)
+    }
+
+    override fun getBoundVertexArray(): Int {
+        return glGetInteger(GL_VERTEX_ARRAY_BINDING)
     }
 
     override fun enableVertexAttribArray(index: Int) {
@@ -209,6 +237,12 @@ class OpenGLImpl : OpenGL {
     override fun blendColor(color: IColor) {
         debugPrint("glBlendColor", color)
         glBlendColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)
+    }
+
+    override fun getBlendColor(): IColor {
+        val color = FloatArray(4)
+        glGetFloatv(GL_BLEND_COLOR, color)
+        return IColor.RGBAF(color[0], color[1], color[2], color[3])
     }
 
     override fun blendEquation(eq: BlendEquation) {
@@ -285,6 +319,14 @@ class OpenGLImpl : OpenGL {
     override fun colorMask(mask: ColorMask) {
         debugPrint("glColorMask", mask)
         GlStateManager._colorMask(mask.red, mask.green, mask.blue, mask.alpha)
+    }
+
+    override fun getColorMask(): ColorMask {
+        MemoryStack.stackPush().use { stack ->
+            val mask = stack.malloc(4)
+            glGetBooleanv(GL_COLOR_WRITEMASK, mask)
+            return ColorMask(mask.get(0) == 1.toByte(), mask.get(1) == 1.toByte(), mask.get(2) == 1.toByte(), mask.get(3) == 1.toByte())
+        }
     }
 
     override fun compileShaderSource(glId: Int, type: ShaderSourceType, name: ResourceIdentifier) {
@@ -378,9 +420,18 @@ class OpenGLImpl : OpenGL {
         GlStateManager._depthFunc(func.glId)
     }
 
+    override fun getDepthFunc(): ComparisonFunc {
+        val id = glGetInteger(GL_DEPTH_FUNC)
+        return ComparisonFunc.entries.first { it.glId == id }
+    }
+
     override fun depthMask(mask: Boolean) {
         debugPrint("glDepthMask", mask)
         GlStateManager._depthMask(mask)
+    }
+
+    override fun getDepthMask(): Boolean {
+        return glGetBoolean(GL_DEPTH_WRITEMASK)
     }
 
     override fun detachShaderSource(programId: Int, glId: Int) {
@@ -407,6 +458,12 @@ class OpenGLImpl : OpenGL {
     override fun polygonMode(mode: PolygonMode) {
         debugPrint("glPolygonMode", GL_FRONT_AND_BACK, mode)
         GlStateManager._polygonMode(GL_FRONT_AND_BACK, mode.glId)
+    }
+
+    override fun getPolygonMode(): PolygonMode {
+        val mode = IntArray(2)
+        glGetIntegerv(GL_POLYGON_MODE, mode)
+        return PolygonMode.entries.first { it.glId == mode[0] }
     }
 
     override fun resizeRenderBuffer(
@@ -554,14 +611,40 @@ class OpenGLImpl : OpenGL {
         GlStateManager._stencilFunc(func.func.glId, func.ref, func.mask)
     }
 
+    override fun getStencilFunc(): StencilFunc {
+        val func = glGetInteger(GL_STENCIL_FUNC)
+        val ref = glGetInteger(GL_STENCIL_REF)
+        val mask = glGetInteger(GL_STENCIL_VALUE_MASK)
+        return StencilFunc(
+            ComparisonFunc.entries.first { it.glId == func },
+            ref,
+            mask
+        )
+    }
+
     override fun stencilMask(mask: Int) {
         debugPrint("glStencilMask", mask)
         GlStateManager._stencilMask(mask)
     }
 
+    override fun getStencilMask(): Int {
+        return glGetInteger(GL_STENCIL_WRITEMASK)
+    }
+
     override fun stencilOp(op: StencilOp) {
         debugPrint("glStencilOp", op)
         GlStateManager._stencilOp(op.stencilFail.glId, op.depthFail.glId, op.depthPass.glId)
+    }
+
+    override fun getStencilOp(): StencilOp {
+        val stencilFail = glGetInteger(GL_STENCIL_FAIL)
+        val depthFail = glGetInteger(GL_STENCIL_PASS_DEPTH_FAIL)
+        val depthPass = glGetInteger(GL_STENCIL_PASS_DEPTH_PASS)
+        return StencilOp(
+            IntAction.entries.first { it.glId == stencilFail },
+            IntAction.entries.first { it.glId == depthFail },
+            IntAction.entries.first { it.glId == depthPass }
+        )
     }
 
     override fun textureData1D(
