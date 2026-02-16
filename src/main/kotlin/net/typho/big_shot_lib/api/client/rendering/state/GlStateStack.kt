@@ -163,7 +163,7 @@ open class GlStateStack<V>(
     @JvmField
     protected val bound = LinkedList<V>()
     @JvmField
-    protected var restoreTo: V = query.get()
+    protected var restoreTo: V? = null
 
     fun push(value: V) {
         if (isNull.test(value)) {
