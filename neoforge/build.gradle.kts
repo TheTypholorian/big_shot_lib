@@ -13,7 +13,7 @@ val modId: String by project
 val version: String by project
 
 base {
-    archivesName = "$modId-neoforge"
+    archivesName = "$modId-mc${libs.versions.minecraft.get()}-neoforge"
 }
 
 modrinth {
@@ -83,17 +83,19 @@ repositories {
 dependencies {
     implementation(libs.kff)
 
-    fun lwjglInclude(dependency: Any) {
+    fun externalDependency(dependency: Any) {
         jarJar(dependency)
         api(dependency)
         additionalRuntimeClasspath(dependency)
     }
 
-    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
+    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3")
 
-    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3")
+    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3")
 
     // natives for neoforge are in src/main/resources because neoforge is stupid
 
     implementation(libs.sodium)
+
+    externalDependency(libs.bigShotApi)
 }

@@ -12,7 +12,7 @@ val modId: String by project
 val version: String by project
 
 base {
-    archivesName = "$modId-fabric"
+    archivesName = "$modId-mc${libs.versions.minecraft.get()}-fabric"
 }
 
 modrinth {
@@ -71,6 +71,11 @@ dependencies {
     lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
     modImplementation(libs.sodium)
+    include(libs.bigShotApi) {
+        artifact {
+            classifier = "intermediary"
+        }
+    }
 }
 
 loom {
