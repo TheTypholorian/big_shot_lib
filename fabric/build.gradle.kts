@@ -55,23 +55,28 @@ dependencies {
 
     modImplementation(libs.flk)
 
-    fun lwjglInclude(dependency: Any) {
+    fun externalDependency(dependency: Any) {
         include(dependency)
         api(dependency)
     }
 
-    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
-    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
-    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
-    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
+    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3")
+    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
+    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
+    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
 
-    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3")
-    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3:natives-windows")
-    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
-    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
+    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3")
+    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-windows")
+    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
+    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
     modImplementation(libs.sodium)
     include(libs.bigShotApi) {
+        artifact {
+            classifier = "intermediary"
+        }
+    }
+    modImplementation(libs.bigShotApi) {
         artifact {
             classifier = "intermediary"
         }
