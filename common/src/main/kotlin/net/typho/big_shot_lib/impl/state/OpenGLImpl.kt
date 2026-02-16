@@ -242,7 +242,7 @@ class OpenGLImpl : OpenGL {
     override fun getBlendColor(): IColor {
         val color = FloatArray(4)
         glGetFloatv(GL_BLEND_COLOR, color)
-        return IColor.RGBAF(color[0], color[1], color[2], color[3])
+        return IColor.RGBAF(color)
     }
 
     override fun blendEquation(eq: BlendEquation) {
