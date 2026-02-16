@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.event;
+package net.typho.big_shot_lib.mixin.neoforge.event;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.level.ChunkHolder;
