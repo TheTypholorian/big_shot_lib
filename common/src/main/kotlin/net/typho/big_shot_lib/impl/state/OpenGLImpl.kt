@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.state
 
 import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.rendering.errors.ShaderCompileException
@@ -31,6 +32,10 @@ class OpenGLImpl : OpenGL {
 
     override fun addDebugListener(listener: OpenGL.DebugListener) {
         listeners.add(listener)
+    }
+
+    override fun recordRenderCall(task: Runnable) {
+        RenderSystem.recordRenderCall(task::run)
     }
 
     override fun enable(flag: GlFlag) {
