@@ -204,7 +204,7 @@ object AlbedoDynamicBuffer : DynamicBuffer {
                 val input = code.addStaticVar(ShaderStorageClass.INPUT, vec2, VERTEX_TEX_COORD_VAR_NAME)
                 code.setVariableLocation(input.id, inputLocation)
 
-                val output = code.addStaticVar(ShaderStorageClass.INPUT, vec4, FRAGMENT_VAR_NAME)
+                val output = code.addStaticVar(ShaderStorageClass.OUTPUT, vec4, FRAGMENT_VAR_NAME)
                 code.setVariableLocation(output.id, fragLocation)
 
                 val tempSamplerVar = code.bound++
