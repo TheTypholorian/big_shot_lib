@@ -17,6 +17,7 @@
     "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
+    "buffers.GlStateManagerMixin",
     "buffers.MinecraftMixin",
     "event.ClientChunkCacheMixin",
     "event.LevelRendererMixin",
