@@ -125,17 +125,22 @@ object AlbedoDynamicBuffer : DynamicBuffer {
                 val vec4 = ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code)
                 val vec2 = ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code)
 
-                val texCoordVarName = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "v_TexCoord" else VERTEX_TEX_COORD_VAR_NAME
-
-                val texCoordLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(texCoordVarName) ?: return code
-                val texCoord = code.addStaticVar(ShaderStorageClass.INPUT, vec2, texCoordVarName)
-                code.setVariableLocation(texCoord.id, texCoordLocation)
-
-                val colorVarName = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "v_Color" else VERTEX_COLOR_VAR_NAME
-
-                val colorLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(colorVarName) ?: return code
-                val color = code.addStaticVar(ShaderStorageClass.INPUT, vec4, colorVarName)
-                code.setVariableLocation(color.id, colorLocation)
+                val texCoord = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) {
+                    code.findVariable(name = "v_TexCoord") ?: return code
+                } else {
+                    val texCoordLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(VERTEX_TEX_COORD_VAR_NAME) ?: return code
+                    val texCoord = code.addStaticVar(ShaderStorageClass.INPUT, vec2, VERTEX_TEX_COORD_VAR_NAME)
+                    code.setVariableLocation(texCoord.id, texCoordLocation)
+                    texCoord
+                }
+                val color = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) {
+                    code.findVariable(name = "v_Color") ?: return code
+                } else {
+                    val colorLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(VERTEX_COLOR_VAR_NAME) ?: return code
+                    val color = code.addStaticVar(ShaderStorageClass.INPUT, vec4, VERTEX_COLOR_VAR_NAME)
+                    code.setVariableLocation(color.id, colorLocation)
+                    color
+                }
 
                 val output = code.addStaticVar(ShaderStorageClass.OUTPUT, vec4, FRAGMENT_VAR_NAME)
                 code.setVariableLocation(output.id, fragLocation)
