@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.impl.buffers
 import net.minecraft.client.Minecraft
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBuffer
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry
+import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.ShaderMixinManager
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.lwjgl.opengl.GL11.GL_BLEND
@@ -15,6 +16,8 @@ class DynamicBufferRegistryImpl : DynamicBufferRegistry {
     private val toAdd = LinkedList<DynamicBuffer>()
 
     override fun register(buffer: DynamicBuffer) {
+        ShaderMixinManager.register(buffer)
+
         if (Minecraft.getInstance().mainRenderTarget == null) {
             toAdd.add(buffer)
         } else {
