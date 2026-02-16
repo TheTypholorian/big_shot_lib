@@ -12,6 +12,20 @@ logoFile="${mod_id}.png" #optional
 credits="${credits}" #optional
 authors = "${mod_author}" #optional
 description = '''${description}''' #mandatory (Supports multiline text)
+[[dependencies."${mod_id}"]]
+modId = "iris"
+type="incompatible"
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
+reason = "Breaks dynamic buffers"
+[[dependencies."${mod_id}"]]
+modId = "veil"
+type="incompatible"
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
+reason = "Breaks dynamic buffers"
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
