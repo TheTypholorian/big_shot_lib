@@ -19,11 +19,11 @@ open class BlendShard(
 ) : RenderSettingShard.Basic(
     BlendShard,
     if (enabled) listOf(
-        GlFlag.BLEND.bindable,
+        GlBindable.ofStack(GlFlag.BLEND.stack, true),
         GlBindable.ofStack(GlStateStack.blendColor, color),
         equation,
         function
-    ) else listOf()
+    ) else listOf(GlBindable.ofStack(GlFlag.BLEND.stack, false))
 ) {
     companion object : RenderSettingShard.Type<BlendShard> {
         override fun getDefault() = BlendShard(

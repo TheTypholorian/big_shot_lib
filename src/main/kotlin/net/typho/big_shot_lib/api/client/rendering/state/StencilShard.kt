@@ -18,11 +18,11 @@ open class StencilShard(
 ) : RenderSettingShard.Basic(
     StencilShard,
     if (enabled) listOf(
-        GlFlag.STENCIL_TEST.bindable,
+        GlBindable.ofStack(GlFlag.STENCIL_TEST.stack, true),
         GlBindable.ofStack(GlStateStack.stencilFunc, func),
         GlBindable.ofStack(GlStateStack.stencilMask, mask),
         GlBindable.ofStack(GlStateStack.stencilOp, op),
-    ) else listOf()
+    ) else listOf(GlBindable.ofStack(GlFlag.STENCIL_TEST.stack, false))
 ) {
     companion object : RenderSettingShard.Type<StencilShard> {
         override fun getDefault() = StencilShard(

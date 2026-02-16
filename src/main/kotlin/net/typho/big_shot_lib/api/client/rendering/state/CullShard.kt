@@ -14,9 +14,9 @@ open class CullShard(
 ) : RenderSettingShard.Basic(
     CullShard,
     if (enabled) listOf(
-        GlFlag.CULL_FACE.bindable,
+        GlBindable.ofStack(GlFlag.CULL_FACE.stack, true),
         GlBindable.ofState(OpenGL.INSTANCE::cullFace, face, CullFace.DEFAULT)
-    ) else listOf()
+    ) else listOf(GlBindable.ofStack(GlFlag.CULL_FACE.stack, false))
 ) {
     companion object : RenderSettingShard.Type<CullShard> {
         override fun getDefault() = CullShard(

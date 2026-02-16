@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.state
 
-import net.typho.big_shot_lib.api.client.rendering.util.GlBindable
 import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*
@@ -43,23 +42,6 @@ enum class GlFlag(
         { it == null },
         { OpenGL.INSTANCE.isEnabled(this) }
     )
-    val bindable = object : GlBindable {
-        override fun bind(pushStack: Boolean) {
-            if (pushStack) {
-                stack.push(true)
-            } else {
-                enable()
-            }
-        }
-
-        override fun unbind(popStack: Boolean) {
-            if (popStack) {
-                stack.pop()
-            } else {
-                disable()
-            }
-        }
-    }
 
     override fun glId() = glId
 

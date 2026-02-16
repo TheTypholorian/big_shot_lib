@@ -14,9 +14,9 @@ open class DepthTestShard(
 ) : RenderSettingShard.Basic(
     DepthTestShard,
     if (enabled) listOf(
-        GlFlag.DEPTH_TEST.bindable,
+        GlBindable.ofStack(GlFlag.DEPTH_TEST.stack, true),
         GlBindable.ofStack(GlStateStack.depthFunc, func)
-    ) else listOf()
+    ) else listOf(GlBindable.ofStack(GlFlag.DEPTH_TEST.stack, false))
 ) {
     companion object : RenderSettingShard.Type<DepthTestShard> {
         override fun getDefault() = DepthTestShard(
