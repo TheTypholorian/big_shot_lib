@@ -4,7 +4,10 @@
   "package": "net.typho.big_shot_lib.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "fabric.event.ChunkMapMixin",
+    "fabric.event.ChunkStatusTasksMixin"
+  ],
   "client": [
     "fabric.util.RenderTargetMixin"
   ],

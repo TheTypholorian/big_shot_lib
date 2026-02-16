@@ -3,7 +3,10 @@
   "minVersion": "0.8",
   "package": "net.typho.big_shot_lib.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "neoforge.event.ChunkMapMixin",
+    "neoforge.event.ChunkStatusTasksMixin"
+  ],
   "client": [
     "neoforge.util.RenderTargetMixin"
   ],
