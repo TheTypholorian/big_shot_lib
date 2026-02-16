@@ -20,7 +20,7 @@ object AlbedoDynamicBuffer : DynamicBuffer {
         NeoTexture2D(format())
     }
     const val VERTEX_TEX_COORD_VAR_NAME = "BigShotVertexTexCoord"
-    const val VERTEX_COLOR_VAR_NAME = "BigShotVertexTexCoord"
+    const val VERTEX_COLOR_VAR_NAME = "BigShotVertexColor"
     const val FRAGMENT_VAR_NAME = "BigShotFragmentAlbedo"
 
     override fun location(): ResourceIdentifier {
