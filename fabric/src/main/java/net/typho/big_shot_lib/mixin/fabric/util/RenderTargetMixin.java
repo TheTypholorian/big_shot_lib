@@ -23,7 +23,7 @@ import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_NONE;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 
-@Mixin(value = RenderTarget.class, remap = false)
+@Mixin(RenderTarget.class)
 public abstract class RenderTargetMixin implements RenderTargetExtension {
     @Shadow
     @Final

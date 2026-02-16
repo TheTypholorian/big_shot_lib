@@ -8,13 +8,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = MainTarget.class, remap = false)
+@Mixin(MainTarget.class)
 public abstract class MainTargetMixin {
     @Redirect(
             method = "allocateAttachments",
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/mojang/blaze3d/platform/TextureUtil;generateTextureId()I",
+                    remap = false,
                     ordinal = 0
             )
     )
@@ -27,6 +28,7 @@ public abstract class MainTargetMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/mojang/blaze3d/platform/TextureUtil;generateTextureId()I",
+                    remap = false,
                     ordinal = 1
             )
     )
