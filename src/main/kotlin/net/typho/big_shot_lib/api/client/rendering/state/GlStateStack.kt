@@ -22,7 +22,7 @@ open class GlStateStack<V>(
         @JvmField
         val buffers = createMap<BufferType, Int>(
             BufferType::name,
-            OpenGL.INSTANCE::bindBuffer,
+            { type, value -> if (type != BufferType.ELEMENT_ARRAY_BUFFER || (value != null && value != 0)) OpenGL.INSTANCE.bindBuffer(type, value) },
             { type, value -> value == 0 },
             OpenGL.INSTANCE::getBoundBuffer
         )
