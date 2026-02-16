@@ -109,7 +109,7 @@ object NormalsDynamicBuffer : DynamicBuffer {
                     INPUT_VAR_NAME,
                     locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.map(1, INPUT_VAR_NAME),
                     VERTEX_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, INPUT_VAR_NAME)
+                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, VERTEX_VAR_NAME)
                 )
             } else if (key.type == ShaderSourceType.FRAGMENT) {
                 code.addPassthroughInputOutput(
