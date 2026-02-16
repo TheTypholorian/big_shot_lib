@@ -10,12 +10,17 @@
     "buffers.sodium.ChunkVertexEncoderVertexMixin",
     "buffers.sodium.CompactChunkVertexMixin",
     "buffers.sodium.DefaultFluidRendererMixin",
+    "event.ChunkMapMixin",
+    "event.ChunkStatusTasksMixin",
+    "event.ClientLevelMixin",
+    "event.ServerLevelMixin",
     "shaders.mixins.GlShaderMixin",
     "shaders.mixins.GlVertexFormatAccessor",
     "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
     "buffers.MinecraftMixin",
+    "event.ClientChunkCacheMixin",
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
     "files.MinecraftMixin",
