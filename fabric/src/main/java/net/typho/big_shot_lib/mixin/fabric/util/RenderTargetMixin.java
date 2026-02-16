@@ -63,6 +63,12 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
     @Shadow
     public abstract void resize(int width, int height, boolean clearError);
 
+    @Shadow
+    public int width;
+
+    @Shadow
+    public int height;
+
     @Override
     @SuppressWarnings("unchecked")
     public @NotNull List<@NotNull GlFramebufferAttachment> big_shot_lib$getColorAttachments() {
@@ -127,6 +133,11 @@ public abstract class RenderTargetMixin implements RenderTargetExtension {
         if (height <= 0) {
             height = viewHeight <= 0 ? 1 : viewHeight;
         }
+
+        viewWidth = width;
+        viewHeight = height;
+        this.width = width;
+        this.height = height;
 
         int i = 0;
         List<Integer> buffers = new LinkedList<>();
