@@ -20,7 +20,7 @@ open class BlendShard(
     BlendShard,
     if (enabled) listOf(
         GlFlag.BLEND.bindable,
-        GlBindable.ofState(OpenGL.INSTANCE::blendColor, color, IColor.BLACK),
+        GlBindable.ofStack(GlStateStack.blendColor, color),
         equation,
         function
     ) else listOf()
@@ -28,7 +28,7 @@ open class BlendShard(
     companion object : RenderSettingShard.Type<BlendShard> {
         override fun getDefault() = BlendShard(
             false,
-            IColor.BLACK,
+            IColor.FULL_OFF,
             BlendEquation.ADD,
             BlendFunction.Basic(BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA)
         )

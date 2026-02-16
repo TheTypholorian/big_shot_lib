@@ -19,9 +19,9 @@ open class StencilShard(
     StencilShard,
     if (enabled) listOf(
         GlFlag.STENCIL_TEST.bindable,
-        GlBindable.ofState(OpenGL.INSTANCE::stencilFunc, func),
-        GlBindable.ofState(OpenGL.INSTANCE::stencilMask, mask),
-        GlBindable.ofState(OpenGL.INSTANCE::stencilOp, op),
+        GlBindable.ofStack(GlStateStack.stencilFunc, func),
+        GlBindable.ofStack(GlStateStack.stencilMask, mask),
+        GlBindable.ofStack(GlStateStack.stencilOp, op),
     ) else listOf()
 ) {
     companion object : RenderSettingShard.Type<StencilShard> {

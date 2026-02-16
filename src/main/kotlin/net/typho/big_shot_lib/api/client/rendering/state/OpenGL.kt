@@ -26,14 +26,19 @@ interface OpenGL {
     fun addDebugListener(listener: DebugListener)
 
     /**
-     * `glEnable(flag.glId)`
+     * `glEnable(flag)`
      */
     fun enable(flag: GlFlag)
 
     /**
-     * `glDisable(flag.glId)`
+     * `glDisable(flag)`
      */
     fun disable(flag: GlFlag)
+
+    /**
+     * `glIsEnabled(flag)`
+     */
+    fun isEnabled(flag: GlFlag): Boolean
 
     /**
      * `glBlendColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)`
@@ -41,17 +46,22 @@ interface OpenGL {
     fun blendColor(color: IColor)
 
     /**
-     * `glBlendEquation(eq.glId)`
+     * `glGetFloatv(GL_BLEND_COLOR, color)`
+     */
+    fun getBlendColor(): IColor
+
+    /**
+     * `glBlendEquation(eq)`
      */
     fun blendEquation(eq: BlendEquation)
 
     /**
-     * `glBlendFunc(src.glId, dst.glId)`
+     * `glBlendFunc(src, dst)`
      */
     fun blendFunc(src: BlendFactor, dst: BlendFactor)
 
     /**
-     * `glBlendFuncSeparate(src.glId, dst.glId, srcA.glId, dstA.glId)`
+     * `glBlendFuncSeparate(src, dst, srcA, dstA)`
      */
     fun blendFuncSeparate(src: BlendFactor, dst: BlendFactor, srcA: BlendFactor, dstA: BlendFactor)
 
@@ -61,7 +71,12 @@ interface OpenGL {
     fun colorMask(mask: ColorMask)
 
     /**
-     * `glCullFace(face.glId)`
+     * `glGetBooleanv(GL_COLOR_WRITEMASK, mask)`
+     */
+    fun getColorMask(): ColorMask
+
+    /**
+     * `glCullFace(face)`
      */
     fun cullFace(face: CullFace)
 
@@ -71,14 +86,29 @@ interface OpenGL {
     fun depthMask(mask: Boolean)
 
     /**
-     * `glDepthFunc(func.glId)`
+     * `glGetBoolean(GL_DEPTH_WRITEMASK)`
+     */
+    fun getDepthMask(): Boolean
+
+    /**
+     * `glDepthFunc(func)`
      */
     fun depthFunc(func: ComparisonFunc)
 
     /**
-     * `glPolygonMode(mode.glId)`
+     * `glGetInteger(GL_DEPTH_FUNC)`
+     */
+    fun getDepthFunc(): ComparisonFunc
+
+    /**
+     * `glPolygonMode(mode)`
      */
     fun polygonMode(mode: PolygonMode)
+
+    /**
+     * `glGetIntegerv(GL_POLYGON_MODE, mode)`
+     */
+    fun getPolygonMode(): PolygonMode
 
     /**
      * `glScissor(x, y, width, height)`
@@ -86,9 +116,18 @@ interface OpenGL {
     fun scissor(x: Int, y: Int, width: Int, height: Int)
 
     /**
-     * `glStencilFunc(func.func.glId, func.ref, func.mask)`
+     * `glStencilFunc(func.func, func.ref, func.mask)`
      */
     fun stencilFunc(func: StencilFunc)
+
+    /**
+     * ```
+     * glGetInteger(GL_STENCIL_FUNC);
+     * glGetInteger(GL_STENCIL_REF);
+     * glGetInteger(GL_STENCIL_VALUE_MASK);
+     * ```
+     */
+    fun getStencilFunc(): StencilFunc
 
     /**
      * `glStencilMask(mask)`
@@ -96,9 +135,23 @@ interface OpenGL {
     fun stencilMask(mask: Int)
 
     /**
-     * `glStencilOp(op.stencilFail.glId, op.depthFail.glId, op.depthPass.glId)`
+     * `glGetInteger(GL_STENCIL_WRITEMASK)`
+     */
+    fun getStencilMask(): Int
+
+    /**
+     * `glStencilOp(op.stencilFail, op.depthFail, op.depthPass)`
      */
     fun stencilOp(op: StencilOp)
+
+    /**
+     * ```
+     * glGetInteger(GL_STENCIL_FAIL);
+     * glGetInteger(GL_STENCIL_PASS_DEPTH_FAIL);
+     * glGetInteger(GL_STENCIL_PASS_DEPTH_PASS);
+     * ```
+     */
+    fun getStencilOp(): StencilOp
 
     /**
      * `glGenBuffers()`
@@ -106,22 +159,27 @@ interface OpenGL {
     fun createBuffer(): Int
 
     /**
-     * `glBindBuffer(type.glId, glId)`
+     * `glBindBuffer(type, glId ?: 0)`
      */
-    fun bindBuffer(type: BufferType, glId: Int)
+    fun bindBuffer(type: BufferType, glId: Int?)
 
     /**
-     * `glBindBufferBase(type.glId, index, glId)`
+     * `glGetInteger(type.bindingId)`
      */
-    fun bindBufferBase(type: BufferType, index: Int, glId: Int)
+    fun getBoundBuffer(type: BufferType): Int
 
     /**
-     * `glBufferData(type.glId, buffer, usage.glId)`
+     * `glBindBufferBase(type, index, glId ?: 0)`
+     */
+    fun bindBufferBase(type: BufferType, index: Int, glId: Int?)
+
+    /**
+     * `glBufferData(type, buffer, usage)`
      */
     fun bufferData(type: BufferType, buffer: ByteBuffer, usage: BufferUsage)
 
     /**
-     * `glBufferData(type.glId, size, usage.glId)`
+     * `glBufferData(type, size, usage)`
      */
     fun bufferData(type: BufferType, size: Long, usage: BufferUsage)
 
@@ -136,9 +194,14 @@ interface OpenGL {
     fun createRenderBuffer(): Int
 
     /**
-     * `glBindRenderbuffer(GL_RENDERBUFFER, glId)`
+     * `glBindRenderbuffer(GL_RENDERBUFFER, glId ?: 0)`
      */
-    fun bindRenderBuffer(glId: Int)
+    fun bindRenderBuffer(glId: Int?)
+
+    /**
+     * `glGetInteger(GL_RENDERBUFFER_BINDING)`
+     */
+    fun getBoundRenderBuffer(): Int
 
     /**
      * ```
@@ -163,9 +226,14 @@ interface OpenGL {
     fun createTexture(): Int
 
     /**
-     * `glBindTexture(type, glId)`
+     * `glBindTexture(type, glId ?: 0)`
      */
-    fun bindTexture(type: TextureType, glId: Int)
+    fun bindTexture(type: TextureType, glId: Int?)
+
+    /**
+     * `glGetInteger(type.bindingId)`
+     */
+    fun getBoundTexture(type: TextureType): Int
 
     /**
      * `glActiveTexture(unit)`
@@ -174,46 +242,46 @@ interface OpenGL {
 
     /**
      * ```
-     * glTexParameteri(type, GL_TEXTURE_MIN_FILTER, min.glId)
-     * glTexParameteri(type, GL_TEXTURE_MAG_FILTER, mag.glId)
+     * glTexParameteri(type, GL_TEXTURE_MIN_FILTER, min)
+     * glTexParameteri(type, GL_TEXTURE_MAG_FILTER, mag)
      * ```
      */
     fun textureInterpolation(type: TextureType, min: InterpolationType, mag: InterpolationType)
 
     /**
      * ```
-     * glTexParameteri(type, GL_TEXTURE_WRAP_S, s.glId)
+     * glTexParameteri(type, GL_TEXTURE_WRAP_S, s)
      * ```
      */
     fun textureWrapping(type: TextureType, s: WrappingType)
 
     /**
      * ```
-     * glTexParameteri(type, GL_TEXTURE_WRAP_S, s.glId)
-     * glTexParameteri(type, GL_TEXTURE_WRAP_T, t.glId)
+     * glTexParameteri(type, GL_TEXTURE_WRAP_S, s)
+     * glTexParameteri(type, GL_TEXTURE_WRAP_T, t)
      * ```
      */
     fun textureWrapping(type: TextureType, s: WrappingType, t: WrappingType)
 
     /**
      * ```
-     * glTexParameteri(type, GL_TEXTURE_WRAP_S, s.glId)
-     * glTexParameteri(type, GL_TEXTURE_WRAP_T, t.glId)
-     * glTexParameteri(type, GL_TEXTURE_WRAP_R, r.glId)
+     * glTexParameteri(type, GL_TEXTURE_WRAP_S, s)
+     * glTexParameteri(type, GL_TEXTURE_WRAP_T, t)
+     * glTexParameteri(type, GL_TEXTURE_WRAP_R, r)
      * ```
      */
     fun textureWrapping(type: TextureType, s: WrappingType, t: WrappingType, r: WrappingType)
 
     /**
      * ```
-     * glTexParameteri(type, GL_TEXTURE_COMPARISON_MODE, mode.glId)
+     * glTexParameteri(type, GL_TEXTURE_COMPARISON_MODE, mode)
      * ```
      */
     fun textureComparisonMode(type: TextureType, mode: TextureComparisonMode)
 
     /**
      * ```
-     * glTexParameteri(type, GL_TEXTURE_COMPARISON_FUNC, mode.glId)
+     * glTexParameteri(type, GL_TEXTURE_COMPARISON_FUNC, mode)
      * ```
      */
     fun textureComparisonFunc(type: TextureType, mode: ComparisonFunc)
@@ -226,7 +294,7 @@ interface OpenGL {
      *     format.internalId,
      *     width,
      *     0,
-     *     format.glId,
+     *     format,
      *     format.type,
      *     buffer
      * )
@@ -242,7 +310,7 @@ interface OpenGL {
      *     format.internalId,
      *     width,
      *     0,
-     *     format.glId,
+     *     format,
      *     format.type,
      *     size
      * )
@@ -259,7 +327,7 @@ interface OpenGL {
      *     width,
      *     height,
      *     0,
-     *     format.glId,
+     *     format,
      *     format.type,
      *     buffer
      * )
@@ -276,7 +344,7 @@ interface OpenGL {
      *     width,
      *     height,
      *     0,
-     *     format.glId,
+     *     format,
      *     format.type,
      *     size
      * )
@@ -293,7 +361,7 @@ interface OpenGL {
      *     width,
      *     height,
      *     0,
-     *     format.glId,
+     *     format,
      *     format.type,
      *     buffer
      * )
@@ -310,7 +378,7 @@ interface OpenGL {
      *     width,
      *     height,
      *     0,
-     *     format.glId,
+     *     format,
      *     format.type,
      *     size
      * )
@@ -328,7 +396,7 @@ interface OpenGL {
      *     height,
      *     depth,
      *     0,
-     *     format.glId,
+     *     format,
      *     format.type,
      *     buffer
      * )
@@ -346,7 +414,7 @@ interface OpenGL {
      *     height,
      *     depth,
      *     0,
-     *     format.glId,
+     *     format,
      *     format.type,
      *     size
      * )
@@ -365,9 +433,14 @@ interface OpenGL {
     fun createFramebuffer(): Int
 
     /**
-     * `glBindFramebuffer(glId)`
+     * `glBindFramebuffer(glId ?: 0)`
      */
-    fun bindFramebuffer(glId: Int)
+    fun bindFramebuffer(glId: Int?)
+
+    /**
+     * `glGetInteger(GL_DRAW_FRAMEBUFFER_BINDING)`
+     */
+    fun getBoundFramebuffer(): Int
 
     /**
      * ```
@@ -452,9 +525,14 @@ interface OpenGL {
     fun createVertexArray(): Int
 
     /**
-     * `glBindVertexArray(glId)`
+     * `glBindVertexArray(glId ?: 0)`
      */
-    fun bindVertexArray(glId: Int)
+    fun bindVertexArray(glId: Int?)
+
+    /**
+     * `glGetInteger(GL_VERTEX_ARRAY_BINDING)`
+     */
+    fun getBoundVertexArray(): Int
 
     /**
      * `glEnableVertexAttribArray(index)`
@@ -497,9 +575,14 @@ interface OpenGL {
     fun createShaderProgram(): Int
 
     /**
-     * `glUseProgram(glId)`
+     * `glUseProgram(glId ?: 0)`
      */
-    fun bindShaderProgram(glId: Int)
+    fun bindShaderProgram(glId: Int?)
+
+    /**
+     * `glGetInteger(GL_CURRENT_PROGRAM)`
+     */
+    fun getBoundShaderProgram(): Int
 
     /**
      * `glLinkProgram(glId)`
@@ -513,7 +596,7 @@ interface OpenGL {
     fun deleteShaderProgram(glId: Int)
 
     /**
-     * `glCreateShader(type.glId)`
+     * `glCreateShader(type)`
      */
     fun createShaderSource(type: ShaderSourceType): Int
 

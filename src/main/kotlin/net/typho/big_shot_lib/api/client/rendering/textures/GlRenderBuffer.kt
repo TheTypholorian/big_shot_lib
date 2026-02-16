@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
+import java.util.function.Consumer
 
 open class GlRenderBuffer(
     glId: Int,
@@ -27,11 +28,10 @@ open class GlRenderBuffer(
         OpenGL.INSTANCE.attachFramebufferRenderBuffer(attachment, glId)
     }
 
-    override fun resize(width: Int, height: Int): BufferUploader? {
+    override fun resize(width: Int, height: Int, upload: Consumer<BufferUploader>) {
         bind()
         OpenGL.INSTANCE.resizeRenderBuffer(format, width, height)
         unbind()
-        return null
     }
 
     override fun toString(): String {

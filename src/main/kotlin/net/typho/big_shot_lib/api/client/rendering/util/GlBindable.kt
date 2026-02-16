@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import java.util.function.Consumer
 
 interface GlBindable {
@@ -26,6 +27,17 @@ interface GlBindable {
             }
 
             override fun unbind(popStack: Boolean) {
+            }
+        }
+
+        @JvmStatic
+        fun <T> ofStack(stack: GlStateStack<T>, bound: T) = object : GlBindable {
+            override fun bind(pushStack: Boolean) {
+                stack.push(bound)
+            }
+
+            override fun unbind(popStack: Boolean) {
+                stack.pop()
             }
         }
     }

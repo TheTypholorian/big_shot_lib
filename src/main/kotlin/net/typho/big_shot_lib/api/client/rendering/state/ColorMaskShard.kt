@@ -9,7 +9,7 @@ open class ColorMaskShard(
     val mask: ColorMask
 ) : RenderSettingShard.Basic(
     ColorMaskShard,
-    listOf(GlBindable.ofState(OpenGL.INSTANCE::colorMask, mask, ColorMask.DEFAULT))
+    listOf(GlBindable.ofStack(GlStateStack.colorMask, mask))
 ) {
     companion object : RenderSettingShard.Type<ColorMaskShard> {
         override fun getDefault() = ColorMaskShard(ColorMask.DEFAULT)

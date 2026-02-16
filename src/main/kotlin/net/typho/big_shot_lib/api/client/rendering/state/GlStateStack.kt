@@ -2,46 +2,139 @@ package net.typho.big_shot_lib.api.client.rendering.state
 
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
 import net.typho.big_shot_lib.api.client.rendering.textures.TextureType
-import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
+import net.typho.big_shot_lib.api.util.IColor
 import java.util.*
-import java.util.function.BiConsumer
-import java.util.function.Consumer
+import java.util.function.*
 import java.util.function.Function
-import java.util.function.Predicate
 import kotlin.enums.enumEntries
 
-open class GlStateStack(
+open class GlStateStack<V>(
     @JvmField
     val name: String,
     @JvmField
-    val bind: Consumer<Int>
+    val bind: Consumer<V?>,
+    @JvmField
+    val isNull: Predicate<V>,
+    @JvmField
+    val query: Supplier<V>
 ) {
     companion object {
         @JvmField
-        val buffers = createMap<BufferType>(BufferType::name, OpenGL.INSTANCE::bindBuffer)
+        val buffers = createMap<BufferType, Int>(
+            BufferType::name,
+            OpenGL.INSTANCE::bindBuffer,
+            { type, value -> value == 0 },
+            OpenGL.INSTANCE::getBoundBuffer
+        )
         @JvmField
-        val renderBuffer = GlStateStack("RENDER_BUFFER", OpenGL.INSTANCE::bindRenderBuffer)
+        val renderBuffer = GlStateStack(
+            "RENDER_BUFFER",
+            OpenGL.INSTANCE::bindRenderBuffer,
+            { value -> value == 0 },
+            OpenGL.INSTANCE::getBoundRenderBuffer
+        )
         @JvmField
-        val textures = createMap<TextureType>(TextureType::name, OpenGL.INSTANCE::bindTexture)
+        val textures = createMap<TextureType, Int>(
+            TextureType::name,
+            OpenGL.INSTANCE::bindTexture,
+            { type, value -> value == 0 },
+            OpenGL.INSTANCE::getBoundTexture
+        )
         @JvmField
-        val framebuffer = GlStateStack("FRAMEBUFFER", OpenGL.INSTANCE::bindFramebuffer)
+        val framebuffer = GlStateStack(
+            "FRAMEBUFFER",
+            OpenGL.INSTANCE::bindFramebuffer,
+            { value -> value == 0 },
+            OpenGL.INSTANCE::getBoundFramebuffer
+        )
         @JvmField
-        val vertexArray = GlStateStack("VERTEX_ARRAY", OpenGL.INSTANCE::bindVertexArray)
+        val vertexArray = GlStateStack(
+            "VERTEX_ARRAY",
+            OpenGL.INSTANCE::bindVertexArray,
+            { value -> value == 0 },
+            OpenGL.INSTANCE::getBoundVertexArray
+        )
         @JvmField
-        val shader = GlStateStack("SHADER", OpenGL.INSTANCE::bindShaderProgram)
+        val shader = GlStateStack(
+            "SHADER",
+            OpenGL.INSTANCE::bindShaderProgram,
+            { value -> value == 0 },
+            OpenGL.INSTANCE::getBoundShaderProgram
+        )
+        @JvmField
+        val blendColor = GlStateStack(
+            "BLEND_COLOR",
+            { OpenGL.INSTANCE.blendColor(it ?: IColor.FULL_ON) },
+            { false },
+            OpenGL.INSTANCE::getBlendColor
+        )
+        @JvmField
+        val colorMask = GlStateStack(
+            "COLOR_MASK",
+            { OpenGL.INSTANCE.colorMask(it ?: ColorMask.DEFAULT) },
+            { false },
+            OpenGL.INSTANCE::getColorMask
+        )
+        @JvmField
+        val depthMask = GlStateStack(
+            "COLOR_MASK",
+            { OpenGL.INSTANCE.depthMask(it ?: true) },
+            { false },
+            OpenGL.INSTANCE::getDepthMask
+        )
+        @JvmField
+        val depthFunc = GlStateStack(
+            "DEPTH_FUNC",
+            { OpenGL.INSTANCE.depthFunc(it ?: ComparisonFunc.LEQUAL) },
+            { false },
+            OpenGL.INSTANCE::getDepthFunc
+        )
+        @JvmField
+        val polygonMode = GlStateStack(
+            "POLYGON_MODE",
+            { OpenGL.INSTANCE.polygonMode(it ?: PolygonMode.FILL) },
+            { false },
+            OpenGL.INSTANCE::getPolygonMode
+        )
+        @JvmField
+        val stencilFunc = GlStateStack(
+            "STENCIL_FUNC",
+            { OpenGL.INSTANCE.stencilFunc(it ?: StencilFunc(ComparisonFunc.ALWAYS, 0, 0)) },
+            { false },
+            OpenGL.INSTANCE::getStencilFunc
+        )
+        @JvmField
+        val stencilMask = GlStateStack(
+            "STENCIL_MASK",
+            { OpenGL.INSTANCE.stencilMask(it ?: 0xFFFFFFFF.toInt()) },
+            { false },
+            OpenGL.INSTANCE::getStencilMask
+        )
+        @JvmField
+        val stencilOp = GlStateStack(
+            "STENCIL_MASK",
+            { OpenGL.INSTANCE.stencilOp(it ?: StencilOp(IntAction.KEEP, IntAction.KEEP, IntAction.KEEP)) },
+            { false },
+            OpenGL.INSTANCE::getStencilOp
+        )
 
         @JvmStatic
-        inline fun <reified T : Enum<T>> createMap(name: Function<T, String>, bind: BiConsumer<T, Int>): Map<T, GlStateStack> {
-            return createMap(name, { true }, bind)
+        inline fun <reified T : Enum<T>, V> createMap(name: Function<T, String>, bind: BiConsumer<T, V?>, isNull: BiPredicate<T, V>, query: Function<T, V>): Map<T, GlStateStack<V>> {
+            return createMap(name, { true }, bind, isNull, query)
         }
 
         @JvmStatic
-        inline fun <reified T : Enum<T>> createMap(name: Function<T, String>, predicate: Predicate<T>, bind: BiConsumer<T, Int>): Map<T, GlStateStack> {
-            val map = HashMap<T, GlStateStack>()
+        inline fun <reified T : Enum<T>, V> createMap(name: Function<T, String>, predicate: Predicate<T>, bind: BiConsumer<T, V?>, isNull: BiPredicate<T, V>, query: Function<T, V>): Map<T, GlStateStack<V>> {
+            val map = HashMap<T, GlStateStack<V>>()
 
             for (entry in enumEntries<T>()) {
                 if (predicate.test(entry)) {
-                    map[entry] = GlStateStack(name.apply(entry)) { bind.accept(entry, it) }
+                    map[entry] = GlStateStack(
+                        name.apply(entry),
+                        { bind.accept(entry, it) },
+                        { isNull.test(entry, it) },
+                        { query.apply(entry) }
+                    )
                 }
             }
 
@@ -60,21 +153,25 @@ open class GlStateStack(
     }
 
     @JvmField
-    protected val bound = LinkedList<Int>()
+    protected val bound = LinkedList<V>()
+    @JvmField
+    protected var restoreTo: V = query.get()
 
-    fun push(glId: Int) {
-        if (glId == 0) {
+    fun push(value: V) {
+        if (isNull.test(value)) {
             pop()
         } else {
-            if (bound.lastOrNull() != glId) {
-                bind.accept(glId)
+            if (bound.isEmpty()) {
+                restoreTo = query.get()
             }
 
-            bound.add(glId)
+            if (bound.lastOrNull() != value) {
+                bind.accept(value)
+            }
+
+            bound.add(value)
         }
     }
-
-    fun push(named: GlNamed) = push(named.glId())
 
     fun pop() {
         if (bound.isEmpty()) {
@@ -85,17 +182,17 @@ open class GlStateStack(
         val current = getBound()
 
         if (current == null) {
-            bind.accept(0)
+            bind.accept(restoreTo)
         } else if (current != removed) {
             bind.accept(current)
         }
     }
 
     fun rebind() {
-        bind.accept(getBound() ?: 0)
+        bind.accept(getBound())
     }
 
-    fun getBound(): Int? = bound.lastOrNull()
+    fun getBound(): V? = bound.lastOrNull()
 
     fun ensureEmpty() {
         if (bound.isNotEmpty()) {

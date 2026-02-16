@@ -12,6 +12,7 @@ import net.typho.big_shot_lib.api.client.rendering.textures.TextureFormat
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0
+import java.util.function.Consumer
 
 object AlbedoDynamicBuffer : DynamicBuffer {
     private var location: Int? = null
@@ -41,9 +42,10 @@ object AlbedoDynamicBuffer : DynamicBuffer {
 
     override fun resize(
         width: Int,
-        height: Int
-    ): BufferUploader {
-        return texture.resize(width, height)
+        height: Int,
+        upload: Consumer<BufferUploader>
+    ) {
+        texture.resize(width, height, upload)
     }
 
     override fun create(

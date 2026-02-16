@@ -2,15 +2,13 @@ package net.typho.big_shot_lib.api.client.rendering.state
 
 import net.typho.big_shot_lib.api.client.rendering.util.GlBindable
 import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
-import net.typho.big_shot_lib.api.util.resources.Named
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*
 
 enum class GlFlag(
     @JvmField
     val glId: Int
-) : GlNamed, Named {
+) : GlNamed {
     BLEND(GL_BLEND),
     COLOR_LOGIC_OP(GL_COLOR_LOGIC_OP),
     CULL_FACE(GL_CULL_FACE),
@@ -39,21 +37,36 @@ enum class GlFlag(
     TEXTURE_CUBE_MAP_SEAMLESS(GL_TEXTURE_CUBE_MAP_SEAMLESS),
     PROGRAM_POINT_SIZE(GL_PROGRAM_POINT_SIZE);
 
-    val location: ResourceIdentifier = ResourceIdentifier("opengl", "flag/${name.lowercase()}")
+    val stack = GlStateStack<Boolean?>(
+        name,
+        this::set,
+        { it == null },
+        { OpenGL.INSTANCE.isEnabled(this) }
+    )
     val bindable = object : GlBindable {
-        override fun bind(pushStack: Boolean) = enable()
+        override fun bind(pushStack: Boolean) {
+            if (pushStack) {
+                stack.push(true)
+            } else {
+                enable()
+            }
+        }
 
-        override fun unbind(popStack: Boolean) = disable()
+        override fun unbind(popStack: Boolean) {
+            if (popStack) {
+                stack.pop()
+            } else {
+                disable()
+            }
+        }
     }
 
     override fun glId() = glId
 
-    override fun location() = location
+    fun queryValue() = stack.query.get()
 
-    fun queryValue() = glIsEnabled(glId)
-
-    fun set(value: Boolean) {
-        if (value) {
+    fun set(value: Boolean?) {
+        if (value ?: false) {
             enable()
         } else {
             disable()

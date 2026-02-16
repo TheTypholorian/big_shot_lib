@@ -9,7 +9,36 @@ import java.awt.Color
 interface IColor {
     companion object {
         @JvmField
+        val FULL_ON = RGBAF(1f, 1f, 1f, 1f)
+        @JvmField
+        val FULL_OFF = RGBAF(0f, 0f, 0f, 0f)
+
+        @JvmField
+        val WHITE = from(Color.WHITE)
+        @JvmField
+        val LIGHT_GRAY = from(Color.LIGHT_GRAY)
+        @JvmField
+        val GRAY = from(Color.GRAY)
+        @JvmField
+        val DARK_GRAY = from(Color.DARK_GRAY)
+        @JvmField
         val BLACK = from(Color.BLACK)
+        @JvmField
+        val RED = from(Color.RED)
+        @JvmField
+        val PINK = from(Color.PINK)
+        @JvmField
+        val ORANGE = from(Color.ORANGE)
+        @JvmField
+        val YELLOW = from(Color.YELLOW)
+        @JvmField
+        val GREEN = from(Color.GREEN)
+        @JvmField
+        val MAGENTA = from(Color.MAGENTA)
+        @JvmField
+        val CYAN = from(Color.CYAN)
+        @JvmField
+        val BLUE = from(Color.BLUE)
 
         @JvmField
         val CODEC_PACKED: Codec<IColor> = Codec.INT.xmap(

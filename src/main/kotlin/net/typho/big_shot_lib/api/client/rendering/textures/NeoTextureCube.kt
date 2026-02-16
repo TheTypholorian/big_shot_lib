@@ -5,6 +5,7 @@ import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 import java.nio.ByteBuffer
+import java.util.function.Consumer
 
 open class NeoTextureCube(
     glId: Int,
@@ -58,8 +59,8 @@ open class NeoTextureCube(
         }
     }
 
-    override fun resize(width: Int, height: Int): BufferUploader {
-        return object : BufferUploader {
+    override fun resize(width: Int, height: Int, upload: Consumer<BufferUploader>) {
+        upload.accept(object : BufferUploader {
             override fun upload(buffer: ByteBuffer) {
                 bind()
 
@@ -79,7 +80,7 @@ open class NeoTextureCube(
 
                 unbind()
             }
-        }
+        })
     }
 
     override fun toString(): String {

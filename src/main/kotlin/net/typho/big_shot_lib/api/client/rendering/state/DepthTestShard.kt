@@ -15,7 +15,7 @@ open class DepthTestShard(
     DepthTestShard,
     if (enabled) listOf(
         GlFlag.DEPTH_TEST.bindable,
-        GlBindable.ofState(OpenGL.INSTANCE::depthFunc, func, ComparisonFunc.LEQUAL)
+        GlBindable.ofStack(GlStateStack.depthFunc, func)
     ) else listOf()
 ) {
     companion object : RenderSettingShard.Type<DepthTestShard> {

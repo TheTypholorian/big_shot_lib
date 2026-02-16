@@ -11,7 +11,7 @@ open class PolygonModeShard(
     val mode: PolygonMode
 ) : RenderSettingShard.Basic(
     PolygonModeShard,
-    listOf(GlBindable.ofState(OpenGL.INSTANCE::polygonMode, mode, PolygonMode.FILL))
+    listOf(GlBindable.ofStack(GlStateStack.polygonMode, mode))
 ) {
     companion object : RenderSettingShard.Type<PolygonModeShard> {
         override fun getDefault() = PolygonModeShard(PolygonMode.FILL)
