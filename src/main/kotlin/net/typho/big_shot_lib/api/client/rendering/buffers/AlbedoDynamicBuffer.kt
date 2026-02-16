@@ -104,30 +104,37 @@ object AlbedoDynamicBuffer : DynamicBuffer {
     ) : ShaderMixin {
         override fun mixinBytecode(key: ShaderSourceKey, code: ShaderBytecodeBuffer): ShaderBytecodeBuffer {
             if (key.type == ShaderSourceType.VERTEX) {
-                code.addPassthroughOutput(
-                    ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code),
-                    (code.findVariable(name = key.program.format.getElementName(VertexFormatElement.UV0)) ?: return code).id,
-                    VERTEX_TEX_COORD_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, VERTEX_TEX_COORD_VAR_NAME)
-                )
-                code.addPassthroughOutput(
-                    ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code),
-                    (code.findVariable(name = key.program.format.getElementName(VertexFormatElement.COLOR)) ?: return code).id,
-                    VERTEX_COLOR_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, VERTEX_COLOR_VAR_NAME)
-                )
+                if (!key.program.location.equals("sodium", "blocks/block_layer_opaque")) {
+                    code.addPassthroughOutput(
+                        ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code),
+                        (code.findVariable(name = key.program.format.getElementName(VertexFormatElement.UV0)) ?: return code).id,
+                        VERTEX_TEX_COORD_VAR_NAME,
+                        locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!
+                            .map(1, VERTEX_TEX_COORD_VAR_NAME)
+                    )
+                    code.addPassthroughOutput(
+                        ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code),
+                        (code.findVariable(name = key.program.format.getElementName(VertexFormatElement.COLOR)) ?: return code).id,
+                        VERTEX_COLOR_VAR_NAME,
+                        locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, VERTEX_COLOR_VAR_NAME)
+                    )
+                }
             } else if (key.type == ShaderSourceType.FRAGMENT) {
                 val samplerVar = code.findVariable(name = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "u_BlockTex" else "Sampler0") ?: return code
 
                 val vec4 = ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code)
                 val vec2 = ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code)
 
-                val texCoordLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(VERTEX_TEX_COORD_VAR_NAME) ?: return code
-                val texCoord = code.addStaticVar(ShaderStorageClass.INPUT, vec2, VERTEX_TEX_COORD_VAR_NAME)
+                val texCoordVarName = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "v_TexCoord" else VERTEX_TEX_COORD_VAR_NAME
+
+                val texCoordLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(texCoordVarName) ?: return code
+                val texCoord = code.addStaticVar(ShaderStorageClass.INPUT, vec2, texCoordVarName)
                 code.setVariableLocation(texCoord.id, texCoordLocation)
 
-                val colorLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(VERTEX_COLOR_VAR_NAME) ?: return code
-                val color = code.addStaticVar(ShaderStorageClass.INPUT, vec4, VERTEX_COLOR_VAR_NAME)
+                val colorVarName = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "v_Color" else VERTEX_COLOR_VAR_NAME
+
+                val colorLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(colorVarName) ?: return code
+                val color = code.addStaticVar(ShaderStorageClass.INPUT, vec4, colorVarName)
                 code.setVariableLocation(color.id, colorLocation)
 
                 val output = code.addStaticVar(ShaderStorageClass.OUTPUT, vec4, FRAGMENT_VAR_NAME)
