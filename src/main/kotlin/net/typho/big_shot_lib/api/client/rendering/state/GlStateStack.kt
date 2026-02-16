@@ -149,6 +149,14 @@ open class GlStateStack<V>(
             framebuffer.ensureEmpty()
             vertexArray.ensureEmpty()
             shader.ensureEmpty()
+            blendColor.ensureEmpty()
+            colorMask.ensureEmpty()
+            depthMask.ensureEmpty()
+            depthFunc.ensureEmpty()
+            polygonMode.ensureEmpty()
+            stencilFunc.ensureEmpty()
+            stencilMask.ensureEmpty()
+            stencilOp.ensureEmpty()
         }
     }
 
