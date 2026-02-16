@@ -63,7 +63,7 @@ open class NeoFramebuffer(
         bind()
 
         colorAttachments.forEachIndexed { index, attachment ->
-            attachment.resize(width, height)?.uploadNull()
+            attachment.resize(width, height)
             attachment.attachToFramebuffer(GL_COLOR_ATTACHMENT0 + index)
         }
         OpenGL.INSTANCE.drawBuffers(
@@ -79,7 +79,7 @@ open class NeoFramebuffer(
         bind()
 
         depthAttachment?.let { attachment ->
-            attachment.resize(width, height)?.uploadNull()
+            attachment.resize(width, height)
             attachment.attachToFramebuffer(
                 attachment.format().getDepthStencilAttachmentId()
                     ?: throw IllegalTextureFormatException("${attachment.format()} is neither a depth nor stencil format")
@@ -104,8 +104,8 @@ open class NeoFramebuffer(
     override fun resize(width: Int, height: Int) {
         bind()
 
-        colorAttachments.forEach { it.resize(width, height)?.uploadNull() }
-        depthAttachment?.resize(width, height)?.uploadNull()
+        colorAttachments.forEach { it.resize(width, height) }
+        depthAttachment?.resize(width, height)
 
         unbind()
 

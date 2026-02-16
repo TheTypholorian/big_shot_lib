@@ -7,13 +7,13 @@ abstract class GlResource(
     @JvmField
     val glId: Int,
     @JvmField
-    val stack: GlStateStack
+    val stack: GlStateStack<Int>
 ) : GlNamed, GlBindable, NativeResource {
     final override fun glId() = glId
 
     override fun bind(pushStack: Boolean) {
         if (pushStack) {
-            stack.push(this)
+            stack.push(glId)
         } else {
             stack.bind.accept(glId)
         }
