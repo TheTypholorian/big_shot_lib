@@ -1,7 +1,0 @@
-{
-  "sources": {
-    "vertex": "big_shot_lib:blit",
-    "fragment": "big_shot_lib:blit"
-  },
-  "format": "POSITION_TEX"
-}
