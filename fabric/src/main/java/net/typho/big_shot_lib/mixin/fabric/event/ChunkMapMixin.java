@@ -10,6 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.concurrent.CompletableFuture;
+
 @Mixin(ChunkMap.class)
 public class ChunkMapMixin {
     @Inject(
@@ -21,7 +23,8 @@ public class ChunkMapMixin {
     )
     private void scheduleUnload(
             ChunkHolder chunkHolder,
-            long chunkPos,
+            CompletableFuture<?> completableFuture,
+            long l,
             CallbackInfo ci,
             @Local LevelChunk chunk
     ) {
