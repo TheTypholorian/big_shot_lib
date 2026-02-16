@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ChunkMap.class)
 public class ChunkMapMixin {
     @Inject(
-            method = "lambda$scheduleUnload$12",
+            method = "method_60440",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/level/chunk/LevelChunk;setLoaded(Z)V"
