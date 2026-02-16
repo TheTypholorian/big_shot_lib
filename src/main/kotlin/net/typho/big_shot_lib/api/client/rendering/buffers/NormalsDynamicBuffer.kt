@@ -19,7 +19,7 @@ object NormalsDynamicBuffer : DynamicBuffer {
     val texture by lazy {
         NeoTexture2D(format())
     }
-    const val INPUT_VAR_NAME = "BigShotInputNormal"
+    const val INPUT_VAR_NAME = "a_Normal"
     const val VERTEX_VAR_NAME = "BigShotVertexNormal"
     const val FRAGMENT_VAR_NAME = "BigShotFragmentNormal"
 
