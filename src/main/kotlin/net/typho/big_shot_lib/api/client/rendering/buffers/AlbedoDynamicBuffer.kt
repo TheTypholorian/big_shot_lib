@@ -130,7 +130,7 @@ object AlbedoDynamicBuffer : DynamicBuffer {
                 val color = code.addStaticVar(ShaderStorageClass.INPUT, vec4, VERTEX_COLOR_VAR_NAME)
                 code.setVariableLocation(color.id, colorLocation)
 
-                val output = code.addStaticVar(ShaderStorageClass.INPUT, vec2, FRAGMENT_VAR_NAME)
+                val output = code.addStaticVar(ShaderStorageClass.OUTPUT, vec4, FRAGMENT_VAR_NAME)
                 code.setVariableLocation(output.id, fragLocation)
 
                 val tempSamplerVar = code.bound++
