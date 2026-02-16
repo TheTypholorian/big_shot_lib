@@ -115,7 +115,7 @@ object NormalsDynamicBuffer : DynamicBuffer {
                 code.addPassthroughInputOutput(
                     ShaderVariableType.FLOAT_VEC3.findOrInjectBytecode(code),
                     VERTEX_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.map(1, VERTEX_VAR_NAME),
+                    locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(VERTEX_VAR_NAME) ?: return code,
                     FRAGMENT_VAR_NAME,
                     fragLocation
                 )
@@ -135,7 +135,7 @@ object NormalsDynamicBuffer : DynamicBuffer {
             if (key.type == ShaderSourceType.VERTEX) {
                 code.addPassthroughOutput(
                     ShaderVariableType.FLOAT_VEC3.findOrInjectBytecode(code),
-                    code.findVariable(name = key.program.format.getElementName(VertexFormatElement.NORMAL))!!.id,
+                    (code.findVariable(name = key.program.format.getElementName(VertexFormatElement.NORMAL)) ?: return code).id,
                     VERTEX_VAR_NAME,
                     locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, VERTEX_VAR_NAME)
                 )
@@ -143,7 +143,7 @@ object NormalsDynamicBuffer : DynamicBuffer {
                 code.addPassthroughInputOutput(
                     ShaderVariableType.FLOAT_VEC3.findOrInjectBytecode(code),
                     VERTEX_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.map(1, VERTEX_VAR_NAME),
+                    locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(VERTEX_VAR_NAME) ?: return code,
                     FRAGMENT_VAR_NAME,
                     fragLocation
                 )

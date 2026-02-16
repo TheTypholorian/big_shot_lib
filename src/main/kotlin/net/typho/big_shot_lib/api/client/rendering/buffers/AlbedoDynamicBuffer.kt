@@ -106,27 +106,27 @@ object AlbedoDynamicBuffer : DynamicBuffer {
             if (key.type == ShaderSourceType.VERTEX) {
                 code.addPassthroughOutput(
                     ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code),
-                    code.findVariable(name = key.program.format.getElementName(VertexFormatElement.UV0))!!.id,
+                    (code.findVariable(name = key.program.format.getElementName(VertexFormatElement.UV0)) ?: return code).id,
                     VERTEX_TEX_COORD_VAR_NAME,
                     locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, VERTEX_TEX_COORD_VAR_NAME)
                 )
                 code.addPassthroughOutput(
                     ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code),
-                    code.findVariable(name = key.program.format.getElementName(VertexFormatElement.COLOR))!!.id,
+                    (code.findVariable(name = key.program.format.getElementName(VertexFormatElement.COLOR)) ?: return code).id,
                     VERTEX_COLOR_VAR_NAME,
                     locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, VERTEX_COLOR_VAR_NAME)
                 )
             } else if (key.type == ShaderSourceType.FRAGMENT) {
-                val samplerVar = code.findVariable(name = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "u_BlockTex" else "Sampler0")!!
+                val samplerVar = code.findVariable(name = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "u_BlockTex" else "Sampler0") ?: return code
 
                 val vec4 = ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code)
                 val vec2 = ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code)
 
-                val texCoordLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.map(1, VERTEX_TEX_COORD_VAR_NAME)
+                val texCoordLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(VERTEX_TEX_COORD_VAR_NAME) ?: return code
                 val texCoord = code.addStaticVar(ShaderStorageClass.INPUT, vec2, VERTEX_TEX_COORD_VAR_NAME)
                 code.setVariableLocation(texCoord.id, texCoordLocation)
 
-                val colorLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.map(1, VERTEX_COLOR_VAR_NAME)
+                val colorLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(VERTEX_COLOR_VAR_NAME) ?: return code
                 val color = code.addStaticVar(ShaderStorageClass.INPUT, vec4, VERTEX_COLOR_VAR_NAME)
                 code.setVariableLocation(color.id, colorLocation)
 
@@ -190,17 +190,17 @@ object AlbedoDynamicBuffer : DynamicBuffer {
             if (key.type == ShaderSourceType.VERTEX) {
                 code.addPassthroughOutput(
                     ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code),
-                    code.findVariable(name = key.program.format.getElementName(VertexFormatElement.UV0))!!.id,
+                    (code.findVariable(name = key.program.format.getElementName(VertexFormatElement.UV0)) ?: return code).id,
                     VERTEX_TEX_COORD_VAR_NAME,
                     locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, VERTEX_TEX_COORD_VAR_NAME)
                 )
             } else if (key.type == ShaderSourceType.FRAGMENT) {
-                val samplerVar = code.findVariable(name = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "u_BlockTex" else "Sampler0")!!
+                val samplerVar = code.findVariable(name = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "u_BlockTex" else "Sampler0") ?: return code
 
                 val vec4 = ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code)
                 val vec2 = ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code)
 
-                val inputLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.map(1, VERTEX_TEX_COORD_VAR_NAME)
+                val inputLocation = locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.get(VERTEX_TEX_COORD_VAR_NAME) ?: return code
                 val input = code.addStaticVar(ShaderStorageClass.INPUT, vec2, VERTEX_TEX_COORD_VAR_NAME)
                 code.setVariableLocation(input.id, inputLocation)
 
