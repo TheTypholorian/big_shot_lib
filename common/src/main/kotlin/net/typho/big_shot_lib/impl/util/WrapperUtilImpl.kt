@@ -1,0 +1,123 @@
+package net.typho.big_shot_lib.impl.util
+
+import com.mojang.blaze3d.pipeline.RenderTarget
+import net.minecraft.server.packs.PackResources
+import net.minecraft.server.packs.resources.Resource
+import net.minecraft.server.packs.resources.ResourceManager
+import net.typho.big_shot_lib.BigShotLib.toMojang
+import net.typho.big_shot_lib.BigShotLib.toNeo
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
+import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
+import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit
+import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
+import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
+import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebufferAttachment
+import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
+import net.typho.big_shot_lib.api.services.WrapperUtil
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import java.util.*
+import java.util.function.Predicate
+import java.util.stream.Stream
+
+class WrapperUtilImpl : WrapperUtil {
+    override fun wrap(manager: ResourceManager): ResourceManagerWrapper {
+        return object : ResourceManagerWrapper {
+            override fun getNamespaces(): MutableSet<String> {
+                return manager.namespaces
+            }
+
+            override fun getResourceStack(location: ResourceIdentifier): MutableList<Resource> {
+                return manager.getResourceStack(location.toMojang())
+            }
+
+            override fun listResources(
+                folder: String,
+                predicate: Predicate<ResourceIdentifier>
+            ): MutableMap<ResourceIdentifier, Resource> {
+                val map = manager.listResources(folder) { loc -> predicate.test(loc.toNeo()) }
+                val rMap = HashMap<ResourceIdentifier, Resource>()
+
+                for (entry in map) {
+                    rMap[entry.key.toNeo()] = entry.value
+                }
+
+                return rMap
+            }
+
+            override fun listResourceStacks(
+                folder: String,
+                predicate: Predicate<ResourceIdentifier>
+            ): MutableMap<ResourceIdentifier, MutableList<Resource>> {
+                val map = manager.listResourceStacks(folder) { loc -> predicate.test(loc.toNeo()) }
+                val rMap = HashMap<ResourceIdentifier, MutableList<Resource>>()
+
+                for (entry in map) {
+                    rMap[entry.key.toNeo()] = entry.value
+                }
+
+                return rMap
+            }
+
+            override fun listPacks(): Stream<PackResources> {
+                return manager.listPacks()
+            }
+
+            override fun getResource(location: ResourceIdentifier): Optional<Resource> {
+                return manager.getResource(location.toMojang())
+            }
+        }
+    }
+
+    override fun wrap(target: RenderTarget): GlFramebuffer {
+        return object : GlFramebuffer {
+            override var colorAttachments: List<GlFramebufferAttachment> = listOf()
+                get() = (target as RenderTargetExtension).`big_shot_lib$getColorAttachments`()
+                set(value) {
+                    field = value
+                    (target as RenderTargetExtension).`big_shot_lib$setColorAttachments`(value)
+                }
+            override var depthAttachment: GlFramebufferAttachment? = null
+                get() = (target as RenderTargetExtension).`big_shot_lib$getDepthAttachment`()
+                set(value) {
+                    field = value
+                    (target as RenderTargetExtension).`big_shot_lib$setDepthAttachment`(value)
+                }
+
+            override fun resize(width: Int, height: Int) {
+                target.resize(width, height)
+            }
+
+            override fun clear(vararg bits: ClearBit) {
+                OpenGL.INSTANCE.clear(bits.initAndGetClearMask())
+            }
+
+            override fun viewport() {
+                OpenGL.INSTANCE.viewport(0, 0, target.viewWidth, target.viewHeight)
+            }
+
+            override fun bind(pushStack: Boolean) {
+                if (pushStack) {
+                    GlStateStack.framebuffer.push(target.frameBufferId)
+                } else {
+                    target.bindWrite(false)
+                }
+            }
+
+            override fun unbind(popStack: Boolean) {
+                if (popStack) {
+                    GlStateStack.framebuffer.pop()
+                } else {
+                    target.unbindWrite()
+                }
+            }
+
+            override fun free() {
+                target.destroyBuffers()
+            }
+
+            override fun width() = target.width
+
+            override fun height() = target.height
+        }
+    }
+}

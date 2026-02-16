@@ -1,15 +1,21 @@
-package net.typho.big_shot_lib.mixin;
+package net.typho.big_shot_lib.mixin.shaders.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import kotlin.collections.CollectionsKt;
 import net.minecraft.client.renderer.ShaderManager;
 import net.minecraft.client.renderer.ShaderProgram;
 import net.minecraft.server.packs.resources.ResourceProvider;
-import net.typho.big_shot_lib.spirv.ShaderLocationsInfo;
-import net.typho.big_shot_lib.spirv.ShaderMixinManager;
+import net.typho.big_shot_lib.BigShotLib;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.HashSet;
 
 @Mixin(ShaderManager.class)
 public class ShaderManagerMixin {
@@ -27,10 +33,14 @@ public class ShaderManagerMixin {
             CallbackInfo ci,
             @Local ShaderProgram program
     ) {
-        if (ShaderMixinManager.enabled) {
-            ShaderMixinManager.currentVertexFormat.set(program.vertexFormat());
-            ShaderMixinManager.currentLocationsInfo.set(ShaderMixinManager.enabled ? new ShaderLocationsInfo(program.vertexFormat(), false) : null);
-        }
+        ShaderMixinThreadLocal.push(new ShaderProgramKey(
+                ShaderLoaderType.MINECRAFT,
+                BigShotLib.toNeo(program.configId()),
+                program.vertexFormat(),
+                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
+                new HashSet<>(),
+                new HashSet<>()
+        ));
     }
 
     @Inject(
@@ -41,9 +51,6 @@ public class ShaderManagerMixin {
             )
     )
     private void clearThreadLocal(ResourceProvider resourceProvider, ShaderProgram[] programs, CallbackInfo ci) {
-        if (ShaderMixinManager.enabled) {
-            ShaderMixinManager.currentVertexFormat.remove();
-            ShaderMixinManager.currentLocationsInfo.remove();
-        }
+        ShaderMixinThreadLocal.pop();
     }
 }

@@ -1,20 +1,35 @@
-package net.typho.big_shot_lib.mixin;
+package net.typho.big_shot_lib.mixin.shaders.mixins;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.shaders.CompiledShader;
+import kotlin.collections.CollectionsKt;
 import net.minecraft.client.renderer.CompiledShaderProgram;
+import net.minecraft.client.renderer.ShaderManager;
 import net.minecraft.client.renderer.ShaderProgram;
-import net.typho.big_shot_lib.spirv.ShaderLocationsInfo;
-import net.typho.big_shot_lib.spirv.ShaderMixinManager;
+import net.typho.big_shot_lib.BigShotLib;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
+import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
+import net.typho.big_shot_lib.impl.util.VoidMap;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.HashSet;
 import java.util.Map;
 
 @Mixin(targets = "net.minecraft.client.renderer.ShaderManager$CompilationCache")
 public class ShaderManagerCompilationCacheMixin {
+    @Shadow
+    @Final
+    @Mutable
+    Map<ShaderManager.ShaderCompilationKey, CompiledShader> shaders;
+
     @Inject(
             method = "compileProgram",
             at = @At(
@@ -24,10 +39,14 @@ public class ShaderManagerCompilationCacheMixin {
             )
     )
     private void setThreadLocal(ShaderProgram program, CallbackInfoReturnable<CompiledShaderProgram> cir) {
-        if (ShaderMixinManager.enabled) {
-            ShaderMixinManager.currentVertexFormat.set(program.vertexFormat());
-            ShaderMixinManager.currentLocationsInfo.set(ShaderMixinManager.enabled ? new ShaderLocationsInfo(program.vertexFormat(), false) : null);
-        }
+        ShaderMixinThreadLocal.push(new ShaderProgramKey(
+                ShaderLoaderType.MINECRAFT,
+                BigShotLib.toNeo(program.configId()),
+                program.vertexFormat(),
+                new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
+                new HashSet<>(),
+                new HashSet<>()
+        ));
     }
 
     @Inject(
@@ -38,20 +57,14 @@ public class ShaderManagerCompilationCacheMixin {
             )
     )
     private void clearThreadLocal(ShaderProgram program, CallbackInfoReturnable<CompiledShaderProgram> cir) {
-        if (ShaderMixinManager.enabled) {
-            ShaderMixinManager.currentVertexFormat.remove();
-            ShaderMixinManager.currentLocationsInfo.remove();
-        }
+        ShaderMixinThreadLocal.pop();
     }
 
-    @WrapOperation(
-            method = "getOrCompileShader",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;"
-            )
+    @Inject(
+            method = "<init>",
+            at = @At("TAIL")
     )
-    private <K, V> V getOrCompileShader(Map<K, V> instance, Object o, Operation<V> original) {
-        return null;
+    private void init(ShaderManager shaderManager, ShaderManager.Configs configs, CallbackInfo ci) {
+        shaders = new VoidMap<>();
     }
 }

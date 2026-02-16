@@ -5,18 +5,25 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
   "mixins": [
-    "GlShaderMixin",
-    "ShaderChunkRendererMixin"
+    "buffers.sodium.BlockRendererMixin",
+    "buffers.sodium.ChunkVertexConsumerMixin",
+    "buffers.sodium.ChunkVertexEncoderVertexMixin",
+    "buffers.sodium.CompactChunkVertexMixin",
+    "buffers.sodium.DefaultFluidRendererMixin",
+    "shaders.mixins.GlShaderMixin",
+    "shaders.mixins.GlVertexFormatAccessor",
+    "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
-    "CompiledShaderMixin",
-    "GameRendererMixin",
-    "GlDebugMixin",
-    "LevelRendererMixin",
-    "MinecraftMixin",
-    "ShaderManagerCompilationCacheMixin",
-    "ShaderManagerMixin",
-    "SimpleTextureAccessor"
+    "buffers.GlStateManagerMixin",
+    "buffers.MinecraftMixin",
+    "event.LevelRendererMixin",
+    "event.MinecraftMixin",
+    "files.MinecraftMixin",
+    "shaders.mixins.CompiledShaderMixin",
+    "shaders.mixins.ShaderManagerCompilationCacheMixin",
+    "shaders.mixins.ShaderManagerMixin",
+    "util.MainTargetMixin"
   ],
   "server": [],
   "injectors": {
