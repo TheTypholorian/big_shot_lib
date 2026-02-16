@@ -13,9 +13,7 @@
   "license": "${license}",
   "environment": "client",
   "depends": {
-    "minecraft": "${minecraft_version}",
-    "java": ">=${java_version}",
-    "fabric-language-kotlin": "*"
+    "java": ">=${java_version}"
   },
   "breaks": {
     "iris": "*",
