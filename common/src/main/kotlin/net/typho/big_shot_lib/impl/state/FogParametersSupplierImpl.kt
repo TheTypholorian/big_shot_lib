@@ -7,11 +7,12 @@ import net.typho.big_shot_lib.api.util.IColor
 
 class FogParametersSupplierImpl : FogParameters.Supplier {
     override fun get(): FogParameters {
+        val mojang = RenderSystem.getShaderFog()
         return FogParameters(
-            RenderSystem.getShaderFogStart(),
-            RenderSystem.getShaderFogEnd(),
-            FogShape.entries[RenderSystem.getShaderFogShape().ordinal],
-            IColor.RGBAF(RenderSystem.getShaderFogColor())
+            mojang.start,
+            mojang.end,
+            FogShape.entries[mojang.shape.ordinal],
+            IColor.RGBAF(mojang.red, mojang.green, mojang.blue, mojang.alpha)
         )
     }
 }
