@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.pipeline.RenderTarget
+import net.minecraft.core.Registry
 import net.minecraft.server.packs.PackResources
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
@@ -14,10 +15,15 @@ import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebufferAttachment
 import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
 import net.typho.big_shot_lib.api.services.WrapperUtil
+import net.typho.big_shot_lib.api.util.NeoRegistry
+import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
+import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import java.util.*
 import java.util.function.Predicate
+import java.util.stream.Collectors
 import java.util.stream.Stream
+import kotlin.jvm.optionals.getOrNull
 
 class WrapperUtilImpl : WrapperUtil {
     override fun wrap(manager: ResourceManager): ResourceManagerWrapper {
@@ -118,6 +124,58 @@ class WrapperUtilImpl : WrapperUtil {
             override fun width() = target.width
 
             override fun height() = target.height
+        }
+    }
+
+    override fun <T> wrap(registry: Registry<T>): NeoRegistry<T> {
+        return object : NeoRegistry<T> {
+            override fun key(): NeoResourceKey<T> {
+                return registry.key().toNeo()
+            }
+
+            override fun get(value: ResourceIdentifier): T? {
+                return registry.get(value.toMojang())
+            }
+
+            override fun getKey(value: T): NeoResourceKey<T> {
+                return registry.getResourceKey(value!!).orElseThrow().toNeo()
+            }
+
+            override fun contains(value: ResourceIdentifier): Boolean {
+                return registry.containsKey(value.toMojang())
+            }
+
+            override fun keys(): Set<NeoResourceKey<T>> {
+                return registry.keySet()
+                    .stream()
+                    .map { NeoResourceKey<T>(registry.key().location().toNeo(), it.toNeo()) }
+                    .collect(Collectors.toSet())
+            }
+
+            override fun entries(): Set<Pair<NeoResourceKey<T>, T>> {
+                return registry.entrySet()
+                    .stream()
+                    .map { it.key.toNeo() to it.value }
+                    .collect(Collectors.toSet())
+            }
+
+            override fun values(): Collection<T> {
+                return entries().map { it.second }
+            }
+
+            override fun getTag(key: NeoTagKey<T>): Set<T>? {
+                return registry.getTag(key.toMojang())
+                    .map { set ->
+                        set.stream()
+                            .map { it.value() }
+                            .collect(Collectors.toSet())
+                    }
+                    .getOrNull()
+            }
+
+            override fun tags(): Set<NeoTagKey<T>> {
+                return registry.tags.map { it.first.toNeo() }.collect(Collectors.toSet())
+            }
         }
     }
 }
