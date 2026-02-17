@@ -48,4 +48,12 @@ data class TexturedQuad(
         buffer.putVec3f(v3, padding).putVec2f(uv3)
         buffer.putVec3f(v4, padding).putVec2f(uv4)
     }
+
+    fun offset(vec: Vector3f, dest: TexturedQuad = this): TexturedQuad {
+        dest.v1.add(vec)
+        dest.v2.add(vec)
+        dest.v3.add(vec)
+        dest.v4.add(vec)
+        return dest
+    }
 }

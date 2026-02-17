@@ -8,7 +8,7 @@ import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 interface TextureUtil {
     fun blockAtlasTexture(): ResourceIdentifier
 
-    fun getRenderTypeTexture(type: RenderType): ResourceIdentifier
+    fun getRenderTypeTexture(type: RenderType): ResourceIdentifier?
 
     fun getMinecraftTexture(texture: ResourceIdentifier): GlTexture2D
 
