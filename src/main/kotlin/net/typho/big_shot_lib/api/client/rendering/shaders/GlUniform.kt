@@ -6,6 +6,7 @@ import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.textures.GlTexture
 import net.typho.big_shot_lib.api.client.rendering.textures.TextureType
 import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
+import net.typho.big_shot_lib.api.util.IColor
 import org.joml.*
 
 abstract class GlUniform(
@@ -191,5 +192,24 @@ abstract class GlUniform(
     fun setValue(mat: Matrix4x3f, transpose: Boolean = false) {
         assertType(ShaderVariableType.MAT4X3)
         OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
+    }
+
+    fun setValue(color: IColor) {
+        when (type) {
+            ShaderVariableType.UINT -> setValue(color.toRGBA())
+            ShaderVariableType.FLOAT_VEC3 -> setValue(color.redF(), color.greenF(), color.blueF())
+            ShaderVariableType.FLOAT_VEC4 -> setValue(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)
+            ShaderVariableType.INT_VEC3, ShaderVariableType.UINT_VEC3 -> setValue(color.red(), color.green(), color.blue())
+            ShaderVariableType.INT_VEC4, ShaderVariableType.UINT_VEC4 -> setValue(color.red(), color.green(), color.blue(), color.alpha() ?: 255)
+            else -> assertType(
+                ShaderVariableType.UINT,
+                ShaderVariableType.FLOAT_VEC3,
+                ShaderVariableType.FLOAT_VEC4,
+                ShaderVariableType.INT_VEC3,
+                ShaderVariableType.INT_VEC4,
+                ShaderVariableType.UINT_VEC4,
+                ShaderVariableType.UINT_VEC4
+            )
+        }
     }
 }
