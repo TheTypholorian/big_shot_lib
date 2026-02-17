@@ -6,7 +6,7 @@ plugins {
 val modId: String by project
 
 base {
-    archivesName = "$modId-common"
+    archivesName = "$modId-mc${libs.versions.minecraft.get()}-common"
 }
 
 neoForge {
@@ -39,6 +39,7 @@ dependencies {
     api("org.lwjgl:lwjgl-shaderc:3.3.3")
     api("org.lwjgl:lwjgl-spvc:3.3.3")
     implementation(libs.sodium)
+    implementation(libs.bigShotApi)
 }
 
 configurations {
