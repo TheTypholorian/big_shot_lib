@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.MeshUtil
 import net.typho.big_shot_lib.api.services.BlockUtil
+import net.typho.big_shot_lib.api.services.WrapperUtil
 import java.util.function.BiConsumer
 
 class MeshUtilImpl : MeshUtil {
@@ -33,8 +34,11 @@ class MeshUtilImpl : MeshUtil {
         val random = RandomSource.create()
 
         for (direction in directions) {
-            model.getQuads(state, direction, random)
-                .map { TexturedQuad() }
+            out.accept(
+                direction,
+                model.getQuads(state, direction, random)
+                    .map { WrapperUtil.INSTANCE.wrap(it).offset(offset) }
+            )
         }
     }
 }
