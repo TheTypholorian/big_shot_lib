@@ -1,11 +1,8 @@
 package net.typho.big_shot_lib.api.client.rendering.state
 
+import net.typho.big_shot_lib.api.BigShotApi.loadService
+import net.typho.big_shot_lib.api.client.rendering.shaders.GlShader
 import net.typho.big_shot_lib.api.util.IColor
-import java.util.*
-
-net.typho.big_shot_lib.api.client.rendering.shaders.GlShader
-import net.typho.big_shot_lib.api.util.IColor
-import java.util.*
 
 @JvmRecord
 data class FogParameters(
