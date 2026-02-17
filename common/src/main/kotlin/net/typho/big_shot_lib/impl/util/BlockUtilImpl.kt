@@ -20,6 +20,6 @@ class BlockUtilImpl : BlockUtil {
         pos: BlockPos,
         level: Level
     ): Vector3f {
-        return state.getOffset(level, pos).toVector3f()
+        return state.getOffset(pos).toVector3f()
     }
 }

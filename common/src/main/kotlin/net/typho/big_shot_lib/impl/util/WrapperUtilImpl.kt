@@ -190,7 +190,7 @@ class WrapperUtilImpl : WrapperUtil {
     override fun wrap(access: RegistryAccess): NeoRegistryAccess {
         return object : NeoRegistryAccess {
             override fun <T> registry(key: NeoResourceKey<Registry<T>>): NeoRegistry<T>? {
-                return access.registry(key.toMojang()).map { wrap(it) }.getOrNull()
+                return access.lookup(key.toMojang()).map { wrap(it) }.getOrNull()
             }
         }
     }
