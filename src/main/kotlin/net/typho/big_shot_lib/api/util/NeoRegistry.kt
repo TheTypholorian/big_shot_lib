@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 interface NeoRegistry<T> {
-    fun key(): NeoResourceKey<Registry<T>>
+    fun key(): NeoResourceKey<out Registry<T>>
 
     fun get(value: ResourceIdentifier): T?
 
