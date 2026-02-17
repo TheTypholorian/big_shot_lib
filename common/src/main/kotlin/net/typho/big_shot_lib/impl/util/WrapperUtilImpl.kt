@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.impl.util
 import com.mojang.blaze3d.pipeline.RenderTarget
 import net.minecraft.client.Minecraft
 import net.minecraft.core.Registry
+import net.minecraft.core.RegistryAccess
 import net.minecraft.server.packs.PackResources
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
@@ -14,9 +15,10 @@ import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebufferAttachment
-import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
+import net.typho.big_shot_lib.api.services.NeoResourceManager
 import net.typho.big_shot_lib.api.services.WrapperUtil
 import net.typho.big_shot_lib.api.util.NeoRegistry
+import net.typho.big_shot_lib.api.util.NeoRegistryAccess
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
@@ -27,8 +29,8 @@ import java.util.stream.Stream
 import kotlin.jvm.optionals.getOrNull
 
 class WrapperUtilImpl : WrapperUtil {
-    override fun wrap(manager: ResourceManager): ResourceManagerWrapper {
-        return object : ResourceManagerWrapper {
+    override fun wrap(manager: ResourceManager): NeoResourceManager {
+        return object : NeoResourceManager {
             override fun getNamespaces(): MutableSet<String> {
                 return manager.namespaces
             }
@@ -176,6 +178,14 @@ class WrapperUtilImpl : WrapperUtil {
 
             override fun tags(): Set<NeoTagKey<T>> {
                 return registry.tags.map { it.first.toNeo() }.collect(Collectors.toSet())
+            }
+        }
+    }
+
+    override fun wrap(access: RegistryAccess): NeoRegistryAccess {
+        return object : NeoRegistryAccess {
+            override fun <T> registry(key: NeoResourceKey<T>): NeoRegistry<T>? {
+                return access.registry(key.toMojang()).map { wrap(it) }.getOrNull()
             }
         }
     }
