@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.util.VertexFormatUtil
 import net.typho.big_shot_lib.api.errors.ResourceNotFoundException
 import net.typho.big_shot_lib.api.services.NeoFileToIdConverter
-import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
+import net.typho.big_shot_lib.api.services.NeoResourceManager
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 
@@ -14,7 +14,7 @@ object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"),
     override fun decode(
         id: ResourceIdentifier,
         json: JsonObject,
-        manager: ResourceManagerWrapper
+        manager: NeoResourceManager
     ): NeoShader {
         val format = json.get("format") ?: throw JsonParseException("Shader $id is missing vertex format")
         val sourcesObject = json.getAsJsonObject("sources") ?: throw JsonParseException("Shader $id is missing sources")

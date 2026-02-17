@@ -7,14 +7,14 @@ import com.google.gson.JsonParser
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.services.NeoFileToIdConverter
-import net.typho.big_shot_lib.api.services.ResourceManagerReloadListenerWrapper
-import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
+import net.typho.big_shot_lib.api.services.NeoResourceManager
+import net.typho.big_shot_lib.api.services.NeoResourceManagerReloadListener
 import java.util.*
 
 abstract class ResourceRegistry<T>(
     val name: ResourceIdentifier,
     val idConverter: NeoFileToIdConverter,
-) : ResourceManagerReloadListenerWrapper {
+) : NeoResourceManagerReloadListener {
     companion object {
         @JvmField
         val registries = LinkedList<ResourceRegistry<*>>()
@@ -33,9 +33,9 @@ abstract class ResourceRegistry<T>(
 
     fun get(id: ResourceIdentifier) = map[id]
 
-    abstract fun decode(id: ResourceIdentifier, json: JsonObject, manager: ResourceManagerWrapper): T
+    abstract fun decode(id: ResourceIdentifier, json: JsonObject, manager: NeoResourceManager): T
 
-    override fun onResourceManagerReload(manager: ResourceManagerWrapper) {
+    override fun onResourceManagerReload(manager: NeoResourceManager) {
         map.values.forEach { value -> if (value is AutoCloseable) value.close() }
         map.clear()
 

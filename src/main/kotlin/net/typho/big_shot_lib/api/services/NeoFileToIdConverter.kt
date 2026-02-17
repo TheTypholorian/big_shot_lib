@@ -21,7 +21,7 @@ data class NeoFileToIdConverter(
         return file.withPath { it.substring(prefix.length + 1, it.length - extension.length - 1) }
     }
 
-    fun listMatchingResources(manager: ResourceManagerWrapper): MutableMap<ResourceIdentifier, Resource> {
+    fun listMatchingResources(manager: NeoResourceManager): MutableMap<ResourceIdentifier, Resource> {
         return manager.listResources(prefix) { it.path.endsWith(extension) }
     }
 

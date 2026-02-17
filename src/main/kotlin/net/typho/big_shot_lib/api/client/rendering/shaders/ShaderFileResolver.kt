@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.shaders
 
 import net.minecraft.server.packs.resources.Resource
 import net.typho.big_shot_lib.api.errors.ResourceNotFoundException
-import net.typho.big_shot_lib.api.services.ResourceManagerWrapper
+import net.typho.big_shot_lib.api.services.NeoResourceManager
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import java.io.InputStream
 
@@ -52,7 +52,7 @@ fun interface ShaderFileResolver {
 
     open class ResourceBacked(
         @JvmField
-        val manager: ResourceManagerWrapper
+        val manager: NeoResourceManager
     ) : ShaderFileResolver {
         override fun loadFile(key: String, requester: String): String? {
             val id = ResourceIdentifier(key).withPath { path ->

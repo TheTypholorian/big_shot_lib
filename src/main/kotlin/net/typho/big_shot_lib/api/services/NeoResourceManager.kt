@@ -11,7 +11,7 @@ import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Stream
 
-interface ResourceManagerWrapper {
+interface NeoResourceManager {
     fun getNamespaces(): MutableSet<String>
 
     fun getResourceStack(location: ResourceIdentifier): MutableList<Resource>

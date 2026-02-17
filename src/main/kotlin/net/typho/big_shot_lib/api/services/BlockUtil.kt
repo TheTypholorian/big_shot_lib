@@ -8,6 +8,8 @@ import net.typho.big_shot_lib.api.BigShotApi.loadService
 interface BlockUtil {
     fun isSolidRender(state: BlockState, pos: BlockPos, level: Level): Boolean
 
+    fun getOffset(state: BlockState, pos: BlockPos, level: Level): Boolean
+
     companion object {
         @JvmField
         val INSTANCE: BlockUtil = BlockUtil::class.loadService()
