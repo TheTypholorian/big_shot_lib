@@ -57,7 +57,7 @@ public class LevelRendererMixin {
                 level,
                 projectionMatrix,
                 frustumMatrix,
-                new FrustumIntersection(projectionMatrix.mul(frustumMatrix.translate(camera.getPosition().toVector3f().mul(-1)), new Matrix4f())),
+                new FrustumIntersection(projectionMatrix.mul(frustumMatrix.translate(camera.getPosition().toVector3f().mul(-1), new Matrix4f()), new Matrix4f())),
                 Minecraft.getInstance().getMainRenderTarget().width,
                 Minecraft.getInstance().getMainRenderTarget().height
         ));
