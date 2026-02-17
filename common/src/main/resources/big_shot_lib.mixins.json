@@ -23,7 +23,6 @@
     "event.ClientChunkCacheMixin",
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
-    "files.MinecraftMixin",
     "shaders.mixins.GlDeviceMixin",
     "util.GlTextureMixin"
   ],
