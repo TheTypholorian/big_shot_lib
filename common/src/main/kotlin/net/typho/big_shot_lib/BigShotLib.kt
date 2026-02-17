@@ -1,87 +1,44 @@
 package net.typho.big_shot_lib
 
-import com.mojang.blaze3d.buffers.BufferType
-import com.mojang.blaze3d.buffers.BufferUsage
-import com.mojang.blaze3d.buffers.GpuBuffer
+import com.google.common.collect.Queues
+import com.mojang.blaze3d.opengl.GlDevice
+import com.mojang.blaze3d.opengl.GlTexture
+import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
-import com.mojang.blaze3d.vertex.Tesselator
-import com.mojang.blaze3d.vertex.VertexConsumer
-import com.mojang.blaze3d.vertex.VertexFormat
-import net.minecraft.client.Camera
-import net.minecraft.client.Minecraft
+import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.phys.AABB
-import org.joml.Matrix4f
-import org.joml.Vector3f
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import net.minecraft.tags.TagKey
+import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
+import net.typho.big_shot_lib.api.util.resources.NeoTagKey
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import java.util.concurrent.ConcurrentLinkedQueue
 
 object BigShotLib {
-    const val MOD_ID = "big_shot_lib"
     @JvmField
-    val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
-    val SCREEN_VBO: GpuBuffer by lazy {
-        val blitBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX)
-
-        blitBuilder.quad(
-            Vector3f(-1f, 1f, 0f),
-            Vector3f(1f, 1f, 0f),
-            Vector3f(1f, -1f, 0f),
-            Vector3f(-1f, -1f, 0f),
-            Vector3f(0f, 0f, -1f)
-        )
-
-        return@lazy RenderSystem.getDevice().createBuffer(null, BufferType.VERTICES, BufferUsage.STATIC_WRITE, blitBuilder.buildOrThrow().vertexBuffer())
-    }
-
-    fun init() = Unit
+    val renderThreadQueue: ConcurrentLinkedQueue<Runnable> = Queues.newConcurrentLinkedQueue()
 
     @JvmStatic
-    fun id(path: String): ResourceLocation = ResourceLocation.fromNamespaceAndPath(MOD_ID, path)
+    fun ResourceLocation.toNeo(): ResourceIdentifier = ResourceIdentifier(namespace, path)
 
     @JvmStatic
-    fun getViewMatrix(
-        camera: Camera = Minecraft.getInstance().gameRenderer.mainCamera,
-        matrix: Matrix4f = RenderSystem.getModelViewMatrix()
-    ): Matrix4f {
-        return matrix.translate(camera.position.toVector3f().mul(-1f))
-    }
+    fun ResourceIdentifier.toMojang(): ResourceLocation = ResourceLocation.fromNamespaceAndPath(namespace, path)
 
     @JvmStatic
-    fun VertexConsumer.cube(
-        box: AABB,
-    ) {
-        val vertices = arrayOf(
-            Vector3f(box.maxX.toFloat(), box.maxY.toFloat(), box.maxZ.toFloat()),
-            Vector3f(box.minX.toFloat(), box.maxY.toFloat(), box.maxZ.toFloat()),
-            Vector3f(box.minX.toFloat(), box.minY.toFloat(), box.maxZ.toFloat()),
-            Vector3f(box.maxX.toFloat(), box.minY.toFloat(), box.maxZ.toFloat()),
-            Vector3f(box.maxX.toFloat(), box.maxY.toFloat(), box.minZ.toFloat()),
-            Vector3f(box.minX.toFloat(), box.maxY.toFloat(), box.minZ.toFloat()),
-            Vector3f(box.minX.toFloat(), box.minY.toFloat(), box.minZ.toFloat()),
-            Vector3f(box.maxX.toFloat(), box.minY.toFloat(), box.minZ.toFloat()),
-        )
-
-        quad(vertices[0], vertices[1], vertices[2], vertices[3], Vector3f(0f, 0f, 1f))
-        quad(vertices[1], vertices[5], vertices[6], vertices[2], Vector3f(-1f, 0f, 0f))
-        quad(vertices[5], vertices[4], vertices[7], vertices[6], Vector3f(0f, 0f, -1f))
-        quad(vertices[4], vertices[0], vertices[3], vertices[7], Vector3f(1f, 0f, 0f))
-        quad(vertices[1], vertices[0], vertices[4], vertices[5], Vector3f(0f, 1f, 0f))
-        quad(vertices[3], vertices[2], vertices[6], vertices[7], Vector3f(0f, -1f, 0f))
-    }
+    fun <T> ResourceKey<T>.toNeo(): NeoResourceKey<T> = NeoResourceKey(registry().toNeo(), location().toNeo())
 
     @JvmStatic
-    fun VertexConsumer.quad(
-        v0: Vector3f,
-        v1: Vector3f,
-        v2: Vector3f,
-        v3: Vector3f,
-        normal: Vector3f
-    ) {
-        addVertex(v0).setUv(0f, 1f).setNormal(normal.x, normal.y, normal.z)
-        addVertex(v1).setUv(1f, 1f).setNormal(normal.x, normal.y, normal.z)
-        addVertex(v2).setUv(1f, 0f).setNormal(normal.x, normal.y, normal.z)
-        addVertex(v3).setUv(0f, 0f).setNormal(normal.x, normal.y, normal.z)
+    fun <T> NeoResourceKey<T>.toMojang(): ResourceKey<T> = ResourceKey.create(ResourceKey.createRegistryKey(registry.toMojang()), location.toMojang())
+
+    @JvmStatic
+    fun <T> TagKey<T>.toNeo(): NeoTagKey<T> = NeoTagKey(registry().toNeo().location, location().toNeo())
+
+    @JvmStatic
+    fun <T> NeoTagKey<T>.toMojang(): TagKey<T> = TagKey.create(ResourceKey.createRegistryKey(registry.toMojang()), location.toMojang())
+
+    @JvmStatic
+    fun RenderTarget.glId(): Int = (colorTexture as GlTexture).getFbo((RenderSystem.getDevice() as GlDevice).directStateAccess(), depthTexture)
+
+    @JvmStatic
+    fun init() {
     }
 }

@@ -13,7 +13,7 @@ val modId: String by project
 val version: String by project
 
 base {
-    archivesName = "$modId-neoforge"
+    archivesName = "$modId-mc${libs.versions.minecraft.get()}-neoforge"
 }
 
 modrinth {
@@ -24,12 +24,12 @@ modrinth {
     }
 
     projectId = "big-shot-lib"
-    versionName = "$modName $version for NeoForge 1.21"
-    versionNumber = "mc1.21-$version-neoforge"
+    versionName = "$modName $version for NeoForge 1.21.5"
+    versionNumber = "mc1.21.5-$version-neoforge"
     versionType = "release"
     uploadFile.set(tasks.jar)
     additionalFiles.add(tasks.sourcesJar)
-    gameVersions.addAll("1.21", "1.21.1")
+    gameVersions.addAll("1.21.5")
     loaders.add("neoforge")
 
     dependencies {
@@ -80,17 +80,19 @@ repositories {
 dependencies {
     implementation(libs.kff)
 
-    fun lwjglInclude(dependency: Any) {
+    fun externalDependency(dependency: Any) {
         jarJar(dependency)
         api(dependency)
         additionalRuntimeClasspath(dependency)
     }
 
-    lwjglInclude("org.lwjgl:lwjgl-shaderc:3.3.3")
+    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3")
 
-    lwjglInclude("org.lwjgl:lwjgl-spvc:3.3.3")
+    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3")
 
     // natives for neoforge are in src/main/resources because neoforge is stupid
 
     implementation(libs.sodium)
+
+    externalDependency(libs.bigShotApi)
 }

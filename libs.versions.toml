@@ -6,7 +6,7 @@ loom = "1.8-SNAPSHOT"
 dokka = "1.9.20"
 
 minecraft = "1.21.5"
-minecraftRange = "[1.21.4, 1.21.5)"
+minecraftRange = "[1.21.5, 1.21.6)"
 
 # The version of ParchmentMC that is used, see https://parchmentmc.org/docs/getting-started#choose-a-version for new versions
 parchment = "2025.06.15"
@@ -28,6 +28,8 @@ mixin = "0.8.5"
 mixinExtras = "0.3.5"
 sodium="mc1.21.5-0.6.13-neoforge"
 
+bigShot="3.6.3"
+
 [libraries]
 minecraft = { group = "com.mojang", name = "minecraft", version.ref = "minecraft" }
 fabricLoader = { group = "net.fabricmc", name = "fabric-loader", version.ref = "fabricLoader" }
@@ -37,6 +39,7 @@ kff = { group = "thedarkcolour", name = "kotlinforforge-neoforge", version.ref =
 mixin = { group = "org.spongepowered", name = "mixin", version.ref = "mixin" }
 mixinExtras-common = { group = "io.github.llamalad7", name = "mixinextras-common", version.ref = "mixinExtras" }
 sodium = { group = "maven.modrinth", name = "sodium", version.ref = "sodium" }
+bigShotApi = { group = "net.typho", name = "big_shot_api", version.ref = "bigShot" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
