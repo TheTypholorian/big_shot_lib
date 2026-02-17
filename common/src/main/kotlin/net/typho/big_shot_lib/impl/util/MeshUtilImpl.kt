@@ -13,6 +13,7 @@ import net.typho.big_shot_lib.api.services.WrapperUtil
 import java.util.function.BiConsumer
 
 class MeshUtilImpl : MeshUtil {
+    @Suppress("DEPRECATION")
     override fun getBlockQuads(
         state: BlockState,
         level: Level,
