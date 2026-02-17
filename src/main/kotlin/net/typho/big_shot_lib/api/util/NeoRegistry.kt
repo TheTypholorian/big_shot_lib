@@ -1,11 +1,12 @@
 package net.typho.big_shot_lib.api.util
 
+import net.minecraft.core.Registry
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 interface NeoRegistry<T> {
-    fun key(): NeoResourceKey<T>
+    fun key(): NeoResourceKey<Registry<T>>
 
     fun get(value: ResourceIdentifier): T?
 
