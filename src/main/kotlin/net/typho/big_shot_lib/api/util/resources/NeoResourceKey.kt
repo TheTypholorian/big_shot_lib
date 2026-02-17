@@ -12,7 +12,7 @@ data class NeoResourceKey<T>(
 ) {
     companion object {
         @JvmStatic
-        fun <T> registry(location: ResourceIdentifier): NeoResourceKey<out Registry<T>> {
+        fun <T> registry(location: ResourceIdentifier): NeoResourceKey<Registry<T>> {
             return NeoResourceKey(ResourceIdentifier("root"), location)
         }
 
@@ -26,7 +26,7 @@ data class NeoResourceKey<T>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <E> cast(key: NeoResourceKey<out Registry<E>>): NeoResourceKey<E>? {
+    fun <E> cast(key: NeoResourceKey<Registry<E>>): NeoResourceKey<E>? {
         return if (registry == key.location) this as NeoResourceKey<E> else null
     }
 }
