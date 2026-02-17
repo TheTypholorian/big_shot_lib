@@ -23,12 +23,12 @@ modrinth {
     }
 
     projectId = "big-shot-lib"
-    versionName = "$modName $version for Fabric 1.21"
-    versionNumber = "mc1.21-$version-fabric"
+    versionName = "$modName $version for Fabric 1.21.3"
+    versionNumber = "mc1.21.3-$version-fabric"
     versionType = "release"
     uploadFile.set(tasks.remapJar)
     additionalFiles.add(tasks.remapSourcesJar)
-    gameVersions.addAll("1.21", "1.21.1")
+    gameVersions.addAll("1.21.3")
     loaders.add("fabric")
 
     dependencies {
