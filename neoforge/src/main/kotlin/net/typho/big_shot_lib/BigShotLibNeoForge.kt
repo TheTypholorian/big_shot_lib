@@ -5,12 +5,17 @@ import net.neoforged.api.distmarker.OnlyIn
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.client.rendering.shaders.NeoShaderRegistry
 
 @Mod(BigShotApi.MOD_ID)
 @OnlyIn(Dist.CLIENT)
 class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
     init {
         BigShotLib.init()
+        eventBus.addListener { event: RegisterClientReloadListenersEvent ->
+            event.registerReloadListener(NeoShaderRegistry)
+        }
     }
 }
