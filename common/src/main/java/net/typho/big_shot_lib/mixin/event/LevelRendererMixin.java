@@ -49,13 +49,14 @@ public class LevelRendererMixin {
             CallbackInfo ci
     ) {
         assert level != null;
+        Matrix4f frustum = frustumMatrix.translate(camera.getPosition().toVector3f().mul(-1), new Matrix4f());
         PostProcessEvent.Companion.invoke(new RenderData(
                 renderBuffers.bufferSource(),
                 camera,
                 level,
                 projectionMatrix,
-                frustumMatrix,
-                new FrustumIntersection(projectionMatrix.mul(frustumMatrix.translate(camera.getPosition().toVector3f().mul(-1), new Matrix4f()), new Matrix4f())),
+                frustum,
+                new FrustumIntersection(projectionMatrix.mul(frustum, new Matrix4f())),
                 Minecraft.getInstance().getMainRenderTarget().width,
                 Minecraft.getInstance().getMainRenderTarget().height
         ));
