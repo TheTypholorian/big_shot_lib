@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.services
 
 import com.mojang.blaze3d.vertex.VertexFormat
-import java.util.*
+import net.typho.big_shot_lib.api.BigShotApi.loadService
 
 interface GlUtil {
     fun toGlId(mode: VertexFormat.Mode): Int
@@ -12,6 +12,6 @@ interface GlUtil {
 
     companion object {
         @JvmField
-        val INSTANCE: GlUtil = ServiceLoader.load(GlUtil::class.java).findFirst().orElseThrow()
+        val INSTANCE: GlUtil = GlUtil::class.loadService()
     }
 }

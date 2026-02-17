@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.buffers
 
+import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
-import java.util.*
 
 interface DynamicBufferRegistry {
     fun register(buffer: DynamicBuffer)
@@ -37,7 +37,7 @@ interface DynamicBufferRegistry {
 
     companion object {
         @JvmField
-        val INSTANCE: DynamicBufferRegistry = ServiceLoader.load(DynamicBufferRegistry::class.java).findFirst().orElseThrow()
+        val INSTANCE: DynamicBufferRegistry = DynamicBufferRegistry::class.loadService()
 
         init {
             INSTANCE.register(NormalsDynamicBuffer)

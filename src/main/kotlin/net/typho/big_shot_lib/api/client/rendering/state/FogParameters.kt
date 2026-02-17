@@ -1,6 +1,9 @@
 package net.typho.big_shot_lib.api.client.rendering.state
 
-import net.typho.big_shot_lib.api.client.rendering.shaders.GlShader
+import net.typho.big_shot_lib.api.util.IColor
+import java.util.*
+
+net.typho.big_shot_lib.api.client.rendering.shaders.GlShader
 import net.typho.big_shot_lib.api.util.IColor
 import java.util.*
 
@@ -28,6 +31,6 @@ data class FogParameters(
 
     companion object {
         @JvmField
-        val INSTANCE: Supplier = ServiceLoader.load(Supplier::class.java).findFirst().orElseThrow()
+        val INSTANCE: Supplier = Supplier::class.loadService()
     }
 }

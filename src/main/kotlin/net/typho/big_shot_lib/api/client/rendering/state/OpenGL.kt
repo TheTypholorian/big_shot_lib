@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.state
 
+import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.rendering.errors.ShaderCompileException
@@ -11,12 +12,11 @@ import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.*
 import java.nio.ByteBuffer
-import java.util.*
 
 interface OpenGL {
     companion object {
         @JvmField
-        val INSTANCE: OpenGL = ServiceLoader.load(OpenGL::class.java).findFirst().orElseThrow()
+        val INSTANCE: OpenGL = OpenGL::class.loadService()
     }
 
     fun interface DebugListener {
