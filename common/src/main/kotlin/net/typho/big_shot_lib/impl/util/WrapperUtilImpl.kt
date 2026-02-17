@@ -134,7 +134,7 @@ class WrapperUtilImpl : WrapperUtil {
             }
 
             override fun get(value: ResourceIdentifier): T? {
-                return registry.get(value.toMojang())
+                return registry.get(value.toMojang()).map { it.value() }.getOrNull()
             }
 
             override fun getKey(value: T): NeoResourceKey<T> {
@@ -164,17 +164,16 @@ class WrapperUtilImpl : WrapperUtil {
             }
 
             override fun getTag(key: NeoTagKey<T>): Set<T>? {
-                return registry.getTag(key.toMojang())
-                    .map { set ->
-                        set.stream()
-                            .map { it.value() }
-                            .collect(Collectors.toSet())
-                    }
-                    .getOrNull()
+                return if (registry.listTagIds().anyMatch { it.toNeo() == key }) {
+                    registry.getTagOrEmpty(key.toMojang()).toList()
+                        .stream()
+                        .map { it.value() }
+                        .collect(Collectors.toSet())
+                } else null
             }
 
             override fun tags(): Set<NeoTagKey<T>> {
-                return registry.tags.map { it.first.toNeo() }.collect(Collectors.toSet())
+                return registry.listTagIds().map { it.toNeo() }.collect(Collectors.toSet())
             }
         }
     }
