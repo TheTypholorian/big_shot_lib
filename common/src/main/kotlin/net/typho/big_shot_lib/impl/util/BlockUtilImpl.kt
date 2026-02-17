@@ -13,4 +13,12 @@ class BlockUtilImpl : BlockUtil {
     ): Boolean {
         return state.isSolidRender
     }
+
+    override fun getOffset(
+        state: BlockState,
+        pos: BlockPos,
+        level: Level
+    ): Boolean {
+        return state.getOffset(level, pos).toVector3f()
+    }
 }
