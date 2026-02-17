@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.pipeline.RenderTarget
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
@@ -10,6 +11,7 @@ import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
+import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
 import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
@@ -221,5 +223,61 @@ class WrapperUtilImpl : WrapperUtil {
             list[2].second,
             list[3].second
         )
+    }
+
+    override fun wrap(consumer: VertexConsumer): NeoVertexConsumer {
+        return object : NeoVertexConsumer {
+            override fun vertex(
+                x: Float,
+                y: Float,
+                z: Float
+            ): NeoVertexConsumer {
+                consumer.addVertex(x, y, z)
+                return this
+            }
+
+            override fun color(
+                r: Float,
+                g: Float,
+                b: Float,
+                a: Float
+            ): NeoVertexConsumer {
+                consumer.setColor(r, g, b, a)
+                return this
+            }
+
+            override fun textureUV(
+                u: Float,
+                v: Float
+            ): NeoVertexConsumer {
+                consumer.setUv(u, v)
+                return this
+            }
+
+            override fun overlayUV(
+                u: Int,
+                v: Int
+            ): NeoVertexConsumer {
+                consumer.setUv1(u, v)
+                return this
+            }
+
+            override fun lightUV(
+                u: Int,
+                v: Int
+            ): NeoVertexConsumer {
+                consumer.setUv2(u, v)
+                return this
+            }
+
+            override fun normal(
+                x: Float,
+                y: Float,
+                z: Float
+            ): NeoVertexConsumer {
+                consumer.setNormal(x, y, z)
+                return this
+            }
+        }
     }
 }
