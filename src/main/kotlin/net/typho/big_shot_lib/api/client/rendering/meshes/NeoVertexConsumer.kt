@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.meshes
 
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.world.phys.AABB
 import net.typho.big_shot_lib.api.util.IColor
 import org.joml.*
@@ -92,6 +93,53 @@ interface NeoVertexConsumer {
     fun normal(pose: PoseStack.Pose, normal: Vector3fc): NeoVertexConsumer {
         normal(pose, normal.x(), normal.y(), normal.z())
         return this
+    }
+
+    fun toMojang(): VertexConsumer {
+        return object : VertexConsumer {
+            override fun addVertex(
+                f: Float,
+                g: Float,
+                h: Float
+            ): VertexConsumer {
+                vertex(f, g, h)
+                return this
+            }
+
+            override fun setColor(
+                i: Int,
+                j: Int,
+                k: Int,
+                l: Int
+            ): VertexConsumer {
+                color(i, j, k, l)
+                return this
+            }
+
+            override fun setUv(f: Float, g: Float): VertexConsumer {
+                textureUV(f, g)
+                return this
+            }
+
+            override fun setUv1(i: Int, j: Int): VertexConsumer {
+                overlayUV(i, j)
+                return this
+            }
+
+            override fun setUv2(i: Int, j: Int): VertexConsumer {
+                lightUV(i, j)
+                return this
+            }
+
+            override fun setNormal(
+                f: Float,
+                g: Float,
+                h: Float
+            ): VertexConsumer {
+                normal(f, g, h)
+                return this
+            }
+        }
     }
 
     fun cube(

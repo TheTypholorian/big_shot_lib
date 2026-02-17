@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.meshes
 
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.typho.big_shot_lib.api.util.buffers.BufferUtil.putVec2f
 import net.typho.big_shot_lib.api.util.buffers.BufferUtil.putVec3f
 import org.joml.Vector2f
@@ -47,6 +48,34 @@ data class TexturedQuad(
         buffer.putVec3f(v2, padding).putVec2f(uv2)
         buffer.putVec3f(v3, padding).putVec2f(uv3)
         buffer.putVec3f(v4, padding).putVec2f(uv4)
+    }
+
+    fun buildGeometry(consumer: NeoVertexConsumer) {
+        consumer.vertex(v1).textureUV(uv1)
+        consumer.vertex(v2).textureUV(uv2)
+        consumer.vertex(v3).textureUV(uv3)
+        consumer.vertex(v4).textureUV(uv4)
+    }
+
+    fun buildGeometry(consumer: VertexConsumer) {
+        consumer.addVertex(v1).setUv(uv1.x, uv1.y)
+        consumer.addVertex(v2).setUv(uv2.x, uv2.y)
+        consumer.addVertex(v3).setUv(uv3.x, uv3.y)
+        consumer.addVertex(v4).setUv(uv4.x, uv4.y)
+    }
+
+    fun copy(): TexturedQuad {
+        return TexturedQuad(
+            Vector3f(v1),
+            Vector3f(v2),
+            Vector3f(v3),
+            Vector3f(v4),
+
+            Vector2f(uv1),
+            Vector2f(uv2),
+            Vector2f(uv3),
+            Vector2f(uv4),
+        )
     }
 
     fun offset(vec: Vector3f, dest: TexturedQuad = this): TexturedQuad {

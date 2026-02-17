@@ -1,9 +1,32 @@
 package net.typho.big_shot_lib.api.util.resources
 
+import com.mojang.serialization.Codec
+import net.minecraft.core.Registry
+
 @JvmRecord
 data class NeoResourceKey<T>(
     @JvmField
     val registry: ResourceIdentifier,
     @JvmField
     val location: ResourceIdentifier
-)
+) {
+    companion object {
+        @JvmStatic
+        fun <T> registry(location: ResourceIdentifier): NeoResourceKey<out Registry<T>> {
+            return NeoResourceKey(ResourceIdentifier("root"), location)
+        }
+
+        @JvmStatic
+        fun <T> codec(registry: ResourceIdentifier): Codec<NeoResourceKey<T>> {
+            return ResourceIdentifier.CODEC.xmap(
+                { NeoResourceKey(registry, it) },
+                { it.location }
+            )
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <E> cast(key: NeoResourceKey<out Registry<E>>): NeoResourceKey<E>? {
+        return if (registry == key.location) this as NeoResourceKey<E> else null
+    }
+}

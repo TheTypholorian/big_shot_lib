@@ -1,11 +1,13 @@
 package net.typho.big_shot_lib.api.services
 
 import com.mojang.blaze3d.pipeline.RenderTarget
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.BigShotApi.loadService
+import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
 import net.typho.big_shot_lib.api.util.NeoRegistry
@@ -21,6 +23,8 @@ interface WrapperUtil {
     fun wrap(access: RegistryAccess): NeoRegistryAccess
 
     fun wrap(quad: BakedQuad): TexturedQuad
+
+    fun wrap(consumer: VertexConsumer): NeoVertexConsumer
 
     companion object {
         @JvmField
