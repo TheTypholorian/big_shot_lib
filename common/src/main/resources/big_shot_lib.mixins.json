@@ -22,7 +22,6 @@
     "event.ClientChunkCacheMixin",
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
-    "files.MinecraftMixin",
     "shaders.mixins.CompiledShaderMixin",
     "shaders.mixins.ShaderManagerCompilationCacheMixin",
     "shaders.mixins.ShaderManagerMixin",
