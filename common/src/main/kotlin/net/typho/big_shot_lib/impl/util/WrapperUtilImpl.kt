@@ -129,7 +129,7 @@ class WrapperUtilImpl : WrapperUtil {
 
     override fun <T> wrap(registry: Registry<T>): NeoRegistry<T> {
         return object : NeoRegistry<T> {
-            override fun key(): NeoResourceKey<T> {
+            override fun key(): NeoResourceKey<out Registry<T>> {
                 return registry.key().toNeo()
             }
 
