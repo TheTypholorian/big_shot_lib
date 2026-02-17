@@ -11,6 +11,6 @@ class BlockUtilImpl : BlockUtil {
         pos: BlockPos,
         level: Level
     ): Boolean {
-        return state.isSolidRender(level, pos)
+        return state.isSolidRender
     }
 }
