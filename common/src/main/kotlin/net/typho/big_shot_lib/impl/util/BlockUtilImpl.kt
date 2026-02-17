@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.typho.big_shot_lib.api.services.BlockUtil
+import org.joml.Vector3f
 
 class BlockUtilImpl : BlockUtil {
     override fun isSolidRender(
@@ -18,7 +19,7 @@ class BlockUtilImpl : BlockUtil {
         state: BlockState,
         pos: BlockPos,
         level: Level
-    ): Boolean {
+    ): Vector3f {
         return state.getOffset(level, pos).toVector3f()
     }
 }

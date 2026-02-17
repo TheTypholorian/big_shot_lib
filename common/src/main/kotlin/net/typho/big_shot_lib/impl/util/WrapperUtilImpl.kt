@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.pipeline.RenderTarget
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
 import net.minecraft.server.packs.PackResources
@@ -9,6 +10,7 @@ import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
+import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
 import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit
@@ -22,9 +24,12 @@ import net.typho.big_shot_lib.api.util.NeoRegistryAccess
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import org.joml.Vector2f
+import org.joml.Vector3f
 import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Collectors
+import java.util.stream.IntStream
 import java.util.stream.Stream
 import kotlin.jvm.optionals.getOrNull
 
@@ -184,9 +189,37 @@ class WrapperUtilImpl : WrapperUtil {
 
     override fun wrap(access: RegistryAccess): NeoRegistryAccess {
         return object : NeoRegistryAccess {
-            override fun <T> registry(key: NeoResourceKey<T>): NeoRegistry<T>? {
+            override fun <T> registry(key: NeoResourceKey<Registry<T>>): NeoRegistry<T>? {
                 return access.registry(key.toMojang()).map { wrap(it) }.getOrNull()
             }
         }
+    }
+
+    override fun wrap(quad: BakedQuad): TexturedQuad {
+        val list = IntStream.range(0, 4)
+            .mapToObj { it * 8 }
+            .map {
+                Vector3f(
+                    Float.fromBits(quad.vertices[it]),
+                    Float.fromBits(quad.vertices[it + 1]),
+                    Float.fromBits(quad.vertices[it + 2])
+                ) to Vector2f(
+                    Float.fromBits(quad.vertices[it + 4]),
+                    Float.fromBits(quad.vertices[it + 5])
+                )
+            }
+            .toList()
+
+        return TexturedQuad(
+            list[0].first,
+            list[1].first,
+            list[2].first,
+            list[3].first,
+
+            list[0].second,
+            list[1].second,
+            list[2].second,
+            list[3].second
+        )
     }
 }
