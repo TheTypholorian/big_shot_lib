@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.mixin.buffers.sodium;
 
 import net.caffeinemc.mods.sodium.client.render.chunk.vertex.format.ChunkVertexEncoder;
-import net.typho.vibrancy.sodium.VertexWithNormal;
+import net.typho.big_shot_lib.impl.buffers.sodium.VertexWithNormal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
