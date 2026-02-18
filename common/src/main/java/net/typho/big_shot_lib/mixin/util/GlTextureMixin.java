@@ -6,11 +6,14 @@ import com.mojang.blaze3d.opengl.GlTexture;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.TextureFormat;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry;
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL;
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer;
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebufferAttachment;
 import net.typho.big_shot_lib.api.client.rendering.textures.NeoTexture2D;
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader;
+import net.typho.big_shot_lib.impl.buffers.DynamicBufferRegistryImpl;
 import net.typho.big_shot_lib.impl.util.WrapperUtilImpl;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +38,8 @@ public abstract class GlTextureMixin extends GpuTexture {
             method = "getFbo",
             at = @At(
                     value = "INVOKE",
-                    target = "Lit/unimi/dsi/fastutil/ints/Int2IntMap;computeIfAbsent(ILit/unimi/dsi/fastutil/ints/Int2IntFunction;)I"
+                    target = "Lit/unimi/dsi/fastutil/ints/Int2IntMap;computeIfAbsent(ILit/unimi/dsi/fastutil/ints/Int2IntFunction;)I",
+                    remap = false
             )
     )
     private Int2IntFunction getFbo(
@@ -44,6 +48,8 @@ public abstract class GlTextureMixin extends GpuTexture {
     ) {
         return j -> {
             int glId = func.get(j);
+            ((DynamicBufferRegistryImpl) DynamicBufferRegistry.INSTANCE).init();
+            BigShotApi.LOGGER.info("Fbo cache: {} label: {}", WrapperUtilImpl.fboCache, getLabel());
 
             WrapperUtilImpl.fboCache.entrySet().stream()
                     .filter(entry -> entry.getKey().getColorTexture() == this)
@@ -53,10 +59,13 @@ public abstract class GlTextureMixin extends GpuTexture {
 
                         OpenGL.INSTANCE.bindFramebuffer(glId);
 
-                        int k = 0;
+                        int k = 1;
                         List<Integer> buffers = new LinkedList<>();
+                        var attachments = ((DynamicBufferRegistryImpl) DynamicBufferRegistry.INSTANCE).getBuffers().values();
 
-                        for (GlFramebufferAttachment attachment : neo.getColorAttachments().subList(1, neo.getColorAttachments().size())) {
+                        BigShotApi.LOGGER.info("{} {}", getLabel(), attachments);
+
+                        for (GlFramebufferAttachment attachment : attachments) { // neo.getColorAttachments().subList(1, neo.getColorAttachments().size())
                             int point = GL_COLOR_ATTACHMENT0 + k++;
                             buffers.add(point);
                             attachment.resize(getWidth(0), getHeight(0), BufferUploader::uploadNull);

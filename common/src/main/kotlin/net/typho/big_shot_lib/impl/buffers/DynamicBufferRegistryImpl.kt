@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL30.glEnablei
 import java.util.*
 
 class DynamicBufferRegistryImpl : DynamicBufferRegistry {
-    private val buffers = HashMap<Int, DynamicBuffer>()
+    val buffers = HashMap<Int, DynamicBuffer>() // TODO
     private val toAdd = LinkedList<DynamicBuffer>()
 
     override fun register(buffer: DynamicBuffer) {
@@ -21,7 +21,8 @@ class DynamicBufferRegistryImpl : DynamicBufferRegistry {
         if (Minecraft.getInstance().mainRenderTarget == null) {
             toAdd.add(buffer)
         } else {
-            val attachment = GlFramebuffer.MAIN.colorAttachments.size
+            // TODO
+            val attachment = buffers.size //GlFramebuffer.MAIN.colorAttachments.size
             buffers[attachment] = buffer
             GlFramebuffer.MAIN.colorAttachments += buffer
         }

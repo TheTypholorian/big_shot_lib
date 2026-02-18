@@ -48,6 +48,7 @@ dependencies {
     minecraft(libs.minecraft)
     mappings(loom.layered {
         officialMojangMappings()
+        mappings(file("extra_mappings.tiny"))
         parchment("org.parchmentmc.data:parchment-${libs.versions.parchmentMC.get()}:${libs.versions.parchment.get()}@zip")
     })
     modImplementation(libs.fabricLoader)

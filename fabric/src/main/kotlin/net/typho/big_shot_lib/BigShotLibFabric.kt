@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
 import net.minecraft.server.packs.resources.ResourceManager
-import net.minecraft.util.profiling.ProfilerFiller
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.shaders.NeoShaderRegistry
@@ -23,18 +22,14 @@ object BigShotLibFabric : ClientModInitializer {
             }
 
             override fun reload(
-                preparationBarrier: PreparableReloadListener.PreparationBarrier,
-                resourceManager: ResourceManager,
-                preparationsProfiler: ProfilerFiller,
-                reloadProfiler: ProfilerFiller,
+                barrier: PreparableReloadListener.PreparationBarrier,
+                manager: ResourceManager,
                 backgroundExecutor: Executor,
                 gameExecutor: Executor
             ): CompletableFuture<Void> {
                 return NeoShaderRegistry.reload(
-                    preparationBarrier,
-                    resourceManager,
-                    preparationsProfiler,
-                    reloadProfiler,
+                    barrier,
+                    manager,
                     backgroundExecutor,
                     gameExecutor
                 )

@@ -73,7 +73,7 @@ public class GlDeviceMixin {
 
     @Inject(
             method = "compilePipeline",
-            at = @At("TAIL")
+            at = @At("RETURN")
     )
     private void clearThreadLocal(RenderPipeline pipeline, BiFunction<ResourceLocation, ShaderType, String> shaderSource, CallbackInfoReturnable<GlRenderPipeline> cir) {
         ShaderMixinThreadLocal.pop();
