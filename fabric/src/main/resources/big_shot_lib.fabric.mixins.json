@@ -9,7 +9,7 @@
     "fabric.event.ChunkStatusTasksMixin"
   ],
   "client": [
-    "util.GlTextureMixin"
+    "fabric.shaders.mixins.GlDeviceMixin"
   ],
   "server": [],
   "injectors": {

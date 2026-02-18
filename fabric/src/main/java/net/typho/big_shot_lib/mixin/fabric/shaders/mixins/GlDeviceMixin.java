@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.shaders.mixins;
+package net.typho.big_shot_lib.mixin.fabric.shaders.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.opengl.GlDevice;

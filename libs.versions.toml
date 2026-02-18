@@ -2,7 +2,7 @@
 java = "21"
 kotlin = "2.0.21"
 moddev = "1.0.21"
-loom = "1.8-SNAPSHOT"
+loom = "1.13-SNAPSHOT"
 dokka = "1.9.20"
 
 minecraft = "1.21.5"
