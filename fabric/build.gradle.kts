@@ -47,7 +47,6 @@ repositories {
 dependencies {
     minecraft(libs.minecraft)
     mappings(loom.layered {
-        mappings(file("extra_mappings.tiny"))
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${libs.versions.parchmentMC.get()}:${libs.versions.parchment.get()}@zip")
     })
@@ -72,16 +71,8 @@ dependencies {
     externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
     modImplementation(libs.sodium)
-    include(libs.bigShotApi) {
-        artifact {
-            classifier = "intermediary"
-        }
-    }
-    modImplementation(libs.bigShotApi) {
-        artifact {
-            classifier = "intermediary"
-        }
-    }
+    include(libs.bigShotApi)
+    modImplementation(libs.bigShotApi)
 }
 
 loom {
