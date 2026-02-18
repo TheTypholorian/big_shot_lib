@@ -8,9 +8,6 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceKey
-import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.ShaderMixin
-import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.ShaderMixinManager
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
@@ -43,12 +40,5 @@ object BigShotLib {
 
     @JvmStatic
     fun init() {
-        ShaderMixinManager.register(object : ShaderMixin {
-            override fun mixinPostCompile(key: ShaderSourceKey, code: String): String {
-                println(key)
-                println(code)
-                return super.mixinPostCompile(key, code)
-            }
-        })
     }
 }

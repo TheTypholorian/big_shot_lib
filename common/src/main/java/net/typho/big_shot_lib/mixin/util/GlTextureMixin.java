@@ -1,12 +1,11 @@
 package net.typho.big_shot_lib.mixin.util;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.opengl.GlTexture;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.TextureFormat;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import net.typho.big_shot_lib.api.BigShotApi;
+import kotlin.collections.CollectionsKt;
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry;
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL;
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer;
@@ -26,7 +25,6 @@ import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.GL_NONE;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 
 @Mixin(GlTexture.class)
 public abstract class GlTextureMixin extends GpuTexture {
@@ -49,7 +47,7 @@ public abstract class GlTextureMixin extends GpuTexture {
         return j -> {
             int glId = func.get(j);
             ((DynamicBufferRegistryImpl) DynamicBufferRegistry.INSTANCE).init();
-            BigShotApi.LOGGER.info("Fbo cache: {} label: {}", WrapperUtilImpl.fboCache, getLabel());
+            //BigShotApi.LOGGER.info("Fbo cache: {} label: {}", WrapperUtilImpl.fboCache, getLabel());
 
             WrapperUtilImpl.fboCache.entrySet().stream()
                     .filter(entry -> entry.getKey().getColorTexture() == this)
@@ -60,10 +58,10 @@ public abstract class GlTextureMixin extends GpuTexture {
                         OpenGL.INSTANCE.bindFramebuffer(glId);
 
                         int k = 1;
-                        List<Integer> buffers = new LinkedList<>();
+                        List<Integer> buffers = new LinkedList<>(CollectionsKt.listOf(GL_COLOR_ATTACHMENT0));
                         var attachments = ((DynamicBufferRegistryImpl) DynamicBufferRegistry.INSTANCE).getBuffers().values();
 
-                        BigShotApi.LOGGER.info("{} {}", getLabel(), attachments);
+                        //BigShotApi.LOGGER.info("{} {}", getLabel(), attachments);
 
                         for (GlFramebufferAttachment attachment : attachments) { // neo.getColorAttachments().subList(1, neo.getColorAttachments().size())
                             int point = GL_COLOR_ATTACHMENT0 + k++;
@@ -85,7 +83,7 @@ public abstract class GlTextureMixin extends GpuTexture {
                             );
                         }
 
-                        OpenGL.INSTANCE.bindFramebuffer(GlStateManager.getFrameBuffer(GL_FRAMEBUFFER));
+                        //OpenGL.INSTANCE.bindFramebuffer(GlStateManager.getFrameBuffer(GL_FRAMEBUFFER));
                     });
 
             return glId;

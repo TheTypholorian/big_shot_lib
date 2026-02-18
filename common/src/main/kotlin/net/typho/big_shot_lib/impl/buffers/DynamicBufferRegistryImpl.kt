@@ -43,18 +43,22 @@ class DynamicBufferRegistryImpl : DynamicBufferRegistry {
     }
 
     fun enableBlend() {
+        glEnablei(GL_BLEND, 0)
+
         for (entry in buffers) {
             if (entry.value.blend()) {
-                glEnablei(GL_BLEND, entry.key)
+                glEnablei(GL_BLEND, entry.key + 1)
             } else {
-                glDisablei(GL_BLEND, entry.key)
+                glDisablei(GL_BLEND, entry.key + 1)
             }
         }
     }
 
     fun disableBlend() {
+        glDisablei(GL_BLEND, 0)
+
         for (entry in buffers) {
-            glDisablei(GL_BLEND, entry.key)
+            glDisablei(GL_BLEND, entry.key + 1)
         }
     }
 }

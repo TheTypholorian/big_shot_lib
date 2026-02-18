@@ -1,8 +1,9 @@
-package net.typho.big_shot_lib.mixin.fabric.shaders.mixins;
+package net.typho.big_shot_lib.mixin.shaders.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.opengl.GlDevice;
 import com.mojang.blaze3d.opengl.GlRenderPipeline;
+import com.mojang.blaze3d.opengl.GlShaderModule;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.ShaderType;
 import kotlin.collections.CollectionsKt;
@@ -15,17 +16,43 @@ import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
+import net.typho.big_shot_lib.impl.util.VoidMap;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 @Mixin(GlDevice.class)
 public class GlDeviceMixin {
+    @Shadow
+    @Final
+    @Mutable
+    private Map<GlDevice.ShaderCompilationKey, GlShaderModule> shaderCache;
+
+    @Inject(
+            method = "<init>",
+            at = @At("TAIL")
+    )
+    private void init(
+            long window,
+            int debugVerbosity,
+            boolean synchronous,
+            BiFunction<ResourceLocation, ShaderType, String> defaultShaderSource,
+            boolean renderDebugLabels,
+            CallbackInfo ci
+    ) {
+        shaderCache = new VoidMap<>();
+    }
+
     @ModifyArg(
             method = "compileShader",
             at = @At(
@@ -39,6 +66,7 @@ public class GlDeviceMixin {
             String code,
             @Local(argsOnly = true) GlDevice.ShaderCompilationKey key
     ) {
+        System.out.println("Compiling " + key.type() + " " + key.id() + " with " + ShaderMixinThreadLocal.INSTANCE.get().key);
         return ShaderMixinThreadLocal.INSTANCE.get().apply(
                 switch (key.type()) {
                     case VERTEX -> ShaderSourceType.VERTEX;
