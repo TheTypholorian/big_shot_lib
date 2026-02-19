@@ -21,12 +21,12 @@ kff = "5.6.0"
 kffRange = "[5.6, )"
 
 fabricLoader = "0.16.10"
-fabricApi = "0.116.8+1.21.1"
+fabricApi = "0.106.1+1.21.2"
 flk = "1.12.3+kotlin.2.0.21"
 
 mixin = "0.8.5"
 mixinExtras = "0.3.5"
-sodium="mc1.21.1-0.6.13-neoforge"
+sodium="mc1.21.3-0.6.13-fabric"
 
 bigShot="3.6.4"
 intermap="1.0.0"
