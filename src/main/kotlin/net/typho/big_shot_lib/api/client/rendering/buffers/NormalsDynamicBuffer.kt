@@ -40,6 +40,10 @@ object NormalsDynamicBuffer : DynamicBuffer {
         location = attachment - GL_COLOR_ATTACHMENT0
     }
 
+    override fun setShaderLocation(location: Int) {
+        NormalsDynamicBuffer.location = location
+    }
+
     override fun resize(
         width: Int,
         height: Int,
