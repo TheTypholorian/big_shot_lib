@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.mixin.buffers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry;
-import net.typho.big_shot_lib.impl.buffers.DynamicBufferRegistryImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,7 +16,7 @@ public class GlStateManagerMixin {
     )
     private static void enableBlend(CallbackInfo ci) {
         if (GlStateManager.getBoundFramebuffer() == Minecraft.getInstance().getMainRenderTarget().frameBufferId) {
-            ((DynamicBufferRegistryImpl) DynamicBufferRegistry.INSTANCE).enableBlend();
+            DynamicBufferRegistry.enableBlend();
         }
     }
 
@@ -27,7 +26,7 @@ public class GlStateManagerMixin {
     )
     private static void disableBlend(CallbackInfo ci) {
         if (GlStateManager.getBoundFramebuffer() == Minecraft.getInstance().getMainRenderTarget().frameBufferId) {
-            ((DynamicBufferRegistryImpl) DynamicBufferRegistry.INSTANCE).disableBlend();
+            DynamicBufferRegistry.disableBlend();
         }
     }
 }
