@@ -7,9 +7,7 @@
     "neoforge.event.ChunkMapMixin",
     "neoforge.event.ChunkStatusTasksMixin"
   ],
-  "client": [
-    "neoforge.util.RenderTargetMixin"
-  ],
+  "client": [],
   "server": [],
   "injectors": {
     "defaultRequire": 1
