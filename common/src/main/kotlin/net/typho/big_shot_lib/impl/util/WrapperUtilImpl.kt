@@ -10,14 +10,13 @@ import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
+import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry
 import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
 import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
-import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit
+import net.typho.big_shot_lib.api.client.rendering.textures.*
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
-import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
-import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebufferAttachment
 import net.typho.big_shot_lib.api.services.NeoResourceManager
 import net.typho.big_shot_lib.api.services.WrapperUtil
 import net.typho.big_shot_lib.api.util.NeoRegistry
@@ -27,6 +26,7 @@ import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.Vector2f
 import org.joml.Vector3f
+import org.lwjgl.opengl.GL11.*
 import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Collectors
@@ -85,17 +85,37 @@ class WrapperUtilImpl : WrapperUtil {
 
     override fun wrap(target: RenderTarget): GlFramebuffer {
         return object : GlFramebuffer {
-            override var colorAttachments: List<GlFramebufferAttachment> = listOf()
-                get() = (target as RenderTargetExtension).`big_shot_lib$getColorAttachments`()
-                set(value) {
-                    field = value
-                    (target as RenderTargetExtension).`big_shot_lib$setColorAttachments`(value)
+            override val colorAttachments: List<GlFramebufferAttachment>
+                get() {
+                    val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
+
+                    stack.push(target.colorTextureId)
+
+                    val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
+
+                    stack.pop()
+
+                    val list = mutableListOf<GlFramebufferAttachment>(NeoTexture2D(target.colorTextureId, TextureFormat.entries.first { it.internalId == format }, false))
+
+                    list.addAll(DynamicBufferRegistry.buffers.toSortedMap().values.toList())
+
+                    return list
                 }
-            override var depthAttachment: GlFramebufferAttachment? = null
-                get() = (target as RenderTargetExtension).`big_shot_lib$getDepthAttachment`()
-                set(value) {
-                    field = value
-                    (target as RenderTargetExtension).`big_shot_lib$setDepthAttachment`(value)
+            override val depthAttachment: GlFramebufferAttachment?
+                get() {
+                    if (target.depthTextureId == -1) {
+                        return null
+                    }
+
+                    val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
+
+                    stack.push(target.depthTextureId)
+
+                    val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
+
+                    stack.pop()
+
+                    return NeoTexture2D(target.depthTextureId, TextureFormat.entries.first { it.internalId == format }, false)
                 }
 
             override fun resize(width: Int, height: Int) {

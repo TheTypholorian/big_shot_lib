@@ -8,9 +8,7 @@
     "fabric.event.ChunkMapMixin",
     "fabric.event.ChunkStatusTasksMixin"
   ],
-  "client": [
-    "fabric.util.RenderTargetMixin"
-  ],
+  "client": [],
   "server": [],
   "injectors": {
     "defaultRequire": 1
