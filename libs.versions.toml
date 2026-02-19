@@ -26,7 +26,7 @@ flk = "1.12.3+kotlin.2.0.21"
 
 mixin = "0.8.5"
 mixinExtras = "0.3.5"
-sodium="mc1.21.3-0.6.13-fabric"
+sodium="mc1.21.3-0.6.13-neoforge"
 
 bigShot="3.6.4"
 intermap="1.0.0"
