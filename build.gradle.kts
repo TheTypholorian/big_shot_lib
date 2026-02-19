@@ -30,6 +30,15 @@ repositories {
         name = "Modrinth"
         url = uri("https://api.modrinth.com/maven")
     }
+    ivy {
+        url = uri("https://github.com/TheTypholorian/")
+        patternLayout {
+            artifact("[organisation]/releases/download/[revision]/[artifact]-[revision](-[classifier]).[ext]")
+        }
+        metadataSources {
+            artifact()
+        }
+    }
 }
 
 dependencies {
