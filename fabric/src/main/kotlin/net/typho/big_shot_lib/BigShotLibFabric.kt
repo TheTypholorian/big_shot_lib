@@ -1,38 +1,26 @@
 package net.typho.big_shot_lib
 
 import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
-import net.minecraft.server.packs.resources.PreparableReloadListener
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.shaders.NeoShaderRegistry
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
+import net.typho.big_shot_lib.api.services.WrapperUtil
 
 object BigShotLibFabric : ClientModInitializer {
     override fun onInitializeClient() {
         BigShotLib.init()
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : IdentifiableResourceReloadListener {
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
             override fun getFabricId(): ResourceLocation {
                 return BigShotApi.id("shaders").toMojang()
             }
 
-            override fun reload(
-                barrier: PreparableReloadListener.PreparationBarrier,
-                manager: ResourceManager,
-                backgroundExecutor: Executor,
-                gameExecutor: Executor
-            ): CompletableFuture<Void> {
-                return NeoShaderRegistry.reload(
-                    barrier,
-                    manager,
-                    backgroundExecutor,
-                    gameExecutor
-                )
+            override fun onResourceManagerReload(resourceManager: ResourceManager) {
+                NeoShaderRegistry.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(resourceManager))
             }
         })
     }
