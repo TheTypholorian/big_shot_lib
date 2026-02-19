@@ -66,7 +66,6 @@ public class GlDeviceMixin {
             String code,
             @Local(argsOnly = true) GlDevice.ShaderCompilationKey key
     ) {
-        System.out.println("Compiling " + key.type() + " " + key.id() + " with " + ShaderMixinThreadLocal.INSTANCE.get().key);
         return ShaderMixinThreadLocal.INSTANCE.get().apply(
                 switch (key.type()) {
                     case VERTEX -> ShaderSourceType.VERTEX;

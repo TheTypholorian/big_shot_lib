@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.opengl.GlConst
+import com.mojang.blaze3d.opengl.GlTexture
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.vertex.VertexConsumer
@@ -45,9 +46,9 @@ class WrapperUtilImpl : WrapperUtil {
 
         @JvmStatic
         fun mojangTextureToNeo(texture: GpuTexture): NeoTexture2D {
-            return textureCache.computeIfAbsent(texture) {
-                val glTexture = it as GlTexture
-                val formatId = GlConst.toGlExternalId(it.format)
+            return textureCache.computeIfAbsent(texture) { mojTex ->
+                val glTexture = mojTex as GlTexture
+                val formatId = GlConst.toGlExternalId(mojTex.format)
                 return@computeIfAbsent NeoTexture2D(glTexture.glId(), TextureFormat.entries.first { it.internalId == formatId }, false)
             }
         }
@@ -104,41 +105,47 @@ class WrapperUtilImpl : WrapperUtil {
     override fun wrap(target: RenderTarget): GlFramebuffer {
         return fboCache.computeIfAbsent(target) {
             object : GlFramebuffer {
-            override val colorAttachments: List<GlFramebufferAttachment>
-                get() {
-                    val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
-                    val texId = (target.colorTexture as GlTexture).glId()
+                override val colorAttachments: List<GlFramebufferAttachment>
+                    get() {
+                        val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
+                        val texId = (target.colorTexture as GlTexture).glId()
 
-                    stack.push(texId)
+                        stack.push(texId)
 
-                    val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
+                        val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
 
-                    stack.pop()
+                        stack.pop()
 
-                    val list = mutableListOf<GlFramebufferAttachment>(NeoTexture2D(texId, TextureFormat.entries.first { it.internalId == format }, false))
+                        val list = mutableListOf<GlFramebufferAttachment>(
+                            NeoTexture2D(
+                                texId,
+                                TextureFormat.entries.first { it.internalId == format },
+                                false
+                            )
+                        )
 
-                    list.addAll(DynamicBufferRegistry.buffers.toSortedMap().values.toList())
+                        list.addAll(DynamicBufferRegistry.buffers.toSortedMap().values.toList())
 
-                    return list
-                }
-            override val depthAttachment: GlFramebufferAttachment?
-                get() {
-                    if (target.depthTexture == null) {
-                        return null
+                        return list
                     }
+                override val depthAttachment: GlFramebufferAttachment?
+                    get() {
+                        if (target.depthTexture == null) {
+                            return null
+                        }
 
-                    val texId = (target.depthTexture as GlTexture).glId()
+                        val texId = (target.depthTexture as GlTexture).glId()
 
-                    val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
+                        val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
 
-                    stack.push(texId)
+                        stack.push(texId)
 
-                    val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
+                        val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
 
-                    stack.pop()
+                        stack.pop()
 
-                    return NeoTexture2D(texId, TextureFormat.entries.first { it.internalId == format }, false)
-                }
+                        return NeoTexture2D(texId, TextureFormat.entries.first { it.internalId == format }, false)
+                    }
 
                 override fun resize(width: Int, height: Int) {
                     target.resize(width, height)

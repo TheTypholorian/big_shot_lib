@@ -6,6 +6,7 @@ import com.mojang.blaze3d.textures.TextureFormat;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBuffer;
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry;
+import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL;
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,6 +37,8 @@ public abstract class GlTextureMixin extends GpuTexture {
         return j -> {
             int glId = func.get(j);
 
+            GlStateStack.framebuffer.push(glId);
+
             List<Integer> buffers = new LinkedList<>();
             buffers.add(GL_COLOR_ATTACHMENT0);
 
@@ -47,6 +50,8 @@ public abstract class GlTextureMixin extends GpuTexture {
             }
 
             OpenGL.INSTANCE.drawBuffers(buffers.stream().mapToInt(k -> k).toArray());
+
+            GlStateStack.framebuffer.pop();
 
             return glId;
         };
