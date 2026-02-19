@@ -9,8 +9,7 @@
     "fabric.event.ChunkStatusTasksMixin"
   ],
   "client": [
-    "fabric.shaders.ShaderInstanceMixin",
-    "fabric.util.RenderTargetMixin"
+    "fabric.shaders.ShaderInstanceMixin"
   ],
   "server": [],
   "injectors": {

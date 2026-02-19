@@ -8,8 +8,7 @@
     "neoforge.event.ChunkStatusTasksMixin"
   ],
   "client": [
-    "neoforge.shaders.ShaderInstanceMixin",
-    "neoforge.util.RenderTargetMixin"
+    "neoforge.shaders.ShaderInstanceMixin"
   ],
   "server": [],
   "injectors": {

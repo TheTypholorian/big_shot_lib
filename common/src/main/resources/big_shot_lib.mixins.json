@@ -25,7 +25,7 @@
     "shaders.mixins.EffectInstanceMixin",
     "shaders.mixins.ProgramMixin",
     "shaders.mixins.ProgramTypeMixin",
-    "util.MainTargetMixin"
+    "util.RenderTargetMixin"
   ],
   "server": [],
   "injectors": {
