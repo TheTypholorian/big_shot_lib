@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.opengl.GlConst
-import com.mojang.blaze3d.opengl.GlTexture
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.vertex.VertexConsumer
@@ -14,6 +13,7 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib.glId
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
+import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry
 import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
 import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
@@ -29,6 +29,7 @@ import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.Vector2f
 import org.joml.Vector3f
+import org.lwjgl.opengl.GL11.*
 import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Collectors
@@ -103,21 +104,38 @@ class WrapperUtilImpl : WrapperUtil {
     override fun wrap(target: RenderTarget): GlFramebuffer {
         return fboCache.computeIfAbsent(target) {
             object : GlFramebuffer {
-                override var colorAttachments: List<GlFramebufferAttachment> = listOf()
-                    get() = target.colorTexture?.let(::mojangTextureToNeo)?.let(::listOf) ?: listOf()
-                    set(value) {
-                        if (value[0] != target.colorTexture?.let(::mojangTextureToNeo)) {
-                            throw UnsupportedOperationException("Changing a big shot wrapped RenderTarget's base color attachment is unsupported for 1.21.5+")
-                        }
+            override val colorAttachments: List<GlFramebufferAttachment>
+                get() {
+                    val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
 
-                        field = value
-                        target.resize(target.width, target.height)
+                    stack.push(target.colorTextureId)
+
+                    val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
+
+                    stack.pop()
+
+                    val list = mutableListOf<GlFramebufferAttachment>(NeoTexture2D(target.colorTextureId, TextureFormat.entries.first { it.internalId == format }, false))
+
+                    list.addAll(DynamicBufferRegistry.buffers.toSortedMap().values.toList())
+
+                    return list
+                }
+            override val depthAttachment: GlFramebufferAttachment?
+                get() {
+                    if (target.depthTextureId == -1) {
+                        return null
                     }
-                override var depthAttachment: GlFramebufferAttachment?
-                    get() = target.depthTexture?.let(::mojangTextureToNeo)
-                    set(value) {
-                        throw UnsupportedOperationException("Setting a big shot wrapped RenderTarget's depth attachment is unsupported for 1.21.5+")
-                    }
+
+                    val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
+
+                    stack.push(target.depthTextureId)
+
+                    val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
+
+                    stack.pop()
+
+                    return NeoTexture2D(target.depthTextureId, TextureFormat.entries.first { it.internalId == format }, false)
+                }
 
                 override fun resize(width: Int, height: Int) {
                     target.resize(width, height)
