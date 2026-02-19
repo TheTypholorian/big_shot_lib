@@ -1,47 +1,20 @@
 package net.typho.big_shot_lib.api.client.rendering.buffers
 
-import net.typho.big_shot_lib.api.BigShotApi.loadService
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+object DynamicBufferRegistry {
+    @JvmField
+    val buffers = HashMap<Int, DynamicBuffer>()
 
-interface DynamicBufferRegistry {
-    fun register(buffer: DynamicBuffer)
+    init {
+        register(NormalsDynamicBuffer)
+        register(AlbedoDynamicBuffer)
+    }
 
-    fun get(id: ResourceIdentifier): DynamicBuffer?
-
-    /*
-    private val buffers = HashMap<Int, DynamicBuffer>()
-
+    @JvmStatic
     fun register(buffer: DynamicBuffer) {
-        val attachment = pickAvailableAttachment() ?: throw UnsupportedOperationException("Unable to pick attachment for buffer ${buffer.location()}")
-        buffers[attachment] = buffer
+        val location = buffers.size + 1
+        buffers[location] = buffer
+        buffer.setShaderLocation(location)
     }
 
-    private fun pickAvailableAttachment(): Int? {
-        val max = glGetInteger(GL_MAX_COLOR_ATTACHMENTS)
-
-        repeat(max) { i ->
-            if (
-                glGetFramebufferAttachmentParameteri(
-                    GL_FRAMEBUFFER,
-                    GL_COLOR_ATTACHMENT0 + i,
-                    GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE
-                ) == GL_NONE && !buffers.containsKey(i)
-            ) {
-                return i
-            }
-        }
-
-        return null
-    }
-     */
-
-    companion object {
-        @JvmField
-        val INSTANCE: DynamicBufferRegistry = DynamicBufferRegistry::class.loadService()
-
-        init {
-            INSTANCE.register(NormalsDynamicBuffer)
-            INSTANCE.register(AlbedoDynamicBuffer)
-        }
-    }
+    fun init() = Unit
 }
