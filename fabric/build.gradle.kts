@@ -73,6 +73,7 @@ dependencies {
     modImplementation(libs.sodium)
     include(libs.bigShotApi)
     modImplementation(libs.bigShotApi)
+    include(libs.intermap)
 }
 
 loom {
