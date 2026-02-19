@@ -20,7 +20,7 @@ neoForm = "1.21.1-20240808.144430"
 kff = "5.6.0"
 kffRange = "[5.6, )"
 
-fabricLoader = "0.16.9"
+fabricLoader = "0.16.10"
 fabricApi = "0.116.8+1.21.1"
 flk = "1.12.3+kotlin.2.0.21"
 
@@ -28,7 +28,8 @@ mixin = "0.8.5"
 mixinExtras = "0.3.5"
 sodium="mc1.21.1-0.6.13-neoforge"
 
-bigShot="3.6.3"
+bigShot="3.6.4"
+intermap="1.0.0"
 
 [libraries]
 minecraft = { group = "com.mojang", name = "minecraft", version.ref = "minecraft" }
@@ -39,7 +40,8 @@ kff = { group = "thedarkcolour", name = "kotlinforforge-neoforge", version.ref =
 mixin = { group = "org.spongepowered", name = "mixin", version.ref = "mixin" }
 mixinExtras-common = { group = "io.github.llamalad7", name = "mixinextras-common", version.ref = "mixinExtras" }
 sodium = { group = "maven.modrinth", name = "sodium", version.ref = "sodium" }
-bigShotApi = { group = "net.typho", name = "big_shot_api", version.ref = "bigShot" }
+bigShotApi = { group = "big_shot_lib", name = "big_shot_api", version.ref = "bigShot" }
+intermap = { group = "intermap", name = "intermap", version.ref = "intermap" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
