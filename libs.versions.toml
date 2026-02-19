@@ -21,7 +21,7 @@ kff = "5.6.0"
 kffRange = "[5.6, )"
 
 fabricLoader = "0.16.10"
-fabricApi = "0.116.8+1.21.1"
+fabricApi = "0.114.1+1.21.3"
 flk = "1.12.3+kotlin.2.0.21"
 
 mixin = "0.8.5"
