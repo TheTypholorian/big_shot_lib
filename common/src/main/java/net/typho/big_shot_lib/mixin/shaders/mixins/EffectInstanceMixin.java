@@ -8,6 +8,7 @@ import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier;
+import net.typho.big_shot_lib.impl.meshes.NeoVertexFormatImpl;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,7 +31,7 @@ public class EffectInstanceMixin {
         ShaderMixinThreadLocal.push(new ShaderProgramKey(
                 ShaderLoaderType.MINECRAFT,
                 new ResourceIdentifier(name),
-                DefaultVertexFormat.BLIT_SCREEN,
+                new NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN),
                 new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
                 new HashSet<>(),
                 new HashSet<>()

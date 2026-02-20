@@ -10,6 +10,7 @@ import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier;
+import net.typho.big_shot_lib.impl.meshes.NeoVertexFormatImpl;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,7 +33,7 @@ public class ShaderInstanceMixin {
         ShaderMixinThreadLocal.push(new ShaderProgramKey(
                 ShaderLoaderType.MINECRAFT,
                 new ResourceIdentifier(name),
-                format,
+                new NeoVertexFormatImpl(format),
                 new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
                 name.equals("rendertype_end_portal") ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>(),
                 (name.equals("rendertype_lines") || name.equals("particle")) ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>()
