@@ -71,9 +71,13 @@ dependencies {
     externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
     modImplementation(libs.sodium)
+
     include(libs.bigShotApi)
-    modImplementation(libs.bigShotApi)
-    include(libs.intermap)
+    modImplementation(libs.bigShotApi) {
+        artifact {
+            classifier = "intermediary"
+        }
+    }
 }
 
 loom {
