@@ -15,6 +15,7 @@ import net.typho.big_shot_lib.api.client.rendering.buffers.NormalsDynamicBuffer;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.impl.meshes.NeoVertexFormatImpl;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import net.typho.big_shot_lib.impl.util.VoidMap;
 import org.spongepowered.asm.mixin.Final;
@@ -91,7 +92,7 @@ public class GlDeviceMixin {
         ShaderMixinThreadLocal.push(new ShaderProgramKey(
                 ShaderLoaderType.MINECRAFT,
                 BigShotLib.toNeo(pipeline.getLocation()),
-                pipeline.getVertexFormat(),
+                new NeoVertexFormatImpl(pipeline.getVertexFormat()),
                 new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
                 pipeline == RenderPipelines.END_PORTAL ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>(),
                 pipeline.getVertexFormatMode().primitiveLength <= 2 || pipeline == RenderPipelines.OPAQUE_PARTICLE || pipeline == RenderPipelines.TRANSLUCENT_PARTICLE ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>()
