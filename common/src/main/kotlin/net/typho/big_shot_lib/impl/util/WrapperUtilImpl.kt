@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.pipeline.RenderTarget
-import com.mojang.blaze3d.vertex.VertexConsumer
+import com.mojang.blaze3d.vertex.*
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
@@ -12,11 +12,14 @@ import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry
 import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexConsumer
+import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
 import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.textures.*
 import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
+import net.typho.big_shot_lib.api.client.rendering.util.GlIndexType
+import net.typho.big_shot_lib.api.client.rendering.util.GlShapeType
 import net.typho.big_shot_lib.api.services.NeoResourceManager
 import net.typho.big_shot_lib.api.services.WrapperUtil
 import net.typho.big_shot_lib.api.util.NeoRegistry
@@ -24,6 +27,7 @@ import net.typho.big_shot_lib.api.util.NeoRegistryAccess
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.impl.meshes.NeoVertexFormatImpl
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL11.*
@@ -297,5 +301,97 @@ class WrapperUtilImpl : WrapperUtil {
                 return this
             }
         }
+    }
+
+    override fun createVertexFormatBuilder(): NeoVertexFormat.Builder {
+        return NeoVertexFormatImpl.BuilderImpl()
+    }
+
+    override fun positionVertexElement(): NeoVertexFormat.Element {
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.POSITION)
+    }
+
+    override fun colorVertexElement(): NeoVertexFormat.Element {
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.COLOR)
+    }
+
+    override fun textureUVVertexElement(): NeoVertexFormat.Element {
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV0)
+    }
+
+    override fun overlayUVVertexElement(): NeoVertexFormat.Element {
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV1)
+    }
+
+    override fun lightUVVertexElement(): NeoVertexFormat.Element {
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV2)
+    }
+
+    override fun normalVertexElement(): NeoVertexFormat.Element {
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.NORMAL)
+    }
+
+    override fun blitScreenVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
+    }
+
+    override fun blockVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.BLOCK)
+    }
+
+    override fun newEntityVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.NEW_ENTITY)
+    }
+
+    override fun particleVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.PARTICLE)
+    }
+
+    override fun positionVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
+    }
+
+    override fun positionColorVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR)
+    }
+
+    override fun positionColorNormalVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR_NORMAL)
+    }
+
+    override fun positionColorLightVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR_LIGHTMAP)
+    }
+
+    override fun positionTexVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX)
+    }
+
+    override fun positionTexColorVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_COLOR)
+    }
+
+    override fun positionColorTexLightVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP)
+    }
+
+    override fun positionTexLightColorVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR)
+    }
+
+    override fun positionTexColorNormalVertexFormat(): NeoVertexFormat {
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL)
+    }
+
+    override fun getIndexType(state: MeshData.DrawState): GlIndexType {
+        return state.indexType.toNeo()
+    }
+
+    override fun createBufferBuilder(
+        buffer: ByteBufferBuilder,
+        mode: GlShapeType,
+        format: NeoVertexFormat
+    ): BufferBuilder {
+        return BufferBuilder(buffer, mode.toMojang(), (format as NeoVertexFormatImpl).inner)
     }
 }

@@ -32,10 +32,5 @@
         "java": ">=${java_version}",
         "fabric-language-kotlin": ">=${flk_version}"
     },
-    "accessWidener": "big_shot_lib.accesswidener",
-    "custom": {
-        "intermap": {
-            "enabled": true
-        }
-    }
+    "accessWidener": "big_shot_lib.accesswidener"
 }
