@@ -1,7 +1,5 @@
 package net.typho.big_shot_lib.mixin.shaders.mixins;
 
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
 import kotlin.collections.CollectionsKt;
 import net.caffeinemc.mods.sodium.client.gl.attribute.GlVertexAttribute;
 import net.caffeinemc.mods.sodium.client.gl.attribute.GlVertexFormat;
@@ -10,9 +8,11 @@ import net.caffeinemc.mods.sodium.client.render.chunk.ShaderChunkRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.shader.ChunkShaderInterface;
 import net.caffeinemc.mods.sodium.client.render.chunk.shader.ChunkShaderOptions;
 import net.caffeinemc.mods.sodium.client.render.vertex.VertexFormatAttribute;
+import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexFormat;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.api.services.WrapperUtil;
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +33,7 @@ public class ShaderChunkRendererMixin {
     )
     private void createShader1(String path, ChunkShaderOptions options, CallbackInfoReturnable<GlProgram<ChunkShaderInterface>> cir) {
         GlVertexFormat glFormat = options.vertexType().getVertexFormat();
-        VertexFormat.Builder formatBuilder = VertexFormat.builder();
+        NeoVertexFormat.Builder formatBuilder = WrapperUtil.INSTANCE.createVertexFormatBuilder();
 
         for (Map.Entry<VertexFormatAttribute, GlVertexAttribute> entry : ((GlVertexFormatAccessor) glFormat).getAttributes().entrySet()) {
             String name = switch (entry.getKey().name().toUpperCase()) {
@@ -45,12 +45,12 @@ public class ShaderChunkRendererMixin {
                 default -> "a_" + Character.toUpperCase(entry.getKey().name().charAt(0)) + entry.getKey().name().substring(1).toLowerCase();
             };
             formatBuilder.add(name, switch (entry.getKey().name().toUpperCase()) {
-                case "POSITION" -> VertexFormatElement.POSITION;
-                case "COLOR" -> VertexFormatElement.COLOR;
-                case "TEXTURE", "TEX_COORD", "TEXCOORD", "UV", "UV0", "UV_0" -> VertexFormatElement.UV0;
-                case "OVERLAY", "UV1", "UV_1" -> VertexFormatElement.UV1;
-                case "LIGHT", "LIGHT_MATERIAL_INDEX", "UV2", "UV_2" -> VertexFormatElement.UV2;
-                case "NORMAL" -> VertexFormatElement.NORMAL;
+                case "POSITION" -> NeoVertexFormat.Element.POSITION;
+                case "COLOR" -> NeoVertexFormat.Element.COLOR;
+                case "TEXTURE", "TEX_COORD", "TEXCOORD", "UV", "UV0", "UV_0" -> NeoVertexFormat.Element.TEXTURE_UV;
+                case "OVERLAY", "UV1", "UV_1" -> NeoVertexFormat.Element.OVERLAY_UV;
+                case "LIGHT", "LIGHT_MATERIAL_INDEX", "UV2", "UV_2" -> NeoVertexFormat.Element.LIGHT_UV;
+                case "NORMAL" -> NeoVertexFormat.Element.NORMAL;
                 default -> throw new UnsupportedOperationException(entry.getKey().name());
             });
         }
