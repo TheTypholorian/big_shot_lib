@@ -66,7 +66,7 @@ open class Mesh(
         if (buffer != null) {
             ebo.upload(buffer)
         } else {
-            mode.uploadIndices(indexCount, ebo)
+            indexType = mode.uploadIndices(indexCount, ebo)
         }
 
         vao.unbind()

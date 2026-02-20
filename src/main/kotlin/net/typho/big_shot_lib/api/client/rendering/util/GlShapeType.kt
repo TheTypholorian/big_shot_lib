@@ -39,16 +39,18 @@ enum class GlShapeType(
         }
     }
 
-    fun uploadIndices(count: Int, out: BufferUploader) {
+    fun uploadIndices(count: Int, out: BufferUploader): GlIndexType {
+        val type = when (count) {
+            count and 0xFF -> GlIndexType.UBYTE
+            count and 0xFFFF -> GlIndexType.USHORT
+            else -> GlIndexType.UINT
+        }
         uploadIndices(
             count,
-            when (count) {
-                count and 0xFF -> GlIndexType.UBYTE
-                count and 0xFFFF -> GlIndexType.USHORT
-                else -> GlIndexType.UINT
-            },
+            type,
             out
         )
+        return type
     }
 
     fun uploadIndices(count: Int, type: GlIndexType, out: BufferUploader) {
