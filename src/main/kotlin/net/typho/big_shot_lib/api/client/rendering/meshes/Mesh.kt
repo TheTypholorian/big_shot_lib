@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.meshes
 
-import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.MeshData
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
@@ -9,6 +8,7 @@ import net.typho.big_shot_lib.api.client.rendering.buffers.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.util.GlBindable
 import net.typho.big_shot_lib.api.client.rendering.util.GlIndexType
 import net.typho.big_shot_lib.api.client.rendering.util.GlShapeType
+import net.typho.big_shot_lib.api.services.WrapperUtil
 import org.lwjgl.system.NativeResource
 
 open class Mesh(
@@ -50,7 +50,7 @@ open class Mesh(
 
     fun upload(built: MeshData) {
         indexCount = built.drawState().indexCount
-        indexType = built.drawState().indexType
+        indexType = WrapperUtil.INSTANCE.getIndexType(built.drawState())
 
         vao.bind()
 
@@ -76,7 +76,7 @@ open class Mesh(
     inner class Builder(
         @JvmField
         val buffer: ByteBufferBuilder = ByteBufferBuilder(1536)
-    ) : NeoBufferBuilder(BufferBuilder(buffer, mode, format)) {
+    ) : NeoBufferBuilder(WrapperUtil.INSTANCE.createBufferBuilder(buffer, mode, format)) {
         fun end() {
             upload(buildOrThrow())
             buffer.close()

@@ -1,6 +1,9 @@
 package net.typho.big_shot_lib.api.services
 
 import com.mojang.blaze3d.pipeline.RenderTarget
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.ByteBufferBuilder
+import com.mojang.blaze3d.vertex.MeshData
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
@@ -11,6 +14,8 @@ import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
 import net.typho.big_shot_lib.api.client.rendering.textures.GlFramebuffer
+import net.typho.big_shot_lib.api.client.rendering.util.GlIndexType
+import net.typho.big_shot_lib.api.client.rendering.util.GlShapeType
 import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.NeoRegistryAccess
 
@@ -66,6 +71,10 @@ interface WrapperUtil {
     fun positionTexLightColorVertexFormat(): NeoVertexFormat
 
     fun positionTexColorNormalVertexFormat(): NeoVertexFormat
+
+    fun getIndexType(state: MeshData.DrawState): GlIndexType
+
+    fun createBufferBuilder(buffer: ByteBufferBuilder, mode: GlShapeType, format: NeoVertexFormat): BufferBuilder
 
     companion object {
         @JvmField
