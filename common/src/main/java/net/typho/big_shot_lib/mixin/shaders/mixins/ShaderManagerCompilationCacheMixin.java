@@ -9,6 +9,7 @@ import net.typho.big_shot_lib.BigShotLib;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.impl.meshes.NeoVertexFormatImpl;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import net.typho.big_shot_lib.impl.util.VoidMap;
 import org.spongepowered.asm.mixin.Final;
@@ -42,7 +43,7 @@ public class ShaderManagerCompilationCacheMixin {
         ShaderMixinThreadLocal.push(new ShaderProgramKey(
                 ShaderLoaderType.MINECRAFT,
                 BigShotLib.toNeo(program.configId()),
-                program.vertexFormat(),
+                new NeoVertexFormatImpl(program.vertexFormat()),
                 new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
                 new HashSet<>(),
                 new HashSet<>()
