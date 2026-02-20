@@ -200,8 +200,8 @@ class OpenGLImpl : OpenGL {
         stride: Int,
         pointer: ByteBuffer
     ) {
-        debugPrint("glVertexAttribPointer", index, size, type, normalized, size, pointer)
-        glVertexAttribPointer(index, size, type, normalized, size, pointer)
+        debugPrint("glVertexAttribPointer", index, size, type, normalized, stride, pointer)
+        glVertexAttribPointer(index, size, type, normalized, stride, pointer)
     }
 
     override fun vertexAttribPointer(
@@ -212,8 +212,8 @@ class OpenGLImpl : OpenGL {
         stride: Int,
         pointer: Long
     ) {
-        debugPrint("glVertexAttribPointer", index, size, type, normalized, size, pointer)
-        glVertexAttribPointer(index, size, type, normalized, size, pointer)
+        debugPrint("glVertexAttribPointer", index, size, type, normalized, stride, pointer)
+        glVertexAttribPointer(index, size, type, normalized, stride, pointer)
     }
 
     override fun vertexAttribIPointer(
@@ -223,8 +223,8 @@ class OpenGLImpl : OpenGL {
         stride: Int,
         pointer: ByteBuffer
     ) {
-        debugPrint("glVertexAttribIPointer", index, size, type, size, pointer)
-        glVertexAttribIPointer(index, size, type, size, pointer)
+        debugPrint("glVertexAttribIPointer", index, size, type, stride, pointer)
+        glVertexAttribIPointer(index, size, type, stride, pointer)
     }
 
     override fun vertexAttribIPointer(
@@ -234,8 +234,8 @@ class OpenGLImpl : OpenGL {
         stride: Int,
         pointer: Long
     ) {
-        debugPrint("glVertexAttribIPointer", index, size, type, size, pointer)
-        glVertexAttribIPointer(index, size, type, size, pointer)
+        debugPrint("glVertexAttribIPointer", index, size, type, stride, pointer)
+        glVertexAttribIPointer(index, size, type, stride, pointer)
     }
 
     override fun blendColor(color: IColor) {
