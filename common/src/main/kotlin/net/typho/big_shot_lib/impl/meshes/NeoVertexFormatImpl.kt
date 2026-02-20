@@ -5,7 +5,8 @@ import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.util.GlPrimitiveType
 
-class NeoVertexFormatImpl(
+@JvmRecord
+data class NeoVertexFormatImpl(
     @JvmField
     val inner: VertexFormat
 ) : NeoVertexFormat {
@@ -30,7 +31,8 @@ class NeoVertexFormatImpl(
         inner.setupBufferState()
     }
 
-    class ElementImpl(
+    @JvmRecord
+    data class ElementImpl(
         @JvmField
         val inner: VertexFormatElement
     ) : NeoVertexFormat.Element {
@@ -68,7 +70,8 @@ class NeoVertexFormatImpl(
         }
     }
 
-    class BuilderImpl(
+    @JvmRecord
+    data class BuilderImpl(
         @JvmField
         val inner: VertexFormat.Builder = VertexFormat.builder()
     ) : NeoVertexFormat.Builder {

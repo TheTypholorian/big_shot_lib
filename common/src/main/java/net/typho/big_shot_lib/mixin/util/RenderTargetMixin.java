@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.mixin.util;
 
+import com.mojang.blaze3d.pipeline.MainTarget;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBuffer;
 import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry;
@@ -31,16 +32,18 @@ public abstract class RenderTargetMixin {
             boolean clearError,
             CallbackInfo ci
     ) {
-        List<Integer> buffers = new LinkedList<>();
-        buffers.add(GL_COLOR_ATTACHMENT0);
+        if ((Object) this instanceof MainTarget) {
+            List<Integer> buffers = new LinkedList<>();
+            buffers.add(GL_COLOR_ATTACHMENT0);
 
-        for (Map.Entry<Integer, DynamicBuffer> entry : DynamicBufferRegistry.buffers.entrySet()) {
-            int point = GL_COLOR_ATTACHMENT0 + entry.getKey();
-            buffers.add(point);
-            entry.getValue().resize(width, height, BufferUploader::uploadNull);
-            entry.getValue().attachToFramebuffer(point);
+            for (Map.Entry<Integer, DynamicBuffer> entry : DynamicBufferRegistry.buffers.entrySet()) {
+                int point = GL_COLOR_ATTACHMENT0 + entry.getKey();
+                buffers.add(point);
+                entry.getValue().resize(width, height, BufferUploader::uploadNull);
+                entry.getValue().attachToFramebuffer(point);
+            }
+
+            OpenGL.INSTANCE.drawBuffers(buffers.stream().mapToInt(j -> j).toArray());
         }
-
-        OpenGL.INSTANCE.drawBuffers(buffers.stream().mapToInt(j -> j).toArray());
     }
 }
