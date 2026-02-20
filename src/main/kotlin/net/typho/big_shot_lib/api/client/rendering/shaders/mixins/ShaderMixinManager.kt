@@ -33,7 +33,7 @@ object ShaderMixinManager {
         shaderc_compile_options_set_source_language(shadercOptions, shaderc_source_language_glsl)
         shaderc_compile_options_set_target_spirv(shadercOptions, shaderc_spirv_version_1_0)
         shaderc_compile_options_set_auto_map_locations(shadercOptions, true)
-        shaderc_compile_options_set_auto_bind_uniforms(shadercOptions, false)
+        shaderc_compile_options_set_auto_bind_uniforms(shadercOptions, true)
 
         MemoryStack.stackPush().use { stack ->
             val pBuffer = stack.mallocPointer(1)
