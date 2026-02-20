@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.buffers
 
-import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceKey
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType
@@ -73,7 +73,7 @@ object NormalsDynamicBuffer : DynamicBuffer {
             return BuiltinMixin(location!!)
         }
 
-        if (!key.format.contains(VertexFormatElement.NORMAL)) {
+        if (!key.format.contains(NeoVertexFormat.Element.NORMAL)) {
             return null
         }
 
@@ -139,7 +139,7 @@ object NormalsDynamicBuffer : DynamicBuffer {
             if (key.type == ShaderSourceType.VERTEX) {
                 code.addPassthroughOutput(
                     ShaderVariableType.FLOAT_VEC3.findOrInjectBytecode(code),
-                    (code.findVariable(name = key.program.format.getElementName(VertexFormatElement.NORMAL)) ?: return code).id,
+                    (code.findVariable(name = key.program.format.getElementName(NeoVertexFormat.Element.NORMAL)) ?: return code).id,
                     VERTEX_VAR_NAME,
                     locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, VERTEX_VAR_NAME)
                 )

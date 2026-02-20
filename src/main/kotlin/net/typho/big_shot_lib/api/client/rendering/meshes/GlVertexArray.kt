@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.api.client.rendering.meshes
 
-import com.mojang.blaze3d.vertex.VertexFormat
-import net.typho.big_shot_lib.api.client.rendering.services.GlUtil
 import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
+import net.typho.big_shot_lib.api.client.rendering.util.GlIndexType
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
+import net.typho.big_shot_lib.api.client.rendering.util.GlShapeType
 import org.lwjgl.opengl.GL11.glDrawElements
 
 open class GlVertexArray(
@@ -21,9 +21,9 @@ open class GlVertexArray(
         OpenGL.INSTANCE.deleteVertexArray(glId)
     }
 
-    fun drawElements(mode: VertexFormat.Mode, indices: Int, type: VertexFormat.IndexType) {
+    fun drawElements(mode: GlShapeType, indices: Int, type: GlIndexType) {
         bind()
-        glDrawElements(GlUtil.INSTANCE.toGlId(mode), indices, GlUtil.INSTANCE.toGlId(type), 0L)
+        glDrawElements(mode.glId, indices, type.glId, 0L)
         unbind()
     }
 }

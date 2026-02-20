@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.shaders
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
-import com.mojang.blaze3d.vertex.VertexFormat
+import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexFormat
 import net.typho.big_shot_lib.api.util.resources.Named
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
@@ -12,7 +11,7 @@ data class ShaderProgramKey(
     @JvmField
     val location: ResourceIdentifier,
     @JvmField
-    val format: VertexFormat,
+    val format: NeoVertexFormat,
     @JvmField
     val sources: Set<ShaderSourceType>,
     @JvmField
@@ -25,7 +24,7 @@ data class ShaderProgramKey(
         val NULL = ShaderProgramKey(
             ShaderLoaderType.NULL,
             ResourceIdentifier("opengl", "null"),
-            DefaultVertexFormat.POSITION,
+            NeoVertexFormat.POSITION,
             setOf(),
             setOf(),
             setOf()

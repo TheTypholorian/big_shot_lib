@@ -11,7 +11,7 @@ base {
 }
 
 tasks.remapJar {
-    enabled = false
+    archiveClassifier = "intermediary"
 }
 
 val namedJar = tasks.register<Jar>("namedJar") {

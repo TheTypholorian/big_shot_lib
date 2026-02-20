@@ -13,16 +13,10 @@
   "license": "${license}",
   "environment": "client",
   "depends": {
-    "java": ">=${java_version}",
-    "intermap": "*"
+    "java": ">=${java_version}"
   },
   "breaks": {
     "iris": "*",
     "veil": "*"
-  },
-  "custom": {
-    "intermap": {
-      "enabled": true
-    }
   }
 }

@@ -3,22 +3,19 @@ package net.typho.big_shot_lib.api.client.rendering.meshes
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.MeshData
-import com.mojang.blaze3d.vertex.VertexFormat
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.rendering.buffers.GlBuffer
-import net.typho.big_shot_lib.api.client.rendering.services.GlUtil
 import net.typho.big_shot_lib.api.client.rendering.util.GlBindable
+import net.typho.big_shot_lib.api.client.rendering.util.GlIndexType
+import net.typho.big_shot_lib.api.client.rendering.util.GlShapeType
 import org.lwjgl.system.NativeResource
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.util.stream.IntStream
 
 open class Mesh(
     @JvmField
-    val format: VertexFormat,
+    val format: NeoVertexFormat,
     @JvmField
-    val mode: VertexFormat.Mode,
+    val mode: GlShapeType,
     @JvmField
     val usage: BufferUsage,
     @JvmField
@@ -31,7 +28,7 @@ open class Mesh(
     @JvmField
     protected var indexCount = 0
     @JvmField
-    protected var indexType: VertexFormat.IndexType = VertexFormat.IndexType.INT
+    protected var indexType: GlIndexType = GlIndexType.UINT
 
     override fun free() {
         vao.free()
@@ -59,7 +56,7 @@ open class Mesh(
 
         vbo.bind()
         vbo.upload(built.vertexBuffer())
-        GlUtil.INSTANCE.initBufferState(format)
+        format.initVertexArrayState()
         vbo.unbind()
 
         ebo.bind()
@@ -69,37 +66,7 @@ open class Mesh(
         if (buffer != null) {
             ebo.upload(buffer)
         } else {
-            val stream = when (mode) {
-                VertexFormat.Mode.QUADS -> IntStream.range(0, indexCount / 6)
-                    .map { i -> i * 4 }
-                    .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 2, i + 3, i) }
-                VertexFormat.Mode.LINES -> IntStream.range(0, indexCount / 6)
-                    .map { i -> i * 4 }
-                    .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 3, i + 2, i + 1) }
-                else -> IntStream.range(0, indexCount)
-            }
-
-            when (indexType) {
-                VertexFormat.IndexType.SHORT -> {
-                    ebo.upload(
-                        ByteBuffer.allocateDirect(indexCount * Short.SIZE_BYTES)
-                            .order(ByteOrder.nativeOrder())
-                            .asShortBuffer()
-                            .put(stream.toArray().map { it.toShort() }.toShortArray())
-                            .flip()
-                    )
-                }
-
-                VertexFormat.IndexType.INT -> {
-                    ebo.upload(
-                        ByteBuffer.allocateDirect(indexCount * 4)
-                            .order(ByteOrder.nativeOrder())
-                            .asIntBuffer()
-                            .put(stream.toArray())
-                            .flip()
-                    )
-                }
-            }
+            mode.uploadIndices(indexCount, ebo)
         }
 
         vao.unbind()
