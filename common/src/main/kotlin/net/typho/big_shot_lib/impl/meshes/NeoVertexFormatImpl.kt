@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.impl.meshes
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexFormat
+import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlPrimitiveType
 
 @JvmRecord
@@ -28,7 +29,10 @@ data class NeoVertexFormatImpl(
     }
 
     override fun initVertexArrayState() {
-        inner.setupBufferState()
+        elements.forEachIndexed { index, element ->
+            element.vertexAttribPointer(index, getElementOffset(element).toLong(), vertexSizeBytes)
+            OpenGL.INSTANCE.enableVertexAttribArray(index)
+        }
     }
 
     @JvmRecord
