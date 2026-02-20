@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.shaders.mixins
 
+import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry
 import net.typho.big_shot_lib.api.client.rendering.errors.ShaderCompileException
 import net.typho.big_shot_lib.api.client.rendering.errors.ShaderDecompileException
 import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey
@@ -46,6 +47,7 @@ object ShaderMixinManager {
     init {
         register(ShaderVersionUpdaterMixin)
         register(ShaderLocationMapperMixin)
+        DynamicBufferRegistry.init()
     }
 
     @JvmStatic

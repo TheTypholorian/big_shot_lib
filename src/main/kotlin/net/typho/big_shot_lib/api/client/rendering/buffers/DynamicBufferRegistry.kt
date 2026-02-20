@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.buffers
 
+import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.ShaderMixinManager
 import org.lwjgl.opengl.GL11.GL_BLEND
 import org.lwjgl.opengl.GL30.glDisablei
 import org.lwjgl.opengl.GL30.glEnablei
@@ -18,6 +19,7 @@ object DynamicBufferRegistry {
         val location = buffers.size + 1
         buffers[location] = buffer
         buffer.setShaderLocation(location)
+        ShaderMixinManager.register(buffer)
     }
 
     @JvmStatic
