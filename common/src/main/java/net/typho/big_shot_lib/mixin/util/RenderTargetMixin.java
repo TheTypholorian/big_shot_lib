@@ -29,7 +29,6 @@ public abstract class RenderTargetMixin {
     private void createBuffers(
             int width,
             int height,
-            boolean clearError,
             CallbackInfo ci
     ) {
         if ((Object) this instanceof MainTarget) {
