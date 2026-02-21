@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.event
+package net.typho.big_shot_lib.api.client.registration.events
 
 import net.minecraft.client.Camera
 import net.minecraft.client.renderer.MultiBufferSource
@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level
 import org.joml.FrustumIntersection
 import org.joml.Matrix4f
 
-data class RenderData(
+data class RenderEventData(
     @JvmField
     val buffers: MultiBufferSource,
     @JvmField
@@ -16,7 +16,11 @@ data class RenderData(
     @JvmField
     val projMat: Matrix4f,
     @JvmField
+    val inverseProjMat: Matrix4f,
+    @JvmField
     val modelViewMat: Matrix4f,
+    @JvmField
+    val inverseModelViewMat: Matrix4f,
     @JvmField
     val frustum: FrustumIntersection,
     @JvmField

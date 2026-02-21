@@ -1,0 +1,14 @@
+package net.typho.big_shot_lib.api.registration
+
+import net.minecraft.resources.ResourceKey
+import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
+
+interface RegistrationFactory {
+    fun <T> begin(registry: ResourceKey<T>, namespace: String): RegistrationConsumer<T>
+
+    fun <T> begin(registry: NeoResourceKey<T>, namespace: String): RegistrationConsumer<T>
+
+    fun beginBlocks(namespace: String): RegistrationConsumer.Blocks
+
+    fun beginItems(namespace: String): RegistrationConsumer.Items
+}

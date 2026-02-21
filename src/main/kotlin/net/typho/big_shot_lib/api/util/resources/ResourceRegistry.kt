@@ -12,7 +12,9 @@ import net.typho.big_shot_lib.api.services.NeoResourceManagerReloadListener
 import java.util.*
 
 abstract class ResourceRegistry<T>(
+    @JvmField
     val name: ResourceIdentifier,
+    @JvmField
     val idConverter: NeoFileToIdConverter,
 ) : NeoResourceManagerReloadListener {
     companion object {

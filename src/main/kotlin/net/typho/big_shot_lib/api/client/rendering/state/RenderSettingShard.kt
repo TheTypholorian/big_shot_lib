@@ -21,11 +21,11 @@ interface RenderSettingShard : GlBindable {
         val list: List<GlBindable>
     ) : RenderSettingShard {
         override fun bind(pushStack: Boolean) {
-            list.forEach { it.bind() }
+            list.forEach { it.bind(pushStack) }
         }
 
         override fun unbind(popStack: Boolean) {
-            list.forEach { it.unbind() }
+            list.forEach { it.unbind(popStack) }
         }
 
         override fun type() = type

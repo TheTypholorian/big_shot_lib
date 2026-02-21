@@ -4,10 +4,15 @@ import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
 import net.typho.big_shot_lib.api.client.rendering.textures.TextureType
 import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.NeoCollections
+import java.io.PrintStream
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
 import java.util.function.*
 import java.util.function.Function
 import kotlin.enums.enumEntries
+import kotlin.io.path.outputStream
 
 open class GlStateStack<V>(
     @JvmField
@@ -135,6 +140,8 @@ open class GlStateStack<V>(
             stencilMask,
             stencilOp
         )
+        @JvmField
+        var debugOut: DebugOut? = null
 
         @JvmStatic
         inline fun <reified T : Enum<T>, V> createMap(name: Function<T, String>, bind: BiConsumer<T, V?>, isNull: BiPredicate<T, V>, query: Function<T, V>): Map<T, GlStateStack<V>> {
@@ -160,8 +167,32 @@ open class GlStateStack<V>(
         }
 
         @JvmStatic
-        fun ensureAllEmpty() {
-            all.forEach { it.ensureEmpty() }
+        fun openDebug(path: Path = Paths.get("debug", "gl_state_stack_dump_${System.currentTimeMillis()}.txt")) {
+            val dir = path.parent
+
+            if (!Files.exists(dir)) {
+                Files.createDirectories(dir)
+            }
+
+            val out = path.outputStream()
+            debugOut = object : DebugOut {
+                override val stream: PrintStream = PrintStream(out)
+
+                override fun close() {
+                    out.close()
+                }
+            }
+        }
+
+        @JvmStatic
+        fun getStackTrace(): List<StackTraceElement> {
+            return Thread.currentThread().stackTrace.dropWhile {
+                it.className.startsWith(GlStateStack::class.java.packageName) ||
+                        it.className.startsWith("java") ||
+                        it.className.startsWith("org.lwjgl") ||
+                        it.methodName == "bind" ||
+                        it.methodName == "unbind"
+            }
         }
     }
 
@@ -169,20 +200,31 @@ open class GlStateStack<V>(
     protected val bound = LinkedList<V>()
     @JvmField
     protected var restoreTo: V? = null
+    @JvmField
+    val listeners = LinkedList<Listener<V>>()
 
     fun push(value: V) {
+        listeners.forEach { it.onPushed(this, value) }
+
         if (isNull.test(value)) {
             pop()
         } else {
+            var message = ""
+
             if (bound.isEmpty()) {
                 restoreTo = query.get()
+                message += "Pushed $name while empty, selected $restoreTo to restore to\n"
             }
 
             if (bound.lastOrNull() != value) {
                 bind.accept(value)
+                message += "Pushed and bound $value\n"
+            } else {
+                message += "Pushed and did not bind $value\n"
             }
 
             bound.add(value)
+            debugOut?.stream?.println("$message\tat ${getStackTrace().firstOrNull()}")
         }
     }
 
@@ -191,18 +233,25 @@ open class GlStateStack<V>(
             throw IllegalStateException("Tried to pop GlStateStack $name that was already empty")
         }
 
+        listeners.forEach { it.onPopped(this) }
+
         val removed = bound.removeLast()
         val current = getBound()
 
         if (current == null) {
             bind.accept(restoreTo)
+            debugOut?.stream?.println("Restored $name from $removed to $restoreTo\n\tat ${getStackTrace().firstOrNull()}")
         } else if (current != removed) {
             bind.accept(current)
+            debugOut?.stream?.println("Popped $name from $removed to $current\n\tat ${getStackTrace().firstOrNull()}")
         }
     }
 
     fun rebind() {
-        bind.accept(getBound())
+        val value = getBound()
+        listeners.forEach { it.onRebound(this, value) }
+        bind.accept(value)
+        debugOut?.stream?.println("Rebound $name to $value\n\tat ${getStackTrace().firstOrNull()}")
     }
 
     fun getBound(): V? = bound.lastOrNull()
@@ -211,5 +260,17 @@ open class GlStateStack<V>(
         if (bound.isNotEmpty()) {
             throw IllegalStateException("Someone pushed and forgot to pop GlStateStack $name")
         }
+    }
+
+    interface Listener<V> {
+        fun onPushed(stack: GlStateStack<V>, value: V)
+
+        fun onPopped(stack: GlStateStack<V>)
+
+        fun onRebound(stack: GlStateStack<V>, value: V?)
+    }
+
+    interface DebugOut : AutoCloseable {
+        val stream: PrintStream
     }
 }
