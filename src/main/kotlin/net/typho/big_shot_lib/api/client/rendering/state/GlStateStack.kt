@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering.state
 import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
 import net.typho.big_shot_lib.api.client.rendering.textures.TextureType
 import net.typho.big_shot_lib.api.util.IColor
+import net.typho.big_shot_lib.api.util.NeoCollections
 import java.util.*
 import java.util.function.*
 import java.util.function.Function
@@ -117,6 +118,23 @@ open class GlStateStack<V>(
             { false },
             OpenGL.INSTANCE::getStencilOp
         )
+        @JvmField
+        val all: List<GlStateStack<*>> = NeoCollections.flatListOf(
+            buffers.values,
+            renderBuffer,
+            textures.values,
+            framebuffer,
+            vertexArray,
+            shader,
+            blendColor,
+            colorMask,
+            depthMask,
+            depthFunc,
+            polygonMode,
+            stencilFunc,
+            stencilMask,
+            stencilOp
+        )
 
         @JvmStatic
         inline fun <reified T : Enum<T>, V> createMap(name: Function<T, String>, bind: BiConsumer<T, V?>, isNull: BiPredicate<T, V>, query: Function<T, V>): Map<T, GlStateStack<V>> {
@@ -143,20 +161,7 @@ open class GlStateStack<V>(
 
         @JvmStatic
         fun ensureAllEmpty() {
-            buffers.values.forEach { it.ensureEmpty() }
-            renderBuffer.ensureEmpty()
-            textures.values.forEach { it.ensureEmpty() }
-            framebuffer.ensureEmpty()
-            vertexArray.ensureEmpty()
-            shader.ensureEmpty()
-            blendColor.ensureEmpty()
-            colorMask.ensureEmpty()
-            depthMask.ensureEmpty()
-            depthFunc.ensureEmpty()
-            polygonMode.ensureEmpty()
-            stencilFunc.ensureEmpty()
-            stencilMask.ensureEmpty()
-            stencilOp.ensureEmpty()
+            all.forEach { it.ensureEmpty() }
         }
     }
 
