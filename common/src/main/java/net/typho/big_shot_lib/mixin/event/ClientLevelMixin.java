@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.storage.WritableLevelData;
-import net.typho.big_shot_lib.api.client.rendering.event.BlockChangedEvent;
+import net.typho.big_shot_lib.BigShotCommonEventStorage;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -21,6 +21,6 @@ public abstract class ClientLevelMixin extends Level {
 
     @Override
     public void updatePOIOnBlockStateChange(@NotNull BlockPos pos, @NotNull BlockState oldState, @NotNull BlockState newState) {
-        BlockChangedEvent.Companion.invoke(this, pos, oldState, newState);
+        BigShotCommonEventStorage.onBlockChanged.forEach(event -> event.invoke(this, pos, oldState, newState));
     }
 }

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -12,9 +13,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.RenderBuffers;
-import net.typho.big_shot_lib.api.client.rendering.event.PostProcessEvent;
+import net.typho.big_shot_lib.BigShotClientEventStorage;
 import net.typho.big_shot_lib.api.client.rendering.event.RenderData;
-import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
@@ -67,17 +67,23 @@ public class LevelRendererMixin {
         pass.executes(() -> {
             assert level != null;
             Matrix4f frustum = frustumMatrix.translate(camera.getPosition().toVector3f().mul(-1), new Matrix4f());
-            PostProcessEvent.Companion.invoke(new RenderData(
+            Matrix4f iProj = projectionMatrix.invertPerspective(new Matrix4f());
+            RenderData data = new RenderData(
                     renderBuffers.bufferSource(),
                     camera,
                     level,
                     projectionMatrix,
+                    iProj,
                     frustum,
+                    new Matrix4f(frustumMatrix)
+                            .mulLocal(iProj.mul(RenderSystem.getProjectionMatrix(), new Matrix4f()))
+                            .invert(),
                     new FrustumIntersection(projectionMatrix.mul(frustum, new Matrix4f())),
                     Minecraft.getInstance().getMainRenderTarget().width,
                     Minecraft.getInstance().getMainRenderTarget().height
-            ));
-            GlStateStack.ensureAllEmpty();
+            );
+
+            BigShotClientEventStorage.onLevelRenderEnd.forEach(event -> event.invoke(data));
         });
     }
 }
