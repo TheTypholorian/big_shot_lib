@@ -19,6 +19,12 @@
                 "adapter": "kotlin",
                 "value": "net.typho.big_shot_lib.BigShotLibFabric"
             }
+        ],
+        "big_shot_lib:client_events": [
+            {
+                "adapter": "kotlin",
+                "value": "net.typho.big_shot_lib.api.client.BigShotApiClient"
+            }
         ]
     },
     "mixins": [

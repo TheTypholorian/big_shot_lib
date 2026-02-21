@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.storage.WritableLevelData;
-import net.typho.big_shot_lib.api.client.rendering.event.BlockChangedEvent;
+import net.typho.big_shot_lib.BigShotCommonEventStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,6 +29,6 @@ public abstract class ServerLevelMixin extends Level {
             at = @At("HEAD")
     )
     public void onBlockStateChange(BlockPos pos, BlockState blockState, BlockState newState, CallbackInfo ci) {
-        BlockChangedEvent.Companion.invoke(this, pos, blockState, newState);
+        BigShotCommonEventStorage.onBlockChanged.forEach(event -> event.invoke(this, pos, blockState, newState));
     }
 }
