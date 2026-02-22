@@ -179,7 +179,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                             return RegisteredObjectImpl(
                                 Registries.BLOCK.toNeo() as NeoResourceKey<Registry<V>>,
                                 ResourceIdentifier(namespace, id),
-                                registry.registerBlock(id, value, BlockBehaviour.Properties.of())
+                                registry.registerBlock(id, value)
                             )
                         }
                     }
@@ -209,7 +209,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                             return RegisteredObjectImpl(
                                 Registries.ITEM.toNeo() as NeoResourceKey<Registry<BlockItem>>,
                                 ResourceIdentifier(namespace, id),
-                                registry.registerSimpleBlockItem(id, block, properties.apply(Item.Properties()))
+                                registry.registerSimpleBlockItem(id, block, properties)
                             )
                         }
                     }
