@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client
 
 import net.minecraft.client.KeyMapping
 import net.typho.big_shot_lib.api.client.registration.BigShotClientRegistrationEntrypoint
+import net.typho.big_shot_lib.api.client.registration.DebugScreenFactory
 import net.typho.big_shot_lib.api.client.registration.KeyMappingFactory
 import net.typho.big_shot_lib.api.client.registration.ResourceListenerFactory
 import net.typho.big_shot_lib.api.client.registration.events.ClientEventFactory
@@ -36,5 +37,8 @@ object BigShotApiClient : BigShotClientRegistrationEntrypoint {
             GlStateStack.debugOut?.close()
             GlStateStack.debugOut = null
         }
+    }
+
+    override fun registerDebugScreenInfo(factory: DebugScreenFactory) {
     }
 }

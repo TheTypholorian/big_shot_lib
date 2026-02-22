@@ -15,7 +15,7 @@ interface BigShotCommonRegistrationEntrypoint {
         @JvmField
         val id = BigShotApi.id("common_events")
         @JvmField
-        val entrypoints = PlatformUtil.INSTANCE.mods.mapNotNull { it.loadEntrypoint<BigShotCommonRegistrationEntrypoint>(id) }
+        val entrypoints = PlatformUtil.INSTANCE.mods.mapNotNull { it.loadEntrypoint(id, BigShotCommonRegistrationEntrypoint::class.java) }
 
         override fun registerRegistries(factory: RegistryFactory) {
             entrypoints.forEach { it.registerRegistries(factory) }
