@@ -17,6 +17,7 @@
   },
   "breaks": {
     "iris": "*",
-    "veil": "*"
+    "veil": "*",
+    "vibrancy": "<=${vibrancy_incompat_version}"
   }
 }

@@ -109,6 +109,7 @@ processResources {
     var expandProps = [
             'version'                      : version,
             'group'                        : project.group, //Else we target the task's group.
+            'vibrancy_incompat_version'    : project.vibrancyIncompatVersion,
             'minecraft_version'            : libs.versions.minecraft.get(),
             'mod_name'                     : modName,
             'mod_author'                   : modAuthor,

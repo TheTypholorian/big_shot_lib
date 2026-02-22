@@ -138,7 +138,8 @@ open class GlStateStack<V>(
             polygonMode,
             stencilFunc,
             stencilMask,
-            stencilOp
+            stencilOp,
+            GlFlag.entries.map { it.stack }
         )
         @JvmField
         var debugOut: DebugOut? = null
@@ -218,9 +219,9 @@ open class GlStateStack<V>(
 
             if (bound.lastOrNull() != value) {
                 bind.accept(value)
-                message += "Pushed and bound $value\n"
+                message += "Pushed $name and bound $value\n"
             } else {
-                message += "Pushed and did not bind $value\n"
+                message += "Pushed $name and did not bind $value\n"
             }
 
             bound.add(value)
