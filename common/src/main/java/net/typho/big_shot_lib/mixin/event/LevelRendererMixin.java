@@ -5,7 +5,6 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -77,7 +76,7 @@ public class LevelRendererMixin {
                     iProj,
                     frustum,
                     new Matrix4f(frustumMatrix)
-                            .mulLocal(iProj.mul(RenderSystem.getProjectionMatrix(), new Matrix4f()))
+                            .mulLocal(iProj.mul(projectionMatrix, new Matrix4f()))
                             .invert(),
                     new FrustumIntersection(projectionMatrix.mul(frustum, new Matrix4f())),
                     Minecraft.getInstance().getMainRenderTarget().width,

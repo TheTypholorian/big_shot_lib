@@ -1,10 +1,5 @@
 #include "minecraft:fog.glsl"
 
-uniform float FogStart;
-uniform float FogEnd;
-uniform int FogShape;
-uniform vec4 FogColor;
-
-vec4 bigShotFog(vec4 input, vec3 delta) {
-    return linear_fog(input, fog_distance(delta, FogShape), FogStart, FogEnd, FogColor);
+vec4 bigShotFog(vec4 inColor, vec3 delta) {
+    return apply_fog(inColor, fog_spherical_distance(delta), fog_cylindrical_distance(delta), FogEnvironmentalStart, FogEnvironmentalEnd, FogRenderDistanceStart, FogRenderDistanceEnd, FogColor);
 }
