@@ -24,12 +24,12 @@ modrinth {
     }
 
     projectId = "big-shot-lib"
-    versionName = "$modName $version for NeoForge 1.21.5"
-    versionNumber = "mc1.21.5-$version-neoforge"
+    versionName = "$modName $version for NeoForge 1.21.9"
+    versionNumber = "mc1.21.9-$version-neoforge"
     versionType = "release"
     uploadFile.set(tasks.jar)
     additionalFiles.add(tasks.sourcesJar)
-    gameVersions.addAll("1.21.5")
+    gameVersions.addAll("1.21.9")
     loaders.add("neoforge")
 
     dependencies {
