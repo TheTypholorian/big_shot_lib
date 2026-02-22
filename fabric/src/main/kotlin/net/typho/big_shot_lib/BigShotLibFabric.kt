@@ -150,7 +150,7 @@ object BigShotLibFabric : ClientModInitializer {
                 key: ResourceKey<Registry<T>>,
                 namespace: String
             ): RegistrationConsumer<T> {
-                val registry = BuiltInRegistries.REGISTRY.get(key.location()) as Registry<T>
+                val registry = BuiltInRegistries.REGISTRY.get(key.location()).orElseThrow().value() as Registry<T>
 
                 return object : RegistrationConsumer<T> {
                     override fun <V : T> register(
@@ -161,7 +161,7 @@ object BigShotLibFabric : ClientModInitializer {
                         return RegisteredObjectImpl(
                             key.toNeo() as NeoResourceKey<Registry<V>>,
                             id,
-                            Registry.register<T, V & Any>(
+                            Registry.register(
                                 registry,
                                 id.toMojang(),
                                 value.get()!!
