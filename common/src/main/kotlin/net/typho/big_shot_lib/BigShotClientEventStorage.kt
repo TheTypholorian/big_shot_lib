@@ -20,6 +20,8 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
     @JvmField
     val onWindowResized = LinkedList<WindowResizeEvent>()
     @JvmField
+    val onLevelChanged = LinkedList<ClientLevelChangedEvent>()
+    @JvmField
     val debugScreenInfo = LinkedList<Pair<Boolean, Consumer<Consumer<String>>>>()
 
     init {
@@ -44,6 +46,7 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
     }
 
     override fun onLevelChanged(event: ClientLevelChangedEvent) {
+        onLevelChanged.add(event)
     }
 
     override fun register(
