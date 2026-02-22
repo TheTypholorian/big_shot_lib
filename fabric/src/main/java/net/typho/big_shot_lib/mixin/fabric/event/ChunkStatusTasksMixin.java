@@ -6,7 +6,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.status.ChunkStatusTasks;
 import net.minecraft.world.level.chunk.status.WorldGenContext;
-import net.typho.big_shot_lib.api.client.rendering.event.ClientChunkChangedEvent;
+import net.typho.big_shot_lib.BigShotCommonEventStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,6 +28,6 @@ public class ChunkStatusTasksMixin {
             CallbackInfoReturnable<ChunkAccess> cir,
             @Local LevelChunk levelChunk
     ) {
-        ClientChunkChangedEvent.Companion.invoke(null, levelChunk);
+        BigShotCommonEventStorage.onChunkChanged.forEach(event -> event.invoke(null, levelChunk));
     }
 }

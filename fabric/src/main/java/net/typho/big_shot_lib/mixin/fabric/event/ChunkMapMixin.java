@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.typho.big_shot_lib.api.client.rendering.event.ClientChunkChangedEvent;
+import net.typho.big_shot_lib.BigShotCommonEventStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,6 +25,6 @@ public class ChunkMapMixin {
             CallbackInfo ci,
             @Local LevelChunk chunk
     ) {
-        ClientChunkChangedEvent.Companion.invoke(chunk, null);
+        BigShotCommonEventStorage.onChunkChanged.forEach(event -> event.invoke(chunk, null));
     }
 }

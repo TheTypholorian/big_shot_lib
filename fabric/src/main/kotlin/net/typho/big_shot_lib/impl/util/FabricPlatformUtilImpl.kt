@@ -26,7 +26,7 @@ class FabricPlatformUtilImpl : PlatformUtil {
         override val version: String
             get() = inner.metadata.version.friendlyString
         override val customData: Map<String, Any?>
-            get() = customValueMapToNormalMap(inner.metadata.customValues)
+            get() = customValueMapToNormalMap(inner.metadata.customValues.entries)
 
         override fun <T> loadEntrypoint(id: ResourceIdentifier, cls: Class<T>): T? {
             return FabricLoader.getInstance()
