@@ -269,7 +269,7 @@ class OpenGLImpl : OpenGL {
         dst: BlendFactor
     ) {
         debugPrint("glBlendFunc", src, dst)
-        glBlendFunc(src.glId, dst.glId)
+        GlStateManager._blendFuncSeparate(src.glId, dst.glId, src.glId, dst.glId)
     }
 
     override fun blendFuncSeparate(
