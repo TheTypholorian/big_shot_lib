@@ -17,6 +17,7 @@
     "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
+    "GlBufferAccessor",
     "RenderSystemMixin",
     "buffers.GlStateManagerMixin",
     "event.ClientChunkCacheMixin",
