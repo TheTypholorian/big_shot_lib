@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.services
 
-import net.typho.big_shot_lib.api.util.Environment
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 interface ModContainer {
@@ -8,8 +7,7 @@ interface ModContainer {
     val displayName: String
     val description: String
     val version: String
-    val environment: Environment
-    val customData: Map<String, Any>
+    val customData: Map<String, Any?>
 
-    fun <T> loadEntrypoint(id: ResourceIdentifier): T?
+    fun <T> loadEntrypoint(id: ResourceIdentifier, cls: Class<T>): T?
 }

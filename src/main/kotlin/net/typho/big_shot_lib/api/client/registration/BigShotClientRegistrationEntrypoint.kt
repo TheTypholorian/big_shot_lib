@@ -11,11 +11,13 @@ interface BigShotClientRegistrationEntrypoint {
 
     fun registerEvents(factory: ClientEventFactory)
 
+    fun registerDebugScreenInfo(factory: DebugScreenFactory)
+
     companion object : BigShotClientRegistrationEntrypoint {
         @JvmField
         val id = BigShotApi.id("client_events")
         @JvmField
-        val entrypoints = PlatformUtil.INSTANCE.mods.mapNotNull { it.loadEntrypoint<BigShotClientRegistrationEntrypoint>(id) }
+        val entrypoints = PlatformUtil.INSTANCE.mods.mapNotNull { it.loadEntrypoint(id, BigShotClientRegistrationEntrypoint::class.java) }
 
         override fun registerReloadListeners(factory: ResourceListenerFactory) {
             entrypoints.forEach { it.registerReloadListeners(factory) }
@@ -27,6 +29,10 @@ interface BigShotClientRegistrationEntrypoint {
 
         override fun registerEvents(factory: ClientEventFactory) {
             entrypoints.forEach { it.registerEvents(factory) }
+        }
+
+        override fun registerDebugScreenInfo(factory: DebugScreenFactory) {
+            entrypoints.forEach { it.registerDebugScreenInfo(factory) }
         }
     }
 }

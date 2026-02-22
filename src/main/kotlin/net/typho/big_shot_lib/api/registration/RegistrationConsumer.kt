@@ -9,15 +9,15 @@ import java.util.function.Supplier
 import java.util.function.UnaryOperator
 
 interface RegistrationConsumer<T> {
-    fun <V : T> register(id: String, value: Supplier<V>): Supplier<V>
+    fun <V : T> register(id: String, value: Supplier<V>): RegisteredObject<V>
 
     interface Blocks {
-        fun <V : Block> register(id: String, value: Function<BlockBehaviour.Properties, V>): Supplier<V>
+        fun <V : Block> register(id: String, value: Function<BlockBehaviour.Properties, V>): RegisteredObject<V>
     }
 
     interface Items {
-        fun <V : Item> register(id: String, value: Function<Item.Properties, V>): Supplier<V>
+        fun <V : Item> register(id: String, value: Function<Item.Properties, V>): RegisteredObject<V>
 
-        fun registerBlockItem(id: String, block: Supplier<out Block>, properties: UnaryOperator<Item.Properties>): Supplier<BlockItem>
+        fun registerBlockItem(id: String, block: Supplier<out Block>, properties: UnaryOperator<Item.Properties>): RegisteredObject<BlockItem>
     }
 }

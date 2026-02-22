@@ -8,4 +8,6 @@ interface ClientEventFactory {
     fun onFrameEnd(event: Runnable)
 
     fun onWindowResized(event: WindowResizeEvent)
+
+    fun onLevelChanged(event: ClientLevelChangedEvent)
 }
