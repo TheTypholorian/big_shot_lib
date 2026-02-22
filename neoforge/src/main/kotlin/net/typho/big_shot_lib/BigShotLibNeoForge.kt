@@ -170,7 +170,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                             return RegisteredObjectImpl(
                                 Registries.BLOCK.toNeo() as NeoResourceKey<Registry<V>>,
                                 ResourceIdentifier(namespace, id),
-                                registry.registerBlock(id, value)
+                                registry.registerBlock(id, value, BlockBehaviour.Properties.of())
                             )
                         }
                     }
