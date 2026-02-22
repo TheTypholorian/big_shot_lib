@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.typho.big_shot_lib.BigShotClientEventStorage;
 import net.typho.big_shot_lib.api.client.registration.events.RenderEventData;
+import net.typho.big_shot_lib.api.client.rendering.state.GlFlag;
 import org.jetbrains.annotations.Nullable;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
@@ -79,6 +80,7 @@ public class LevelRendererMixin {
                     Minecraft.getInstance().getMainRenderTarget().width,
                     Minecraft.getInstance().getMainRenderTarget().height
             );
+            GlFlag.BLEND.disable();
 
             BigShotClientEventStorage.onLevelRenderEnd.forEach(event -> event.invoke(data));
         });
