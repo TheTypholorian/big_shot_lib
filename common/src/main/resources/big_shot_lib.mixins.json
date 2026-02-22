@@ -22,6 +22,7 @@
     "event.GameRendererMixin",
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
+    "registration.DebugScreenOverlayMixin",
     "shaders.mixins.CompiledShaderMixin",
     "shaders.mixins.ShaderManagerCompilationCacheMixin",
     "shaders.mixins.ShaderManagerMixin",

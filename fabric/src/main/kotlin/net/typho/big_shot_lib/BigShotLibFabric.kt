@@ -1,14 +1,18 @@
 package net.typho.big_shot_lib
 
 import com.mojang.blaze3d.platform.InputConstants
+import com.mojang.serialization.Lifecycle
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 import net.minecraft.client.KeyMapping
+import net.minecraft.core.DefaultedMappedRegistry
+import net.minecraft.core.MappedRegistry
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
@@ -20,20 +24,19 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.typho.big_shot_lib.BigShotLib.toMojang
+import net.typho.big_shot_lib.BigShotLib.toNeo
 import net.typho.big_shot_lib.api.client.registration.BigShotClientRegistrationEntrypoint
 import net.typho.big_shot_lib.api.client.registration.KeyMappingCategory
 import net.typho.big_shot_lib.api.client.registration.KeyMappingFactory
 import net.typho.big_shot_lib.api.client.registration.ResourceListenerFactory
-import net.typho.big_shot_lib.api.registration.BigShotCommonRegistrationEntrypoint
-import net.typho.big_shot_lib.api.registration.RegistrationConsumer
-import net.typho.big_shot_lib.api.registration.RegistrationFactory
-import net.typho.big_shot_lib.api.registration.RegistryFactory
+import net.typho.big_shot_lib.api.registration.*
 import net.typho.big_shot_lib.api.services.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.services.WrapperUtil
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 import net.typho.big_shot_lib.impl.registration.KeyMappingCategoryImpl
+import net.typho.big_shot_lib.impl.registration.RegisteredObjectImpl
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 import java.util.function.Function
@@ -122,44 +125,65 @@ object BigShotLibFabric : ClientModInitializer {
         })
         BigShotCommonRegistrationEntrypoint.registerRegistries(object : RegistryFactory {
             @Suppress("UNCHECKED_CAST")
-            override fun <T> register(registry: Registry<T>): Registry<T> {
+            override fun <T> create(
+                id: ResourceIdentifier,
+                lifecycle: Lifecycle
+            ): Registry<T> {
                 return Registry.register(
                     BuiltInRegistries.REGISTRY as Registry<Registry<T>>,
-                    registry.key().location(),
-                    registry
+                    id.toMojang(),
+                    MappedRegistry<T>(ResourceKey.createRegistryKey(id.toMojang()), lifecycle)
+                )
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T> createDefaulted(
+                id: ResourceIdentifier,
+                defaultKey: ResourceIdentifier,
+                lifecycle: Lifecycle
+            ): Registry<T> {
+                return Registry.register(
+                    BuiltInRegistries.REGISTRY as Registry<Registry<T>>,
+                    id.toMojang(),
+                    DefaultedMappedRegistry<T>(id.toString(), ResourceKey.createRegistryKey(id.toMojang()), lifecycle, false)
                 )
             }
         })
         BigShotCommonRegistrationEntrypoint.registerContent(object : RegistrationFactory {
             @Suppress("UNCHECKED_CAST")
             override fun <T> begin(
-                registry: ResourceKey<T>,
+                key: ResourceKey<Registry<T>>,
                 namespace: String
             ): RegistrationConsumer<T> {
-                val registry = BuiltInRegistries.REGISTRY.get(registry.location()) as Registry<T>
+                val registry = BuiltInRegistries.REGISTRY.get(key.location()) as Registry<T>
 
                 return object : RegistrationConsumer<T> {
                     override fun <V : T> register(
                         id: String,
                         value: Supplier<V>
-                    ): Supplier<V> {
-                        val v = Registry.register(
-                            registry,
-                            ResourceLocation.fromNamespaceAndPath(namespace, id),
-                            value.get()!!
+                    ): RegisteredObject<V> {
+                        val id = ResourceIdentifier(namespace, id)
+                        return RegisteredObjectImpl(
+                            key.toNeo() as NeoResourceKey<Registry<V>>,
+                            id,
+                            Registry.register<T, V & Any>(
+                                registry,
+                                id.toMojang(),
+                                value.get()!!
+                            )
                         )
-                        return Supplier { v }
                     }
                 }
             }
 
             override fun <T> begin(
-                registry: NeoResourceKey<T>,
+                key: NeoResourceKey<Registry<T>>,
                 namespace: String
             ): RegistrationConsumer<T> {
-                return begin(registry.toMojang(), namespace)
+                return begin(key.toMojang(), namespace)
             }
 
+            @Suppress("UNCHECKED_CAST")
             override fun beginBlocks(namespace: String): RegistrationConsumer.Blocks {
                 val registry = BuiltInRegistries.BLOCK
 
@@ -167,17 +191,22 @@ object BigShotLibFabric : ClientModInitializer {
                     override fun <V : Block> register(
                         id: String,
                         value: Function<BlockBehaviour.Properties, V>
-                    ): Supplier<V> {
-                        val v = Registry.register(
-                            registry,
-                            ResourceLocation.fromNamespaceAndPath(namespace, id),
-                            value.apply(BlockBehaviour.Properties.of())
+                    ): RegisteredObject<V> {
+                        val id = ResourceIdentifier(namespace, id)
+                        return RegisteredObjectImpl(
+                            Registries.BLOCK.toNeo() as NeoResourceKey<Registry<V>>,
+                            id,
+                            Registry.register(
+                                registry,
+                                id.toMojang(),
+                                value.apply(BlockBehaviour.Properties.of())
+                            )
                         )
-                        return Supplier { v }
                     }
                 }
             }
 
+            @Suppress("UNCHECKED_CAST")
             override fun beginItems(namespace: String): RegistrationConsumer.Items {
                 val registry = BuiltInRegistries.ITEM
 
@@ -185,20 +214,24 @@ object BigShotLibFabric : ClientModInitializer {
                     override fun <V : Item> register(
                         id: String,
                         value: Function<Item.Properties, V>
-                    ): Supplier<V> {
-                        val v = Registry.register(
-                            registry,
-                            ResourceLocation.fromNamespaceAndPath(namespace, id),
-                            value.apply(Item.Properties())
+                    ): RegisteredObject<V> {
+                        val id = ResourceIdentifier(namespace, id)
+                        return RegisteredObjectImpl(
+                            Registries.ITEM.toNeo() as NeoResourceKey<Registry<V>>,
+                            id,
+                            Registry.register(
+                                registry,
+                                id.toMojang(),
+                                value.apply(Item.Properties())
+                            )
                         )
-                        return Supplier { v }
                     }
 
                     override fun registerBlockItem(
                         id: String,
                         block: Supplier<out Block>,
                         properties: UnaryOperator<Item.Properties>
-                    ): Supplier<BlockItem> {
+                    ): RegisteredObject<BlockItem> {
                         return register(id) { BlockItem(block.get(), properties.apply(it)) }
                     }
                 }
