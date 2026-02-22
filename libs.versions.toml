@@ -5,23 +5,23 @@ moddev = "1.0.21"
 loom = "1.13-SNAPSHOT"
 dokka = "1.9.20"
 
-minecraft = "1.21.7"
-minecraftRange = "[1.21.7, 1.21.8)"
+minecraft = "1.21.8"
+minecraftRange = "[1.21.8, 1.21.9)"
 
 # The version of ParchmentMC that is used, see https://parchmentmc.org/docs/getting-started#choose-a-version for new versions
-parchment = "2025.07.18"
-parchmentMC = "1.21.7"
+parchment = "2025.09.14"
+parchmentMC = "1.21.8"
 
-neoforge = "21.7.25-beta"
+neoforge = "21.8.52"
 neoforgeRange = "*"
 ## This is the version of minecraft that the 'common' project uses, you can find a list of all versions here
 ## https://projects.neoforged.net/neoforged/neoform
-neoForm = "1.21.7-20250711.194848"
+neoForm = "1.21.8-20250717.133445"
 kff = "5.6.0"
 kffRange = "[5.6, )"
 
 fabricLoader = "0.16.13"
-fabricApi = "0.129.0+1.21.7"
+fabricApi = "0.136.1+1.21.8"
 flk = "1.12.3+kotlin.2.0.21"
 
 mixin = "0.8.5"
