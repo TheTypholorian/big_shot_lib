@@ -4,9 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants
 import com.mojang.serialization.Lifecycle
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 import net.minecraft.client.KeyMapping
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
@@ -14,10 +12,10 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
 import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
@@ -38,8 +36,6 @@ import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 import net.typho.big_shot_lib.impl.registration.KeyMappingCategoryImpl
 import net.typho.big_shot_lib.impl.registration.RegisteredObjectImpl
 import net.typho.big_shot_lib.mixin.KeyMappingCategoryAccessor
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Executor
 import java.util.function.Function
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
@@ -52,36 +48,14 @@ object BigShotLibFabric : ClientModInitializer {
                 id: ResourceIdentifier,
                 listener: PreparableReloadListener
             ) {
-                ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : IdentifiableResourceReloadListener {
-                    override fun getFabricId(): ResourceLocation {
-                        return id.toMojang()
-                    }
-
-                    override fun reload(
-                        sharedState: PreparableReloadListener.SharedState,
-                        gameExecutor: Executor,
-                        preparationBarrier: PreparableReloadListener.PreparationBarrier,
-                        applyExectutor: Executor
-                    ): CompletableFuture<Void> {
-                        return listener.reload(
-                            sharedState,
-                            gameExecutor,
-                            preparationBarrier,
-                            gameExecutor
-                        )
-                    }
-                })
+                ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(id.toMojang(), listener)
             }
 
             override fun register(
                 id: ResourceIdentifier,
                 listener: NeoResourceManagerReloadListener
             ) {
-                ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
-                    override fun getFabricId(): ResourceLocation {
-                        return id.toMojang()
-                    }
-
+                ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(id.toMojang(), object : ResourceManagerReloadListener {
                     override fun onResourceManagerReload(resourceManager: ResourceManager) {
                         listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(resourceManager))
                     }
