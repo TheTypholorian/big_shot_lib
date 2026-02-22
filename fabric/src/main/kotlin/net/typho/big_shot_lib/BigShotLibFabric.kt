@@ -166,7 +166,7 @@ object BigShotLibFabric : ClientModInitializer {
                         return RegisteredObjectImpl(
                             key.toNeo() as NeoResourceKey<Registry<V>>,
                             id,
-                            Registry.register<T, V & Any>(
+                            Registry.register(
                                 registry,
                                 id.toMojang(),
                                 value.get()!!
