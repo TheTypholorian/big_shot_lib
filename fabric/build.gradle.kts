@@ -42,6 +42,15 @@ repositories {
         name = "Modrinth"
         url = uri("https://api.modrinth.com/maven")
     }
+    ivy {
+        url = uri("https://github.com/TheTypholorian/big_shot_lib/releases/download")
+        patternLayout {
+            artifact("[revision]/[artifact]-[revision](-[classifier]).[ext]")
+        }
+        metadataSources {
+            artifact()
+        }
+    }
 }
 
 dependencies {
