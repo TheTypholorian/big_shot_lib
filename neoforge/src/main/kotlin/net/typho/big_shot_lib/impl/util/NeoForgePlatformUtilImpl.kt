@@ -28,23 +28,31 @@ class NeoForgePlatformUtilImpl : PlatformUtil {
         override val customData: Map<String, Any>
             get() = inner.modInfo.modProperties
 
-        override fun <T> loadEntrypoint(id: ResourceIdentifier): T? {
+        override fun <T> loadEntrypoint(id: ResourceIdentifier, cls: Class<T>): T? {
             val entrypoints = inner.modInfo.modProperties["entrypoints"] as? Map<*, *> ?: return null
             val name = entrypoints[id.toString()] as? String ?: return null
 
-            val cls = Class.forName(name, true, ModContainerImpl::class.java.classLoader)
+            val found = Class.forName(name, true, ModContainerImpl::class.java.classLoader)
 
-            if (cls.kotlin.objectInstance is T) {
-                return cls.kotlin.objectInstance as T
+            found.kotlin.objectInstance?.let {
+                if (cls.isAssignableFrom(it.javaClass)) {
+                    return it as T
+                }
             }
 
-            if (cls.kotlin.companionObjectInstance is T) {
-                return cls.kotlin.companionObjectInstance as T
+            found.kotlin.companionObjectInstance?.let {
+                if (cls.isAssignableFrom(it.javaClass)) {
+                    return it as T
+                }
             }
 
-            cls.kotlin.constructors.firstOrNull { it.parameters.isEmpty() }?.let { return it.call() as T }
+            if (!cls.isAssignableFrom(found)) {
+                throw IllegalStateException("$found does not inherit $cls for entrypoint $id")
+            }
 
-            val constructor = cls.getDeclaredConstructor()
+            found.kotlin.constructors.firstOrNull { it.parameters.isEmpty() }?.let { return it.call() as T }
+
+            val constructor = found.getDeclaredConstructor()
             constructor.isAccessible = true
             return constructor.newInstance() as T
         }

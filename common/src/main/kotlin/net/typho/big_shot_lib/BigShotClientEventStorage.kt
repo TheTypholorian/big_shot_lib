@@ -1,12 +1,16 @@
 package net.typho.big_shot_lib
 
 import net.typho.big_shot_lib.api.client.registration.BigShotClientRegistrationEntrypoint
+import net.typho.big_shot_lib.api.client.registration.DebugScreenFactory
 import net.typho.big_shot_lib.api.client.registration.events.ClientEventFactory
+import net.typho.big_shot_lib.api.client.registration.events.ClientLevelChangedEvent
 import net.typho.big_shot_lib.api.client.registration.events.RenderEvent
 import net.typho.big_shot_lib.api.client.registration.events.WindowResizeEvent
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import java.util.*
+import java.util.function.Consumer
 
-object BigShotClientEventStorage : ClientEventFactory {
+object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
     @JvmField
     val onFrameStart = LinkedList<Runnable>()
     @JvmField
@@ -15,9 +19,12 @@ object BigShotClientEventStorage : ClientEventFactory {
     val onFrameEnd = LinkedList<Runnable>()
     @JvmField
     val onWindowResized = LinkedList<WindowResizeEvent>()
+    @JvmField
+    val debugScreenInfo = LinkedList<Pair<Boolean, Consumer<Consumer<String>>>>()
 
     init {
         BigShotClientRegistrationEntrypoint.registerEvents(this)
+        BigShotClientRegistrationEntrypoint.registerDebugScreenInfo(this)
     }
 
     override fun onFrameStart(event: Runnable) {
@@ -34,5 +41,16 @@ object BigShotClientEventStorage : ClientEventFactory {
 
     override fun onWindowResized(event: WindowResizeEvent) {
         onWindowResized.add(event)
+    }
+
+    override fun onLevelChanged(event: ClientLevelChangedEvent) {
+    }
+
+    override fun register(
+        id: ResourceIdentifier,
+        allowedWithReducedDebugInfo: Boolean,
+        out: Consumer<Consumer<String>>
+    ) {
+        debugScreenInfo.add(allowedWithReducedDebugInfo to out)
     }
 }

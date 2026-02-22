@@ -23,6 +23,7 @@
     "event.GameRendererMixin",
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
+    "registration.DebugScreenOverlayMixin",
     "shaders.mixins.GlDeviceMixin",
     "util.GlTextureMixin"
   ],
