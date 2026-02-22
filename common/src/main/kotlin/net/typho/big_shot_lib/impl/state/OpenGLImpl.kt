@@ -122,6 +122,16 @@ class OpenGLImpl : OpenGL {
         glBindBufferBase(type.glId, index, glId ?: 0)
     }
 
+    override fun bindBufferRange(
+        type: BufferType,
+        index: Int,
+        glId: Int?,
+        offset: Long,
+        length: Long
+    ) {
+        glBindBufferRange(type.glId, index, glId ?: 0, offset, length)
+    }
+
     override fun bindFramebuffer(glId: Int?) {
         debugPrint("glBindFramebuffer", glId)
         GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, glId ?: 0)
