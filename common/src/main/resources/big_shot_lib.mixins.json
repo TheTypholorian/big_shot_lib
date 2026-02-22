@@ -17,14 +17,15 @@
     "shaders.mixins.ShaderChunkRendererMixin"
   ],
   "client": [
+    "DebugScreenEntriesAccessor",
     "GlBufferAccessor",
+    "KeyMappingCategoryAccessor",
     "RenderSystemMixin",
     "buffers.GlStateManagerMixin",
     "event.ClientChunkCacheMixin",
     "event.GameRendererMixin",
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
-    "registration.DebugScreenOverlayMixin",
     "shaders.mixins.GlDeviceMixin",
     "util.GlTextureMixin"
   ],

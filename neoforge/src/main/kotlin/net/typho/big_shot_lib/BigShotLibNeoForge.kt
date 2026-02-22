@@ -41,6 +41,7 @@ import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 import net.typho.big_shot_lib.impl.registration.KeyMappingCategoryImpl
 import net.typho.big_shot_lib.impl.registration.RegisteredObjectImpl
+import net.typho.big_shot_lib.mixin.KeyMappingCategoryAccessor
 import java.util.function.Function
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
@@ -77,10 +78,15 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
         }
         eventBus.addListener { event: RegisterKeyMappingsEvent ->
             BigShotClientRegistrationEntrypoint.registerKeyMappings(object : KeyMappingFactory {
-                val categories = HashMap<ResourceIdentifier, KeyMappingCategory>()
-
                 override fun getOrCreateCategory(id: ResourceIdentifier): KeyMappingCategory {
-                    return categories.computeIfAbsent(id, ::KeyMappingCategoryImpl)
+                    val category = KeyMapping.Category(id.toMojang())
+                    val list = KeyMappingCategoryAccessor.getSortOrder()
+
+                    if (!list.contains(category)) {
+                        list.add(category)
+                    }
+
+                    return KeyMappingCategoryImpl(category)
                 }
 
                 override fun create(
@@ -88,7 +94,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                     key: Int,
                     category: KeyMappingCategory
                 ): KeyMapping {
-                    val mapping = KeyMapping(name, key, (category as KeyMappingCategoryImpl).label)
+                    val mapping = KeyMapping(name, key, (category as KeyMappingCategoryImpl).inner)
                     event.register(mapping)
                     return mapping
                 }
@@ -99,7 +105,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                     key: Int,
                     category: KeyMappingCategory
                 ): KeyMapping {
-                    val mapping = KeyMapping(name, type, key, (category as KeyMappingCategoryImpl).label)
+                    val mapping = KeyMapping(name, type, key, (category as KeyMappingCategoryImpl).inner)
                     event.register(mapping)
                     return mapping
                 }

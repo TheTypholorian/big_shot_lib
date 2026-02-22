@@ -44,7 +44,7 @@ public class LevelRendererMixin {
             method = "renderLevel",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/LevelRenderer;addLateDebugPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/world/phys/Vec3;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V"
+                    target = "Lnet/minecraft/client/renderer/LevelRenderer;addLateDebugPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/world/phys/Vec3;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lnet/minecraft/client/renderer/culling/Frustum;)V"
             )
     )
     private void renderLevel(
@@ -54,7 +54,8 @@ public class LevelRendererMixin {
             Camera camera,
             Matrix4f frustumMatrix,
             Matrix4f projectionMatrix,
-            GpuBufferSlice fogBuffer,
+            Matrix4f cullingProjectionMatrix,
+            GpuBufferSlice shaderFog,
             Vector4f fogColor,
             boolean renderSky,
             CallbackInfo ci,

@@ -160,7 +160,7 @@ class WrapperUtilImpl : WrapperUtil {
                 }
 
                 override fun viewport() {
-                    OpenGL.INSTANCE.viewport(0, 0, target.viewWidth, target.viewHeight)
+                    OpenGL.INSTANCE.viewport(0, 0, target.width, target.height)
                 }
 
                 override fun bind(pushStack: Boolean) {
@@ -362,7 +362,7 @@ class WrapperUtilImpl : WrapperUtil {
     }
 
     override fun blitScreenVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
+        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX)
     }
 
     override fun blockVertexFormat(): NeoVertexFormat {

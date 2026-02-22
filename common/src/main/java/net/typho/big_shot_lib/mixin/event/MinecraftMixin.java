@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.mixin.event;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ReceivingLevelScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.typho.big_shot_lib.BigShotClientEventStorage;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +34,7 @@ public class MinecraftMixin {
             method = "setLevel",
             at = @At("HEAD")
     )
-    private void setLevel(ClientLevel level, ReceivingLevelScreen.Reason reason, CallbackInfo ci) {
+    private void setLevel(ClientLevel level, CallbackInfo ci) {
         BigShotClientEventStorage.onLevelChanged.forEach(event -> event.invoke(this.level, level));
     }
 }

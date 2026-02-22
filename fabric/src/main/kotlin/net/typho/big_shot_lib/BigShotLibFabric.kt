@@ -37,6 +37,7 @@ import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 import net.typho.big_shot_lib.impl.registration.KeyMappingCategoryImpl
 import net.typho.big_shot_lib.impl.registration.RegisteredObjectImpl
+import net.typho.big_shot_lib.mixin.KeyMappingCategoryAccessor
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 import java.util.function.Function
@@ -57,15 +58,15 @@ object BigShotLibFabric : ClientModInitializer {
                     }
 
                     override fun reload(
+                        sharedState: PreparableReloadListener.SharedState,
+                        gameExecutor: Executor,
                         preparationBarrier: PreparableReloadListener.PreparationBarrier,
-                        resourceManager: ResourceManager,
-                        backgroundExecutor: Executor,
-                        gameExecutor: Executor
+                        applyExectutor: Executor
                     ): CompletableFuture<Void> {
                         return listener.reload(
+                            sharedState,
+                            gameExecutor,
                             preparationBarrier,
-                            resourceManager,
-                            backgroundExecutor,
                             gameExecutor
                         )
                     }
@@ -92,10 +93,15 @@ object BigShotLibFabric : ClientModInitializer {
             }
         })
         BigShotClientRegistrationEntrypoint.registerKeyMappings(object : KeyMappingFactory {
-            val categories = HashMap<ResourceIdentifier, KeyMappingCategory>()
-
             override fun getOrCreateCategory(id: ResourceIdentifier): KeyMappingCategory {
-                return categories.computeIfAbsent(id, ::KeyMappingCategoryImpl)
+                val category = KeyMapping.Category(id.toMojang())
+                val list = KeyMappingCategoryAccessor.getSortOrder()
+
+                if (!list.contains(category)) {
+                    list.add(category)
+                }
+
+                return KeyMappingCategoryImpl(category)
             }
 
             override fun create(
@@ -103,7 +109,7 @@ object BigShotLibFabric : ClientModInitializer {
                 key: Int,
                 category: KeyMappingCategory
             ): KeyMapping {
-                val mapping = KeyMapping(name, key, (category as KeyMappingCategoryImpl).label)
+                val mapping = KeyMapping(name, key, (category as KeyMappingCategoryImpl).inner)
                 KeyBindingHelper.registerKeyBinding(mapping)
                 return mapping
             }
@@ -114,7 +120,7 @@ object BigShotLibFabric : ClientModInitializer {
                 key: Int,
                 category: KeyMappingCategory
             ): KeyMapping {
-                val mapping = KeyMapping(name, type, key, (category as KeyMappingCategoryImpl).label)
+                val mapping = KeyMapping(name, type, key, (category as KeyMappingCategoryImpl).inner)
                 KeyBindingHelper.registerKeyBinding(mapping)
                 return mapping
             }

@@ -1,5 +1,10 @@
 package net.typho.big_shot_lib
 
+import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
+import net.minecraft.client.gui.components.debug.DebugScreenEntry
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.chunk.LevelChunk
+import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.api.client.registration.BigShotClientRegistrationEntrypoint
 import net.typho.big_shot_lib.api.client.registration.DebugScreenFactory
 import net.typho.big_shot_lib.api.client.registration.events.ClientEventFactory
@@ -7,6 +12,7 @@ import net.typho.big_shot_lib.api.client.registration.events.ClientLevelChangedE
 import net.typho.big_shot_lib.api.client.registration.events.RenderEvent
 import net.typho.big_shot_lib.api.client.registration.events.WindowResizeEvent
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.mixin.DebugScreenEntriesAccessor
 import java.util.*
 import java.util.function.Consumer
 
@@ -21,8 +27,6 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
     val onWindowResized = LinkedList<WindowResizeEvent>()
     @JvmField
     val onLevelChanged = LinkedList<ClientLevelChangedEvent>()
-    @JvmField
-    val debugScreenInfo = LinkedList<Pair<Boolean, Consumer<Consumer<String>>>>()
 
     init {
         BigShotClientRegistrationEntrypoint.registerEvents(this)
@@ -54,6 +58,19 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
         allowedWithReducedDebugInfo: Boolean,
         out: Consumer<Consumer<String>>
     ) {
-        debugScreenInfo.add(allowedWithReducedDebugInfo to out)
+        DebugScreenEntriesAccessor.register(id.toMojang(), object : DebugScreenEntry {
+            override fun display(
+                displayer: DebugScreenDisplayer,
+                level: Level?,
+                clientChunk: LevelChunk?,
+                serverChunk: LevelChunk?
+            ) {
+                out.accept(displayer::addLine)
+            }
+
+            override fun isAllowed(reducedDebugInfo: Boolean): Boolean {
+                return allowedWithReducedDebugInfo || !reducedDebugInfo
+            }
+        })
     }
 }
