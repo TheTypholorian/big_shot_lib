@@ -8,7 +8,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.ShaderType;
 import kotlin.collections.CollectionsKt;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.BigShotLib;
 import net.typho.big_shot_lib.api.client.rendering.buffers.AlbedoDynamicBuffer;
 import net.typho.big_shot_lib.api.client.rendering.buffers.NormalsDynamicBuffer;
@@ -47,7 +47,7 @@ public class GlDeviceMixin {
             long window,
             int debugVerbosity,
             boolean synchronous,
-            BiFunction<ResourceLocation, ShaderType, String> defaultShaderSource,
+            BiFunction<Identifier, ShaderType, String> defaultShaderSource,
             boolean renderDebugLabels,
             CallbackInfo ci
     ) {
@@ -80,13 +80,13 @@ public class GlDeviceMixin {
             method = "compilePipeline",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/opengl/GlDevice;getOrCompileShader(Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/shaders/ShaderType;Lnet/minecraft/client/renderer/ShaderDefines;Ljava/util/function/BiFunction;)Lcom/mojang/blaze3d/opengl/GlShaderModule;",
+                    target = "Lcom/mojang/blaze3d/opengl/GlDevice;getOrCompileShader(Lnet/minecraft/resources/Identifier;Lcom/mojang/blaze3d/shaders/ShaderType;Lnet/minecraft/client/renderer/ShaderDefines;Ljava/util/function/BiFunction;)Lcom/mojang/blaze3d/opengl/GlShaderModule;",
                     ordinal = 0
             )
     )
     private void setThreadLocal(
             RenderPipeline pipeline,
-            BiFunction<ResourceLocation, ShaderType, String> shaderSource,
+            BiFunction<Identifier, ShaderType, String> shaderSource,
             CallbackInfoReturnable<GlRenderPipeline> cir
     ) {
         ShaderMixinThreadLocal.push(new ShaderProgramKey(
@@ -103,7 +103,7 @@ public class GlDeviceMixin {
             method = "compilePipeline",
             at = @At("RETURN")
     )
-    private void clearThreadLocal(RenderPipeline pipeline, BiFunction<ResourceLocation, ShaderType, String> shaderSource, CallbackInfoReturnable<GlRenderPipeline> cir) {
+    private void clearThreadLocal(RenderPipeline pipeline, BiFunction<Identifier, ShaderType, String> shaderSource, CallbackInfoReturnable<GlRenderPipeline> cir) {
         ShaderMixinThreadLocal.pop();
     }
 }

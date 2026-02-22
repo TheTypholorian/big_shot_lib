@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.impl.util
 import com.mojang.blaze3d.opengl.GlConst
 import com.mojang.blaze3d.opengl.GlTexture
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.RenderType
+import net.minecraft.client.renderer.rendertype.RenderType
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.client.renderer.texture.TextureAtlas
 import net.typho.big_shot_lib.BigShotLib.toMojang
