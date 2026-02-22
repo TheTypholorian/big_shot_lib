@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
 import net.typho.big_shot_lib.BigShotClientEventStorage;
-import net.typho.big_shot_lib.api.client.rendering.event.RenderData;
+import net.typho.big_shot_lib.api.client.registration.events.RenderEventData;
 import org.jetbrains.annotations.Nullable;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
@@ -63,7 +63,7 @@ public class LevelRendererMixin {
             assert level != null;
             Matrix4f frustum = frustumMatrix.translate(camera.getPosition().toVector3f().mul(-1), new Matrix4f());
             Matrix4f iProj = projectionMatrix.invertPerspective(new Matrix4f());
-            RenderData data = new RenderData(
+            RenderEventData data = new RenderEventData(
                     renderBuffers.bufferSource(),
                     camera,
                     level,
