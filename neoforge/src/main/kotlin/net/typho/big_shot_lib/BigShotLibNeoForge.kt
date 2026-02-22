@@ -35,6 +35,7 @@ import net.typho.big_shot_lib.api.client.registration.ResourceListenerFactory
 import net.typho.big_shot_lib.api.registration.*
 import net.typho.big_shot_lib.api.services.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.services.WrapperUtil
+import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
@@ -109,22 +110,24 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T> create(
                     id: ResourceIdentifier,
-                    lifecycle: Lifecycle
-                ): Registry<T> {
+                    lifecycle: Lifecycle,
+                    isIntrusive: Boolean
+                ): NeoRegistry<T> {
                     val registry = MappedRegistry<T>(ResourceKey.createRegistryKey(id.toMojang()), lifecycle)
                     event.register(registry)
-                    return registry
+                    return WrapperUtil.INSTANCE.wrap(registry)
                 }
 
                 @Suppress("UNCHECKED_CAST")
                 override fun <T> createDefaulted(
                     id: ResourceIdentifier,
                     defaultKey: ResourceIdentifier,
-                    lifecycle: Lifecycle
-                ): Registry<T> {
+                    lifecycle: Lifecycle,
+                    isIntrusive: Boolean
+                ): NeoRegistry<T> {
                     val registry = DefaultedMappedRegistry<T>(id.toString(), ResourceKey.createRegistryKey(id.toMojang()), lifecycle, false)
                     event.register(registry)
-                    return registry
+                    return WrapperUtil.INSTANCE.wrap(registry)
                 }
             })
         }
