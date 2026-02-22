@@ -31,6 +31,7 @@ import net.typho.big_shot_lib.api.client.registration.ResourceListenerFactory
 import net.typho.big_shot_lib.api.registration.*
 import net.typho.big_shot_lib.api.services.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.services.WrapperUtil
+import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
@@ -122,26 +123,28 @@ object BigShotLibFabric : ClientModInitializer {
             @Suppress("UNCHECKED_CAST")
             override fun <T> create(
                 id: ResourceIdentifier,
-                lifecycle: Lifecycle
-            ): Registry<T> {
-                return Registry.register(
+                lifecycle: Lifecycle,
+                isIntrusive: Boolean
+            ): NeoRegistry<T> {
+                return WrapperUtil.INSTANCE.wrap(Registry.register(
                     BuiltInRegistries.REGISTRY as Registry<Registry<T>>,
                     id.toMojang(),
-                    MappedRegistry<T>(ResourceKey.createRegistryKey(id.toMojang()), lifecycle)
-                )
+                    MappedRegistry<T>(ResourceKey.createRegistryKey(id.toMojang()), lifecycle, isIntrusive)
+                ))
             }
 
             @Suppress("UNCHECKED_CAST")
             override fun <T> createDefaulted(
                 id: ResourceIdentifier,
                 defaultKey: ResourceIdentifier,
-                lifecycle: Lifecycle
-            ): Registry<T> {
-                return Registry.register(
+                lifecycle: Lifecycle,
+                isIntrusive: Boolean
+            ): NeoRegistry<T> {
+                return WrapperUtil.INSTANCE.wrap(Registry.register(
                     BuiltInRegistries.REGISTRY as Registry<Registry<T>>,
                     id.toMojang(),
-                    DefaultedMappedRegistry<T>(id.toString(), ResourceKey.createRegistryKey(id.toMojang()), lifecycle, false)
-                )
+                    DefaultedMappedRegistry<T>(id.toString(), ResourceKey.createRegistryKey(id.toMojang()), lifecycle, isIntrusive)
+                ))
             }
         })
         BigShotCommonRegistrationEntrypoint.registerContent(object : RegistrationFactory {
