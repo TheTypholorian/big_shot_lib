@@ -38,7 +38,7 @@ modrinth {
 }
 
 neoForge {
-    version = libs.versions.neoforge
+    version = libs.versions.neoforge.get()
     // Automatically enable neoforge AccessTransformers if the file exists
     val at = project(":common").file("src/main/resources/META-INF/accesstransformer.cfg")
     if (at.exists()) {
@@ -92,7 +92,7 @@ dependencies {
     fun externalDependency(dependency: Any) {
         jarJar(dependency)
         api(dependency)
-        additionalRuntimeClasspath(dependency)
+        //additionalRuntimeClasspath(dependency)
     }
 
     externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3")

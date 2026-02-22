@@ -10,7 +10,7 @@ base {
 }
 
 neoForge {
-    neoFormVersion = libs.versions.neoForm
+    neoFormVersion = libs.versions.neoForm.get()
     // Automatically enable AccessTransformers if the file exists
     val at = file("src/main/resources/META-INF/accesstransformer.cfg")
     if (at.exists()) {
