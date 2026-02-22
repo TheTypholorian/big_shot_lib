@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 public class ChunkMapMixin {
     @Shadow
     @Final
-    private ServerLevel level;
+    ServerLevel level;
 
     @Inject(
             method = "method_60440",
