@@ -5,7 +5,6 @@ import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVaria
 import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.textures.GlTexture
 import net.typho.big_shot_lib.api.client.rendering.textures.TextureType
-import net.typho.big_shot_lib.api.client.rendering.util.GlNamed
 import net.typho.big_shot_lib.api.util.IColor
 import org.joml.*
 
@@ -16,9 +15,7 @@ abstract class GlUniform(
     val location: Int,
     @JvmField
     val type: ShaderVariableType
-) : GlNamed {
-    override fun glId() = location
-
+) {
     fun assertType(vararg allowed: ShaderVariableType) {
         if (type !in allowed) {
             throw IllegalArgumentException("Uniform $name in program ${programKey()} is $type but expected ${allowed.joinToString(" or ")}")

@@ -176,6 +176,11 @@ interface OpenGL {
     fun bindBufferBase(type: BufferType, index: Int, glId: Int?)
 
     /**
+     * `glBindBufferRange(type, index, glId ?: 0, offset, length)`
+     */
+    fun bindBufferRange(type: BufferType, index: Int, glId: Int?, offset: Long, length: Long)
+
+    /**
      * `glBufferData(type, buffer, usage)`
      */
     fun bufferData(type: BufferType, buffer: ByteBuffer, usage: BufferUsage)

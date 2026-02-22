@@ -123,24 +123,25 @@ open class GlStateStack<V>(
             { false },
             OpenGL.INSTANCE::getStencilOp
         )
-        @JvmField
-        val all: List<GlStateStack<*>> = NeoCollections.flatListOf(
-            buffers.values,
-            renderBuffer,
-            textures.values,
-            framebuffer,
-            vertexArray,
-            shader,
-            blendColor,
-            colorMask,
-            depthMask,
-            depthFunc,
-            polygonMode,
-            stencilFunc,
-            stencilMask,
-            stencilOp,
-            GlFlag.entries.map { it.stack }
-        )
+        val all: List<GlStateStack<*>> by lazy {
+            NeoCollections.flatListOf(
+                buffers.values,
+                renderBuffer,
+                textures.values,
+                framebuffer,
+                vertexArray,
+                shader,
+                blendColor,
+                colorMask,
+                depthMask,
+                depthFunc,
+                polygonMode,
+                stencilFunc,
+                stencilMask,
+                stencilOp,
+                GlFlag.entries.map { it.stack }
+            )
+        }
         @JvmField
         var debugOut: DebugOut? = null
 

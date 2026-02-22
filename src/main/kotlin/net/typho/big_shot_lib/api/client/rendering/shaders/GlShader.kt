@@ -11,6 +11,8 @@ interface GlShader : GlBindable, Named, NativeResource {
 
     fun getUniform(name: String): GlUniform?
 
+    fun getUniformBuffer(name: String): GlUniformBufferPoint?
+
     fun setCommonUniforms(
         data: RenderEventData,
         time: Float = glfwGetTime().toFloat()

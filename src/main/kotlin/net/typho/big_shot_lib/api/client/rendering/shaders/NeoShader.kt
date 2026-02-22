@@ -8,6 +8,8 @@ import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
 import net.typho.big_shot_lib.api.client.rendering.util.GlResource
 import org.lwjgl.opengl.GL20.GL_ACTIVE_UNIFORMS
 import org.lwjgl.opengl.GL20.glGetProgrami
+import org.lwjgl.opengl.GL31.glGetUniformBlockIndex
+import org.lwjgl.opengl.GL31.glUniformBlockBinding
 
 open class NeoShader(
     glId: Int,
@@ -23,6 +25,8 @@ open class NeoShader(
     protected val sources = HashMap<ShaderSourceType, Int>()
     @JvmField
     protected val uniforms = HashMap<String, GlUniform?>()
+    @JvmField
+    protected val uniformBuffers = HashMap<String, GlUniformBufferPoint?>()
     protected val uniformTypes: MutableMap<String, ShaderVariableType> by lazy {
         val map = HashMap<String, ShaderVariableType>()
 
@@ -70,6 +74,23 @@ open class NeoShader(
                     location,
                     uniformTypes[name]!!,
                     this
+                )
+            }
+        }
+    }
+
+    override fun getUniformBuffer(name: String): GlUniformBufferPoint? {
+        return uniformBuffers.computeIfAbsent(name) { key ->
+            val index = glGetUniformBlockIndex(glId, name)
+
+            if (index == -1) {
+                return@computeIfAbsent null
+            } else {
+                val binding = uniformBuffers.count { it.value != null }
+                glUniformBlockBinding(glId, index, binding)
+                return@computeIfAbsent GlUniformBufferPoint(
+                    name,
+                    binding
                 )
             }
         }
