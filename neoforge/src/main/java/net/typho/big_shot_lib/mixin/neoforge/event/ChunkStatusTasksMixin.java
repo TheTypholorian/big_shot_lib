@@ -28,6 +28,6 @@ public class ChunkStatusTasksMixin {
             CallbackInfoReturnable<ChunkAccess> cir,
             @Local LevelChunk levelChunk
     ) {
-        BigShotCommonEventStorage.onChunkChanged.forEach(event -> event.invoke(null, levelChunk));
+        BigShotCommonEventStorage.onChunkChanged.forEach(event -> event.invoke(null, null, levelChunk));
     }
 }
