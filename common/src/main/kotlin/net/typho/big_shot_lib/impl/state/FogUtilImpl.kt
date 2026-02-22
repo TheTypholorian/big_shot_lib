@@ -9,7 +9,6 @@ import net.typho.big_shot_lib.mixin.GlBufferAccessor
 class FogUtilImpl : FogUtil {
     override fun upload(shader: GlShader) {
         val mojang = RenderSystem.getShaderFog() ?: return
-        println("${shader.getUniformBuffer("Fog")?.binding}")
         shader.getUniformBuffer("Fog")?.setRange(
             BufferType.UNIFORM_BUFFER,
             (mojang.buffer as GlBufferAccessor).handle,
