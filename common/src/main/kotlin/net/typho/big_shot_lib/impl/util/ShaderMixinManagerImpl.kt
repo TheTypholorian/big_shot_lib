@@ -38,6 +38,7 @@ class ShaderMixinManagerImpl : ShaderMixinManager {
                         getOrCreateMixinInstance(mixin)
                     }
                 })
+                DynamicBufferRegistry.buffers.forEach { getOrCreateMixinInstance(it) }
             }
 
             override fun apply(
