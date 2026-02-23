@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.mixin.shaders.mixins;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.shaders.Program;
 import kotlin.collections.CollectionsKt;
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +28,7 @@ public class ProgramMixin {
             @Local(argsOnly = true, ordinal = 0) String name
     ) {
         return CollectionsKt.listOf(
-                ShaderMixinThreadLocal.INSTANCE.get().apply(
+                ShaderMixinThreadLocal.INSTANCE.get().getSecond().apply(
                         switch (type) {
                             case VERTEX -> ShaderSourceType.VERTEX;
                             case FRAGMENT -> ShaderSourceType.FRAGMENT;

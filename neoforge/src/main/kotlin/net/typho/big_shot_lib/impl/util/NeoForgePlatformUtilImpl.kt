@@ -1,9 +1,10 @@
 package net.typho.big_shot_lib.impl.util
 
 import net.neoforged.fml.ModList
-import net.typho.big_shot_lib.api.services.ModContainer
-import net.typho.big_shot_lib.api.services.PlatformUtil
-import net.typho.big_shot_lib.api.util.ModLoader
+import net.neoforged.fml.loading.FMLEnvironment
+import net.typho.big_shot_lib.api.util.platform.ModContainer
+import net.typho.big_shot_lib.api.util.platform.ModLoader
+import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import kotlin.reflect.full.companionObjectInstance
 
@@ -11,6 +12,10 @@ class NeoForgePlatformUtilImpl : PlatformUtil {
     override val loader = ModLoader.NEOFORGE
     override val mods: Collection<ModContainer>
         get() = ModList.get().sortedMods.map { ModContainerImpl(it) }
+
+    override fun isDevEnv(): Boolean {
+        return !FMLEnvironment.production
+    }
 
     @JvmRecord
     data class ModContainerImpl(

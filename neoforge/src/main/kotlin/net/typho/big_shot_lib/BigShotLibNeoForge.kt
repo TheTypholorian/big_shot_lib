@@ -28,15 +28,13 @@ import net.neoforged.neoforge.registries.RegisterEvent
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.registration.BigShotClientRegistrationEntrypoint
-import net.typho.big_shot_lib.api.client.registration.KeyMappingCategory
-import net.typho.big_shot_lib.api.client.registration.KeyMappingFactory
-import net.typho.big_shot_lib.api.client.registration.ResourceListenerFactory
-import net.typho.big_shot_lib.api.registration.*
-import net.typho.big_shot_lib.api.services.NeoResourceManagerReloadListener
-import net.typho.big_shot_lib.api.services.WrapperUtil
-import net.typho.big_shot_lib.api.util.NeoRegistry
+import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
+import net.typho.big_shot_lib.api.client.util.KeyMappingCategory
+import net.typho.big_shot_lib.api.client.util.KeyMappingFactory
+import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
+import net.typho.big_shot_lib.api.util.*
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
+import net.typho.big_shot_lib.api.util.resources.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 import net.typho.big_shot_lib.impl.registration.KeyMappingCategoryImpl
@@ -49,9 +47,8 @@ import java.util.function.UnaryOperator
 @OnlyIn(Dist.CLIENT)
 class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
     init {
-        BigShotLib.init()
         eventBus.addListener { event: RegisterClientReloadListenersEvent ->
-            BigShotClientRegistrationEntrypoint.registerReloadListeners(object : ResourceListenerFactory {
+            BigShotClientEntrypoint.registerReloadListeners(object : ResourceListenerFactory {
                 override fun register(
                     id: ResourceIdentifier,
                     listener: PreparableReloadListener
@@ -76,7 +73,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
             })
         }
         eventBus.addListener { event: RegisterKeyMappingsEvent ->
-            BigShotClientRegistrationEntrypoint.registerKeyMappings(object : KeyMappingFactory {
+            BigShotClientEntrypoint.registerKeyMappings(object : KeyMappingFactory {
                 val categories = HashMap<ResourceIdentifier, KeyMappingCategory>()
 
                 override fun getOrCreateCategory(id: ResourceIdentifier): KeyMappingCategory {
@@ -106,7 +103,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
             })
         }
         eventBus.addListener { event: NewRegistryEvent ->
-            BigShotCommonRegistrationEntrypoint.registerRegistries(object : RegistryFactory {
+            BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : Any> create(
                     id: ResourceIdentifier,
@@ -132,7 +129,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
             })
         }
         eventBus.addListener { event: RegisterEvent ->
-            BigShotCommonRegistrationEntrypoint.registerContent(object : RegistrationFactory {
+            BigShotCommonEntrypoint.registerContent(object : RegistrationFactory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : Any> begin(
                     key: ResourceKey<Registry<T>>,

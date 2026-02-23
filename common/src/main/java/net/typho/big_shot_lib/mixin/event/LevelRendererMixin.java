@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.typho.big_shot_lib.BigShotClientEventStorage;
-import net.typho.big_shot_lib.api.client.registration.events.RenderEventData;
+import net.typho.big_shot_lib.api.client.util.events.RenderEventData;
 import org.jetbrains.annotations.Nullable;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
@@ -52,7 +52,7 @@ public class LevelRendererMixin {
         Matrix4f iProj = projectionMatrix.invertPerspective(new Matrix4f());
         RenderEventData data = new RenderEventData(
                 renderBuffers.bufferSource(),
-                new net.typho.big_shot_lib.api.client.rendering.state.Camera(
+                new net.typho.big_shot_lib.api.client.opengl.state.Camera(
                         camera.getPosition().toVector3f(),
                         camera.getXRot(),
                         camera.getYRot(),

@@ -1,11 +1,11 @@
 package net.typho.big_shot_lib
 
-import net.typho.big_shot_lib.api.client.registration.BigShotClientRegistrationEntrypoint
-import net.typho.big_shot_lib.api.client.registration.DebugScreenFactory
-import net.typho.big_shot_lib.api.client.registration.events.ClientEventFactory
-import net.typho.big_shot_lib.api.client.registration.events.ClientLevelChangedEvent
-import net.typho.big_shot_lib.api.client.registration.events.RenderEvent
-import net.typho.big_shot_lib.api.client.registration.events.WindowResizeEvent
+import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
+import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
+import net.typho.big_shot_lib.api.client.util.events.ClientEventFactory
+import net.typho.big_shot_lib.api.client.util.events.ClientLevelChangedEvent
+import net.typho.big_shot_lib.api.client.util.events.RenderEvent
+import net.typho.big_shot_lib.api.client.util.events.WindowResizeEvent
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import java.util.*
 import java.util.function.Consumer
@@ -25,8 +25,8 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
     val debugScreenInfo = LinkedList<Pair<Boolean, Consumer<Consumer<String>>>>()
 
     init {
-        BigShotClientRegistrationEntrypoint.registerEvents(this)
-        BigShotClientRegistrationEntrypoint.registerDebugScreenInfo(this)
+        BigShotClientEntrypoint.registerEvents(this)
+        BigShotClientEntrypoint.registerDebugScreenInfo(this)
     }
 
     override fun onFrameStart(event: Runnable) {

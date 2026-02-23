@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.impl.util
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
-import net.typho.big_shot_lib.api.services.BlockUtil
+import net.typho.big_shot_lib.api.util.BlockUtil
 import org.joml.Vector3f
 
 class BlockUtilImpl : BlockUtil {
