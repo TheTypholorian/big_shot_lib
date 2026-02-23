@@ -6,10 +6,10 @@ import net.minecraft.core.Direction
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
-import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
-import net.typho.big_shot_lib.api.client.rendering.util.MeshUtil
-import net.typho.big_shot_lib.api.services.BlockUtil
-import net.typho.big_shot_lib.api.services.WrapperUtil
+import net.typho.big_shot_lib.api.client.opengl.util.MeshUtil
+import net.typho.big_shot_lib.api.client.opengl.util.TexturedQuad
+import net.typho.big_shot_lib.api.util.BlockUtil
+import net.typho.big_shot_lib.api.util.WrapperUtil
 import java.util.function.BiConsumer
 
 class MeshUtilImpl : MeshUtil {
