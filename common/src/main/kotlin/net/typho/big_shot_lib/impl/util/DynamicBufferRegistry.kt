@@ -23,7 +23,7 @@ object DynamicBufferRegistry : DynamicBufferFactory {
         buffer.setShaderLocation(attachment)
 
         val fbo = Minecraft.getInstance().mainRenderTarget
-        fbo.resize(fbo.width, fbo.height, Minecraft.ON_OSX)
+        fbo.resize(fbo.width, fbo.height)
 
         return attachment
     }
