@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.impl.registration
 import net.minecraft.client.KeyMapping
 import net.minecraft.network.chat.Component
 import net.typho.big_shot_lib.BigShotLib.toNeo
-import net.typho.big_shot_lib.api.client.registration.KeyMappingCategory
+import net.typho.big_shot_lib.api.client.util.KeyMappingCategory
 
 @JvmRecord
 data class KeyMappingCategoryImpl(
