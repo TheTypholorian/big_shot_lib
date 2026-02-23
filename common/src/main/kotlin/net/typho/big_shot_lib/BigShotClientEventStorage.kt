@@ -5,12 +5,12 @@ import net.minecraft.client.gui.components.debug.DebugScreenEntry
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.chunk.LevelChunk
 import net.typho.big_shot_lib.BigShotLib.toMojang
-import net.typho.big_shot_lib.api.client.registration.BigShotClientRegistrationEntrypoint
-import net.typho.big_shot_lib.api.client.registration.DebugScreenFactory
-import net.typho.big_shot_lib.api.client.registration.events.ClientEventFactory
-import net.typho.big_shot_lib.api.client.registration.events.ClientLevelChangedEvent
-import net.typho.big_shot_lib.api.client.registration.events.RenderEvent
-import net.typho.big_shot_lib.api.client.registration.events.WindowResizeEvent
+import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
+import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
+import net.typho.big_shot_lib.api.client.util.events.ClientEventFactory
+import net.typho.big_shot_lib.api.client.util.events.ClientLevelChangedEvent
+import net.typho.big_shot_lib.api.client.util.events.RenderEvent
+import net.typho.big_shot_lib.api.client.util.events.WindowResizeEvent
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.mixin.DebugScreenEntriesAccessor
 import java.util.*
@@ -29,8 +29,8 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
     val onLevelChanged = LinkedList<ClientLevelChangedEvent>()
 
     init {
-        BigShotClientRegistrationEntrypoint.registerEvents(this)
-        BigShotClientRegistrationEntrypoint.registerDebugScreenInfo(this)
+        BigShotClientEntrypoint.registerEvents(this)
+        BigShotClientEntrypoint.registerDebugScreenInfo(this)
     }
 
     override fun onFrameStart(event: Runnable) {
