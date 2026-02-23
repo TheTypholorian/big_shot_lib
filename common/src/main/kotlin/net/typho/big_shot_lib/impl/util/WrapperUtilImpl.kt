@@ -5,6 +5,7 @@ import com.mojang.blaze3d.opengl.GlTexture
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.vertex.*
+import net.minecraft.client.model.geom.builders.UVPair
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
@@ -38,7 +39,6 @@ import org.lwjgl.opengl.GL11.*
 import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Collectors
-import java.util.stream.IntStream
 import java.util.stream.Stream
 import kotlin.jvm.optionals.getOrNull
 
@@ -190,7 +190,7 @@ class WrapperUtilImpl : WrapperUtil {
         }
     }
 
-    override fun <T> wrap(registry: Registry<T>): NeoRegistry<T> {
+    override fun <T : Any> wrap(registry: Registry<T>): NeoRegistry<T> {
         return object : NeoRegistry<T> {
             override fun key(): NeoResourceKey<out Registry<T>> {
                 return registry.key().toNeo()
@@ -201,7 +201,7 @@ class WrapperUtilImpl : WrapperUtil {
             }
 
             override fun getKey(value: T): NeoResourceKey<T> {
-                return registry.getResourceKey(value!!).orElseThrow().toNeo()
+                return registry.getResourceKey(value).orElseThrow().toNeo()
             }
 
             override fun contains(value: ResourceIdentifier): Boolean {
@@ -211,7 +211,7 @@ class WrapperUtilImpl : WrapperUtil {
             override fun keys(): Set<NeoResourceKey<T>> {
                 return registry.keySet()
                     .stream()
-                    .map { NeoResourceKey<T>(registry.key().location().toNeo(), it.toNeo()) }
+                    .map { NeoResourceKey<T>(registry.key().identifier().toNeo(), it.toNeo()) }
                     .collect(Collectors.toSet())
             }
 
@@ -243,37 +243,27 @@ class WrapperUtilImpl : WrapperUtil {
 
     override fun wrap(access: RegistryAccess): NeoRegistryAccess {
         return object : NeoRegistryAccess {
-            override fun <T> registry(key: NeoResourceKey<Registry<T>>): NeoRegistry<T>? {
+            override fun <T : Any> registry(key: NeoResourceKey<Registry<T>>): NeoRegistry<T>? {
                 return access.lookup(key.toMojang()).map { wrap(it) }.getOrNull()
             }
         }
     }
 
     override fun wrap(quad: BakedQuad): TexturedQuad {
-        val list = IntStream.range(0, 4)
-            .mapToObj { it * 8 }
-            .map {
-                Vector3f(
-                    Float.fromBits(quad.vertices[it]),
-                    Float.fromBits(quad.vertices[it + 1]),
-                    Float.fromBits(quad.vertices[it + 2])
-                ) to Vector2f(
-                    Float.fromBits(quad.vertices[it + 4]),
-                    Float.fromBits(quad.vertices[it + 5])
-                )
-            }
-            .toList()
+        fun uv(packed: Long): Vector2f {
+            return Vector2f(UVPair.unpackU(packed), UVPair.unpackV(packed))
+        }
 
         return TexturedQuad(
-            list[0].first,
-            list[1].first,
-            list[2].first,
-            list[3].first,
+            Vector3f(quad.position0),
+            Vector3f(quad.position1),
+            Vector3f(quad.position2),
+            Vector3f(quad.position3),
 
-            list[0].second,
-            list[1].second,
-            list[2].second,
-            list[3].second
+            uv(quad.packedUV0),
+            uv(quad.packedUV1),
+            uv(quad.packedUV2),
+            uv(quad.packedUV3)
         )
     }
 
