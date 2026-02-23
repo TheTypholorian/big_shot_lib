@@ -8,7 +8,7 @@ import java.util.function.Function
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
 
-interface RegistrationConsumer<T> {
+interface RegistrationConsumer<T : Any> {
     fun <V : T> register(id: String, value: Supplier<V>): RegisteredObject<V>
 
     interface Blocks {
