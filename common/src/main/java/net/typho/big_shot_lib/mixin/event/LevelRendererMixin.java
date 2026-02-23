@@ -52,7 +52,12 @@ public class LevelRendererMixin {
         Matrix4f iProj = projectionMatrix.invertPerspective(new Matrix4f());
         RenderEventData data = new RenderEventData(
                 renderBuffers.bufferSource(),
-                camera,
+                new net.typho.big_shot_lib.api.client.rendering.state.Camera(
+                        camera.getPosition().toVector3f(),
+                        camera.getXRot(),
+                        camera.getYRot(),
+                        camera.rotation()
+                ),
                 level,
                 projectionMatrix,
                 iProj,

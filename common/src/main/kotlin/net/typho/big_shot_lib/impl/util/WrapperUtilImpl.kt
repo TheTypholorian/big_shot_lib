@@ -161,7 +161,7 @@ class WrapperUtilImpl : WrapperUtil {
         }
     }
 
-    override fun <T> wrap(registry: Registry<T>): NeoRegistry<T> {
+    override fun <T : Any> wrap(registry: Registry<T>): NeoRegistry<T> {
         return object : NeoRegistry<T> {
             override fun key(): NeoResourceKey<out Registry<T>> {
                 return registry.key().toNeo()
@@ -172,7 +172,7 @@ class WrapperUtilImpl : WrapperUtil {
             }
 
             override fun getKey(value: T): NeoResourceKey<T> {
-                return registry.getResourceKey(value!!).orElseThrow().toNeo()
+                return registry.getResourceKey(value).orElseThrow().toNeo()
             }
 
             override fun contains(value: ResourceIdentifier): Boolean {
@@ -215,7 +215,7 @@ class WrapperUtilImpl : WrapperUtil {
 
     override fun wrap(access: RegistryAccess): NeoRegistryAccess {
         return object : NeoRegistryAccess {
-            override fun <T> registry(key: NeoResourceKey<Registry<T>>): NeoRegistry<T>? {
+            override fun <T : Any> registry(key: NeoResourceKey<Registry<T>>): NeoRegistry<T>? {
                 return access.registry(key.toMojang()).map { wrap(it) }.getOrNull()
             }
         }
