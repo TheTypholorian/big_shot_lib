@@ -14,19 +14,21 @@ base {
     archivesName = "$modId-mc${libs.versions.minecraft.get()}-neoforge"
 }
 
-modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
-    projectId = "big-shot-lib"
-    versionName = "$modName $version for NeoForge 1.21.3"
-    versionNumber = "mc1.21.3-$version-neoforge"
-    versionType = "release"
-    uploadFile.set(tasks.jar)
-    additionalFiles.add(tasks.sourcesJar)
-    gameVersions.addAll("1.21.3")
-    loaders.add("neoforge")
+if (System.getenv("MODRINTH_TOKEN") != null) {
+    modrinth {
+        token = System.getenv("MODRINTH_TOKEN")
+        projectId = "big-shot-lib"
+        versionName = "$modName $version for NeoForge 1.21.3"
+        versionNumber = "mc1.21.3-$version-neoforge"
+        versionType = "release"
+        uploadFile.set(tasks.jar)
+        additionalFiles.add(tasks.sourcesJar)
+        gameVersions.addAll("1.21.3")
+        loaders.add("neoforge")
 
-    dependencies {
-        required.project("kotlin-for-forge")
+        dependencies {
+            required.project("kotlin-for-forge")
+        }
     }
 }
 
@@ -92,7 +94,6 @@ dependencies {
     }
 
     externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3")
-
     externalDependency("org.lwjgl:lwjgl-spvc:3.3.3")
 
     // natives for neoforge are in src/main/resources because neoforge is stupid
