@@ -28,6 +28,7 @@ class NeoForgePlatformUtilImpl : PlatformUtil {
         override val customData: Map<String, Any>
             get() = inner.modInfo.modProperties
 
+        @Suppress("UNCHECKED_CAST")
         override fun <T> loadEntrypoint(id: ResourceIdentifier, cls: Class<T>): T? {
             val entrypoints = inner.modInfo.modProperties["entrypoints"] as? Map<*, *> ?: return null
             val name = entrypoints[id.toString()] as? String ?: return null
