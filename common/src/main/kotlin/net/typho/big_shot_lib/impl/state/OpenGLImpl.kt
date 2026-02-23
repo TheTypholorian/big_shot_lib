@@ -2,14 +2,15 @@ package net.typho.big_shot_lib.impl.state
 
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
-import net.typho.big_shot_lib.api.client.rendering.buffers.BufferType
-import net.typho.big_shot_lib.api.client.rendering.buffers.BufferUsage
-import net.typho.big_shot_lib.api.client.rendering.errors.ShaderCompileException
-import net.typho.big_shot_lib.api.client.rendering.errors.ShaderLinkException
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType
-import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
-import net.typho.big_shot_lib.api.client.rendering.state.*
-import net.typho.big_shot_lib.api.client.rendering.textures.*
+import net.typho.big_shot_lib.api.client.opengl.buffers.BufferType
+import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
+import net.typho.big_shot_lib.api.client.opengl.buffers.GlTextureCube
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
+import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
+import net.typho.big_shot_lib.api.client.opengl.state.*
+import net.typho.big_shot_lib.api.client.opengl.util.*
+import net.typho.big_shot_lib.api.errors.ShaderCompileException
+import net.typho.big_shot_lib.api.errors.ShaderLinkException
 import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.*
