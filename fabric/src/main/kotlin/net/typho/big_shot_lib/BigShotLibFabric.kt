@@ -96,29 +96,29 @@ object BigShotLibFabric : ClientModInitializer {
             }
 
             override fun create(
-                name: String,
+                id: ResourceIdentifier,
                 key: Int,
                 category: KeyMappingCategory
             ): KeyMapping {
-                val mapping = KeyMapping(name, key, (category as KeyMappingCategoryImpl).label)
+                val mapping = KeyMapping("key.${id.toShortLanguageKey()}", key, (category as KeyMappingCategoryImpl).label)
                 KeyBindingHelper.registerKeyBinding(mapping)
                 return mapping
             }
 
             override fun create(
-                name: String,
+                id: ResourceIdentifier,
                 type: InputConstants.Type,
                 key: Int,
                 category: KeyMappingCategory
             ): KeyMapping {
-                val mapping = KeyMapping(name, type, key, (category as KeyMappingCategoryImpl).label)
+                val mapping = KeyMapping("key.${id.toShortLanguageKey()}", type, key, (category as KeyMappingCategoryImpl).label)
                 KeyBindingHelper.registerKeyBinding(mapping)
                 return mapping
             }
         })
         BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
             @Suppress("UNCHECKED_CAST")
-            override fun <T> create(
+            override fun <T : Any> create(
                 id: ResourceIdentifier,
                 lifecycle: Lifecycle,
                 isIntrusive: Boolean
@@ -131,7 +131,7 @@ object BigShotLibFabric : ClientModInitializer {
             }
 
             @Suppress("UNCHECKED_CAST")
-            override fun <T> createDefaulted(
+            override fun <T : Any> createDefaulted(
                 id: ResourceIdentifier,
                 defaultKey: ResourceIdentifier,
                 lifecycle: Lifecycle,
@@ -146,7 +146,7 @@ object BigShotLibFabric : ClientModInitializer {
         })
         BigShotCommonEntrypoint.registerContent(object : RegistrationFactory {
             @Suppress("UNCHECKED_CAST")
-            override fun <T> begin(
+            override fun <T : Any> begin(
                 key: ResourceKey<Registry<T>>,
                 namespace: String
             ): RegistrationConsumer<T> {
@@ -164,14 +164,14 @@ object BigShotLibFabric : ClientModInitializer {
                             Registry.register(
                                 registry,
                                 id.toMojang(),
-                                value.get()!!
+                                value.get()
                             )
                         )
                     }
                 }
             }
 
-            override fun <T> begin(
+            override fun <T : Any> begin(
                 key: NeoResourceKey<Registry<T>>,
                 namespace: String
             ): RegistrationConsumer<T> {
