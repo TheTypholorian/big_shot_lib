@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.registration
 
 import net.minecraft.core.Registry
-import net.typho.big_shot_lib.api.registration.RegisteredObject
+import net.typho.big_shot_lib.api.util.RegisteredObject
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
