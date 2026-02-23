@@ -20,10 +20,10 @@
                 "value": "net.typho.big_shot_lib.BigShotLibFabric"
             }
         ],
-        "big_shot_lib:client_events": [
+        "big_shot_lib:client": [
             {
                 "adapter": "kotlin",
-                "value": "net.typho.big_shot_lib.api.client.BigShotApiClient"
+                "value": "net.typho.big_shot_lib.client.BigShotClient"
             }
         ]
     },

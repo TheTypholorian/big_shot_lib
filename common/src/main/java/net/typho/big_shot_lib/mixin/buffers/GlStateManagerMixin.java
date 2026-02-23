@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.buffers;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry;
+import net.typho.big_shot_lib.impl.util.DynamicBufferRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

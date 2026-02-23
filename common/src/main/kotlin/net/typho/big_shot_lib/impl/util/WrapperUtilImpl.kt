@@ -10,21 +10,15 @@ import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
-import net.typho.big_shot_lib.api.client.rendering.buffers.DynamicBufferRegistry
-import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexConsumer
-import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexFormat
-import net.typho.big_shot_lib.api.client.rendering.meshes.TexturedQuad
-import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
-import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
-import net.typho.big_shot_lib.api.client.rendering.textures.*
-import net.typho.big_shot_lib.api.client.rendering.textures.ClearBit.Companion.initAndGetClearMask
-import net.typho.big_shot_lib.api.client.rendering.util.GlIndexType
-import net.typho.big_shot_lib.api.client.rendering.util.GlShapeType
-import net.typho.big_shot_lib.api.services.NeoResourceManager
-import net.typho.big_shot_lib.api.services.WrapperUtil
+import net.typho.big_shot_lib.api.client.opengl.buffers.*
+import net.typho.big_shot_lib.api.client.opengl.buffers.ClearBit.Companion.initAndGetClearMask
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.opengl.util.*
 import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.NeoRegistryAccess
+import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
+import net.typho.big_shot_lib.api.util.resources.NeoResourceManager
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.impl.meshes.NeoVertexFormatImpl
@@ -101,7 +95,7 @@ class WrapperUtilImpl : WrapperUtil {
 
                     val list = mutableListOf<GlFramebufferAttachment>(NeoTexture2D(target.colorTextureId, TextureFormat.entries.first { it.internalId == format }, false))
 
-                    list.addAll(DynamicBufferRegistry.buffers.toSortedMap().values.toList())
+                    list.addAll(DynamicBufferRegistry.buffers)
 
                     return list
                 }
