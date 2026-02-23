@@ -7,6 +7,8 @@ import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderBytecodeCom
 import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderBytecodeDecompiler
 import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderMixin
 import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderMixinManager
+import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
+import net.typho.big_shot_lib.api.client.util.ShaderMixinFactory
 import java.nio.ByteOrder
 import java.util.*
 
@@ -18,13 +20,25 @@ class ShaderMixinManagerImpl : ShaderMixinManager {
     override fun create(key: ShaderProgramKey): ShaderMixinManager.Instance {
         data class Mixin<M : ShaderMixin>(
             @JvmField
-            val factory: ShaderMixin.Factory<M>,
+            val factory: ShaderMixin.Factory<M>?,
             @JvmField
             val instance: M
         )
 
         return object : ShaderMixinManager.Instance {
             val mixins = LinkedList<Mixin<*>>()
+
+            init {
+                BigShotClientEntrypoint.registerShaderMixins(object : ShaderMixinFactory {
+                    override fun register(mixin: ShaderMixin) {
+                        mixins.add(Mixin(null, mixin))
+                    }
+
+                    override fun register(mixin: ShaderMixin.Factory<*>) {
+                        getOrCreateMixinInstance(mixin)
+                    }
+                })
+            }
 
             override fun apply(
                 type: ShaderSourceType,
@@ -40,9 +54,13 @@ class ShaderMixinManagerImpl : ShaderMixinManager {
 
             @Suppress("UNCHECKED_CAST")
             override fun <M : ShaderMixin> getOrCreateMixinInstance(
-                mixin: ShaderMixin.Factory<M>
+                factory: ShaderMixin.Factory<M>
             ): M? {
-                return mixins.first { it.factory === mixin }.instance as? M
+                mixins.firstOrNull { it.factory === factory }?.let { return it.instance as M }
+
+                val mixin = factory.create(key, this) ?: return null
+                mixins.add(Mixin(factory, mixin))
+                return mixin
             }
         }
     }
