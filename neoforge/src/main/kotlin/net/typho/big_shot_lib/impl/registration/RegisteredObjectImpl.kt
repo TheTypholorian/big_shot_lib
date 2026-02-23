@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 @JvmRecord
-data class RegisteredObjectImpl<T>(
+data class RegisteredObjectImpl<T : Any>(
     override val registry: NeoResourceKey<Registry<T>>,
     override val key: ResourceIdentifier,
     @JvmField
