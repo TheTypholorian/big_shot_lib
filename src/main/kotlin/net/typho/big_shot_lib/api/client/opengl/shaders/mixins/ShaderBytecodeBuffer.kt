@@ -198,7 +198,7 @@ open class ShaderBytecodeBuffer(
         insert(
             opcode.index + opcode.length,
             ByteBuffer.allocate(ids.size * Int.SIZE_BYTES)
-                .order(ShaderMixinManager.BYTE_ORDER)
+                .order(ShaderMixinManager.INSTANCE.byteOrder)
                 .asIntBuffer()
                 .put(ids)
         )

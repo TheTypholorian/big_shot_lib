@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders.variables
 
-import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.ShaderBytecodeBuffer
-import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.ShaderOpcode
+import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderBytecodeBuffer
+import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderOpcode
 import net.typho.big_shot_lib.api.util.buffers.BufferUtil.concat
 import java.nio.IntBuffer
 

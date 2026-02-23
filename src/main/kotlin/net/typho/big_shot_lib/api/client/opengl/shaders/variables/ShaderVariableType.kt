@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders.variables
 
+import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderBytecodeBuffer
+import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderOpcode
 import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
 import net.typho.big_shot_lib.api.client.opengl.util.TextureType
-import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.ShaderBytecodeBuffer
-import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.ShaderOpcode
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL21.*

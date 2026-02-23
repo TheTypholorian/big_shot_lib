@@ -3,18 +3,18 @@ package net.typho.big_shot_lib.api.client.util.dynamic_buffers
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoTexture2D
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderProgramKey
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceKey
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
+import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.*
+import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.opengl.util.TextureFormat
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceKey
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType
-import net.typho.big_shot_lib.api.client.rendering.shaders.mixins.*
-import net.typho.big_shot_lib.api.client.rendering.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0
 import java.util.function.Consumer
 
-object AlbedoDynamicBuffer : DynamicBuffer {
+object AlbedoDynamicBuffer : DynamicBuffer<AlbedoDynamicBuffer.Instance> {
     private var location: Int? = null
     val texture by lazy {
         NeoTexture2D(format())
@@ -55,7 +55,7 @@ object AlbedoDynamicBuffer : DynamicBuffer {
     override fun create(
         key: ShaderProgramKey,
         parent: ShaderMixinManager.Instance
-    ): ShaderMixin? {
+    ): Instance? {
         if (key.disabledDynamicBuffers.contains(location())) {
             return null
         }
@@ -85,10 +85,13 @@ object AlbedoDynamicBuffer : DynamicBuffer {
         return Mixin(location!!, (parent.getOrCreateMixinInstance(ShaderLocationMapperMixin) as ShaderLocationMapperMixin.Instance).locations)
     }
 
-    class BuiltinMixin(
-        @JvmField
+    interface Instance : ShaderMixin {
         val fragLocation: Int
-    ) : ShaderMixin {
+    }
+
+    class BuiltinMixin(
+        override val fragLocation: Int
+    ) : Instance {
         override fun mixinBytecode(key: ShaderSourceKey, code: ShaderBytecodeBuffer): ShaderBytecodeBuffer {
             if (key.type == ShaderSourceType.FRAGMENT) {
                 code.findVariable(name = FRAGMENT_VAR_NAME)?.let {
@@ -101,11 +104,10 @@ object AlbedoDynamicBuffer : DynamicBuffer {
     }
 
     class ColorMixin(
-        @JvmField
-        val fragLocation: Int,
+        override val fragLocation: Int,
         @JvmField
         val locationMapper: ShaderLocationManager
-    ) : ShaderMixin {
+    ) : Instance {
         override fun mixinBytecode(key: ShaderSourceKey, code: ShaderBytecodeBuffer): ShaderBytecodeBuffer {
             if (key.type == ShaderSourceType.VERTEX) {
                 if (!key.program.location.equals("sodium", "blocks/block_layer_opaque")) {
@@ -197,11 +199,10 @@ object AlbedoDynamicBuffer : DynamicBuffer {
     }
 
     class Mixin(
-        @JvmField
-        val fragLocation: Int,
+        override val fragLocation: Int,
         @JvmField
         val locationMapper: ShaderLocationManager
-    ) : ShaderMixin {
+    ) : Instance {
         override fun mixinBytecode(key: ShaderSourceKey, code: ShaderBytecodeBuffer): ShaderBytecodeBuffer {
             if (key.type == ShaderSourceType.VERTEX) {
                 code.addPassthroughOutput(

@@ -72,8 +72,8 @@ data class ShaderOpcode(
     }
 
     fun getString(offset: Int): String {
-        val buffer = ByteBuffer.allocate((length - offset - 1) * ShaderMixinManager.WORD_SIZE_BYTES)
-            .order(ShaderMixinManager.BYTE_ORDER)
+        val buffer = ByteBuffer.allocate((length - offset - 1) * Int.SIZE_BYTES)
+            .order(ShaderMixinManager.INSTANCE.byteOrder)
         val array = IntArray(length - offset - 1)
         parent.buffer.get(index + offset + 1, array)
 
@@ -89,8 +89,8 @@ data class ShaderOpcode(
         var words = 1
 
         fun build(): IntBuffer {
-            val buffer = ByteBuffer.allocate(words * ShaderMixinManager.WORD_SIZE_BYTES)
-                .order(ShaderMixinManager.BYTE_ORDER)
+            val buffer = ByteBuffer.allocate(words * Int.SIZE_BYTES)
+                .order(ShaderMixinManager.INSTANCE.byteOrder)
 
             buffer.putInt(id or (words shl 16))
 
@@ -135,13 +135,13 @@ data class ShaderOpcode(
 
         fun putString(string: String?): Builder {
             string?.let {
-                val length = Math.ceilDiv(string.length, ShaderMixinManager.WORD_SIZE_BYTES) + 1
+                val length = Math.ceilDiv(string.length, Int.SIZE_BYTES) + 1
                 words += length
 
                 tokens.add { buffer ->
                     val start = buffer.position()
                     buffer.put(string.toByteArray())
-                    buffer.position(start + length * ShaderMixinManager.WORD_SIZE_BYTES)
+                    buffer.position(start + length * Int.SIZE_BYTES)
                 }
             }
             return this

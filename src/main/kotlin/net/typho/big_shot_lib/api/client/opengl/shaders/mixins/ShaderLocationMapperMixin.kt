@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders.mixins
 
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceKey
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderProgramKey
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceKey
 
-object ShaderLocationMapperMixin : ShaderMixin.Factory {
-    override fun create(key: ShaderProgramKey, parent: ShaderMixinManager.Instance): ShaderMixin {
+object ShaderLocationMapperMixin : ShaderMixin.Factory<ShaderLocationMapperMixin.Instance> {
+    override fun create(key: ShaderProgramKey, parent: ShaderMixinManager.Instance): Instance {
         return Instance(ShaderLocationManager(key))
     }
 

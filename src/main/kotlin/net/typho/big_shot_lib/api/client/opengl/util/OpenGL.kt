@@ -4,10 +4,13 @@ import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.opengl.buffers.BufferType
 import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlTextureCube
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
+import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.opengl.state.*
 import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.*
+import java.nio.ByteBuffer
 
 interface OpenGL {
     companion object {

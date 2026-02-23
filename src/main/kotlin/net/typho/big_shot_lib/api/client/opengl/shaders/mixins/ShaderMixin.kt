@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders.mixins
 
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceKey
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderProgramKey
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceKey
 
 interface ShaderMixin {
     fun mixinPreCompile(key: ShaderSourceKey, code: String): String = code
@@ -24,7 +24,7 @@ interface ShaderMixin {
         }
     }
 
-    fun interface Factory { // TODO rename to supplier or smthn idk
-        fun create(key: ShaderProgramKey, parent: ShaderMixinManager.Instance): ShaderMixin?
+    fun interface Factory<M : ShaderMixin> { // TODO rename to supplier or smthn idk
+        fun create(key: ShaderProgramKey, parent: ShaderMixinManager.Instance): M?
     }
 }

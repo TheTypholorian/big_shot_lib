@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders.mixins
 
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceKey
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceKey
 
 object ShaderVersionUpdaterMixin : ShaderMixin {
     const val SPIRV_VERSION = 430

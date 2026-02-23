@@ -6,6 +6,7 @@ import net.typho.big_shot_lib.api.util.buffers.BufferUtil.putVec2f
 import net.typho.big_shot_lib.api.util.buffers.BufferUtil.putVec3f
 import org.joml.Vector2f
 import org.joml.Vector3f
+import java.nio.ByteBuffer
 
 @JvmRecord
 data class TexturedQuad(

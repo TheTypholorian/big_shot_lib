@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders.mixins
 
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderProgramKey
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
 import net.typho.big_shot_lib.api.errors.InvalidEnumException
 
 open class ShaderLocationManager(

@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.client.opengl.util
 
 import net.typho.big_shot_lib.api.BigShotApi.loadService
+import net.typho.big_shot_lib.api.client.opengl.shaders.GlShader
 
 interface FogUtil {
     fun upload(shader: GlShader)
