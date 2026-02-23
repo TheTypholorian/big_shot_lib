@@ -13,19 +13,21 @@ base {
     archivesName = "$modId-mc${libs.versions.minecraft.get()}-neoforge"
 }
 
-modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
-    projectId = "big-shot-lib"
-    versionName = "$modName $version for NeoForge 1.21"
-    versionNumber = "mc1.21-$version-neoforge"
-    versionType = "release"
-    uploadFile.set(tasks.jar)
-    additionalFiles.add(tasks.sourcesJar)
-    gameVersions.addAll("1.21", "1.21.1")
-    loaders.add("neoforge")
+if (System.getenv("MODRINTH_TOKEN") != null) {
+    modrinth {
+        token = System.getenv("MODRINTH_TOKEN")
+        projectId = "big-shot-lib"
+        versionName = "$modName $version for NeoForge 1.21"
+        versionNumber = "mc1.21-$version-neoforge"
+        versionType = "release"
+        uploadFile.set(tasks.jar)
+        additionalFiles.add(tasks.sourcesJar)
+        gameVersions.addAll("1.21", "1.21.1")
+        loaders.add("neoforge")
 
-    dependencies {
-        required.project("kotlin-for-forge")
+        dependencies {
+            required.project("kotlin-for-forge")
+        }
     }
 }
 

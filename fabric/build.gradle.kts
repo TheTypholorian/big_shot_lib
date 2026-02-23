@@ -12,19 +12,21 @@ base {
     archivesName = "$modId-mc${libs.versions.minecraft.get()}-fabric"
 }
 
-modrinth {
-    token = System.getenv("MODRINTH_TOKEN")
-    projectId = "big-shot-lib"
-    versionName = "$modName $version for Fabric 1.21"
-    versionNumber = "mc1.21-$version-fabric"
-    versionType = "release"
-    uploadFile.set(tasks.remapJar)
-    additionalFiles.add(tasks.remapSourcesJar)
-    gameVersions.addAll("1.21", "1.21.1")
-    loaders.add("fabric")
+if (System.getenv("MODRINTH_TOKEN") != null) {
+    modrinth {
+        token = System.getenv("MODRINTH_TOKEN")
+        projectId = "big-shot-lib"
+        versionName = "$modName $version for Fabric 1.21"
+        versionNumber = "mc1.21-$version-fabric"
+        versionType = "release"
+        uploadFile.set(tasks.remapJar)
+        additionalFiles.add(tasks.remapSourcesJar)
+        gameVersions.addAll("1.21", "1.21.1")
+        loaders.add("fabric")
 
-    dependencies {
-        required.project("fabric-language-kotlin")
+        dependencies {
+            required.project("fabric-language-kotlin")
+        }
     }
 }
 
