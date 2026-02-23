@@ -6,9 +6,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.services.NeoFileToIdConverter
-import net.typho.big_shot_lib.api.services.NeoResourceManager
-import net.typho.big_shot_lib.api.services.NeoResourceManagerReloadListener
 import java.util.*
 
 abstract class ResourceRegistry<T>(

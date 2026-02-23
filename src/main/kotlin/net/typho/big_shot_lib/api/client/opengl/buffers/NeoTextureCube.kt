@@ -1,0 +1,88 @@
+package net.typho.big_shot_lib.api.client.opengl.buffers
+
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.opengl.util.*
+import net.typho.big_shot_lib.api.util.buffers.BufferUploader
+import java.nio.ByteBuffer
+import java.util.function.Consumer
+
+open class NeoTextureCube(
+    glId: Int,
+    @JvmField
+    val format: TextureFormat,
+    defaultParams: Boolean = true
+) : GlResource(glId, GlStateStack.textures[TextureType.TEXTURE_CUBE_MAP]!!), GlTextureCube {
+    companion object {
+        @JvmField
+        val NULL = NeoTextureCube(0, TextureFormat.NULL)
+    }
+
+    constructor(format: TextureFormat) : this(OpenGL.INSTANCE.createTexture(), format)
+
+    init {
+        if (defaultParams) {
+            setInterpolation(InterpolationType.NEAREST, InterpolationType.NEAREST)
+            setWrapping(WrappingType.CLAMP_TO_EDGE, WrappingType.CLAMP_TO_EDGE)
+        }
+    }
+
+    override fun free() {
+        OpenGL.INSTANCE.deleteTexture(glId)
+    }
+
+    override fun type() = TextureType.TEXTURE_CUBE_MAP
+
+    override fun format() = format
+
+    override fun attachToFramebuffer(attachment: Int) {
+        OpenGL.INSTANCE.attachFramebufferTexture(attachment, glId)
+    }
+
+    override fun resize(
+        face: GlTextureCube.Face,
+        width: Int,
+        height: Int
+    ): BufferUploader {
+        return object : BufferUploader {
+            override fun upload(buffer: ByteBuffer) {
+                bind()
+                OpenGL.INSTANCE.textureData2D(face, format, width, height, buffer)
+                unbind()
+            }
+
+            override fun uploadNull() {
+                bind()
+                OpenGL.INSTANCE.textureData2D(face, format, width, height, 0L)
+                unbind()
+            }
+        }
+    }
+
+    override fun resize(width: Int, height: Int, upload: Consumer<BufferUploader>) {
+        upload.accept(object : BufferUploader {
+            override fun upload(buffer: ByteBuffer) {
+                bind()
+
+                for (face in GlTextureCube.Face.entries) {
+                    OpenGL.INSTANCE.textureData2D(face, format, width, height, buffer)
+                }
+
+                unbind()
+            }
+
+            override fun uploadNull() {
+                bind()
+
+                for (face in GlTextureCube.Face.entries) {
+                    OpenGL.INSTANCE.textureData2D(face, format, width, height, 0L)
+                }
+
+                unbind()
+            }
+        })
+    }
+
+    override fun toString(): String {
+        return "${javaClass.simpleName}(glId=$glId, format=$format)"
+    }
+}

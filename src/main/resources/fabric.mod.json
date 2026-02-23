@@ -11,7 +11,15 @@
     "sources": "https://github.com/TheTypholorian/big_shot_lib"
   },
   "license": "${license}",
-  "environment": "client",
+  "environment": "*",
+  "entrypoints": {
+    "big_shot_lib:client": [
+      {
+        "adapter": "kotlin",
+        "value": "net.typho.big_shot_lib.api.client.BigShotApiClient"
+      }
+    ]
+  },
   "depends": {
     "java": ">=${java_version}"
   },

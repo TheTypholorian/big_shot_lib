@@ -2,16 +2,15 @@ package net.typho.big_shot_lib.api.client
 
 import net.minecraft.client.KeyMapping
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.registration.BigShotClientRegistrationEntrypoint
-import net.typho.big_shot_lib.api.client.registration.DebugScreenFactory
-import net.typho.big_shot_lib.api.client.registration.KeyMappingFactory
-import net.typho.big_shot_lib.api.client.registration.ResourceListenerFactory
-import net.typho.big_shot_lib.api.client.registration.events.ClientEventFactory
-import net.typho.big_shot_lib.api.client.rendering.shaders.NeoShaderRegistry
-import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
+import net.typho.big_shot_lib.api.client.opengl.shaders.NeoShaderRegistry
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
+import net.typho.big_shot_lib.api.client.util.KeyMappingFactory
+import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
+import net.typho.big_shot_lib.api.client.util.events.ClientEventFactory
 import org.lwjgl.glfw.GLFW.GLFW_KEY_KP_9
 
-object BigShotApiClient : BigShotClientRegistrationEntrypoint {
+object BigShotApiClient : BigShotClientEntrypoint {
     @JvmField
     var debugGlStateStacksKey: KeyMapping? = null
 
@@ -38,8 +37,5 @@ object BigShotApiClient : BigShotClientRegistrationEntrypoint {
             GlStateStack.debugOut?.close()
             GlStateStack.debugOut = null
         }
-    }
-
-    override fun registerDebugScreenInfo(factory: DebugScreenFactory) {
     }
 }
