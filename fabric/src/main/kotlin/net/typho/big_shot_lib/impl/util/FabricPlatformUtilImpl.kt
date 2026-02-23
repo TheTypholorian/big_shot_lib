@@ -2,15 +2,19 @@ package net.typho.big_shot_lib.impl.util
 
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
-import net.typho.big_shot_lib.api.services.ModContainer
-import net.typho.big_shot_lib.api.services.PlatformUtil
-import net.typho.big_shot_lib.api.util.ModLoader
+import net.typho.big_shot_lib.api.util.platform.ModContainer
+import net.typho.big_shot_lib.api.util.platform.ModLoader
+import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 class FabricPlatformUtilImpl : PlatformUtil {
     override val loader = ModLoader.FABRIC
     override val mods: Collection<ModContainer>
         get() = FabricLoader.getInstance().allMods.map { ModContainerImpl(it) }
+
+    override fun isDevEnv(): Boolean {
+        return FabricLoader.getInstance().isDevelopmentEnvironment
+    }
 
     @JvmRecord
     data class ModContainerImpl(
