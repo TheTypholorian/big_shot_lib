@@ -1,4 +1,4 @@
-name: Publish
+name: publish_api
 on:
   push:
     tags:
@@ -16,9 +16,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - name: gradbuild
+      - name: build
         run: ./gradlew build
-      - name: makerelease
+      - name: release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
