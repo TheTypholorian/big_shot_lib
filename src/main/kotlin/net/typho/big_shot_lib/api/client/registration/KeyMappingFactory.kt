@@ -26,7 +26,7 @@ interface KeyMappingFactory {
     
     fun getOrCreateCategory(id: ResourceIdentifier): KeyMappingCategory
 
-    fun create(name: String, key: Int, category: KeyMappingCategory): KeyMapping
+    fun create(id: ResourceIdentifier, key: Int, category: KeyMappingCategory): KeyMapping
 
-    fun create(name: String, type: InputConstants.Type, key: Int, category: KeyMappingCategory): KeyMapping
+    fun create(id: ResourceIdentifier, type: InputConstants.Type, key: Int, category: KeyMappingCategory): KeyMapping
 }

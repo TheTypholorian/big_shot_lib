@@ -24,7 +24,7 @@ interface WrapperUtil {
 
     fun wrap(target: RenderTarget): GlFramebuffer
 
-    fun <T> wrap(registry: Registry<T>): NeoRegistry<T>
+    fun <T : Any> wrap(registry: Registry<T>): NeoRegistry<T>
 
     fun wrap(access: RegistryAccess): NeoRegistryAccess
 

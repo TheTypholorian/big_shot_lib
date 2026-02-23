@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.client
 
 import net.minecraft.client.KeyMapping
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.registration.BigShotClientRegistrationEntrypoint
 import net.typho.big_shot_lib.api.client.registration.DebugScreenFactory
 import net.typho.big_shot_lib.api.client.registration.KeyMappingFactory
@@ -20,7 +21,7 @@ object BigShotApiClient : BigShotClientRegistrationEntrypoint {
 
     override fun registerKeyMappings(factory: KeyMappingFactory) {
         debugGlStateStacksKey = factory.create(
-            "key.debugGlStateStacks",
+            BigShotApi.id("debugGlStateStacks"),
             GLFW_KEY_KP_9,
             factory.debug
         )

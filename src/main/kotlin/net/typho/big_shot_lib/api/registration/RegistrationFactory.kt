@@ -5,9 +5,9 @@ import net.minecraft.resources.ResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 
 interface RegistrationFactory {
-    fun <T> begin(key: ResourceKey<Registry<T>>, namespace: String): RegistrationConsumer<T>
+    fun <T : Any> begin(key: ResourceKey<Registry<T>>, namespace: String): RegistrationConsumer<T>
 
-    fun <T> begin(key: NeoResourceKey<Registry<T>>, namespace: String): RegistrationConsumer<T>
+    fun <T : Any> begin(key: NeoResourceKey<Registry<T>>, namespace: String): RegistrationConsumer<T>
 
     fun beginBlocks(namespace: String): RegistrationConsumer.Blocks
 

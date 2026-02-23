@@ -12,7 +12,7 @@ data class NeoResourceKey<T>(
 ) {
     companion object {
         @JvmStatic
-        fun <T> registry(location: ResourceIdentifier): NeoResourceKey<Registry<T>> {
+        fun <T : Any> registry(location: ResourceIdentifier): NeoResourceKey<Registry<T>> {
             return NeoResourceKey(ResourceIdentifier("root"), location)
         }
 
