@@ -1,6 +1,3 @@
-import java.io.FileNotFoundException
-import java.nio.file.Files
-
 plugins {
     id("multiloader-loader")
     alias(libs.plugins.loom)
@@ -16,12 +13,7 @@ base {
 }
 
 modrinth {
-    try {
-        token = Files.readString(project.rootDir.parentFile.resolve("modrinth_token.txt").toPath())
-    } catch (e: FileNotFoundException) {
-        e.printStackTrace()
-    }
-
+    token = System.getenv("MODRINTH_TOKEN")
     projectId = "big-shot-lib"
     versionName = "$modName $version for Fabric 1.21.2"
     versionNumber = "mc1.21.2-$version-fabric"
