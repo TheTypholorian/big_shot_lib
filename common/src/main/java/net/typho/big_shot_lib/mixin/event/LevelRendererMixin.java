@@ -44,7 +44,7 @@ public class LevelRendererMixin {
             method = "renderLevel",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/LevelRenderer;addLateDebugPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/world/phys/Vec3;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lnet/minecraft/client/renderer/culling/Frustum;)V"
+                    target = "Lnet/minecraft/client/renderer/LevelRenderer;addLateDebugPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/client/renderer/state/CameraRenderState;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Matrix4f;)V"
             )
     )
     private void renderLevel(
@@ -67,7 +67,7 @@ public class LevelRendererMixin {
 
         pass.executes(() -> {
             assert level != null;
-            Matrix4f frustum = frustumMatrix.translate(camera.getPosition().toVector3f().mul(-1), new Matrix4f());
+            Matrix4f frustum = frustumMatrix.translate(camera.position().toVector3f().mul(-1), new Matrix4f());
             Matrix4f iProj = projectionMatrix.invertPerspective(new Matrix4f());
             RenderEventData data = new RenderEventData(
                     renderBuffers.bufferSource(),

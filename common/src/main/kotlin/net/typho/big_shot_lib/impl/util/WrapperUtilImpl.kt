@@ -412,6 +412,6 @@ class WrapperUtilImpl : WrapperUtil {
         mode: GlShapeType,
         format: NeoVertexFormat
     ): BufferBuilder {
-        return BufferBuilder(buffer, mode.toMojang(), (format as NeoVertexFormatImpl).inner)
+        return BufferBuilder(buffer, mode.toMojang()!!, (format as NeoVertexFormatImpl).inner)
     }
 }

@@ -90,22 +90,22 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                 }
 
                 override fun create(
-                    name: String,
+                    id: ResourceIdentifier,
                     key: Int,
                     category: KeyMappingCategory
                 ): KeyMapping {
-                    val mapping = KeyMapping(name, key, (category as KeyMappingCategoryImpl).inner)
+                    val mapping = KeyMapping("key.${id.toShortLanguageKey()}", key, (category as KeyMappingCategoryImpl).inner)
                     event.register(mapping)
                     return mapping
                 }
 
                 override fun create(
-                    name: String,
+                    id: ResourceIdentifier,
                     type: InputConstants.Type,
                     key: Int,
                     category: KeyMappingCategory
                 ): KeyMapping {
-                    val mapping = KeyMapping(name, type, key, (category as KeyMappingCategoryImpl).inner)
+                    val mapping = KeyMapping("key.${id.toShortLanguageKey()}", type, key, (category as KeyMappingCategoryImpl).inner)
                     event.register(mapping)
                     return mapping
                 }
@@ -114,7 +114,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
         eventBus.addListener { event: NewRegistryEvent ->
             BigShotCommonRegistrationEntrypoint.registerRegistries(object : RegistryFactory {
                 @Suppress("UNCHECKED_CAST")
-                override fun <T> create(
+                override fun <T : Any> create(
                     id: ResourceIdentifier,
                     lifecycle: Lifecycle,
                     isIntrusive: Boolean
@@ -125,7 +125,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                 }
 
                 @Suppress("UNCHECKED_CAST")
-                override fun <T> createDefaulted(
+                override fun <T : Any> createDefaulted(
                     id: ResourceIdentifier,
                     defaultKey: ResourceIdentifier,
                     lifecycle: Lifecycle,
@@ -140,7 +140,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
         eventBus.addListener { event: RegisterEvent ->
             BigShotCommonRegistrationEntrypoint.registerContent(object : RegistrationFactory {
                 @Suppress("UNCHECKED_CAST")
-                override fun <T> begin(
+                override fun <T : Any> begin(
                     key: ResourceKey<Registry<T>>,
                     namespace: String
                 ): RegistrationConsumer<T> {
@@ -160,7 +160,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                     }
                 }
 
-                override fun <T> begin(
+                override fun <T : Any> begin(
                     key: NeoResourceKey<Registry<T>>,
                     namespace: String
                 ): RegistrationConsumer<T> {
@@ -179,7 +179,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                             return RegisteredObjectImpl(
                                 Registries.BLOCK.toNeo() as NeoResourceKey<Registry<V>>,
                                 ResourceIdentifier(namespace, id),
-                                registry.registerBlock(id, value, BlockBehaviour.Properties.of())
+                                registry.registerBlock(id, value)
                             )
                         }
                     }
@@ -209,7 +209,7 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                             return RegisteredObjectImpl(
                                 Registries.ITEM.toNeo() as NeoResourceKey<Registry<BlockItem>>,
                                 ResourceIdentifier(namespace, id),
-                                registry.registerSimpleBlockItem(id, block, properties.apply(Item.Properties()))
+                                registry.registerSimpleBlockItem(id, block, properties)
                             )
                         }
                     }

@@ -26,9 +26,9 @@ flk = "1.12.3+kotlin.2.0.21"
 
 mixin = "0.8.5"
 mixinExtras = "0.3.5"
-sodium="mc1.21.11-0.8.4-neoforge"
+sodium="mc1.21.10-0.7.3-fabric"
 
-bigShot="3.9.4"
+bigShot="3.9.5"
 
 [libraries]
 minecraft = { group = "com.mojang", name = "minecraft", version.ref = "minecraft" }
