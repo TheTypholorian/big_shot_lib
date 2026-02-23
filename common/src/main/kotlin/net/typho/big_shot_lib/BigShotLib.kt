@@ -5,8 +5,8 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.BigShotLib.toMojang
-import net.typho.big_shot_lib.api.client.rendering.util.GlIndexType
-import net.typho.big_shot_lib.api.client.rendering.util.GlShapeType
+import net.typho.big_shot_lib.api.client.opengl.util.GlIndexType
+import net.typho.big_shot_lib.api.client.opengl.util.GlShapeType
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
@@ -73,9 +73,5 @@ object BigShotLib {
             GlIndexType.USHORT -> VertexFormat.IndexType.SHORT
             GlIndexType.UINT -> VertexFormat.IndexType.INT
         }
-    }
-
-    @JvmStatic
-    fun init() {
     }
 }

@@ -5,22 +5,19 @@ import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.client.renderer.texture.TextureAtlas
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
-import net.typho.big_shot_lib.api.client.rendering.services.TextureUtil
-import net.typho.big_shot_lib.api.client.rendering.state.GlStateStack
-import net.typho.big_shot_lib.api.client.rendering.textures.GlTexture2D
-import net.typho.big_shot_lib.api.client.rendering.textures.NeoTexture2D
-import net.typho.big_shot_lib.api.client.rendering.textures.TextureFormat
-import net.typho.big_shot_lib.api.client.rendering.textures.TextureType
+import net.typho.big_shot_lib.api.client.opengl.buffers.GlTexture2D
+import net.typho.big_shot_lib.api.client.opengl.buffers.NeoTexture2D
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.opengl.util.TextureFormat
+import net.typho.big_shot_lib.api.client.opengl.util.TextureType
+import net.typho.big_shot_lib.api.client.opengl.util.TextureUtil
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.lwjgl.opengl.GL11.*
 
 class TextureUtilImpl : TextureUtil {
     private val textures = HashMap<AbstractTexture, GlTexture2D>()
-
     @Suppress("DEPRECATION")
-    override fun blockAtlasTexture(): ResourceIdentifier {
-        return TextureAtlas.LOCATION_BLOCKS.toNeo()
-    }
+    override val blockAtlasTexture = TextureAtlas.LOCATION_BLOCKS.toNeo()
 
     override fun getMinecraftTexture(texture: ResourceIdentifier): GlTexture2D {
         return textures.computeIfAbsent(Minecraft.getInstance().textureManager.getTexture(texture.toMojang())) { texture ->
