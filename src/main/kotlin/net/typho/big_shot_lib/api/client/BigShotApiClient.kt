@@ -21,7 +21,7 @@ object BigShotApiClient : BigShotClientRegistrationEntrypoint {
 
     override fun registerKeyMappings(factory: KeyMappingFactory) {
         debugGlStateStacksKey = factory.create(
-            BigShotApi.id("debugGlStateStacks"),
+            BigShotApi.id("debug_gl_state_stacks"),
             GLFW_KEY_KP_9,
             factory.debug
         )

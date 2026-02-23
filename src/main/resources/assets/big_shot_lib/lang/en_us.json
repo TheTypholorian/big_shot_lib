@@ -1,5 +1,5 @@
 {
-  "key.big_shot_lib.debugGlStateStacks": "Debug GL State Stacks",
+  "key.big_shot_lib.debug_gl_state_stacks": "Debug GL State Stacks",
   "key.category.spectator": "Spectator",
   "key.category.debug": "Debug"
 }
