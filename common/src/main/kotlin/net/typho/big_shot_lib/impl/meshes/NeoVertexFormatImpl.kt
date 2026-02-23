@@ -2,9 +2,9 @@ package net.typho.big_shot_lib.impl.meshes
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
-import net.typho.big_shot_lib.api.client.rendering.meshes.NeoVertexFormat
-import net.typho.big_shot_lib.api.client.rendering.state.OpenGL
-import net.typho.big_shot_lib.api.client.rendering.util.GlPrimitiveType
+import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
+import net.typho.big_shot_lib.api.client.opengl.util.GlPrimitiveType
+import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 
 @JvmRecord
 data class NeoVertexFormatImpl(
