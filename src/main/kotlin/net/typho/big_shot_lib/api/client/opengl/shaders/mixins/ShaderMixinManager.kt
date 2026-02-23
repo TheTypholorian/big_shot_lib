@@ -13,7 +13,7 @@ interface ShaderMixinManager {
     interface Instance {
         fun apply(type: ShaderSourceType, code: String): String
 
-        fun <M> getOrCreateMixinInstance(mixin: ShaderMixin.Factory<M>): M?
+        fun <M : ShaderMixin> getOrCreateMixinInstance(mixin: ShaderMixin.Factory<M>): M?
     }
 
     companion object {
