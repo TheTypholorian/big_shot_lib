@@ -2,13 +2,13 @@ package net.typho.big_shot_lib.mixin.shaders.mixins;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.opengl.GlDevice;
+import com.mojang.blaze3d.opengl.GlProgram;
 import com.mojang.blaze3d.opengl.GlRenderPipeline;
 import com.mojang.blaze3d.opengl.GlShaderModule;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.shaders.ShaderType;
+import com.mojang.blaze3d.shaders.ShaderSource;
 import kotlin.collections.CollectionsKt;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.BigShotLib;
 import net.typho.big_shot_lib.api.client.rendering.buffers.AlbedoDynamicBuffer;
 import net.typho.big_shot_lib.api.client.rendering.buffers.NormalsDynamicBuffer;
@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 @Mixin(GlDevice.class)
 public class GlDeviceMixin {
@@ -47,7 +46,7 @@ public class GlDeviceMixin {
             long window,
             int debugVerbosity,
             boolean synchronous,
-            BiFunction<Identifier, ShaderType, String> defaultShaderSource,
+            ShaderSource defaultShaderSource,
             boolean renderDebugLabels,
             CallbackInfo ci
     ) {
@@ -77,18 +76,14 @@ public class GlDeviceMixin {
     }
 
     @Inject(
-            method = "compilePipeline",
+            method = "compileProgram",
             at = @At(
                     value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/opengl/GlDevice;getOrCompileShader(Lnet/minecraft/resources/Identifier;Lcom/mojang/blaze3d/shaders/ShaderType;Lnet/minecraft/client/renderer/ShaderDefines;Ljava/util/function/BiFunction;)Lcom/mojang/blaze3d/opengl/GlShaderModule;",
+                    target = "Lcom/mojang/blaze3d/opengl/GlDevice;getOrCompileShader(Lnet/minecraft/resources/Identifier;Lcom/mojang/blaze3d/shaders/ShaderType;Lnet/minecraft/client/renderer/ShaderDefines;Lcom/mojang/blaze3d/shaders/ShaderSource;)Lcom/mojang/blaze3d/opengl/GlShaderModule;",
                     ordinal = 0
             )
     )
-    private void setThreadLocal(
-            RenderPipeline pipeline,
-            BiFunction<Identifier, ShaderType, String> shaderSource,
-            CallbackInfoReturnable<GlRenderPipeline> cir
-    ) {
+    private void setThreadLocal(RenderPipeline pipeline, ShaderSource shaderSource, CallbackInfoReturnable<GlRenderPipeline> cir) {
         ShaderMixinThreadLocal.push(new ShaderProgramKey(
                 ShaderLoaderType.MINECRAFT,
                 BigShotLib.toNeo(pipeline.getLocation()),
@@ -100,10 +95,10 @@ public class GlDeviceMixin {
     }
 
     @Inject(
-            method = "compilePipeline",
+            method = "compileProgram",
             at = @At("RETURN")
     )
-    private void clearThreadLocal(RenderPipeline pipeline, BiFunction<Identifier, ShaderType, String> shaderSource, CallbackInfoReturnable<GlRenderPipeline> cir) {
+    private void clearThreadLocal(RenderPipeline pipeline, ShaderSource shaderSource, CallbackInfoReturnable<GlProgram> cir) {
         ShaderMixinThreadLocal.pop();
     }
 }
