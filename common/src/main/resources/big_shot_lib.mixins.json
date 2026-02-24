@@ -27,7 +27,8 @@
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
     "shaders.mixins.GlDeviceMixin",
-    "util.GlTextureMixin"
+    "util.GlTextureMixin",
+    "util.GlTextureViewMixin"
   ],
   "server": [],
   "injectors": {

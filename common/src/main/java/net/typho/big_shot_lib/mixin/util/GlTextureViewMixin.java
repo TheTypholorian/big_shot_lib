@@ -3,15 +3,17 @@ package net.typho.big_shot_lib.mixin.util;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.opengl.DirectStateAccess;
 import com.mojang.blaze3d.opengl.GlTexture;
+import com.mojang.blaze3d.opengl.GlTextureView;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.textures.TextureFormat;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL;
 import net.typho.big_shot_lib.api.client.util.dynamic_buffers.DynamicBuffer;
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader;
 import net.typho.big_shot_lib.impl.util.DynamicBufferRegistry;
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,13 +26,13 @@ import java.util.List;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 
-@Mixin(GlTexture.class)
-public abstract class GlTextureMixin extends GpuTexture {
+@Mixin(GlTextureView.class)
+public abstract class GlTextureViewMixin extends GpuTextureView {
     @Shadow
-    public abstract int glId();
+    public abstract @NonNull GlTexture texture();
 
-    public GlTextureMixin(int p_404771_, String p_405873_, TextureFormat p_405456_, int p_405638_, int p_404958_, int p_419943_, int p_423664_) {
-        super(p_404771_, p_405873_, p_405456_, p_405638_, p_404958_, p_419943_, p_423664_);
+    public GlTextureViewMixin(GpuTexture texture, int baseMipLevel, int mipLevels) {
+        super(texture, baseMipLevel, mipLevels);
     }
 
     @Inject(
@@ -46,7 +48,7 @@ public abstract class GlTextureMixin extends GpuTexture {
         GlTexture mainFboColor = (GlTexture) Minecraft.getInstance().getMainRenderTarget().getColorTexture();
         RenderTarget itemEntity = Minecraft.getInstance().levelRenderer.getItemEntityTarget();
 
-        if ((mainFboColor != null && mainFboColor.glId() == glId()) || (itemEntity != null && ((GlTexture) itemEntity.getColorTexture()).glId() == glId())) {
+        if ((mainFboColor != null && mainFboColor.glId() == texture().glId()) || (itemEntity != null && ((GlTexture) itemEntity.getColorTexture()).glId() == texture().glId())) {
             GlStateStack.framebuffer.push(glId);
 
             List<Integer> buffers = new LinkedList<>();
