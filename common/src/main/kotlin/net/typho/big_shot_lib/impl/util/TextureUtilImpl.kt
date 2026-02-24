@@ -9,7 +9,7 @@ import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlTexture2D
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoTexture2D
-import net.typho.big_shot_lib.api.client.opengl.buffers.TextureFormat
+import net.typho.big_shot_lib.api.client.opengl.util.TextureFormat
 import net.typho.big_shot_lib.api.client.opengl.util.TextureUtil
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
