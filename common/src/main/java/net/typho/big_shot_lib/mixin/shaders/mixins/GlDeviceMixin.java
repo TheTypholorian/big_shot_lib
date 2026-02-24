@@ -10,11 +10,11 @@ import com.mojang.blaze3d.shaders.ShaderSource;
 import kotlin.collections.CollectionsKt;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.typho.big_shot_lib.BigShotLib;
-import net.typho.big_shot_lib.api.client.rendering.buffers.AlbedoDynamicBuffer;
-import net.typho.big_shot_lib.api.client.rendering.buffers.NormalsDynamicBuffer;
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderLoaderType;
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderProgramKey;
-import net.typho.big_shot_lib.api.client.rendering.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderLoaderType;
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderProgramKey;
+import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType;
+import net.typho.big_shot_lib.api.client.util.dynamic_buffers.AlbedoDynamicBuffer;
+import net.typho.big_shot_lib.api.client.util.dynamic_buffers.NormalsDynamicBuffer;
 import net.typho.big_shot_lib.impl.meshes.NeoVertexFormatImpl;
 import net.typho.big_shot_lib.impl.shaders.mixins.ShaderMixinThreadLocal;
 import net.typho.big_shot_lib.impl.util.VoidMap;
@@ -66,7 +66,7 @@ public class GlDeviceMixin {
             String code,
             @Local(argsOnly = true) GlDevice.ShaderCompilationKey key
     ) {
-        return ShaderMixinThreadLocal.INSTANCE.get().apply(
+        return ShaderMixinThreadLocal.INSTANCE.get().getSecond().apply(
                 switch (key.type()) {
                     case VERTEX -> ShaderSourceType.VERTEX;
                     case FRAGMENT -> ShaderSourceType.FRAGMENT;
