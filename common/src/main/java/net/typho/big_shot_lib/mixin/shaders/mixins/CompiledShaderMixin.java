@@ -23,7 +23,7 @@ public class CompiledShaderMixin {
             String code,
             @Local(argsOnly = true) CompiledShader.Type type
     ) {
-        return ShaderMixinThreadLocal.INSTANCE.get().apply(
+        return ShaderMixinThreadLocal.INSTANCE.get().getSecond().apply(
                 switch (type) {
                     case VERTEX -> ShaderSourceType.VERTEX;
                     case FRAGMENT -> ShaderSourceType.FRAGMENT;
