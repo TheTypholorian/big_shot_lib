@@ -237,6 +237,11 @@ interface OpenGL {
     fun bindTexture(type: TextureType, glId: Int?)
 
     /**
+     * `glBindSampler(unit, glId ?: 0)`
+     */
+    fun bindSampler(unit: Int, glId: Int?)
+
+    /**
      * `glGetInteger(type.bindingId)`
      */
     fun getBoundTexture(type: TextureType): Int

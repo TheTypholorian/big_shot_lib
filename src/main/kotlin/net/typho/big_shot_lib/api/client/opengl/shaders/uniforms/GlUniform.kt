@@ -27,7 +27,7 @@ abstract class GlUniform(
 
     abstract fun programKey(): ShaderProgramKey
 
-    fun setSampler(type: TextureType, textureId: Int) {
+    fun setSampler(type: TextureType, textureId: Int, samplerId: Int? = null) {
         if (this.type.info !is ShaderVariableTypeInfo.Sampler) {
             throw UnsupportedOperationException("Uniform $name in program ${programKey()} is of type ${this.type} which isn't a sampler")
         }
@@ -41,6 +41,7 @@ abstract class GlUniform(
         val unit = pickSamplerUnit()
         OpenGL.INSTANCE.activeTexture(unit)
         OpenGL.INSTANCE.bindTexture(type, textureId)
+        OpenGL.INSTANCE.bindSampler(unit, samplerId)
         setValue(unit)
     }
 
