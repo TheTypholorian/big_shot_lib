@@ -95,7 +95,7 @@ dependencies {
 
     // natives for neoforge are in src/main/resources because neoforge is stupid
 
-    implementation(libs.sodium)
+    compileOnly(libs.sodium)
 
     externalDependency(libs.bigShotApi)
 }

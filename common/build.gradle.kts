@@ -47,7 +47,7 @@ dependencies {
 
     api("org.lwjgl:lwjgl-shaderc:3.3.3")
     api("org.lwjgl:lwjgl-spvc:3.3.3")
-    implementation(libs.sodium)
+    compileOnly(libs.sodium)
     implementation(libs.bigShotApi)
 }
 

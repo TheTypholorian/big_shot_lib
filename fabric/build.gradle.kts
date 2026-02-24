@@ -73,7 +73,7 @@ dependencies {
     externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
     externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
 
-    modImplementation(libs.sodium)
+    modCompileOnly(libs.sodium)
 
     modImplementation(libs.bigShotApi)
     include(libs.bigShotApi) {
