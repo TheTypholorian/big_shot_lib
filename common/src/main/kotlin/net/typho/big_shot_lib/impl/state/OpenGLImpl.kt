@@ -162,6 +162,11 @@ class OpenGLImpl : OpenGL {
         return glGetInteger(GL_RENDERBUFFER_BINDING)
     }
 
+    override fun bindSampler(unit: Int, glId: Int?) {
+        debugPrint("glBindSampler", unit, glId)
+        glBindSampler(unit, glId ?: 0)
+    }
+
     override fun bindShaderProgram(glId: Int?) {
         debugPrint("glUseProgram", glId)
         GlStateManager._glUseProgram(glId ?: 0)
