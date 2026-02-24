@@ -47,7 +47,6 @@ import java.util.function.UnaryOperator
 @OnlyIn(Dist.CLIENT)
 class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
     init {
-        BigShotLib.init()
         eventBus.addListener { event: AddClientReloadListenersEvent ->
             BigShotClientEntrypoint.registerReloadListeners(object : ResourceListenerFactory {
                 override fun register(
