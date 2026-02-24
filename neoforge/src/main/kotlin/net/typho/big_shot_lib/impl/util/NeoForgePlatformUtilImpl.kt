@@ -14,7 +14,7 @@ class NeoForgePlatformUtilImpl : PlatformUtil {
         get() = ModList.get().sortedMods.map { ModContainerImpl(it) }
 
     override fun isDevEnv(): Boolean {
-        return !FMLEnvironment.production
+        return !FMLEnvironment.isProduction()
     }
 
     @JvmRecord
