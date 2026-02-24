@@ -16,12 +16,12 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
     modrinth {
         token = System.getenv("MODRINTH_TOKEN")
         projectId = "big-shot-lib"
-        versionName = "$modName $version for Fabric 1.21.5"
-        versionNumber = "mc1.21.5-$version-fabric"
+        versionName = "$modName $version for Fabric 1.21.11"
+        versionNumber = "mc1.21.11-$version-fabric"
         versionType = "release"
         uploadFile.set(tasks.remapJar)
         additionalFiles.add(tasks.remapSourcesJar)
-        gameVersions.addAll("1.21.5")
+        gameVersions.addAll("1.21.11")
         loaders.add("fabric")
 
         dependencies {
