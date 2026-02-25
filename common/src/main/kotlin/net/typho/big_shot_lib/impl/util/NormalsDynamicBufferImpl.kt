@@ -17,8 +17,7 @@ class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
     val builtin = NeoCollections.flatListOf<ResourceIdentifier>(
         RenderPipelines.getStaticPipelines()
             .filter { it.vertexShader.toNeo().equals("minecraft", "core/terrain") && it.fragmentShader.toNeo().equals("minecraft", "core/terrain") }
-            .map { it.location.toNeo() },
-        ResourceIdentifier("sodium", "blocks/block_layer_opaque")
+            .map { it.location.toNeo() }
     )
 
     override fun create(
@@ -35,9 +34,9 @@ class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
             return null
         }
 
-        //if (key.location.equals("sodium", "blocks/block_layer_opaque")) {
-        //    return SodiumMixin(location, (parent.getOrCreateMixinInstance(ShaderLocationMapperMixin) as ShaderLocationMapperMixin.Instance).locations)
-        //}
+        if (key.location.equals("sodium", "blocks/block_layer_opaque")) {
+            return SodiumMixin(location, (parent.getOrCreateMixinInstance(ShaderLocationMapperMixin) as ShaderLocationMapperMixin.Instance).locations)
+        }
 
         if (key.builtinDynamicBuffers.contains(NormalsDynamicBuffer.location()) || builtin.contains(key.location)) {
             return BuiltinMixin(location)
