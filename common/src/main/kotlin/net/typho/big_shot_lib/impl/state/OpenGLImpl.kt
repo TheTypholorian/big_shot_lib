@@ -387,13 +387,7 @@ class OpenGLImpl : OpenGL {
 
     override fun createTexture(): Int {
         debugPrint("glGenTextures")
-        val tex = GlStateManager._genTexture()
-        GlStateStack.textures[TextureType.TEXTURE_2D]!!.push(tex)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, 0)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 0)
-        GlStateStack.textures[TextureType.TEXTURE_2D]!!.pop()
-        return tex
+        return GlStateManager._genTexture()
     }
 
     override fun createVertexArray(): Int {
