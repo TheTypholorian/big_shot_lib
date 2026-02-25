@@ -32,7 +32,7 @@ object ShaderLocationMapperMixin : ShaderMixin.Factory<ShaderLocationMapperMixin
 
                         val size = code.findOpcode(ShaderOpcode.OP_TYPE_MATRIX, 0 to type)?.getWord(1) ?: 1
 
-                        opDecorate.putWord(2, mapper.map(size, name))
+                        opDecorate.putWord(2, mapper.map(size, name, opDecorate.getWord(2)))
                     }
                 }
             }

@@ -49,10 +49,14 @@ open class ShaderLocationManager(
         @JvmField
         val locations = ArrayList<String?>()
 
-        fun setOrExpand(index: Int, value: String?) {
+        fun expand(index: Int) {
             while (index >= locations.size) {
                 locations.add(null)
             }
+        }
+
+        fun setOrExpand(index: Int, value: String?) {
+            expand(index)
 
             locations[index] = value
         }
@@ -67,17 +71,23 @@ open class ShaderLocationManager(
             return null
         }
 
-        fun map(size: Int, name: String): Int {
-            var foundLocation: Int? = null
-            var foundSize: Int? = null
-
-            fun pick(): Int {
-                for (i in foundLocation!! until foundLocation!! + size) {
+        fun map(size: Int, name: String, tryLocation: Int): Int {
+            fun pick(loc: Int): Int {
+                for (i in loc until loc + size) {
                     setOrExpand(i, name)
                 }
 
-                return foundLocation!!
+                return loc
             }
+
+            expand(tryLocation + size)
+
+            if (locations.subList(tryLocation, tryLocation + size).filterNotNull().isEmpty()) {
+                return pick(tryLocation)
+            }
+
+            var foundLocation: Int? = null
+            var foundSize: Int? = null
 
             locations.forEachIndexed { location, bound ->
                 if (bound == null) {
@@ -89,7 +99,7 @@ open class ShaderLocationManager(
                     foundSize++
 
                     if (foundSize >= size) {
-                        return pick()
+                        return pick(foundLocation!!)
                     }
                 } else if (bound == name) {
                     return location
@@ -103,7 +113,7 @@ open class ShaderLocationManager(
                 foundLocation = locations.size
             }
 
-            return pick()
+            return pick(foundLocation)
         }
     }
 }
