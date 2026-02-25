@@ -55,7 +55,7 @@ object AlbedoDynamicBuffer : DynamicBuffer<AlbedoDynamicBuffer.MixinInstance> {
         key: ShaderProgramKey,
         parent: ShaderMixinManager.Instance
     ): MixinInstance? {
-        return impl.create(key, parent)
+        return impl.create(key, parent, location)
     }
 
     interface MixinInstance : ShaderMixin {
@@ -63,6 +63,6 @@ object AlbedoDynamicBuffer : DynamicBuffer<AlbedoDynamicBuffer.MixinInstance> {
     }
 
     interface Impl {
-        fun create(key: ShaderProgramKey, parent: ShaderMixinManager.Instance): MixinInstance?
+        fun create(key: ShaderProgramKey, parent: ShaderMixinManager.Instance, location: Int?): MixinInstance?
     }
 }
