@@ -35,9 +35,9 @@ class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
             return null
         }
 
-        if (key.location.equals("sodium", "blocks/block_layer_opaque")) {
-            return SodiumMixin(location, (parent.getOrCreateMixinInstance(ShaderLocationMapperMixin) as ShaderLocationMapperMixin.Instance).locations)
-        }
+        //if (key.location.equals("sodium", "blocks/block_layer_opaque")) {
+        //    return SodiumMixin(location, (parent.getOrCreateMixinInstance(ShaderLocationMapperMixin) as ShaderLocationMapperMixin.Instance).locations)
+        //}
 
         if (key.builtinDynamicBuffers.contains(NormalsDynamicBuffer.location()) || builtin.contains(key.location)) {
             return BuiltinMixin(location)
@@ -79,9 +79,9 @@ class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
                 code.addPassthroughInputOutput(
                     ShaderVariableType.FLOAT_VEC3.findOrInjectBytecode(code),
                     NormalsDynamicBuffer.INPUT_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.map(1, NormalsDynamicBuffer.INPUT_VAR_NAME),
+                    locationMapper.getMapper(ShaderStorageClass.INPUT, key.type)!!.map(1, NormalsDynamicBuffer.INPUT_VAR_NAME, 0),
                     NormalsDynamicBuffer.VERTEX_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, NormalsDynamicBuffer.VERTEX_VAR_NAME)
+                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, NormalsDynamicBuffer.VERTEX_VAR_NAME, 0)
                 )
             } else if (key.type == ShaderSourceType.FRAGMENT) {
                 code.addPassthroughInputOutput(
@@ -108,7 +108,7 @@ class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
                     ShaderVariableType.FLOAT_VEC3.findOrInjectBytecode(code),
                     (code.findVariable(name = key.program.format.getElementName(NeoVertexFormat.Element.NORMAL)) ?: return code).id,
                     NormalsDynamicBuffer.VERTEX_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, NormalsDynamicBuffer.VERTEX_VAR_NAME)
+                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, NormalsDynamicBuffer.VERTEX_VAR_NAME, 0)
                 )
             } else if (key.type == ShaderSourceType.FRAGMENT) {
                 code.addPassthroughInputOutput(

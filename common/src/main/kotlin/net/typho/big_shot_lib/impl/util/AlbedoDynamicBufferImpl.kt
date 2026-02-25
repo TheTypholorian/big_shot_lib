@@ -82,13 +82,13 @@ class AlbedoDynamicBufferImpl : AlbedoDynamicBuffer.Impl {
                         (code.findVariable(name = key.program.format.getElementName(NeoVertexFormat.Element.TEXTURE_UV)) ?: return code).id,
                         AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME,
                         locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!
-                            .map(1, AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME)
+                            .map(1, AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME, 0)
                     )
                     code.addPassthroughOutput(
                         ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code),
                         (code.findVariable(name = key.program.format.getElementName(NeoVertexFormat.Element.COLOR)) ?: return code).id,
                         AlbedoDynamicBuffer.VERTEX_COLOR_VAR_NAME,
-                        locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, AlbedoDynamicBuffer.VERTEX_COLOR_VAR_NAME)
+                        locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, AlbedoDynamicBuffer.VERTEX_COLOR_VAR_NAME, 0)
                     )
                 }
             } else if (key.type == ShaderSourceType.FRAGMENT) {
@@ -175,7 +175,7 @@ class AlbedoDynamicBufferImpl : AlbedoDynamicBuffer.Impl {
                     ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code),
                     (code.findVariable(name = key.program.format.getElementName(NeoVertexFormat.Element.TEXTURE_UV)) ?: return code).id,
                     AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME)
+                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME, 0)
                 )
             } else if (key.type == ShaderSourceType.FRAGMENT) {
                 val samplerVar = code.findVariable(name = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "u_BlockTex" else "Sampler0") ?: return code
