@@ -1,5 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
+import net.minecraft.client.renderer.RenderPipelines
+import net.typho.big_shot_lib.BigShotLib.toNeo
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderProgramKey
@@ -8,8 +10,17 @@ import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
 import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.*
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.util.dynamic_buffers.NormalsDynamicBuffer
+import net.typho.big_shot_lib.api.util.NeoCollections
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
+    val builtin = NeoCollections.flatListOf<ResourceIdentifier>(
+        RenderPipelines.getStaticPipelines()
+            .filter { it.vertexShader.toNeo().equals("minecraft", "core/terrain") && it.fragmentShader.toNeo().equals("minecraft", "core/terrain") }
+            .map { it.location.toNeo() },
+        ResourceIdentifier("sodium", "blocks/block_layer_opaque")
+    )
+
     override fun create(
         key: ShaderProgramKey,
         parent: ShaderMixinManager.Instance,
@@ -28,7 +39,7 @@ class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
             return SodiumMixin(location, (parent.getOrCreateMixinInstance(ShaderLocationMapperMixin) as ShaderLocationMapperMixin.Instance).locations)
         }
 
-        if (key.builtinDynamicBuffers.contains(NormalsDynamicBuffer.location())) {
+        if (key.builtinDynamicBuffers.contains(NormalsDynamicBuffer.location()) || builtin.contains(key.location)) {
             return BuiltinMixin(location)
         }
 
