@@ -97,6 +97,7 @@ loom {
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
             runDir("runs/client")
+            programArgs += "--renderDebugLabels"
         }
         named("server") {
             server()

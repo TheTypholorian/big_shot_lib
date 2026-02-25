@@ -44,7 +44,12 @@ public abstract class GlTextureMixin extends GpuTexture {
             @Local(ordinal = 1) int glId
     ) {
         GlTexture mainFboColor = (GlTexture) Minecraft.getInstance().getMainRenderTarget().getColorTexture();
-        RenderTarget itemEntity = Minecraft.getInstance().levelRenderer.getItemEntityTarget();
+        RenderTarget itemEntity = null;
+
+        try {
+            itemEntity = Minecraft.getInstance().levelRenderer.getItemEntityTarget();
+        } catch (NullPointerException ignored) {
+        }
 
         if ((mainFboColor != null && mainFboColor.glId() == glId()) || (itemEntity != null && ((GlTexture) itemEntity.getColorTexture()).glId() == glId())) {
             GlStateStack.framebuffer.push(glId);
