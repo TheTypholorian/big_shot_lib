@@ -6,14 +6,11 @@ import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 @JvmRecord
 data class KeyMappingCategoryImpl(
+    override val location: ResourceIdentifier,
     @JvmField
-    val id: ResourceIdentifier,
-    @JvmField
-    val label: String = "key.category.${id.toShortLanguageKey()}"
+    val label: String = "key.category.${location.toShortLanguageKey()}"
 ) : KeyMappingCategory {
     override fun label(): Component {
         return Component.translatable(label)
     }
-
-    override fun location() = id
 }
