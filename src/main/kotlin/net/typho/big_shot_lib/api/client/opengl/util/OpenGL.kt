@@ -57,14 +57,37 @@ interface OpenGL {
     fun blendEquation(eq: BlendEquation)
 
     /**
+     * `glGetInteger(GL_BLEND_EQUATION)`
+     */
+    fun getBlendEquation(): BlendEquation
+
+    /**
      * `glBlendFunc(src, dst)`
      */
     fun blendFunc(src: BlendFactor, dst: BlendFactor)
 
     /**
+     * ```
+     * glGetInteger(GL_BLEND_SRC);
+     * glGetInteger(GL_BLEND_DST);
+     * ```
+     */
+    fun getBlendFunction(): BlendFunction.Basic
+
+    /**
      * `glBlendFuncSeparate(src, dst, srcA, dstA)`
      */
     fun blendFuncSeparate(src: BlendFactor, dst: BlendFactor, srcA: BlendFactor, dstA: BlendFactor)
+
+    /**
+     * ```
+     * glGetInteger(GL_BLEND_SRC_RGB);
+     * glGetInteger(GL_BLEND_DST_RGB);
+     * glGetInteger(GL_BLEND_SRC_ALPHA);
+     * glGetInteger(GL_BLEND_DST_ALPHA);
+     * ```
+     */
+    fun getBlendFunctionSeparate(): BlendFunction.Separate
 
     /**
      * `glColorMask(mask.red, mask.green, mask.blue, mask.alpha)`
@@ -80,6 +103,11 @@ interface OpenGL {
      * `glCullFace(face)`
      */
     fun cullFace(face: CullFace)
+
+    /**
+     * `glGetInteger(GL_CULL_FACE_MODE)`
+     */
+    fun getCullFace(): CullFace
 
     /**
      * `glDepthMask(mask)`

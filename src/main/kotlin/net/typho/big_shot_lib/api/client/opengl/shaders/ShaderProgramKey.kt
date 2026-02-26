@@ -8,8 +8,7 @@ import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 data class ShaderProgramKey(
     @JvmField
     val loader: ShaderLoaderType,
-    @JvmField
-    val location: ResourceIdentifier,
+    override val location: ResourceIdentifier,
     @JvmField
     val format: NeoVertexFormat,
     @JvmField
@@ -30,8 +29,6 @@ data class ShaderProgramKey(
             setOf()
         )
     }
-
-    override fun location() = location
 
     override fun toString(): String {
         return location.toString()

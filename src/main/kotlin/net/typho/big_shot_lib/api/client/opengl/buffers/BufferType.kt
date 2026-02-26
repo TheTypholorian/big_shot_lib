@@ -11,8 +11,7 @@ import org.lwjgl.opengl.GL43.*
 import org.lwjgl.opengl.GL44.*
 
 enum class BufferType(
-    @JvmField
-    val glId: Int,
+    override val glId: Int,
     @JvmField
     val bindingId: Int,
     @JvmField
@@ -31,7 +30,5 @@ enum class BufferType(
     TRANSFORM_FEEDBACK_BUFFER(GL_TRANSFORM_FEEDBACK_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER_BINDING, true),
     UNIFORM_BUFFER(GL_UNIFORM_BUFFER, GL_UNIFORM_BUFFER_BINDING, true),
     ATOMIC_COUNTER_BUFFER(GL_ATOMIC_COUNTER_BUFFER, GL_ATOMIC_COUNTER_BUFFER_BINDING, true),
-    SHADER_STORAGE_BUFFER(GL_SHADER_STORAGE_BUFFER, GL_SHADER_STORAGE_BUFFER_BINDING, true);
-
-    override fun glId() = glId
+    SHADER_STORAGE_BUFFER(GL_SHADER_STORAGE_BUFFER, GL_SHADER_STORAGE_BUFFER_BINDING, true)
 }

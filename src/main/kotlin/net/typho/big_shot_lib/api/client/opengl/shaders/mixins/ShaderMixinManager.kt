@@ -8,9 +8,11 @@ import java.nio.ByteOrder
 interface ShaderMixinManager {
     val byteOrder: ByteOrder
 
-    fun create(key: ShaderProgramKey): Instance?
+    fun create(key: ShaderProgramKey): Instance
 
     interface Instance {
+        val key: ShaderProgramKey
+
         fun apply(type: ShaderSourceType, code: String): String
 
         fun <M : ShaderMixin> getOrCreateMixinInstance(mixin: ShaderMixin.Factory<M>): M?

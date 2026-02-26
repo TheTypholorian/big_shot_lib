@@ -20,6 +20,6 @@ open class DepthMaskShard(
             { shard -> shard.mask }
         )
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "depth_mask")
+        override val location = ResourceIdentifier("opengl", "depth_mask")
     }
 }

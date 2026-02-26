@@ -42,14 +42,13 @@ open class NeoShader(
     }
     @JvmField
     protected val samplerUnits = HashMap<Int, Int>()
+    override val location = key.location
 
     constructor(key: ShaderProgramKey) : this(OpenGL.INSTANCE.createShaderProgram(), key)
 
     override fun free() {
         OpenGL.INSTANCE.deleteShaderProgram(glId)
     }
-
-    override fun location() = key.location
 
     internal fun pickSamplerUnit(location: Int): Int {
         return samplerUnits.computeIfAbsent(location) { key ->

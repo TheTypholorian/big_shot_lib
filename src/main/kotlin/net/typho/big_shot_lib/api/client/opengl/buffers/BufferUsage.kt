@@ -4,8 +4,7 @@ import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
 import org.lwjgl.opengl.GL15.*
 
 enum class BufferUsage(
-    @JvmField
-    val glId: Int
+    override val glId: Int
 ): GlNamed {
     STREAM_DRAW(GL_STREAM_DRAW),
     STREAM_READ(GL_STREAM_READ),
@@ -17,7 +16,5 @@ enum class BufferUsage(
 
     STATIC_DRAW(GL_STATIC_DRAW),
     STATIC_READ(GL_STATIC_READ),
-    STATIC_COPY(GL_STATIC_COPY);
-
-    override fun glId() = glId
+    STATIC_COPY(GL_STATIC_COPY)
 }

@@ -40,6 +40,6 @@ open class StencilShard(
             ).apply(it) { func, mask, op -> StencilShard(true, func, mask, op) }
         }
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "stencil")
+        override val location = ResourceIdentifier("opengl", "stencil")
     }
 }

@@ -16,4 +16,7 @@ object BigShotApi {
 
     @JvmStatic
     fun <T : Any> KClass<T>.loadService(): T = ServiceLoader.load(java, java.classLoader).findFirst().orElseThrow()
+
+    @JvmStatic
+    fun <T : Any> KClass<T>.loadServices(): List<T> = ServiceLoader.load(java, java.classLoader).toList()
 }

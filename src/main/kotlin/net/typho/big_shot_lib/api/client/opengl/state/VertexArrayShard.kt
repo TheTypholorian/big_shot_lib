@@ -15,6 +15,6 @@ open class VertexArrayShard(
 
         override fun codec() = null
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "vertex_array")
+        override val location = ResourceIdentifier("opengl", "vertex_array")
     }
 }

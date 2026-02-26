@@ -30,6 +30,6 @@ open class DepthTestShard(
             ).apply(it) { func -> DepthTestShard(true, func) }
         }
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "depth_test")
+        override val location = ResourceIdentifier("opengl", "depth_test")
     }
 }

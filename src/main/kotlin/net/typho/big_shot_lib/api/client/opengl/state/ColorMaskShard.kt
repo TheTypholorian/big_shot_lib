@@ -19,6 +19,6 @@ open class ColorMaskShard(
             { shard -> shard.mask }
         )
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "color_mask")
+        override val location = ResourceIdentifier("opengl", "color_mask")
     }
 }

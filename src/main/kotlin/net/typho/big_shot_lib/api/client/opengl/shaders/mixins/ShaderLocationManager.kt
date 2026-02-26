@@ -71,7 +71,7 @@ open class ShaderLocationManager(
             return null
         }
 
-        fun map(size: Int, name: String, tryLocation: Int): Int {
+        fun map(size: Int, name: String, tryLocation: Int? = null): Int {
             fun pick(loc: Int): Int {
                 for (i in loc until loc + size) {
                     setOrExpand(i, name)
@@ -80,10 +80,12 @@ open class ShaderLocationManager(
                 return loc
             }
 
-            expand(tryLocation + size)
+            if (tryLocation != null) {
+                expand(tryLocation + size)
 
-            if (locations.subList(tryLocation, tryLocation + size).filterNotNull().isEmpty()) {
-                return pick(tryLocation)
+                if (locations.subList(tryLocation, tryLocation + size).filterNotNull().isEmpty()) {
+                    return pick(tryLocation)
+                }
             }
 
             var foundLocation: Int? = null

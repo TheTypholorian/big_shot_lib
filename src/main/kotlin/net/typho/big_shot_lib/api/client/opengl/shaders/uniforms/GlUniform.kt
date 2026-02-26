@@ -46,7 +46,7 @@ abstract class GlUniform(
     }
 
     fun setSampler(texture: GlTexture) {
-        setSampler(texture.type(), texture.glId())
+        setSampler(texture.type(), texture.glId)
     }
 
     fun setValue(f1: Float) {

@@ -24,6 +24,8 @@ sealed interface BlendFunction : GlBindable {
                 }
             }
         )
+        @JvmField
+        val DEFAULT = Basic(BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA)
     }
 
     @JvmRecord

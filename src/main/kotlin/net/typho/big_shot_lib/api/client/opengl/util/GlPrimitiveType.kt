@@ -3,8 +3,7 @@ package net.typho.big_shot_lib.api.client.opengl.util
 import org.lwjgl.opengl.GL11.*
 
 enum class GlPrimitiveType(
-    @JvmField
-    val glId: Int,
+    override val glId: Int,
     @JvmField
     val sizeBytes: Int
 ) : GlNamed {
@@ -15,8 +14,6 @@ enum class GlPrimitiveType(
     SHORT(GL_SHORT, Short.SIZE_BYTES),
     UINT(GL_UNSIGNED_INT, UInt.SIZE_BYTES),
     INT(GL_INT, Int.SIZE_BYTES);
-
-    override fun glId() = glId
 
     fun vertexAttribPointer(
         index: Int,

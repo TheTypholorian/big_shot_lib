@@ -4,13 +4,10 @@ import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import org.lwjgl.system.NativeResource
 
 abstract class GlResource(
-    @JvmField
-    val glId: Int,
+    override val glId: Int,
     @JvmField
     val stack: GlStateStack<Int>
 ) : GlNamed, GlBindable, NativeResource {
-    final override fun glId() = glId
-
     override fun bind(pushStack: Boolean) {
         if (pushStack) {
             stack.push(glId)

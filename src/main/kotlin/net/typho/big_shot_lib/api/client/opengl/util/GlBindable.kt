@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.opengl.util
 
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
-import java.util.function.Consumer
+import java.util.function.Supplier
 
 interface GlBindable {
     fun bind(pushStack: Boolean = true)
@@ -10,33 +10,12 @@ interface GlBindable {
 
     companion object {
         @JvmStatic
-        fun <T> ofState(setter: Consumer<T>, bound: T, unbound: T) = object : GlBindable {
-            override fun bind(pushStack: Boolean) {
-                setter.accept(bound)
-            }
-
-            override fun unbind(popStack: Boolean) {
-                setter.accept(unbound)
-            }
-        }
-
-        @JvmStatic
-        fun <T> ofState(setter: Consumer<T>, bound: T) = object : GlBindable {
-            override fun bind(pushStack: Boolean) {
-                setter.accept(bound)
-            }
-
-            override fun unbind(popStack: Boolean) {
-            }
-        }
-
-        @JvmStatic
-        fun <T> ofStack(stack: GlStateStack<T>, bound: T) = object : GlBindable {
+        fun <T> ofStack(stack: GlStateStack<T>, bound: Supplier<T>) = object : GlBindable {
             override fun bind(pushStack: Boolean) {
                 if (pushStack) {
-                    stack.push(bound)
+                    stack.push(bound.get())
                 } else {
-                    stack.bind.accept(bound)
+                    stack.bind.accept(bound.get())
                 }
             }
 
@@ -48,5 +27,8 @@ interface GlBindable {
                 }
             }
         }
+
+        @JvmStatic
+        fun <T> ofStack(stack: GlStateStack<T>, bound: T) = ofStack(stack, Supplier { bound })
     }
 }

@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.api.client.opengl.state
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
-import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.util.resources.NeoCodecs
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
@@ -16,7 +15,7 @@ open class CullShard(
     CullShard,
     if (enabled) listOf(
         GlBindable.ofStack(GlFlag.CULL_FACE.stack, true),
-        GlBindable.ofState(OpenGL.INSTANCE::cullFace, face, CullFace.DEFAULT)
+        GlBindable.ofStack(GlStateStack.cullFace, face)
     ) else listOf(GlBindable.ofStack(GlFlag.CULL_FACE.stack, false))
 ) {
     companion object : RenderSettingShard.Type<CullShard> {
@@ -31,6 +30,6 @@ open class CullShard(
             ).apply(it) { face -> CullShard(true, face) }
         }
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "cull_face")
+        override val location = ResourceIdentifier("opengl", "cull_face")
     }
 }

@@ -15,8 +15,7 @@ import org.lwjgl.opengl.GL42.*
 import java.nio.IntBuffer
 
 enum class ShaderVariableType(
-    @JvmField
-    val glId: Int,
+    override val glId: Int,
     @JvmField
     val info: ShaderVariableTypeInfo
 ) : GlNamed {
@@ -129,8 +128,6 @@ enum class ShaderVariableType(
     UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY(GL_UNSIGNED_INT_IMAGE_CUBE_MAP_ARRAY, ShaderVariableTypeInfo.Image),
     UNSIGNED_INT_IMAGE_2D_MULTISAMPLE(GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE, ShaderVariableTypeInfo.Image),
     UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY(GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY, ShaderVariableTypeInfo.Image);
-
-    override fun glId() = glId
 
     fun expectedTextureType(): TextureType {
         return when (this) {

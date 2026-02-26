@@ -11,8 +11,7 @@ import org.lwjgl.opengl.GL33.GL_RGB10_A2UI
 import org.lwjgl.opengl.GL41.GL_RGB565
 
 enum class TextureFormat(
-    @JvmField
-    val glId: Int,
+    override val glId: Int,
     @JvmField
     val internalId: Int,
     @JvmField
@@ -109,8 +108,6 @@ enum class TextureFormat(
     DEPTH_COMPONENT32F(GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT32F, GL_FLOAT, hasDepth = true),
     DEPTH24_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH24_STENCIL8, GL_UNSIGNED_INT_24_8, hasDepth = true, hasStencil = true),
     DEPTH32F_STENCIL8(GL_DEPTH_STENCIL, GL_DEPTH32F_STENCIL8, GL_FLOAT_32_UNSIGNED_INT_24_8_REV, hasDepth = true, hasStencil = true);
-
-    override fun glId() = glId
 
     fun getDepthStencilAttachmentId(): Int? {
         return when {

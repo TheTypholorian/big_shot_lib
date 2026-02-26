@@ -6,8 +6,7 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*
 
 enum class GlFlag(
-    @JvmField
-    val glId: Int
+    override val glId: Int
 ) : GlNamed {
     BLEND(GL_BLEND),
     COLOR_LOGIC_OP(GL_COLOR_LOGIC_OP),
@@ -37,14 +36,7 @@ enum class GlFlag(
     TEXTURE_CUBE_MAP_SEAMLESS(GL_TEXTURE_CUBE_MAP_SEAMLESS),
     PROGRAM_POINT_SIZE(GL_PROGRAM_POINT_SIZE);
 
-    val stack = GlStateStack<Boolean?>(
-        name,
-        this::set,
-        { it == null },
-        { OpenGL.INSTANCE.isEnabled(this) }
-    )
-
-    override fun glId() = glId
+    val stack = GlStateStack<Boolean?>(name, this::set) { OpenGL.INSTANCE.isEnabled(this) }
 
     fun queryValue() = stack.query.get()
 

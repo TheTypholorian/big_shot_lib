@@ -4,8 +4,7 @@ import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
 import org.lwjgl.opengl.GL14.*
 
 enum class BlendFactor(
-    @JvmField
-    val glId: Int
+    override val glId: Int
 ) : GlNamed {
     ZERO(GL_ZERO),
     ONE(GL_ONE),
@@ -24,7 +23,5 @@ enum class BlendFactor(
     CONSTANT_ALPHA(GL_CONSTANT_ALPHA),
     ONE_MINUS_CONSTANT_ALPHA(GL_ONE_MINUS_CONSTANT_ALPHA),
 
-    SRC_ALPHA_SATURATE(GL_SRC_ALPHA_SATURATE);
-
-    override fun glId() = glId
+    SRC_ALPHA_SATURATE(GL_SRC_ALPHA_SATURATE)
 }

@@ -22,6 +22,6 @@ open class PolygonModeShard(
             ).apply(it, ::PolygonModeShard)
         }
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "polygon_mode")
+        override val location = ResourceIdentifier("opengl", "polygon_mode")
     }
 }

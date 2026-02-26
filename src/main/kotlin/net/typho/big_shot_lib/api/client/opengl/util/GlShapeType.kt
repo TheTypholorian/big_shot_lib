@@ -7,8 +7,7 @@ import java.nio.ByteOrder
 import java.util.stream.IntStream
 
 enum class GlShapeType(
-    @JvmField
-    val glId: Int,
+    override val glId: Int,
     @JvmField
     val length: Int,
     @JvmField
@@ -24,8 +23,6 @@ enum class GlShapeType(
     TRIANGLE_STRIP(GL_TRIANGLE_STRIP, 3, 1, true),
     TRIANGLE_FAN(GL_TRIANGLE_FAN, 3, 1, true),
     QUADS(GL_TRIANGLES, 4, 4, false);
-
-    override fun glId() = glId
 
     fun streamIndices(count: Int): IntStream {
         return when (this) {

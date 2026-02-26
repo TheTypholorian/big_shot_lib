@@ -20,8 +20,7 @@ interface GlTextureCube : GlTexture, GlFramebufferAttachment {
     fun resize(face: Face, width: Int, height: Int): BufferUploader
 
     enum class Face(
-        @JvmField
-        val glId: Int,
+        override val glId: Int,
         @JvmField
         val dir: Direction
     ) : GlNamed {
@@ -30,8 +29,6 @@ interface GlTextureCube : GlTexture, GlFramebufferAttachment {
         POS_Y(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, Direction.UP),
         NEG_Y(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, Direction.DOWN),
         POS_Z(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Direction.SOUTH),
-        NEG_Z(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Direction.NORTH);
-
-        override fun glId() = glId
+        NEG_Z(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Direction.NORTH)
     }
 }

@@ -36,18 +36,18 @@ interface RenderSettingShard : GlBindable {
         val REGISTRY = HashMap<ResourceIdentifier, Type<*>>()
         @JvmField
         val CODEC: MapCodec<RenderSettingShard> = ResourceIdentifier.CODEC.dispatchMap(
-            { shard -> shard.type().location() },
+            { shard -> shard.type().location },
             { location -> REGISTRY[location]?.codec() }
         )
 
         init {
-            REGISTRY[BlendShard.location()] = BlendShard
-            REGISTRY[ColorMaskShard.location()] = ColorMaskShard
-            REGISTRY[CullShard.location()] = CullShard
-            REGISTRY[DepthMaskShard.location()] = DepthMaskShard
-            REGISTRY[DepthTestShard.location()] = DepthTestShard
-            REGISTRY[PolygonModeShard.location()] = PolygonModeShard
-            REGISTRY[StencilShard.location()] = StencilShard.Companion
+            REGISTRY[BlendShard.location] = BlendShard
+            REGISTRY[ColorMaskShard.location] = ColorMaskShard
+            REGISTRY[CullShard.location] = CullShard
+            REGISTRY[DepthMaskShard.location] = DepthMaskShard
+            REGISTRY[DepthTestShard.location] = DepthTestShard
+            REGISTRY[PolygonModeShard.location] = PolygonModeShard
+            REGISTRY[StencilShard.location] = StencilShard.Companion
         }
     }
 }

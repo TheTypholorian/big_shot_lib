@@ -22,6 +22,6 @@ open class DisableFlagsShard(
             ).apply(it, ::DisableFlagsShard)
         }
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "disable_flags")
+        override val location = ResourceIdentifier("opengl", "disable_flags")
     }
 }

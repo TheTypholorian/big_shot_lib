@@ -21,8 +21,8 @@ open class BlendShard(
     if (enabled) listOf(
         GlBindable.ofStack(GlFlag.BLEND.stack, true),
         GlBindable.ofStack(GlStateStack.blendColor, color),
-        equation,
-        function
+        GlBindable.ofStack(GlStateStack.blendEquation, equation),
+        GlBindable.ofStack(GlStateStack.blendFunc, function)
     ) else listOf(GlBindable.ofStack(GlFlag.BLEND.stack, false))
 ) {
     companion object : RenderSettingShard.Type<BlendShard> {
@@ -30,7 +30,7 @@ open class BlendShard(
             false,
             IColor.FULL_OFF,
             BlendEquation.ADD,
-            BlendFunction.Basic(BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA)
+            BlendFunction.DEFAULT
         )
 
         override fun codec(): MapCodec<BlendShard> = RecordCodecBuilder.mapCodec {
@@ -41,6 +41,6 @@ open class BlendShard(
             ).apply(it) { color, eq, func -> BlendShard(true, color, eq, func) }
         }
 
-        override fun location(): ResourceIdentifier = ResourceIdentifier("opengl", "blend")
+        override val location = ResourceIdentifier("opengl", "blend")
     }
 }
