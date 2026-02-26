@@ -14,5 +14,5 @@ data class KeyMappingCategoryImpl(
         return inner.label()
     }
 
-    override fun location() = inner.id.toNeo()
+    override val location = inner.id.toNeo()
 }
