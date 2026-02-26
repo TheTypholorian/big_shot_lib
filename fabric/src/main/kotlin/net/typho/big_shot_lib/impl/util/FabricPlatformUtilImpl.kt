@@ -5,7 +5,6 @@ import net.fabricmc.loader.api.metadata.CustomValue
 import net.typho.big_shot_lib.api.util.platform.ModContainer
 import net.typho.big_shot_lib.api.util.platform.ModLoader
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 class FabricPlatformUtilImpl : PlatformUtil {
     override val loader = ModLoader.FABRIC
@@ -31,13 +30,6 @@ class FabricPlatformUtilImpl : PlatformUtil {
             get() = inner.metadata.version.friendlyString
         override val customData: Map<String, Any?>
             get() = customValueMapToNormalMap(inner.metadata.customValues.entries)
-
-        override fun <T> loadEntrypoint(id: ResourceIdentifier, cls: Class<T>): T? {
-            return FabricLoader.getInstance()
-                .getEntrypointContainers(id.toString(), cls)
-                .firstOrNull { it.provider == inner }
-                ?.entrypoint
-        }
 
         companion object {
             @JvmStatic
