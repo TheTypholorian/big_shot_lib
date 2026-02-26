@@ -26,6 +26,7 @@
     "shaders.mixins.EffectInstanceMixin",
     "shaders.mixins.ProgramMixin",
     "shaders.mixins.ProgramTypeMixin",
+    "util.MultiBufferSourceBufferSourceMixin",
     "util.RenderTargetMixin"
   ],
   "server": [],
