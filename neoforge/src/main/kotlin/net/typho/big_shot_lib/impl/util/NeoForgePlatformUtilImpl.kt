@@ -5,8 +5,6 @@ import net.neoforged.fml.loading.FMLEnvironment
 import net.typho.big_shot_lib.api.util.platform.ModContainer
 import net.typho.big_shot_lib.api.util.platform.ModLoader
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
-import kotlin.reflect.full.companionObjectInstance
 
 class NeoForgePlatformUtilImpl : PlatformUtil {
     override val loader = ModLoader.NEOFORGE
@@ -32,35 +30,5 @@ class NeoForgePlatformUtilImpl : PlatformUtil {
             get() = inner.modInfo.version.toString()
         override val customData: Map<String, Any>
             get() = inner.modInfo.modProperties
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T> loadEntrypoint(id: ResourceIdentifier, cls: Class<T>): T? {
-            val entrypoints = inner.modInfo.modProperties["entrypoints"] as? Map<*, *> ?: return null
-            val name = entrypoints[id.toString()] as? String ?: return null
-
-            val found = Class.forName(name, true, ModContainerImpl::class.java.classLoader)
-
-            found.kotlin.objectInstance?.let {
-                if (cls.isAssignableFrom(it.javaClass)) {
-                    return it as T
-                }
-            }
-
-            found.kotlin.companionObjectInstance?.let {
-                if (cls.isAssignableFrom(it.javaClass)) {
-                    return it as T
-                }
-            }
-
-            if (!cls.isAssignableFrom(found)) {
-                throw IllegalStateException("$found does not inherit $cls for entrypoint $id")
-            }
-
-            found.kotlin.constructors.firstOrNull { it.parameters.isEmpty() }?.let { return it.call() as T }
-
-            val constructor = found.getDeclaredConstructor()
-            constructor.isAccessible = true
-            return constructor.newInstance() as T
-        }
     }
 }
