@@ -27,6 +27,7 @@ class ShaderMixinManagerImpl : ShaderMixinManager {
 
         return object : ShaderMixinManager.Instance {
             val mixins = LinkedList<Mixin<*>>()
+            override val key = key
 
             init {
                 BigShotClientEntrypoint.registerShaderMixins(object : ShaderMixinFactory {

@@ -16,6 +16,7 @@ import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.*
 import org.lwjgl.opengl.ARBImaging.GL_BLEND_COLOR
+import org.lwjgl.opengl.ARBImaging.GL_BLEND_EQUATION
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL14.*
 import org.lwjgl.opengl.GL20.*
@@ -271,12 +272,27 @@ class OpenGLImpl : OpenGL {
         GlStateManager._blendEquation(eq.glId)
     }
 
+    override fun getBlendEquation(): BlendEquation {
+        val id = glGetInteger(GL_BLEND_EQUATION)
+        return BlendEquation.entries.first { it.glId == id }
+    }
+
     override fun blendFunc(
         src: BlendFactor,
         dst: BlendFactor
     ) {
         debugPrint("glBlendFunc", src, dst)
         GlStateManager._blendFunc(src.glId, dst.glId)
+    }
+
+    override fun getBlendFunction(): BlendFunction.Basic {
+        val src = glGetInteger(GL_BLEND_SRC)
+        val dst = glGetInteger(GL_BLEND_DST)
+
+        return BlendFunction.Basic(
+            BlendFactor.entries.first { it.glId == src },
+            BlendFactor.entries.first { it.glId == dst }
+        )
     }
 
     override fun blendFuncSeparate(
@@ -287,6 +303,20 @@ class OpenGLImpl : OpenGL {
     ) {
         debugPrint("glBlendFuncSeparate", src, dst, srcA, dstA)
         GlStateManager._blendFuncSeparate(src.glId, dst.glId, srcA.glId, dstA.glId)
+    }
+
+    override fun getBlendFunctionSeparate(): BlendFunction.Separate {
+        val src = glGetInteger(GL_BLEND_SRC_RGB)
+        val dst = glGetInteger(GL_BLEND_DST_RGB)
+        val srcA = glGetInteger(GL_BLEND_SRC_ALPHA)
+        val dstA = glGetInteger(GL_BLEND_DST_ALPHA)
+
+        return BlendFunction.Separate(
+            BlendFactor.entries.first { it.glId == src },
+            BlendFactor.entries.first { it.glId == dst },
+            BlendFactor.entries.first { it.glId == srcA },
+            BlendFactor.entries.first { it.glId == dstA }
+        )
     }
 
     override fun bufferData(
@@ -399,6 +429,11 @@ class OpenGLImpl : OpenGL {
     override fun cullFace(face: CullFace) {
         debugPrint("glCullFace", face)
         glCullFace(face.glId)
+    }
+
+    override fun getCullFace(): CullFace {
+        val id = glGetInteger(GL_CULL_FACE_MODE)
+        return CullFace.entries.first { it.glId == id }
     }
 
     override fun deleteBuffer(glId: Int) {
