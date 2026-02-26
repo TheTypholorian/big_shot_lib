@@ -26,7 +26,8 @@
     "event.MinecraftMixin",
     "registration.DebugScreenOverlayMixin",
     "shaders.mixins.GlDeviceMixin",
-    "util.GlTextureMixin"
+    "util.GlTextureMixin",
+    "util.MultiBufferSourceBufferSourceMixin"
   ],
   "server": [],
   "injectors": {
