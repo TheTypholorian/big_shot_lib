@@ -28,7 +28,8 @@
     "event.MinecraftMixin",
     "shaders.mixins.GlDeviceMixin",
     "util.GlTextureMixin",
-    "util.GlTextureViewMixin"
+    "util.GlTextureViewMixin",
+    "util.MultiBufferSourceBufferSourceMixin"
   ],
   "server": [],
   "injectors": {
