@@ -15,7 +15,7 @@ interface ShaderMixinManager {
 
         fun apply(type: ShaderSourceType, code: String): String
 
-        fun <M : ShaderMixin> getOrCreateMixinInstance(mixin: ShaderMixin.Factory<M>): M?
+        fun <M : ShaderMixin> getOrCreateMixinInstance(factory: ShaderMixin.Factory<M>): M?
     }
 
     companion object {

@@ -13,9 +13,11 @@ import net.typho.big_shot_lib.api.client.util.ShaderMixinFactory
 import net.typho.big_shot_lib.api.client.util.events.ClientEventFactory
 import org.lwjgl.glfw.GLFW.GLFW_KEY_KP_9
 
-object BigShotApiClient : BigShotClientEntrypoint {
-    @JvmField
-    var debugGlStateStacksKey: KeyMapping? = null
+class BigShotApiClient : BigShotClientEntrypoint {
+    companion object {
+        @JvmField
+        var debugGlStateStacksKey: KeyMapping? = null
+    }
 
     override fun registerReloadListeners(factory: ResourceListenerFactory) {
         factory.register(NeoShaderRegistry)
