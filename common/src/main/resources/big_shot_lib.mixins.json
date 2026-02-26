@@ -26,6 +26,7 @@
     "shaders.mixins.CompiledShaderMixin",
     "shaders.mixins.ShaderManagerCompilationCacheMixin",
     "shaders.mixins.ShaderManagerMixin",
+    "util.MultiBufferSourceBufferSourceMixin",
     "util.RenderTargetMixin"
   ],
   "server": [],
