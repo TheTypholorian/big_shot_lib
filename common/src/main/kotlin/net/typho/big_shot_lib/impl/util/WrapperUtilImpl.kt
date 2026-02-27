@@ -116,6 +116,10 @@ class WrapperUtilImpl : WrapperUtil {
 
                     return NeoTexture2D(target.depthTextureId, TextureFormat.entries.first { it.internalId == format }, false)
                 }
+            override val width: Int
+                get() = target.width
+            override val height: Int
+                get() = target.height
 
             override fun resize(width: Int, height: Int) {
                 target.resize(width, height, Minecraft.ON_OSX)
@@ -148,10 +152,6 @@ class WrapperUtilImpl : WrapperUtil {
             override fun free() {
                 target.destroyBuffers()
             }
-
-            override fun width() = target.width
-
-            override fun height() = target.height
         }
     }
 
