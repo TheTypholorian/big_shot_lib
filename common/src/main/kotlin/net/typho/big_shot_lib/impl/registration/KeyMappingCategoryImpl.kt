@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component
 import net.typho.big_shot_lib.BigShotLib.toNeo
 import net.typho.big_shot_lib.api.client.util.KeyMappingCategory
 
+@JvmRecord
 data class KeyMappingCategoryImpl(
     @JvmField
     val inner: KeyMapping.Category
@@ -13,5 +14,6 @@ data class KeyMappingCategoryImpl(
         return inner.label()
     }
 
-    override val location = inner.id.toNeo()
+    override val location
+        get() = inner.id.toNeo()
 }
