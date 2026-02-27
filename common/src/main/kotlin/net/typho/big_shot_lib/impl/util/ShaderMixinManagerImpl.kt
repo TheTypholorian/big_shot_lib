@@ -47,7 +47,7 @@ class ShaderMixinManagerImpl : ShaderMixinManager {
                 code: String
             ): String {
                 val sourceKey = ShaderSourceKey(key, type)
-                val modified = mixins.fold(code) { code, mixin -> mixin.instance.mixinPreCompile(sourceKey, code) }
+                val modified = mixins.fold(code.trim()) { code, mixin -> mixin.instance.mixinPreCompile(sourceKey, code) }
                 val bytecode = mixins.fold(compiler.compile(sourceKey, modified)) { buffer, mixin -> mixin.instance.mixinBytecode(sourceKey, buffer) }
                 return ShaderBytecodeDecompiler().use { decompiler ->
                     mixins.fold(decompiler.decompile(sourceKey, bytecode)) { code, mixin -> mixin.instance.mixinPostCompile(sourceKey, code) }
