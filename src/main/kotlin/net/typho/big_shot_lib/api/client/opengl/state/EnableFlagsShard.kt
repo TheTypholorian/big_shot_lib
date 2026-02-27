@@ -14,14 +14,12 @@ open class EnableFlagsShard(
     flags.map { GlBindable.ofStack(it.stack, true) }
 ) {
     companion object : RenderSettingShard.Type<EnableFlagsShard> {
-        override fun getDefault() = EnableFlagsShard(listOf())
-
-        override fun codec(): MapCodec<EnableFlagsShard> = RecordCodecBuilder.mapCodec {
+        override val default = EnableFlagsShard(listOf())
+        override val codec: MapCodec<EnableFlagsShard> = RecordCodecBuilder.mapCodec {
             it.group(
                 NeoCodecs.enumCodec<GlFlag>().listOf().fieldOf("flags").forGetter { shard -> shard.flags },
             ).apply(it, ::EnableFlagsShard)
         }
-
         override val location = ResourceIdentifier("opengl", "enable_flags")
     }
 }

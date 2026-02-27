@@ -26,21 +26,19 @@ open class BlendShard(
     ) else listOf(GlBindable.ofStack(GlFlag.BLEND.stack, false))
 ) {
     companion object : RenderSettingShard.Type<BlendShard> {
-        override fun getDefault() = BlendShard(
+        override val default = BlendShard(
             false,
             IColor.FULL_OFF,
             BlendEquation.ADD,
             BlendFunction.DEFAULT
         )
-
-        override fun codec(): MapCodec<BlendShard> = RecordCodecBuilder.mapCodec {
+        override val codec: MapCodec<BlendShard> = RecordCodecBuilder.mapCodec {
             it.group(
                 IColor.CODEC_ANY.fieldOf("color").forGetter { shard -> shard.color },
                 NeoCodecs.enumCodec<BlendEquation>().fieldOf("equation").forGetter { shard -> shard.equation },
                 BlendFunction.CODEC.fieldOf("function").forGetter { shard -> shard.function },
             ).apply(it) { color, eq, func -> BlendShard(true, color, eq, func) }
         }
-
         override val location = ResourceIdentifier("opengl", "blend")
     }
 }

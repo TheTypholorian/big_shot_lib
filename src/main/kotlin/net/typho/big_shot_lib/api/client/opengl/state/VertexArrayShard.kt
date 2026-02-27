@@ -11,10 +11,8 @@ open class VertexArrayShard(
     listOf(vao)
 ) {
     companion object : RenderSettingShard.Type<VertexArrayShard> {
-        override fun getDefault() = VertexArrayShard(GlVertexArray.NULL)
-
-        override fun codec() = null
-
+        override val default = VertexArrayShard(GlVertexArray.NULL)
+        override val codec = null
         override val location = ResourceIdentifier("opengl", "vertex_array")
     }
 }

@@ -12,13 +12,11 @@ open class ColorMaskShard(
     listOf(GlBindable.ofStack(GlStateStack.colorMask, mask))
 ) {
     companion object : RenderSettingShard.Type<ColorMaskShard> {
-        override fun getDefault() = ColorMaskShard(ColorMask.DEFAULT)
-
-        override fun codec(): MapCodec<ColorMaskShard>? = ColorMask.CODEC.xmap(
+        override val default = ColorMaskShard(ColorMask.DEFAULT)
+        override val codec: MapCodec<ColorMaskShard>? = ColorMask.CODEC.xmap(
             { mask -> ColorMaskShard(mask) },
             { shard -> shard.mask }
         )
-
         override val location = ResourceIdentifier("opengl", "color_mask")
     }
 }

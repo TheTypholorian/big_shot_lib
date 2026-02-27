@@ -8,16 +8,14 @@ import org.lwjgl.system.NativeResource
 interface GlFramebuffer : GlBindable, NativeResource {
     val colorAttachments: List<GlFramebufferAttachment>
     val depthAttachment: GlFramebufferAttachment?
+    val width: Int
+    val height: Int
 
     fun resize(width: Int, height: Int)
 
     fun clear(vararg bits: ClearBit)
 
     fun viewport()
-
-    fun width(): Int
-
-    fun height(): Int
 
     companion object {
         @JvmField

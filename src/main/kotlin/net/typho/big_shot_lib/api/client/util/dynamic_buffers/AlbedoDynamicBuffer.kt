@@ -27,7 +27,7 @@ object AlbedoDynamicBuffer : DynamicBuffer<AlbedoDynamicBuffer.MixinInstance> {
     }
 
     override fun blend(): Boolean {
-        return false
+        return true
     }
 
     override fun format(): TextureFormat {

@@ -14,10 +14,8 @@ open class NeoFramebuffer(
     glId: Int,
     colorAttachments: List<GlFramebufferAttachment>,
     depthAttachment: GlFramebufferAttachment?,
-    @JvmField
-    protected var width: Int,
-    @JvmField
-    protected var height: Int
+    width: Int,
+    height: Int
 ) : GlResource(glId, GlStateStack.framebuffer), GlFramebuffer {
     override var colorAttachments: List<GlFramebufferAttachment> = colorAttachments
         set(value) {
@@ -41,6 +39,10 @@ open class NeoFramebuffer(
 
             unbind()
         }
+    final override var width: Int = width
+        private set
+    final override var height: Int = height
+        private set
 
     constructor(
         colorAttachments: List<GlFramebufferAttachment>,
@@ -128,14 +130,10 @@ open class NeoFramebuffer(
     override fun viewport() {
         bind()
 
-        OpenGL.INSTANCE.viewport(0, 0, width(), height())
+        OpenGL.INSTANCE.viewport(0, 0, width, height)
 
         unbind()
     }
-
-    override fun width() = width
-
-    override fun height() = height
 
     override fun free() {
         OpenGL.INSTANCE.deleteFramebuffer(glId)

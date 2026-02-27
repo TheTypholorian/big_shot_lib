@@ -19,17 +19,15 @@ open class DepthTestShard(
     ) else listOf(GlBindable.ofStack(GlFlag.DEPTH_TEST.stack, false))
 ) {
     companion object : RenderSettingShard.Type<DepthTestShard> {
-        override fun getDefault() = DepthTestShard(
+        override val default = DepthTestShard(
             false,
             ComparisonFunc.LEQUAL
         )
-
-        override fun codec(): MapCodec<DepthTestShard> = RecordCodecBuilder.mapCodec {
+        override val codec: MapCodec<DepthTestShard> = RecordCodecBuilder.mapCodec {
             it.group(
                 NeoCodecs.enumCodec<ComparisonFunc>().fieldOf("func").forGetter { shard -> shard.func }
             ).apply(it) { func -> DepthTestShard(true, func) }
         }
-
         override val location = ResourceIdentifier("opengl", "depth_test")
     }
 }

@@ -19,17 +19,15 @@ open class CullShard(
     ) else listOf(GlBindable.ofStack(GlFlag.CULL_FACE.stack, false))
 ) {
     companion object : RenderSettingShard.Type<CullShard> {
-        override fun getDefault() = CullShard(
+        override val default = CullShard(
             false,
             CullFace.DEFAULT
         )
-
-        override fun codec(): MapCodec<CullShard> = RecordCodecBuilder.mapCodec {
+        override val codec: MapCodec<CullShard> = RecordCodecBuilder.mapCodec {
             it.group(
                 NeoCodecs.enumCodec<CullFace>().fieldOf("face").forGetter { shard -> shard.face },
             ).apply(it) { face -> CullShard(true, face) }
         }
-
         override val location = ResourceIdentifier("opengl", "cull_face")
     }
 }

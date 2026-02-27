@@ -25,21 +25,19 @@ open class StencilShard(
     ) else listOf(GlBindable.ofStack(GlFlag.STENCIL_TEST.stack, false))
 ) {
     companion object : RenderSettingShard.Type<StencilShard> {
-        override fun getDefault() = StencilShard(
+        override val default = StencilShard(
             false,
             StencilFunc(ComparisonFunc.ALWAYS, 0, 0),
             0,
             StencilOp(IntAction.KEEP, IntAction.KEEP, IntAction.KEEP)
         )
-
-        override fun codec(): MapCodec<StencilShard> = RecordCodecBuilder.mapCodec {
+        override val codec: MapCodec<StencilShard> = RecordCodecBuilder.mapCodec {
             it.group(
                 StencilFunc.CODEC.fieldOf("color").forGetter { shard -> shard.func },
                 Codec.INT.fieldOf("equation").forGetter { shard -> shard.mask },
                 StencilOp.CODEC.fieldOf("function").forGetter { shard -> shard.op },
             ).apply(it) { func, mask, op -> StencilShard(true, func, mask, op) }
         }
-
         override val location = ResourceIdentifier("opengl", "stencil")
     }
 }

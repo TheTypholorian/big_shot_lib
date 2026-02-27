@@ -13,13 +13,11 @@ open class DepthMaskShard(
     listOf(GlBindable.ofStack(GlStateStack.depthMask, mask))
 ) {
     companion object : RenderSettingShard.Type<DepthMaskShard> {
-        override fun getDefault() = DepthMaskShard(true)
-
-        override fun codec(): MapCodec<DepthMaskShard>? = Codec.BOOL.fieldOf("mask").xmap(
+        override val default = DepthMaskShard(true)
+        override val codec: MapCodec<DepthMaskShard>? = Codec.BOOL.fieldOf("mask").xmap(
             { mask -> DepthMaskShard(mask) },
             { shard -> shard.mask }
         )
-
         override val location = ResourceIdentifier("opengl", "depth_mask")
     }
 }

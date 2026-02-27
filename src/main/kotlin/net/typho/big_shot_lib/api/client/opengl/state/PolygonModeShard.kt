@@ -14,14 +14,12 @@ open class PolygonModeShard(
     listOf(GlBindable.ofStack(GlStateStack.polygonMode, mode))
 ) {
     companion object : RenderSettingShard.Type<PolygonModeShard> {
-        override fun getDefault() = PolygonModeShard(PolygonMode.FILL)
-
-        override fun codec(): MapCodec<PolygonModeShard> = RecordCodecBuilder.mapCodec {
+        override val default = PolygonModeShard(PolygonMode.FILL)
+        override val codec: MapCodec<PolygonModeShard> = RecordCodecBuilder.mapCodec {
             it.group(
                 NeoCodecs.enumCodec<PolygonMode>().fieldOf("mode").forGetter { shard -> shard.mode }
             ).apply(it, ::PolygonModeShard)
         }
-
         override val location = ResourceIdentifier("opengl", "polygon_mode")
     }
 }

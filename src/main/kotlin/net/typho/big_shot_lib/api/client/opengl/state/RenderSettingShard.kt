@@ -6,17 +6,15 @@ import net.typho.big_shot_lib.api.util.resources.NamedResource
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 interface RenderSettingShard : GlBindable {
-    fun type(): Type<*>
+    val type: Type<*>
 
     interface Type<S : RenderSettingShard> : NamedResource {
-        fun getDefault(): S
-
-        fun codec(): MapCodec<S>?
+        val default: S
+        val codec: MapCodec<S>?
     }
 
     open class Basic(
-        @JvmField
-        val type: Type<*>,
+        override val type: Type<*>,
         @JvmField
         val list: List<GlBindable>
     ) : RenderSettingShard {
@@ -27,8 +25,6 @@ interface RenderSettingShard : GlBindable {
         override fun unbind(popStack: Boolean) {
             list.forEach { it.unbind(popStack) }
         }
-
-        override fun type() = type
     }
 
     companion object {
@@ -36,8 +32,8 @@ interface RenderSettingShard : GlBindable {
         val REGISTRY = HashMap<ResourceIdentifier, Type<*>>()
         @JvmField
         val CODEC: MapCodec<RenderSettingShard> = ResourceIdentifier.CODEC.dispatchMap(
-            { shard -> shard.type().location },
-            { location -> REGISTRY[location]?.codec() }
+            { shard -> shard.type.location },
+            { location -> REGISTRY[location]?.codec }
         )
 
         init {
