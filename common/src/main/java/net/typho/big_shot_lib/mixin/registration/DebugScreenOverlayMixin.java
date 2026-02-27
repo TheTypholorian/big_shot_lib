@@ -20,14 +20,14 @@ public class DebugScreenOverlayMixin {
     private Minecraft minecraft;
 
     @ModifyReturnValue(
-            method = "getSystemInformation",
-            at = @At("TAIL")
+            method = "getGameInformation",
+            at = @At("RETURN")
     )
-    private List<String> getSystemInformation(
+    private List<String> getGameInformation(
             List<String> list
     ) {
         for (Pair<Boolean, Consumer<Consumer<String>>> info : BigShotClientEventStorage.debugScreenInfo) {
-            if (info.getFirst() || minecraft.showOnlyReducedInfo()) {
+            if (!info.getFirst() || !minecraft.showOnlyReducedInfo()) {
                 list.add("");
                 info.getSecond().accept(list::add);
             }
