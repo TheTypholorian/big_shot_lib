@@ -8,7 +8,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
+import net.minecraft.resources.ResourceKey
 import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlFramebuffer
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexConsumer
@@ -16,7 +18,9 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.opengl.util.GlIndexType
 import net.typho.big_shot_lib.api.client.opengl.util.GlShapeType
 import net.typho.big_shot_lib.api.client.opengl.util.TexturedQuad
+import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoResourceManager
+import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 
 interface WrapperUtil {
     fun wrap(manager: ResourceManager): NeoResourceManager
@@ -30,6 +34,14 @@ interface WrapperUtil {
     fun wrap(quad: BakedQuad): TexturedQuad
 
     fun wrap(consumer: VertexConsumer): NeoVertexConsumer
+
+    fun <T> wrap(key: ResourceKey<T>): NeoResourceKey<T>
+
+    fun <T> unwrap(key: NeoResourceKey<T>): ResourceKey<T>
+
+    fun <T> wrap(key: TagKey<T>): NeoTagKey<T>
+
+    fun <T> unwrap(key: NeoTagKey<T>): TagKey<T>
 
     fun createVertexFormatBuilder(): NeoVertexFormat.Builder
 
