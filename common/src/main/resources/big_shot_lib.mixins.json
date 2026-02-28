@@ -10,8 +10,7 @@
     "buffers.sodium.ChunkVertexEncoderVertexMixin",
     "buffers.sodium.CompactChunkVertexMixin",
     "buffers.sodium.DefaultFluidRendererMixin",
-    "event.ClientLevelMixin",
-    "event.ServerLevelMixin",
+    "event.LevelChunkMixin",
     "shaders.mixins.GlShaderMixin",
     "shaders.mixins.GlVertexFormatAccessor",
     "shaders.mixins.ShaderChunkRendererMixin"
