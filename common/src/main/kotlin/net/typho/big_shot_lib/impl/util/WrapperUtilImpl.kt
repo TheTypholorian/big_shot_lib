@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.opengl.GlConst
-import com.mojang.blaze3d.opengl.GlTexture
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.vertex.*
@@ -9,9 +8,11 @@ import net.minecraft.client.model.geom.builders.UVPair
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
+import net.minecraft.resources.ResourceKey
 import net.minecraft.server.packs.PackResources
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.BigShotLib.glId
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
@@ -315,6 +316,22 @@ class WrapperUtilImpl : WrapperUtil {
                 return this
             }
         }
+    }
+
+    override fun <T> wrap(key: ResourceKey<T>): NeoResourceKey<T> {
+        return key.toNeo()
+    }
+
+    override fun <T> unwrap(key: NeoResourceKey<T>): ResourceKey<T> {
+        return key.toMojang()
+    }
+
+    override fun <T> wrap(key: TagKey<T>): NeoTagKey<T> {
+        return key.toNeo()
+    }
+
+    override fun <T> unwrap(key: NeoTagKey<T>): TagKey<T> {
+        return key.toMojang()
     }
 
     override fun createVertexFormatBuilder(): NeoVertexFormat.Builder {
