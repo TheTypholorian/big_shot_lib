@@ -6,6 +6,6 @@ import net.typho.big_shot_lib.impl.shaders.mixins.BreezeWindShaderMixin
 
 class BigShotClient : BigShotClientEntrypoint {
     override fun registerShaderMixins(factory: ShaderMixinFactory) {
-        factory.register(BreezeWindShaderMixin)
+        factory.register(BreezeWindShaderMixin, true)
     }
 }

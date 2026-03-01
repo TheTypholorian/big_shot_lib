@@ -38,8 +38,8 @@ public class ShaderInstanceMixin {
                 id,
                 new NeoVertexFormatImpl(p_173338_),
                 new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
-                id.equals("minecraft", "rendertype_end_portal") ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>(),
-                (id.equals("minecraft", "rendertype_lines") || id.equals("minecraft", "particle")) ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>()
+                id.equals("minecraft", "rendertype_end_portal") ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.getLocation(), AlbedoDynamicBuffer.INSTANCE.getLocation())) : new HashSet<>(),
+                (id.equals("minecraft", "rendertype_lines") || id.equals("minecraft", "particle")) ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.getLocation(), AlbedoDynamicBuffer.INSTANCE.getLocation())) : new HashSet<>()
         ));
     }
 

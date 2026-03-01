@@ -35,8 +35,8 @@ public class ShaderInstanceMixin {
                 new ResourceIdentifier(name),
                 new NeoVertexFormatImpl(format),
                 new HashSet<>(CollectionsKt.listOf(ShaderSourceType.VERTEX, ShaderSourceType.FRAGMENT)),
-                name.equals("rendertype_end_portal") ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>(),
-                (name.equals("rendertype_lines") || name.equals("particle")) ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.location(), AlbedoDynamicBuffer.INSTANCE.location())) : new HashSet<>()
+                name.equals("rendertype_end_portal") ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.getLocation(), AlbedoDynamicBuffer.INSTANCE.getLocation())) : new HashSet<>(),
+                (name.equals("rendertype_lines") || name.equals("particle")) ? new HashSet<>(CollectionsKt.listOf(NormalsDynamicBuffer.INSTANCE.getLocation(), AlbedoDynamicBuffer.INSTANCE.getLocation())) : new HashSet<>()
         ));
     }
 
