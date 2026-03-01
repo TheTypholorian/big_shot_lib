@@ -43,7 +43,7 @@ object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"),
 
             builder.attach(
                 source,
-                resolves.loadFile("$file.${source.extension}", id.toString())
+                resolves.loadFile("$file.${source.extension}", id.toString(), false)
                     ?: throw ResourceNotFoundException("Couldn't find shader file $file, requested by $id. Searched in ${ShaderFileResolver.directories}"),
                 resolves
             )

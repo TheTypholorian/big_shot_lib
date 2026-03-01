@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import java.io.InputStream
 
 fun interface ShaderFileResolver {
-    fun loadFile(key: String, requester: String): String?
+    fun loadFile(key: String, requester: String, stripVersion: Boolean): String?
 
     fun loadIncludes(code: String, requester: String): String {
         var modified = code
@@ -18,7 +18,7 @@ fun interface ShaderFileResolver {
                 if (modified.startsWith(key, i)) {
                     val start = i + key.length
                     val end = modified.indexOf('\n', start)
-                    val code = loadFile(modified.substring(start, end).trim().trim('"', '<', '>'), key)
+                    val code = loadFile(modified.substring(start, end).trim().trim('"', '<', '>'), key, true)
                     modified = modified.substring(0, i) + code + modified.substring(end)
                     i = 0
                     break
@@ -54,7 +54,7 @@ fun interface ShaderFileResolver {
         @JvmField
         val manager: NeoResourceManager
     ) : ShaderFileResolver {
-        override fun loadFile(key: String, requester: String): String? {
+        override fun loadFile(key: String, requester: String, stripVersion: Boolean): String? {
             val id = ResourceIdentifier(key).withPath { path ->
                 if (path.contains('.')) {
                     return@withPath path
@@ -78,7 +78,8 @@ fun interface ShaderFileResolver {
                 throw ResourceNotFoundException("Couldn't find shader file $id, requested by ${requester}. Searched in $directories")
             }
 
-            return stripVersion(String(resource.open().use(InputStream::readAllBytes)))
+            return String(resource.open().use(InputStream::readAllBytes))
+                .let { if (stripVersion) stripVersion(it) else it }
         }
     }
 }

@@ -156,8 +156,7 @@ open class NeoShader(
         fun attach(type: ShaderSourceType, code: String, includes: ShaderFileResolver) {
             instance.attach(
                 type,
-                mixin?.apply(type, includes.loadIncludes(code, ShaderSourceKey(key, type).toString()))
-                    ?: code
+                mixin.apply(type, includes.loadIncludes(code, ShaderSourceKey(key, type).toString()))
             )
         }
 
