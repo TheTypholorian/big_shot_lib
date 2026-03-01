@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client.opengl.buffers
 
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.MeshData
+import com.mojang.blaze3d.vertex.VertexSorting
 import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
 import net.typho.big_shot_lib.api.client.opengl.util.GlIndexType
 import net.typho.big_shot_lib.api.client.opengl.util.GlShapeType
@@ -74,8 +75,10 @@ open class Mesh(
         @JvmField
         val buffer: ByteBufferBuilder = ByteBufferBuilder(1536)
     ) : NeoBufferBuilder(WrapperUtil.INSTANCE.createBufferBuilder(buffer, mode, format)) {
-        fun end() {
-            upload(buildOrThrow())
+        fun end(sorting: VertexSorting? = null) {
+            val built = buildOrThrow()
+            sorting?.let { built.sortQuads(buffer, it) }
+            upload(built)
             buffer.close()
         }
     }
