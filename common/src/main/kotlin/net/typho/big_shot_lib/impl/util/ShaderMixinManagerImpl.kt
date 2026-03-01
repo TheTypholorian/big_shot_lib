@@ -27,25 +27,41 @@ class ShaderMixinManagerImpl : ShaderMixinManager {
 
         return object : ShaderMixinManager.Instance {
             val mixins = LinkedList<Mixin<*>>()
+            var enabled: Boolean = false
             override val key = key
 
             init {
                 BigShotClientEntrypoint.registerShaderMixins(object : ShaderMixinFactory {
-                    override fun register(mixin: ShaderMixin) {
+                    override fun register(mixin: ShaderMixin, builtin: Boolean) {
                         mixins.add(Mixin(null, mixin))
+
+                        if (!builtin) {
+                            enabled = true
+                        }
                     }
 
-                    override fun register(mixin: ShaderMixin.Factory<*>) {
+                    override fun register(mixin: ShaderMixin.Factory<*>, builtin: Boolean) {
                         getOrCreateMixinInstance(mixin)
+
+                        if (!builtin) {
+                            enabled = true
+                        }
                     }
                 })
-                DynamicBufferRegistry.buffers.forEach { getOrCreateMixinInstance(it) }
+                DynamicBufferRegistry.buffers.forEach {
+                    getOrCreateMixinInstance(it)
+                    enabled = true
+                }
             }
 
             override fun apply(
                 type: ShaderSourceType,
                 code: String
             ): String {
+                if (!enabled) {
+                    return code
+                }
+
                 val sourceKey = ShaderSourceKey(key, type)
                 val modified = mixins.fold(code.trim()) { code, mixin -> mixin.instance.mixinPreCompile(sourceKey, code) }
                 val bytecode = mixins.fold(compiler.compile(sourceKey, modified)) { buffer, mixin -> mixin.instance.mixinBytecode(sourceKey, buffer) }

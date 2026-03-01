@@ -1,7 +1,5 @@
 package net.typho.big_shot_lib.impl.util
 
-import net.minecraft.client.renderer.RenderPipelines
-import net.typho.big_shot_lib.BigShotLib.toNeo
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderProgramKey
@@ -10,35 +8,23 @@ import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
 import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.*
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.util.dynamic_buffers.AlbedoDynamicBuffer
-import net.typho.big_shot_lib.api.util.NeoCollections
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 class AlbedoDynamicBufferImpl : AlbedoDynamicBuffer.Impl {
-    val builtin = NeoCollections.flatListOf<ResourceIdentifier>(
-        RenderPipelines.getStaticPipelines()
-            .filter { it.vertexShader.toNeo().equals("minecraft", "core/terrain") && it.fragmentShader.toNeo().equals("minecraft", "core/terrain") }
-            .map { it.location.toNeo() }
-    )
-
     override fun create(
         key: ShaderProgramKey,
         parent: ShaderMixinManager.Instance,
         location: Int?
     ): AlbedoDynamicBuffer.MixinInstance? {
-        if (key.disabledDynamicBuffers.contains(AlbedoDynamicBuffer.location())) {
+        if (key.disabledDynamicBuffers.contains(AlbedoDynamicBuffer.location)) {
             return null
         }
 
         if (location == null) {
-            BigShotApi.LOGGER.warn("Location for ${AlbedoDynamicBuffer.location()} is null when compiling $key, skipping")
+            BigShotApi.LOGGER.warn("Location for ${AlbedoDynamicBuffer.location} is null when compiling $key, skipping")
             return null
         }
 
-        if (key.location.equals("sodium", "blocks/block_layer_opaque")) {
-            return SodiumMixin(location, (parent.getOrCreateMixinInstance(ShaderLocationMapperMixin) as ShaderLocationMapperMixin.Instance).locations)
-        }
-
-        if (key.builtinDynamicBuffers.contains(AlbedoDynamicBuffer.location()) || builtin.contains(key.location)) {
+        if (key.builtinDynamicBuffers.contains(AlbedoDynamicBuffer.location)) {
             return BuiltinMixin(location)
         }
 
@@ -47,7 +33,7 @@ class AlbedoDynamicBufferImpl : AlbedoDynamicBuffer.Impl {
         }
 
         if (key.sources.contains(ShaderSourceType.GEOMETRY)) {
-            BigShotApi.LOGGER.warn("${AlbedoDynamicBuffer.location()} currently doesn't support geometry shaders, skipping $key")
+            BigShotApi.LOGGER.warn("${AlbedoDynamicBuffer.location} currently doesn't support geometry shaders, skipping $key")
             return null
         }
 
@@ -72,38 +58,6 @@ class AlbedoDynamicBufferImpl : AlbedoDynamicBuffer.Impl {
         }
     }
 
-    class SodiumMixin(
-        override val fragLocation: Int,
-        @JvmField
-        val locationMapper: ShaderLocationManager
-    ) : AlbedoDynamicBuffer.MixinInstance {
-        override fun mixinBytecode(key: ShaderSourceKey, code: ShaderBytecodeBuffer): ShaderBytecodeBuffer {
-            if (key.type == ShaderSourceType.FRAGMENT) {
-                val vec4 = ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code)
-
-                val output = code.addStaticVar(ShaderStorageClass.OUTPUT, vec4, AlbedoDynamicBuffer.FRAGMENT_VAR_NAME)
-                code.setVariableLocation(output.id, fragLocation)
-
-                val mul = code.findOpcodeInMethod("main", ShaderOpcode.OP_F_MUL)!!
-                val temp = code.bound++
-                code.insert(
-                    mul.index,
-                    ShaderOpcode.Builder(ShaderOpcode.OP_LOAD)
-                        .putWord(vec4)
-                        .putWord(temp)
-                        .putWord(mul.getWord(2))
-                        .build(),
-                    ShaderOpcode.Builder(ShaderOpcode.OP_STORE)
-                        .putWord(output.id)
-                        .putWord(temp)
-                        .build()
-                )
-            }
-
-            return code
-        }
-    }
-
     class ColorMixin(
         override val fragLocation: Int,
         @JvmField
@@ -117,17 +71,17 @@ class AlbedoDynamicBufferImpl : AlbedoDynamicBuffer.Impl {
                         (code.findVariable(name = key.program.format.getElementName(NeoVertexFormat.Element.TEXTURE_UV)) ?: return code).id,
                         AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME,
                         locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!
-                            .map(1, AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME, 0)
+                            .map(1, AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME)
                     )
                     code.addPassthroughOutput(
                         ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code),
                         (code.findVariable(name = key.program.format.getElementName(NeoVertexFormat.Element.COLOR)) ?: return code).id,
                         AlbedoDynamicBuffer.VERTEX_COLOR_VAR_NAME,
-                        locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, AlbedoDynamicBuffer.VERTEX_COLOR_VAR_NAME, 0)
+                        locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, AlbedoDynamicBuffer.VERTEX_COLOR_VAR_NAME)
                     )
                 }
             } else if (key.type == ShaderSourceType.FRAGMENT) {
-                val samplerVar = code.findVariable(name = "Sampler0") ?: return code
+                val samplerVar = code.findVariable(name = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "u_BlockTex" else "Sampler0") ?: return code
 
                 val vec4 = ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code)
                 val vec2 = ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code)
@@ -210,10 +164,10 @@ class AlbedoDynamicBufferImpl : AlbedoDynamicBuffer.Impl {
                     ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code),
                     (code.findVariable(name = key.program.format.getElementName(NeoVertexFormat.Element.TEXTURE_UV)) ?: return code).id,
                     AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME,
-                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME, 0)
+                    locationMapper.getMapper(ShaderStorageClass.OUTPUT, key.type)!!.map(1, AlbedoDynamicBuffer.VERTEX_TEX_COORD_VAR_NAME)
                 )
             } else if (key.type == ShaderSourceType.FRAGMENT) {
-                val samplerVar = code.findVariable(name = "Sampler0") ?: return code
+                val samplerVar = code.findVariable(name = if (key.program.location.equals("sodium", "blocks/block_layer_opaque")) "u_BlockTex" else "Sampler0") ?: return code
 
                 val vec4 = ShaderVariableType.FLOAT_VEC4.findOrInjectBytecode(code)
                 val vec2 = ShaderVariableType.FLOAT_VEC2.findOrInjectBytecode(code)
