@@ -45,7 +45,7 @@ class BigShotApiClient : BigShotClientEntrypoint {
     }
 
     override fun registerShaderMixins(factory: ShaderMixinFactory) {
-        factory.register(ShaderVersionUpdaterMixin)
-        factory.register(ShaderLocationMapperMixin)
+        factory.register(ShaderVersionUpdaterMixin, true)
+        factory.register(ShaderLocationMapperMixin, true)
     }
 }

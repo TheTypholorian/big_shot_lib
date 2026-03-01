@@ -7,10 +7,10 @@ import java.nio.ByteBuffer
 
 open class NeoTexture3D(
     glId: Int,
-    @JvmField
-    val format: TextureFormat,
-    defaultParams: Boolean = true
-) : GlResource(glId, GlStateStack.textures[TextureType.TEXTURE_3D]!!), GlTexture3D {
+    override val format: TextureFormat,
+    defaultParams: Boolean = true,
+    override val type: TextureType = TextureType.TEXTURE_3D
+) : GlResource(glId, GlStateStack.textures[type]!!), GlTexture3D {
     companion object {
         @JvmField
         val NULL = NeoTexture3D(0, TextureFormat.NULL)
@@ -29,21 +29,17 @@ open class NeoTexture3D(
         OpenGL.INSTANCE.deleteTexture(glId)
     }
 
-    override fun type() = TextureType.TEXTURE_3D
-
-    override fun format() = format
-
     override fun resize(width: Int, height: Int, depth: Int): BufferUploader {
         return object : BufferUploader {
             override fun upload(buffer: ByteBuffer) {
                 bind()
-                OpenGL.INSTANCE.textureData3D(type(), format, width, height, depth, buffer)
+                OpenGL.INSTANCE.textureData3D(type, format, width, height, depth, buffer)
                 unbind()
             }
 
             override fun uploadNull() {
                 bind()
-                OpenGL.INSTANCE.textureData3D(type(), format, width, height, depth, 0L)
+                OpenGL.INSTANCE.textureData3D(type, format, width, height, depth, 0L)
                 unbind()
             }
         }

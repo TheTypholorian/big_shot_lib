@@ -393,6 +393,20 @@ interface OpenGL {
 
     /**
      * ```
+     * glTexImage2DMultisample(
+     *     type,
+     *     samples,
+     *     format.internalId,
+     *     width,
+     *     height,
+     *     true
+     * )
+     * ```
+     */
+    fun textureData2DMultisample(type: TextureType, samples: Int, format: TextureFormat, width: Int, height: Int)
+
+    /**
+     * ```
      * glTexImage2D(
      *     face,
      *     0,

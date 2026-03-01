@@ -49,6 +49,8 @@ open class GlBuffer(
         unbind()
     }
 
+    fun cast(type: BufferType) = GlBuffer(glId, type, usage)
+
     override fun toString(): String {
         return "${javaClass.simpleName}(glId=$glId, type=$type, usage=$usage)"
     }

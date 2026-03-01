@@ -83,8 +83,8 @@ open class NeoFramebuffer(
         depthAttachment?.let { attachment ->
             attachment.resize(width, height)
             attachment.attachToFramebuffer(
-                attachment.format().getDepthStencilAttachmentId()
-                    ?: throw IllegalTextureFormatException("${attachment.format()} is neither a depth nor stencil format")
+                attachment.format.getDepthStencilAttachmentId()
+                    ?: throw IllegalTextureFormatException("${attachment.format} is neither a depth nor stencil format")
             )
         }
 

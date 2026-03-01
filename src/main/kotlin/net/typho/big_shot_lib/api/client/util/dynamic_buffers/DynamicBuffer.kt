@@ -5,9 +5,7 @@ import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderMixin
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 interface DynamicBuffer<M : ShaderMixin> : GlFramebufferAttachment, ShaderMixin.Factory<M> {
-    fun setShaderLocation(location: Int)
-
-    fun location(): ResourceIdentifier
-
-    fun blend(): Boolean
+    val location: ResourceIdentifier
+    val blend: Boolean
+    var shaderLocation: Int?
 }

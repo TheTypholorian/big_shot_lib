@@ -10,11 +10,11 @@ import org.lwjgl.opengl.GL13.*
 
 interface GlTextureCube : GlTexture, GlFramebufferAttachment {
     fun setInterpolation(min: InterpolationType, mag: InterpolationType = min) {
-        OpenGL.INSTANCE.textureInterpolation(type(), min, mag)
+        OpenGL.INSTANCE.textureInterpolation(type, min, mag)
     }
 
     fun setWrapping(s: WrappingType, t: WrappingType = s) {
-        OpenGL.INSTANCE.textureWrapping(type(), s, t)
+        OpenGL.INSTANCE.textureWrapping(type, s, t)
     }
 
     fun resize(face: Face, width: Int, height: Int): BufferUploader

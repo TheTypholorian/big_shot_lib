@@ -9,8 +9,7 @@ import java.util.function.Consumer
 
 open class GlRenderBuffer(
     glId: Int,
-    @JvmField
-    val format: TextureFormat
+    override val format: TextureFormat
 ) : GlResource(glId, GlStateStack.renderBuffer), GlFramebufferAttachment {
     companion object {
         @JvmField
@@ -22,8 +21,6 @@ open class GlRenderBuffer(
     override fun free() {
         OpenGL.INSTANCE.deleteRenderBuffer(glId)
     }
-
-    override fun format() = format
 
     override fun attachToFramebuffer(attachment: Int) {
         OpenGL.INSTANCE.attachFramebufferRenderBuffer(attachment, glId)

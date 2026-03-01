@@ -8,10 +8,10 @@ import java.util.function.Consumer
 
 open class NeoTextureCube(
     glId: Int,
-    @JvmField
-    val format: TextureFormat,
-    defaultParams: Boolean = true
-) : GlResource(glId, GlStateStack.textures[TextureType.TEXTURE_CUBE_MAP]!!), GlTextureCube {
+    override val format: TextureFormat,
+    defaultParams: Boolean = true,
+    override val type: TextureType = TextureType.TEXTURE_CUBE_MAP
+) : GlResource(glId, GlStateStack.textures[type]!!), GlTextureCube {
     companion object {
         @JvmField
         val NULL = NeoTextureCube(0, TextureFormat.NULL)
@@ -29,10 +29,6 @@ open class NeoTextureCube(
     override fun free() {
         OpenGL.INSTANCE.deleteTexture(glId)
     }
-
-    override fun type() = TextureType.TEXTURE_CUBE_MAP
-
-    override fun format() = format
 
     override fun attachToFramebuffer(attachment: Int) {
         OpenGL.INSTANCE.attachFramebufferTexture(attachment, glId)

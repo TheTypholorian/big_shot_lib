@@ -36,6 +36,6 @@ open class FramebufferShard(
     companion object : RenderSettingShard.Type<FramebufferShard> {
         override val default = FramebufferShard({ null }, false)
         override val codec = null
-        override val location = ResourceIdentifier("opengl", "shader")
+        override val location = ResourceIdentifier("opengl", "framebuffer")
     }
 }

@@ -8,10 +8,10 @@ import java.util.function.Consumer
 
 open class NeoTexture2D(
     glId: Int,
-    @JvmField
-    val format: TextureFormat,
-    defaultParams: Boolean = true
-) : GlResource(glId, GlStateStack.textures[TextureType.TEXTURE_2D]!!), GlTexture2D {
+    override val format: TextureFormat,
+    defaultParams: Boolean = true,
+    override val type: TextureType = TextureType.TEXTURE_2D
+) : GlResource(glId, GlStateStack.textures[type]!!), GlTexture2D {
     companion object {
         @JvmField
         val NULL = NeoTexture2D(0, TextureFormat.NULL, false)
@@ -30,28 +30,30 @@ open class NeoTexture2D(
         OpenGL.INSTANCE.deleteTexture(glId)
     }
 
-    override fun type() = TextureType.TEXTURE_2D
-
-    override fun format() = format
-
     override fun attachToFramebuffer(attachment: Int) {
-        OpenGL.INSTANCE.attachFramebufferTexture2D(attachment, type(), glId)
+        OpenGL.INSTANCE.attachFramebufferTexture2D(attachment, type, glId)
     }
 
     override fun resize(width: Int, height: Int, upload: Consumer<BufferUploader>) {
-        upload.accept(object : BufferUploader {
-            override fun upload(buffer: ByteBuffer) {
-                bind()
-                OpenGL.INSTANCE.textureData2D(type(), format, width, height, buffer)
-                unbind()
-            }
+        if (type.multisample) {
+            bind()
+            OpenGL.INSTANCE.textureData2DMultisample(type, 4, format, width, height)
+            unbind()
+        } else {
+            upload.accept(object : BufferUploader {
+                override fun upload(buffer: ByteBuffer) {
+                    bind()
+                    OpenGL.INSTANCE.textureData2D(type, format, width, height, buffer)
+                    unbind()
+                }
 
-            override fun uploadNull() {
-                bind()
-                OpenGL.INSTANCE.textureData2D(type(), format, width, height, 0L)
-                unbind()
-            }
-        })
+                override fun uploadNull() {
+                    bind()
+                    OpenGL.INSTANCE.textureData2D(type, format, width, height, 0L)
+                    unbind()
+                }
+            })
+        }
     }
 
     override fun toString(): String {

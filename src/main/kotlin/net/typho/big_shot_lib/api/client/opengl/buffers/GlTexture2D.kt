@@ -9,13 +9,13 @@ import java.util.function.Consumer
 interface GlTexture2D : GlTexture, GlFramebufferAttachment {
     fun setInterpolation(min: InterpolationType, mag: InterpolationType = min) {
         bind()
-        OpenGL.INSTANCE.textureInterpolation(type(), min, mag)
+        OpenGL.INSTANCE.textureInterpolation(type, min, mag)
         unbind()
     }
 
     fun setWrapping(s: WrappingType, t: WrappingType = s) {
         bind()
-        OpenGL.INSTANCE.textureWrapping(type(), s, t)
+        OpenGL.INSTANCE.textureWrapping(type, s, t)
         unbind()
     }
 

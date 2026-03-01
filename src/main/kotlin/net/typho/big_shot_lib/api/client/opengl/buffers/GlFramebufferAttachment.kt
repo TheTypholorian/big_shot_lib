@@ -5,7 +5,7 @@ import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 import java.util.function.Consumer
 
 interface GlFramebufferAttachment {
-    fun format(): TextureFormat
+    val format: TextureFormat
 
     fun attachToFramebuffer(attachment: Int)
 
