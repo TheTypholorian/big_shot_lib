@@ -15,12 +15,12 @@ class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
         parent: ShaderMixinManager.Instance,
         location: Int?
     ): NormalsDynamicBuffer.MixinInstance? {
-        if (key.disabledDynamicBuffers.contains(NormalsDynamicBuffer.location())) {
+        if (key.disabledDynamicBuffers.contains(NormalsDynamicBuffer.location)) {
             return null
         }
 
         if (location == null) {
-            BigShotApi.LOGGER.warn("Location for ${NormalsDynamicBuffer.location()} is null when compiling $key, skipping")
+            BigShotApi.LOGGER.warn("Location for ${NormalsDynamicBuffer.location} is null when compiling $key, skipping")
             return null
         }
 
@@ -28,7 +28,7 @@ class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
             return SodiumMixin(location, (parent.getOrCreateMixinInstance(ShaderLocationMapperMixin) as ShaderLocationMapperMixin.Instance).locations)
         }
 
-        if (key.builtinDynamicBuffers.contains(NormalsDynamicBuffer.location())) {
+        if (key.builtinDynamicBuffers.contains(NormalsDynamicBuffer.location)) {
             return BuiltinMixin(location)
         }
 
@@ -37,7 +37,7 @@ class NormalsDynamicBufferImpl : NormalsDynamicBuffer.Impl {
         }
 
         if (key.sources.contains(ShaderSourceType.GEOMETRY)) {
-            BigShotApi.LOGGER.warn("${NormalsDynamicBuffer.location()} currently doesn't support geometry shaders, skipping $key")
+            BigShotApi.LOGGER.warn("${NormalsDynamicBuffer.location} currently doesn't support geometry shaders, skipping $key")
             return null
         }
 
