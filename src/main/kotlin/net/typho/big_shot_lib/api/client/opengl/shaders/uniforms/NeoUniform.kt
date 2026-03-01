@@ -10,7 +10,8 @@ open class NeoUniform(
     @JvmField
     val parent: NeoShader
 ) : GlUniform(name, location, type) {
-    override fun pickSamplerUnit() = parent.pickSamplerUnit(location)
+    override val programKey
+        get() = parent.key
 
-    override fun programKey() = parent.key
+    override fun pickSamplerUnit() = parent.pickSamplerUnit(location)
 }

@@ -17,19 +17,19 @@ abstract class GlUniform(
     @JvmField
     val type: ShaderVariableType
 ) {
+    abstract val programKey: ShaderProgramKey
+
     fun assertType(vararg allowed: ShaderVariableType) {
         if (type !in allowed) {
-            throw IllegalArgumentException("Uniform $name in program ${programKey()} is $type but expected ${allowed.joinToString(" or ")}")
+            throw IllegalArgumentException("Uniform $name in program $programKey is $type but expected ${allowed.joinToString(" or ")}")
         }
     }
 
     protected abstract fun pickSamplerUnit(): Int
 
-    abstract fun programKey(): ShaderProgramKey
-
     fun setSampler(type: TextureType, textureId: Int, samplerId: Int? = null) {
         if (this.type.info !is ShaderVariableTypeInfo.Sampler) {
-            throw UnsupportedOperationException("Uniform $name in program ${programKey()} is of type ${this.type} which isn't a sampler")
+            throw UnsupportedOperationException("Uniform $name in program $programKey is of type ${this.type} which isn't a sampler")
         }
 
         val expectedType = this.type.expectedTextureType()
@@ -46,7 +46,7 @@ abstract class GlUniform(
     }
 
     fun setSampler(texture: GlTexture) {
-        setSampler(texture.type(), texture.glId)
+        setSampler(texture.type, texture.glId)
     }
 
     fun setValue(f1: Float) {
