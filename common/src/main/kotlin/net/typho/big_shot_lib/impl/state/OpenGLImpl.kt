@@ -782,6 +782,24 @@ class OpenGLImpl : OpenGL {
         )
     }
 
+    override fun textureData2DMultisample(
+        type: TextureType,
+        samples: Int,
+        format: TextureFormat,
+        width: Int,
+        height: Int
+    ) {
+        debugPrint("glTexImage2DMultisample", type, samples, format, width, height)
+        glTexImage2DMultisample(
+            type.glId,
+            samples,
+            format.internalId,
+            width,
+            height,
+            true
+        )
+    }
+
     override fun textureData2D(
         face: GlTextureCube.Face,
         format: TextureFormat,

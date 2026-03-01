@@ -15,16 +15,16 @@ class AlbedoDynamicBufferImpl : AlbedoDynamicBuffer.Impl {
         parent: ShaderMixinManager.Instance,
         location: Int?
     ): AlbedoDynamicBuffer.MixinInstance? {
-        if (key.disabledDynamicBuffers.contains(AlbedoDynamicBuffer.location())) {
+        if (key.disabledDynamicBuffers.contains(AlbedoDynamicBuffer.location)) {
             return null
         }
 
         if (location == null) {
-            BigShotApi.LOGGER.warn("Location for ${AlbedoDynamicBuffer.location()} is null when compiling $key, skipping")
+            BigShotApi.LOGGER.warn("Location for ${AlbedoDynamicBuffer.location} is null when compiling $key, skipping")
             return null
         }
 
-        if (key.builtinDynamicBuffers.contains(AlbedoDynamicBuffer.location())) {
+        if (key.builtinDynamicBuffers.contains(AlbedoDynamicBuffer.location)) {
             return BuiltinMixin(location)
         }
 
@@ -33,7 +33,7 @@ class AlbedoDynamicBufferImpl : AlbedoDynamicBuffer.Impl {
         }
 
         if (key.sources.contains(ShaderSourceType.GEOMETRY)) {
-            BigShotApi.LOGGER.warn("${AlbedoDynamicBuffer.location()} currently doesn't support geometry shaders, skipping $key")
+            BigShotApi.LOGGER.warn("${AlbedoDynamicBuffer.location} currently doesn't support geometry shaders, skipping $key")
             return null
         }
 

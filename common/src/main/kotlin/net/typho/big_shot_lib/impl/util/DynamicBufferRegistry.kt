@@ -20,7 +20,7 @@ object DynamicBufferRegistry : DynamicBufferFactory {
     override fun register(buffer: DynamicBuffer<*>): Int {
         val attachment = buffers.size + 1
         buffers.add(buffer)
-        buffer.setShaderLocation(attachment)
+        buffer.shaderLocation = attachment
 
         val fbo = Minecraft.getInstance().mainRenderTarget
         fbo.resize(fbo.width, fbo.height)
@@ -31,7 +31,7 @@ object DynamicBufferRegistry : DynamicBufferFactory {
     @JvmStatic
     fun enableBlend() {
         buffers.forEachIndexed { index, buffer ->
-            if (buffer.blend()) {
+            if (buffer.blend) {
                 glEnablei(GL_BLEND, index + 1)
             } else {
                 glDisablei(GL_BLEND, index + 1)
