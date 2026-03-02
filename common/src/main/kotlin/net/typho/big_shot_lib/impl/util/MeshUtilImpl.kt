@@ -33,8 +33,10 @@ class MeshUtilImpl : MeshUtil {
         val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
         val random = RandomSource.create()
+        val seed = state.getSeed(pos)
 
         for (direction in directions) {
+            random.setSeed(seed)
             out.accept(
                 direction,
                 model.getQuads(state, direction, random)
