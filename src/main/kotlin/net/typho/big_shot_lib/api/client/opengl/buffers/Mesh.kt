@@ -75,11 +75,12 @@ open class Mesh(
         @JvmField
         val buffer: ByteBufferBuilder = ByteBufferBuilder(1536)
     ) : NeoBufferBuilder(WrapperUtil.INSTANCE.createBufferBuilder(buffer, mode, format)) {
-        fun end(sorting: VertexSorting? = null) {
+        fun end(sorting: VertexSorting? = null): MeshData {
             val built = buildOrThrow()
             sorting?.let { built.sortQuads(buffer, it) }
             upload(built)
             buffer.close()
+            return built
         }
     }
 }

@@ -123,7 +123,7 @@ interface IColor {
         @JvmField
         val blue: Int
     ) : IColor {
-        constructor(rgb: Int) : this(rgb shl 16 and 0xFF, rgb shl 8 and 0xFF, rgb and 0xFF)
+        constructor(rgb: Int) : this(rgb ushr 16 and 0xFF, rgb ushr 8 and 0xFF, rgb and 0xFF)
 
         constructor(color: Color) : this(color.red, color.green, color.blue)
 
@@ -155,7 +155,7 @@ interface IColor {
         @JvmField
         val alpha: Int
     ) : IColor {
-        constructor(argb: Int) : this(argb shl 16 and 0xFF, argb shl 8 and 0xFF, argb and 0xFF, argb ushr 24)
+        constructor(argb: Int) : this(argb ushr 16 and 0xFF, argb ushr 8 and 0xFF, argb and 0xFF, argb ushr 24)
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)
 
@@ -185,7 +185,7 @@ interface IColor {
         @JvmField
         val blue: Float
     ) : IColor {
-        constructor(rgb: Int) : this((rgb shl 16 and 0xFF) / 255f, (rgb shl 8 and 0xFF) / 255f, (rgb and 0xFF) / 255f)
+        constructor(rgb: Int) : this((rgb ushr 16 and 0xFF) / 255f, (rgb ushr 8 and 0xFF) / 255f, (rgb and 0xFF) / 255f)
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f)
 
@@ -217,7 +217,7 @@ interface IColor {
         @JvmField
         val alpha: Float
     ) : IColor {
-        constructor(argb: Int) : this((argb shl 16 and 0xFF) / 255f, (argb shl 8 and 0xFF) / 255f, (argb and 0xFF) / 255f, (argb ushr 24) / 255f)
+        constructor(argb: Int) : this((argb ushr 16 and 0xFF) / 255f, (argb ushr 8 and 0xFF) / 255f, (argb and 0xFF) / 255f, (argb ushr 24) / 255f)
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
 
