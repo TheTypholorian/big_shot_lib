@@ -30,7 +30,7 @@ class TextureUtilImpl : TextureUtil {
     }
 
     override fun getTextureAtlasDimensions(atlas: ResourceIdentifier): Dimension {
-        val atlas = Minecraft.getInstance().getTextureAtlas(atlas.toMojang()) as TextureAtlasAccessor
+        val atlas = Minecraft.getInstance().modelManager.getAtlas(atlas.toMojang()) as TextureAtlasAccessor
         return Dimension(atlas.width, atlas.height)
     }
 }
