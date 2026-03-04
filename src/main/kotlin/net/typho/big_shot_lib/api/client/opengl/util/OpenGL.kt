@@ -140,6 +140,17 @@ interface OpenGL {
     fun getPolygonMode(): PolygonMode
 
     /**
+     * `glPolygonOffset(offset.factor, offset.units)`
+     */
+    fun polygonOffset(offset: PolygonOffset)
+
+    /**
+     * `glGetInteger(GL_POLYGON_OFFSET_FACTOR)`
+     * `glGetInteger(GL_POLYGON_OFFSET_UNITS)`
+     */
+    fun getPolygonOffset(): PolygonOffset
+
+    /**
      * `glScissor(x, y, width, height)`
      */
     fun scissor(x: Int, y: Int, width: Int, height: Int)

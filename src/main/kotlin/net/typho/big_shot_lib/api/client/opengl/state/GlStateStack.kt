@@ -109,6 +109,12 @@ open class GlStateStack<V>(
             OpenGL.INSTANCE::getPolygonMode
         )
         @JvmField
+        val polygonOffset = GlStateStack(
+            "POLYGON_OFFSET",
+            { OpenGL.INSTANCE.polygonOffset(it ?: PolygonOffset(0f, 0f)) },
+            OpenGL.INSTANCE::getPolygonOffset
+        )
+        @JvmField
         val stencilFunc = GlStateStack(
             "STENCIL_FUNC",
             { OpenGL.INSTANCE.stencilFunc(it ?: StencilFunc(ComparisonFunc.ALWAYS, 0, 0)) },

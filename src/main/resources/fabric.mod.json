@@ -24,8 +24,6 @@
     "java": ">=${java_version}"
   },
   "breaks": {
-    "iris": "*",
-    "veil": "*",
     "vibrancy": "<=${vibrancy_incompat_version}"
   }
 }

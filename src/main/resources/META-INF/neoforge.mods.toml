@@ -13,26 +13,12 @@ credits="${credits}" #optional
 authors = "${mod_author}" #optional
 description = '''${description}''' #mandatory (Supports multiline text)
 [[dependencies."${mod_id}"]]
-modId = "iris"
-type="incompatible"
-versionRange = "*"
-ordering = "NONE"
-side = "BOTH"
-reason = "Breaks dynamic buffers"
-[[dependencies."${mod_id}"]]
-modId = "veil"
-type="incompatible"
-versionRange = "*"
-ordering = "NONE"
-side = "BOTH"
-reason = "Breaks dynamic buffers"
-[[dependencies."${mod_id}"]]
 modId = "vibrancy"
 type="incompatible"
 versionRange = "(,${vibrancy_incompat_version}]"
 ordering = "NONE"
 side = "BOTH"
-reason = "Update Vibrancy"
+reason = "Update Vibrancy to after ${vibrancy_incompat_version}"
 
 [modproperties."${mod_id}"]
 entrypoints = { "big_shot_lib:client" = "net.typho.big_shot_lib.api.client.BigShotApiClient" }

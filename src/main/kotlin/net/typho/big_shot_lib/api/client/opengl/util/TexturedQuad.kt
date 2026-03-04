@@ -26,12 +26,9 @@ data class TexturedQuad(
     val uv3: Vector2f,
     @JvmField
     val uv4: Vector2f,
+    @JvmField
+    val tintIndex: Int?
 ) {
-    companion object {
-        const val SIZE_PADDING = 4 * 4 * Float.SIZE_BYTES + 2 * 4 * Float.SIZE_BYTES
-        const val SIZE_NO_PADDING = 3 * 4 * Float.SIZE_BYTES + 2 * 4 * Float.SIZE_BYTES
-    }
-
     fun putJavaOrder(buffer: ByteBuffer, padding: Boolean) {
         buffer.putVec3f(v1, padding)
         buffer.putVec3f(v2, padding)
@@ -76,6 +73,8 @@ data class TexturedQuad(
             Vector2f(uv2),
             Vector2f(uv3),
             Vector2f(uv4),
+
+            tintIndex
         )
     }
 

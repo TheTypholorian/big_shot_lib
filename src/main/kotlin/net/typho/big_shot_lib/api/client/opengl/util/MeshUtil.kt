@@ -20,15 +20,13 @@ interface MeshUtil {
     )
 
     companion object {
-        @JvmField
-        val SCREEN_MESH: Mesh = Mesh(
-            NeoVertexFormat.POSITION_TEX,
-            GlShapeType.QUADS,
-            BufferUsage.STATIC_DRAW
-        )
-
-        init {
-            val builder = SCREEN_MESH.Builder()
+        val SCREEN_MESH by lazy {
+            val mesh = Mesh(
+                NeoVertexFormat.POSITION_TEX,
+                GlShapeType.QUADS,
+                BufferUsage.STATIC_DRAW
+            )
+            val builder = mesh.Builder()
             builder.quad(
                 Vector3f(-1f, 1f, 0f),
                 Vector3f(1f, 1f, 0f),
@@ -37,9 +35,9 @@ interface MeshUtil {
                 Vector3f(0f, 0f, -1f)
             )
             builder.end()
+            return@lazy mesh
         }
 
-        @JvmField
         val INSTANCE = MeshUtil::class.loadService()
     }
 }
