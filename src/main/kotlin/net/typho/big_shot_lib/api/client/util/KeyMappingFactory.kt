@@ -24,9 +24,9 @@ interface KeyMappingFactory {
     val debug : KeyMappingCategory
         get() = getOrCreateCategory(ResourceIdentifier("debug"))
     
-    fun getOrCreateCategory(id: ResourceIdentifier): KeyMappingCategory
+    fun getOrCreateCategory(location: ResourceIdentifier): KeyMappingCategory
 
-    fun create(id: ResourceIdentifier, key: Int, category: KeyMappingCategory): KeyMapping
+    fun create(location: ResourceIdentifier, key: Int, category: KeyMappingCategory): KeyMapping
 
-    fun create(id: ResourceIdentifier, type: InputConstants.Type, key: Int, category: KeyMappingCategory): KeyMapping
+    fun create(location: ResourceIdentifier, type: InputConstants.Type, key: Int, category: KeyMappingCategory): KeyMapping
 }

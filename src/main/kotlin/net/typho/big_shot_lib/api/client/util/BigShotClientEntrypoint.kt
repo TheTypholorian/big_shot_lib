@@ -22,6 +22,9 @@ interface BigShotClientEntrypoint {
     fun registerShaderMixins(factory: ShaderMixinFactory) {
     }
 
+    fun registerPanoramas(factory: PanoramaFactory) {
+    }
+
     companion object : BigShotClientEntrypoint {
         @JvmField
         val entrypoints = BigShotClientEntrypoint::class.loadServices()
@@ -48,6 +51,10 @@ interface BigShotClientEntrypoint {
 
         override fun registerShaderMixins(factory: ShaderMixinFactory) {
             entrypoints.forEach { it.registerShaderMixins(factory) }
+        }
+
+        override fun registerPanoramas(factory: PanoramaFactory) {
+            entrypoints.forEach { it.registerPanoramas(factory) }
         }
     }
 }

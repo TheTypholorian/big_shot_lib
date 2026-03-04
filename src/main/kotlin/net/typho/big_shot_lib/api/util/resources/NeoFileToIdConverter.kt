@@ -12,8 +12,8 @@ data class NeoFileToIdConverter(
     @JvmField
     val extension: String
 ) {
-    fun idToFile(id: ResourceIdentifier): ResourceIdentifier {
-        return id.withPrefix(prefix + PATH_DELIMITER).withSuffix(EXTENSION_DELIMITER + extension)
+    fun idToFile(location: ResourceIdentifier): ResourceIdentifier {
+        return location.withPrefix(prefix + PATH_DELIMITER).withSuffix(EXTENSION_DELIMITER + extension)
     }
 
     fun fileToId(file: ResourceIdentifier): ResourceIdentifier {

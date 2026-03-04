@@ -12,12 +12,12 @@ import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 
 object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")) {
     override fun decode(
-        id: ResourceIdentifier,
+        location: ResourceIdentifier,
         json: JsonObject,
         manager: NeoResourceManager
     ): NeoShader {
-        val format = json.get("format") ?: throw JsonParseException("Shader $id is missing vertex format")
-        val sourcesObject = json.getAsJsonObject("sources") ?: throw JsonParseException("Shader $id is missing sources")
+        val format = json.get("format") ?: throw JsonParseException("Shader $location is missing vertex format")
+        val sourcesObject = json.getAsJsonObject("sources") ?: throw JsonParseException("Shader $location is missing sources")
         val sources = sourcesObject.keySet().map { ShaderSourceType.valueOf(it.uppercase()) }.toSet()
         val builtinDynamicBuffers = json.getAsJsonArray("builtinDynamicBuffers")
             ?.map { ResourceIdentifier(it.asString) }
@@ -29,7 +29,7 @@ object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"),
         val builder = NeoShader.Builder(
             ShaderProgramKey(
                 ShaderLoaderType.BIG_SHOT,
-                id,
+                location,
                 VertexFormatUtil.fromJson(format),
                 sources,
                 builtinDynamicBuffers,
@@ -43,8 +43,8 @@ object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"),
 
             builder.attach(
                 source,
-                resolves.loadFile("$file.${source.extension}", id.toString(), false)
-                    ?: throw ResourceNotFoundException("Couldn't find shader file $file, requested by $id. Searched in ${ShaderFileResolver.directories}"),
+                resolves.loadFile("$file.${source.extension}", location.toString(), false)
+                    ?: throw ResourceNotFoundException("Couldn't find shader file $file, requested by $location. Searched in ${ShaderFileResolver.directories}"),
                 resolves
             )
         }

@@ -5,7 +5,7 @@ import java.util.function.Consumer
 
 interface DebugScreenFactory {
     fun register(
-        id: ResourceIdentifier,
+        location: ResourceIdentifier,
         allowedWithReducedDebugInfo: Boolean,
         out: Consumer<Consumer<String>>
     )

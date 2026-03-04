@@ -30,9 +30,9 @@ abstract class ResourceRegistry<T>(
 
     fun getKey(t: T) = map.inverse()[t]
 
-    fun get(id: ResourceIdentifier) = map[id]
+    fun get(location: ResourceIdentifier) = map[location]
 
-    abstract fun decode(id: ResourceIdentifier, json: JsonObject, manager: NeoResourceManager): T
+    abstract fun decode(location: ResourceIdentifier, json: JsonObject, manager: NeoResourceManager): T
 
     override fun onResourceManagerReload(manager: NeoResourceManager) {
         map.values.forEach { value -> if (value is AutoCloseable) value.close() }

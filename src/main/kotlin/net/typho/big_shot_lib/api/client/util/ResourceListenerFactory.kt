@@ -6,9 +6,9 @@ import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 
 interface ResourceListenerFactory {
-    fun register(id: ResourceIdentifier, listener: PreparableReloadListener)
+    fun register(location: ResourceIdentifier, listener: PreparableReloadListener)
 
-    fun register(id: ResourceIdentifier, listener: NeoResourceManagerReloadListener)
+    fun register(location: ResourceIdentifier, listener: NeoResourceManagerReloadListener)
 
     fun register(registry: ResourceRegistry<*>)
 }
