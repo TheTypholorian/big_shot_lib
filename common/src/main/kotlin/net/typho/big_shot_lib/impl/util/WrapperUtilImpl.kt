@@ -258,7 +258,9 @@ class WrapperUtilImpl : WrapperUtil {
             uv(quad.packedUV0),
             uv(quad.packedUV1),
             uv(quad.packedUV2),
-            uv(quad.packedUV3)
+            uv(quad.packedUV3),
+
+            quad.tintIndex
         )
     }
 
