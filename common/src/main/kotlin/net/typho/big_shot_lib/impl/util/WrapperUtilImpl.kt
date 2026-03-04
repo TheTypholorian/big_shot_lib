@@ -268,7 +268,9 @@ class WrapperUtilImpl : WrapperUtil {
             list[0].second,
             list[1].second,
             list[2].second,
-            list[3].second
+            list[3].second,
+
+            quad.tintIndex
         )
     }
 
