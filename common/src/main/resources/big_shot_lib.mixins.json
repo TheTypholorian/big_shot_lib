@@ -25,9 +25,13 @@
     "event.GameRendererMixin",
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
-    "shaders.mixins.GlDeviceMixin",
+    "util.CubeMapAccessor",
     "util.GlTextureMixin",
-    "util.MultiBufferSourceBufferSourceMixin"
+    "util.MultiBufferSourceBufferSourceMixin",
+    "util.PanoramaRendererMixin",
+    "util.RenderTargetMixin",
+    "util.TextureAtlasAccessor",
+    "util.TitleScreenMixin"
   ],
   "server": [],
   "injectors": {
