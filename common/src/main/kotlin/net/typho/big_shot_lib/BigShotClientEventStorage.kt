@@ -1,16 +1,23 @@
 package net.typho.big_shot_lib
 
+import net.minecraft.client.renderer.CubeMap
+import net.typho.big_shot_lib.BigShotLib.toMojang
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
+import net.typho.big_shot_lib.api.client.util.PanoramaFactory
 import net.typho.big_shot_lib.api.client.util.events.ClientEventFactory
 import net.typho.big_shot_lib.api.client.util.events.ClientLevelChangedEvent
 import net.typho.big_shot_lib.api.client.util.events.RenderEvent
 import net.typho.big_shot_lib.api.client.util.events.WindowResizeEvent
+import net.typho.big_shot_lib.api.client.util.panoramas.PanoramaSet
+import net.typho.big_shot_lib.api.client.util.panoramas.PanoramaTexture
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.mixin.util.CubeMapAccessor
 import java.util.*
 import java.util.function.Consumer
 
-object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
+object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory, PanoramaFactory {
     @JvmField
     val onFrameStart = LinkedList<Runnable>()
     @JvmField
@@ -23,10 +30,18 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
     val onLevelChanged = LinkedList<ClientLevelChangedEvent>()
     @JvmField
     val debugScreenInfo = LinkedList<Pair<Boolean, Consumer<Consumer<String>>>>()
+    @JvmField
+    val panoramaSets = LinkedList<PanoramaSet>()
+    @JvmField
+    val panoramaCubeMaps = HashMap<PanoramaTexture, CubeMap>()
+    @JvmField
+    var panorama: PanoramaSet? = null
 
     init {
         BigShotClientEntrypoint.registerEvents(this)
         BigShotClientEntrypoint.registerDebugScreenInfo(this)
+        BigShotClientEntrypoint.registerPanoramas(this)
+        panorama = PanoramaSet.select(*panoramaSets.toTypedArray())
     }
 
     override fun onFrameStart(event: Runnable) {
@@ -50,10 +65,31 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory {
     }
 
     override fun register(
-        id: ResourceIdentifier,
+        location: ResourceIdentifier,
         allowedWithReducedDebugInfo: Boolean,
         out: Consumer<Consumer<String>>
     ) {
         debugScreenInfo.add(allowedWithReducedDebugInfo to out)
+    }
+
+    @Suppress("CAST_NEVER_SUCCEEDS")
+    override fun register(panorama: PanoramaSet) {
+        panoramaSets.add(panorama)
+
+        for (texture in panorama.textures) {
+            panoramaCubeMaps.computeIfAbsent(texture) { key ->
+                val map = CubeMap(BigShotApi.id("dummy").toMojang())
+                val array = (map as CubeMapAccessor).images
+
+                array[0] = key.south.toMojang()
+                array[1] = key.east.toMojang()
+                array[2] = key.north.toMojang()
+                array[3] = key.west.toMojang()
+                array[4] = key.up.toMojang()
+                array[5] = key.down.toMojang()
+
+                return@computeIfAbsent map
+            }
+        }
     }
 }
