@@ -50,14 +50,14 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
         eventBus.addListener { event: AddClientReloadListenersEvent ->
             BigShotClientEntrypoint.registerReloadListeners(object : ResourceListenerFactory {
                 override fun register(
-                    id: ResourceIdentifier,
+                    location: ResourceIdentifier,
                     listener: PreparableReloadListener
                 ) {
                     event.addListener(id.toMojang(), listener)
                 }
 
                 override fun register(
-                    id: ResourceIdentifier,
+                    location: ResourceIdentifier,
                     listener: NeoResourceManagerReloadListener
                 ) {
                     event.addListener(id.toMojang(), object : ResourceManagerReloadListener {
@@ -76,27 +76,27 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
             BigShotClientEntrypoint.registerKeyMappings(object : KeyMappingFactory {
                 val categories = HashMap<ResourceIdentifier, KeyMappingCategory>()
 
-                override fun getOrCreateCategory(id: ResourceIdentifier): KeyMappingCategory {
-                    return categories.computeIfAbsent(id, ::KeyMappingCategoryImpl)
+                override fun getOrCreateCategory(location: ResourceIdentifier): KeyMappingCategory {
+                    return categories.computeIfAbsent(location, ::KeyMappingCategoryImpl)
                 }
 
                 override fun create(
-                    id: ResourceIdentifier,
+                    location: ResourceIdentifier,
                     key: Int,
                     category: KeyMappingCategory
                 ): KeyMapping {
-                    val mapping = KeyMapping("key.${id.toShortLanguageKey()}", key, (category as KeyMappingCategoryImpl).label)
+                    val mapping = KeyMapping("key.${location.toShortLanguageKey()}", key, (category as KeyMappingCategoryImpl).label)
                     event.register(mapping)
                     return mapping
                 }
 
                 override fun create(
-                    id: ResourceIdentifier,
+                    location: ResourceIdentifier,
                     type: InputConstants.Type,
                     key: Int,
                     category: KeyMappingCategory
                 ): KeyMapping {
-                    val mapping = KeyMapping("key.${id.toShortLanguageKey()}", type, key, (category as KeyMappingCategoryImpl).label)
+                    val mapping = KeyMapping("key.${location.toShortLanguageKey()}", type, key, (category as KeyMappingCategoryImpl).label)
                     event.register(mapping)
                     return mapping
                 }
@@ -106,23 +106,23 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
             BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : Any> create(
-                    id: ResourceIdentifier,
+                    location: ResourceIdentifier,
                     lifecycle: Lifecycle,
                     isIntrusive: Boolean
                 ): NeoRegistry<T> {
-                    val registry = MappedRegistry<T>(ResourceKey.createRegistryKey(id.toMojang()), lifecycle)
+                    val registry = MappedRegistry<T>(ResourceKey.createRegistryKey(location.toMojang()), lifecycle)
                     event.register(registry)
                     return WrapperUtil.INSTANCE.wrap(registry)
                 }
 
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : Any> createDefaulted(
-                    id: ResourceIdentifier,
+                    location: ResourceIdentifier,
                     defaultKey: ResourceIdentifier,
                     lifecycle: Lifecycle,
                     isIntrusive: Boolean
                 ): NeoRegistry<T> {
-                    val registry = DefaultedMappedRegistry<T>(id.toString(), ResourceKey.createRegistryKey(id.toMojang()), lifecycle, false)
+                    val registry = DefaultedMappedRegistry<T>(location.toString(), ResourceKey.createRegistryKey(location.toMojang()), lifecycle, false)
                     event.register(registry)
                     return WrapperUtil.INSTANCE.wrap(registry)
                 }

@@ -25,8 +25,12 @@
     "shaders.mixins.CompiledShaderMixin",
     "shaders.mixins.ShaderManagerCompilationCacheMixin",
     "shaders.mixins.ShaderManagerMixin",
+    "util.CubeMapAccessor",
     "util.MultiBufferSourceBufferSourceMixin",
-    "util.RenderTargetMixin"
+    "util.PanoramaRendererMixin",
+    "util.RenderTargetMixin",
+    "util.TextureAtlasAccessor",
+    "util.TitleScreenMixin"
   ],
   "server": [],
   "injectors": {
