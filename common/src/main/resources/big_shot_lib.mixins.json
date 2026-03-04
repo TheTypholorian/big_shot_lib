@@ -23,9 +23,13 @@
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
     "registration.DebugScreenOverlayMixin",
-    "shaders.mixins.GlDeviceMixin",
+    "util.CubeMapAccessor",
     "util.GlTextureMixin",
-    "util.MultiBufferSourceBufferSourceMixin"
+    "util.MultiBufferSourceBufferSourceMixin",
+    "util.PanoramaRendererMixin",
+    "util.RenderTargetMixin",
+    "util.TextureAtlasAccessor",
+    "util.TitleScreenMixin"
   ],
   "server": [],
   "injectors": {

@@ -12,11 +12,14 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.NeoTexture2D
 import net.typho.big_shot_lib.api.client.opengl.util.TextureFormat
 import net.typho.big_shot_lib.api.client.opengl.util.TextureUtil
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.mixin.util.TextureAtlasAccessor
+import org.lwjgl.opengl.GL11.*
+import java.awt.Dimension
 
 class TextureUtilImpl : TextureUtil {
     private val textures = HashMap<AbstractTexture, GlTexture2D>()
     @Suppress("DEPRECATION")
-    override val blockAtlasTexture = TextureAtlas.LOCATION_BLOCKS.toNeo()
+    override val blockAtlasId = TextureAtlas.LOCATION_BLOCKS.toNeo()
 
     override fun getMinecraftTexture(texture: ResourceIdentifier): GlTexture2D {
         return textures.computeIfAbsent(Minecraft.getInstance().textureManager.getTexture(texture.toMojang())) { texture ->
@@ -24,5 +27,10 @@ class TextureUtilImpl : TextureUtil {
             val formatId = GlConst.toGlExternalId(texture.format)
             return@computeIfAbsent NeoTexture2D(texture.glId(), TextureFormat.entries.first { it.internalId == formatId }, false)
         }
+    }
+
+    override fun getTextureAtlasDimensions(atlas: ResourceIdentifier): Dimension {
+        val atlas = Minecraft.getInstance().getTextureAtlas(atlas.toMojang()) as TextureAtlasAccessor
+        return Dimension(atlas.width, atlas.height)
     }
 }
