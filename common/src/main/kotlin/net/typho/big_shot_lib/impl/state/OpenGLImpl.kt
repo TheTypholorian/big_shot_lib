@@ -47,7 +47,7 @@ class OpenGLImpl : OpenGL {
             GlFlag.DEPTH_TEST -> GlStateManager._enableDepthTest()
             GlFlag.BLEND -> GlStateManager._enableBlend()
             GlFlag.CULL_FACE -> GlStateManager._enableCull()
-            GlFlag.POLYGON_OFFSET_FILL -> GlStateManager._enablePolygonOffset()
+            GlFlag.POLYGON_OFFSET -> GlStateManager._enablePolygonOffset()
             GlFlag.COLOR_LOGIC_OP -> GlStateManager._enableColorLogicOp()
             else -> glEnable(flag.glId)
         }
@@ -60,7 +60,7 @@ class OpenGLImpl : OpenGL {
             GlFlag.DEPTH_TEST -> GlStateManager._disableDepthTest()
             GlFlag.BLEND -> GlStateManager._disableBlend()
             GlFlag.CULL_FACE -> GlStateManager._disableCull()
-            GlFlag.POLYGON_OFFSET_FILL -> GlStateManager._disablePolygonOffset()
+            GlFlag.POLYGON_OFFSET -> GlStateManager._disablePolygonOffset()
             GlFlag.COLOR_LOGIC_OP -> GlStateManager._disableColorLogicOp()
             else -> glDisable(flag.glId)
         }
@@ -519,6 +519,17 @@ class OpenGLImpl : OpenGL {
         val mode = IntArray(2)
         glGetIntegerv(GL_POLYGON_MODE, mode)
         return PolygonMode.entries.first { it.glId == mode[0] }
+    }
+
+    override fun polygonOffset(offset: PolygonOffset) {
+        GlStateManager._polygonOffset(offset.factor, offset.units)
+    }
+
+    override fun getPolygonOffset(): PolygonOffset {
+        return PolygonOffset(
+            glGetFloat(GL_POLYGON_OFFSET_FACTOR),
+            glGetFloat(GL_POLYGON_OFFSET_UNITS)
+        )
     }
 
     override fun resizeRenderBuffer(

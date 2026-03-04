@@ -45,12 +45,12 @@ object BigShotLibFabric : ClientModInitializer {
     override fun onInitializeClient() {
         BigShotClientEntrypoint.registerReloadListeners(object : ResourceListenerFactory {
             override fun register(
-                id: ResourceIdentifier,
+                location: ResourceIdentifier,
                 listener: PreparableReloadListener
             ) {
                 ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : IdentifiableResourceReloadListener {
                     override fun getFabricId(): ResourceLocation {
-                        return id.toMojang()
+                        return location.toMojang()
                     }
 
                     override fun reload(
@@ -70,12 +70,12 @@ object BigShotLibFabric : ClientModInitializer {
             }
 
             override fun register(
-                id: ResourceIdentifier,
+                location: ResourceIdentifier,
                 listener: NeoResourceManagerReloadListener
             ) {
                 ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
                     override fun getFabricId(): ResourceLocation {
-                        return id.toMojang()
+                        return location.toMojang()
                     }
 
                     override fun onResourceManagerReload(resourceManager: ResourceManager) {
@@ -91,27 +91,27 @@ object BigShotLibFabric : ClientModInitializer {
         BigShotClientEntrypoint.registerKeyMappings(object : KeyMappingFactory {
             val categories = HashMap<ResourceIdentifier, KeyMappingCategory>()
 
-            override fun getOrCreateCategory(id: ResourceIdentifier): KeyMappingCategory {
-                return categories.computeIfAbsent(id, ::KeyMappingCategoryImpl)
+            override fun getOrCreateCategory(location: ResourceIdentifier): KeyMappingCategory {
+                return categories.computeIfAbsent(location, ::KeyMappingCategoryImpl)
             }
 
             override fun create(
-                id: ResourceIdentifier,
+                location: ResourceIdentifier,
                 key: Int,
                 category: KeyMappingCategory
             ): KeyMapping {
-                val mapping = KeyMapping("key.${id.toShortLanguageKey()}", key, (category as KeyMappingCategoryImpl).label)
+                val mapping = KeyMapping("key.${location.toShortLanguageKey()}", key, (category as KeyMappingCategoryImpl).label)
                 KeyBindingHelper.registerKeyBinding(mapping)
                 return mapping
             }
 
             override fun create(
-                id: ResourceIdentifier,
+                location: ResourceIdentifier,
                 type: InputConstants.Type,
                 key: Int,
                 category: KeyMappingCategory
             ): KeyMapping {
-                val mapping = KeyMapping("key.${id.toShortLanguageKey()}", type, key, (category as KeyMappingCategoryImpl).label)
+                val mapping = KeyMapping("key.${location.toShortLanguageKey()}", type, key, (category as KeyMappingCategoryImpl).label)
                 KeyBindingHelper.registerKeyBinding(mapping)
                 return mapping
             }
@@ -119,28 +119,28 @@ object BigShotLibFabric : ClientModInitializer {
         BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> create(
-                id: ResourceIdentifier,
+                location: ResourceIdentifier,
                 lifecycle: Lifecycle,
                 isIntrusive: Boolean
             ): NeoRegistry<T> {
                 return WrapperUtil.INSTANCE.wrap(Registry.register(
                     BuiltInRegistries.REGISTRY as Registry<Registry<T>>,
-                    id.toMojang(),
-                    MappedRegistry<T>(ResourceKey.createRegistryKey(id.toMojang()), lifecycle, isIntrusive)
+                    location.toMojang(),
+                    MappedRegistry<T>(ResourceKey.createRegistryKey(location.toMojang()), lifecycle, isIntrusive)
                 ))
             }
 
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> createDefaulted(
-                id: ResourceIdentifier,
+                location: ResourceIdentifier,
                 defaultKey: ResourceIdentifier,
                 lifecycle: Lifecycle,
                 isIntrusive: Boolean
             ): NeoRegistry<T> {
                 return WrapperUtil.INSTANCE.wrap(Registry.register(
                     BuiltInRegistries.REGISTRY as Registry<Registry<T>>,
-                    id.toMojang(),
-                    DefaultedMappedRegistry<T>(id.toString(), ResourceKey.createRegistryKey(id.toMojang()), lifecycle, isIntrusive)
+                    location.toMojang(),
+                    DefaultedMappedRegistry<T>(location.toString(), ResourceKey.createRegistryKey(location.toMojang()), lifecycle, isIntrusive)
                 ))
             }
         })
