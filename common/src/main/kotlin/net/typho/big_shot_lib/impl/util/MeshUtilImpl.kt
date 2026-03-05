@@ -7,9 +7,10 @@ import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.typho.big_shot_lib.api.client.opengl.util.MeshUtil
-import net.typho.big_shot_lib.api.client.opengl.util.TexturedQuad
+import net.typho.big_shot_lib.api.client.util.quads.NeoBakedQuad
 import net.typho.big_shot_lib.api.util.BlockUtil
 import net.typho.big_shot_lib.api.util.WrapperUtil
+import org.joml.Vector3f
 import java.util.function.BiConsumer
 
 class MeshUtilImpl : MeshUtil {
@@ -18,7 +19,7 @@ class MeshUtilImpl : MeshUtil {
         state: BlockState,
         level: Level,
         pos: BlockPos,
-        out: BiConsumer<Direction?, List<TexturedQuad>>
+        out: BiConsumer<Direction?, List<NeoBakedQuad>>
     ) {
         val directions = arrayOf(
             Direction.DOWN,
@@ -40,7 +41,14 @@ class MeshUtilImpl : MeshUtil {
             out.accept(
                 direction,
                 model.getQuads(state, direction, random)
-                    .map { WrapperUtil.INSTANCE.wrap(it).offset(offset) }
+                    .map {
+                        if (offset.x == 0f && offset.y == 0f && offset.z == 0f)
+                            WrapperUtil.INSTANCE.wrap(it)
+                        else
+                            WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
+                                vertex.withPosition { pos -> pos.add(offset, Vector3f()) }
+                            }
+                    }
             )
         }
     }

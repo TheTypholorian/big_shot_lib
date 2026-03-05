@@ -17,6 +17,7 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.*
 import net.typho.big_shot_lib.api.client.opengl.buffers.ClearBit.Companion.initAndGetClearMask
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.*
+import net.typho.big_shot_lib.api.client.util.quads.NeoBakedQuad
 import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.NeoRegistryAccess
 import net.typho.big_shot_lib.api.util.WrapperUtil
@@ -25,8 +26,6 @@ import net.typho.big_shot_lib.api.util.resources.NeoResourceManager
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.impl.meshes.NeoVertexFormatImpl
-import org.joml.Vector2f
-import org.joml.Vector3f
 import org.lwjgl.opengl.GL11.*
 import java.util.*
 import java.util.function.Predicate
@@ -95,11 +94,7 @@ class WrapperUtilImpl : WrapperUtil {
 
                     stack.pop()
 
-                    val list = mutableListOf<GlFramebufferAttachment>(NeoTexture2D(target.colorTextureId, TextureFormat.entries.first { it.internalId == format }, false))
-
-                    list.addAll(DynamicBufferRegistry.buffers)
-
-                    return list
+                    return listOf(NeoTexture2D(target.colorTextureId, TextureFormat.entries.first { it.internalId == format }, false))
                 }
             override val depthAttachment: GlFramebufferAttachment?
                 get() {
@@ -216,48 +211,8 @@ class WrapperUtilImpl : WrapperUtil {
         }
     }
 
-    override fun wrap(quad: BakedQuad): TexturedQuad {
-        return TexturedQuad(
-            Vector3f(
-                Float.fromBits(quad.vertices[0]),
-                Float.fromBits(quad.vertices[1]),
-                Float.fromBits(quad.vertices[2])
-            ),
-            Vector3f(
-                Float.fromBits(quad.vertices[8]),
-                Float.fromBits(quad.vertices[9]),
-                Float.fromBits(quad.vertices[10])
-            ),
-            Vector3f(
-                Float.fromBits(quad.vertices[16]),
-                Float.fromBits(quad.vertices[17]),
-                Float.fromBits(quad.vertices[18])
-            ),
-            Vector3f(
-                Float.fromBits(quad.vertices[24]),
-                Float.fromBits(quad.vertices[25]),
-                Float.fromBits(quad.vertices[26])
-            ),
-
-            Vector2f(
-                Float.fromBits(quad.vertices[4]),
-                Float.fromBits(quad.vertices[5])
-            ),
-            Vector2f(
-                Float.fromBits(quad.vertices[12]),
-                Float.fromBits(quad.vertices[13])
-            ),
-            Vector2f(
-                Float.fromBits(quad.vertices[20]),
-                Float.fromBits(quad.vertices[21])
-            ),
-            Vector2f(
-                Float.fromBits(quad.vertices[28]),
-                Float.fromBits(quad.vertices[29])
-            ),
-
-            quad.tintIndex
-        )
+    override fun wrap(quad: BakedQuad): NeoBakedQuad {
+        return NeoBakedQuadImpl(quad)
     }
 
     override fun wrap(consumer: VertexConsumer): NeoVertexConsumer {
