@@ -18,6 +18,7 @@
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
     "util.CubeMapAccessor",
+    "util.GlStateManagerAccessor",
     "util.PanoramaRendererMixin",
     "util.TextureAtlasAccessor",
     "util.TitleScreenMixin"
