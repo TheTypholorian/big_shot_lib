@@ -33,7 +33,6 @@ import org.lwjgl.opengl.GL11.*
 import java.util.*
 import java.util.function.Predicate
 import java.util.stream.Collectors
-import java.util.stream.IntStream
 import java.util.stream.Stream
 import kotlin.jvm.optionals.getOrNull
 
@@ -245,30 +244,44 @@ class WrapperUtilImpl : WrapperUtil {
     }
 
     override fun wrap(quad: BakedQuad): TexturedQuad {
-        val list = IntStream.range(0, 4)
-            .mapToObj { it * 8 }
-            .map {
-                Vector3f(
-                    Float.fromBits(quad.vertices[it]),
-                    Float.fromBits(quad.vertices[it + 1]),
-                    Float.fromBits(quad.vertices[it + 2])
-                ) to Vector2f(
-                    Float.fromBits(quad.vertices[it + 4]),
-                    Float.fromBits(quad.vertices[it + 5])
-                )
-            }
-            .toList()
-
         return TexturedQuad(
-            list[0].first,
-            list[1].first,
-            list[2].first,
-            list[3].first,
+            Vector3f(
+                Float.fromBits(quad.vertices[0]),
+                Float.fromBits(quad.vertices[1]),
+                Float.fromBits(quad.vertices[2])
+            ),
+            Vector3f(
+                Float.fromBits(quad.vertices[8]),
+                Float.fromBits(quad.vertices[9]),
+                Float.fromBits(quad.vertices[10])
+            ),
+            Vector3f(
+                Float.fromBits(quad.vertices[16]),
+                Float.fromBits(quad.vertices[17]),
+                Float.fromBits(quad.vertices[18])
+            ),
+            Vector3f(
+                Float.fromBits(quad.vertices[24]),
+                Float.fromBits(quad.vertices[25]),
+                Float.fromBits(quad.vertices[26])
+            ),
 
-            list[0].second,
-            list[1].second,
-            list[2].second,
-            list[3].second,
+            Vector2f(
+                Float.fromBits(quad.vertices[4]),
+                Float.fromBits(quad.vertices[5])
+            ),
+            Vector2f(
+                Float.fromBits(quad.vertices[12]),
+                Float.fromBits(quad.vertices[13])
+            ),
+            Vector2f(
+                Float.fromBits(quad.vertices[20]),
+                Float.fromBits(quad.vertices[21])
+            ),
+            Vector2f(
+                Float.fromBits(quad.vertices[28]),
+                Float.fromBits(quad.vertices[29])
+            ),
 
             quad.tintIndex
         )
