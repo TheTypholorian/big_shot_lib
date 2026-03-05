@@ -336,9 +336,10 @@ class OpenGLImpl : OpenGL {
         GlStateManager._glBufferData(type.glId, size, usage.glId)
     }
 
-    override fun checkFramebufferStatus(): Int {
+    override fun checkFramebufferStatus(): FramebufferStatus {
         debugPrint("glCheckFramebufferStatus")
-        return glCheckFramebufferStatus(GL_FRAMEBUFFER)
+        val glId = glCheckFramebufferStatus(GL_FRAMEBUFFER)
+        return FramebufferStatus.entries.firstOrNull { it.glId == glId } ?: FramebufferStatus.UNKNOWN_ERROR
     }
 
     override fun viewport(x: Int, y: Int, width: Int, height: Int) {
