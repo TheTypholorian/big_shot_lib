@@ -16,12 +16,6 @@ interface BigShotClientEntrypoint {
     fun registerDebugScreenInfo(factory: DebugScreenFactory) {
     }
 
-    fun registerDynamicBuffers(factory: DynamicBufferFactory) {
-    }
-
-    fun registerShaderMixins(factory: ShaderMixinFactory) {
-    }
-
     fun registerPanoramas(factory: PanoramaFactory) {
     }
 
@@ -43,14 +37,6 @@ interface BigShotClientEntrypoint {
 
         override fun registerDebugScreenInfo(factory: DebugScreenFactory) {
             entrypoints.forEach { it.registerDebugScreenInfo(factory) }
-        }
-
-        override fun registerDynamicBuffers(factory: DynamicBufferFactory) {
-            entrypoints.forEach { it.registerDynamicBuffers(factory) }
-        }
-
-        override fun registerShaderMixins(factory: ShaderMixinFactory) {
-            entrypoints.forEach { it.registerShaderMixins(factory) }
         }
 
         override fun registerPanoramas(factory: PanoramaFactory) {

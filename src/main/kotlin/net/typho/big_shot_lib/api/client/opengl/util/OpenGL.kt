@@ -551,7 +551,7 @@ interface OpenGL {
     /**
      * `glCheckFramebufferStatus(GL_FRAMEBUFFER)`
      */
-    fun checkFramebufferStatus(): Int
+    fun checkFramebufferStatus(): FramebufferStatus
 
     /**
      * `glViewport(x, y, width, height)`

@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders
 
-import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderMixinManager
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniformBufferPoint
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.NeoUniform
@@ -150,13 +149,10 @@ open class NeoShader(
         @JvmField
         protected val instance: NeoShader = NeoShader(key)
     ) {
-        @JvmField
-        protected val mixin = ShaderMixinManager.INSTANCE.create(key)
-
         fun attach(type: ShaderSourceType, code: String, includes: ShaderFileResolver) {
             instance.attach(
                 type,
-                mixin.apply(type, includes.loadIncludes(code, ShaderSourceKey(key, type).toString()))
+                includes.loadIncludes(code, ShaderSourceKey(key, type).toString())
             )
         }
 

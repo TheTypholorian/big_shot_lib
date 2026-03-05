@@ -3,13 +3,10 @@ package net.typho.big_shot_lib.api.client
 import net.minecraft.client.KeyMapping
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.opengl.shaders.NeoShaderRegistry
-import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderLocationMapperMixin
-import net.typho.big_shot_lib.api.client.opengl.shaders.mixins.ShaderVersionUpdaterMixin
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.KeyMappingFactory
 import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
-import net.typho.big_shot_lib.api.client.util.ShaderMixinFactory
 import net.typho.big_shot_lib.api.client.util.events.ClientEventFactory
 import org.lwjgl.glfw.GLFW.GLFW_KEY_KP_9
 
@@ -42,10 +39,5 @@ class BigShotApiClient : BigShotClientEntrypoint {
             GlStateStack.debugOut?.close()
             GlStateStack.debugOut = null
         }
-    }
-
-    override fun registerShaderMixins(factory: ShaderMixinFactory) {
-        factory.register(ShaderVersionUpdaterMixin, true)
-        factory.register(ShaderLocationMapperMixin, true)
     }
 }

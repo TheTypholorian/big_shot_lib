@@ -2,13 +2,13 @@ package net.typho.big_shot_lib.api.client.opengl.buffers
 
 import net.typho.big_shot_lib.api.client.opengl.buffers.ClearBit.Companion.initAndGetClearMask
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.opengl.util.FramebufferStatus
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.errors.IllegalTextureFormatException
 import net.typho.big_shot_lib.api.errors.IncompleteFramebufferException
 import org.lwjgl.opengl.GL11.GL_NONE
 import org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0
-import org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_COMPLETE
 
 open class NeoFramebuffer(
     glId: Int,
@@ -96,8 +96,8 @@ open class NeoFramebuffer(
 
         val status = OpenGL.INSTANCE.checkFramebufferStatus()
 
-        if (status != GL_FRAMEBUFFER_COMPLETE) {
-            throw IncompleteFramebufferException("0x${status.toString(16)}")
+        if (status != FramebufferStatus.COMPLETE) {
+            throw IncompleteFramebufferException(status)
         }
 
         unbind()

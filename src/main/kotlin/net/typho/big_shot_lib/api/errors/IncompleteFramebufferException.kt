@@ -1,7 +1,11 @@
 package net.typho.big_shot_lib.api.errors
 
+import net.typho.big_shot_lib.api.client.opengl.util.FramebufferStatus
+
 open class IncompleteFramebufferException : RuntimeException {
     constructor() : super()
+
+    constructor(status: FramebufferStatus) : this("${status.name}: ${status.description}")
 
     constructor(message: String?) : super(message)
 
