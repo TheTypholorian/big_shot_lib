@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client.util.events
 
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.world.level.Level
+import net.typho.big_shot_lib.api.client.opengl.buffers.GlFramebuffer
 import net.typho.big_shot_lib.api.client.opengl.state.Camera
 import org.joml.FrustumIntersection
 import org.joml.Matrix4f
@@ -26,5 +27,7 @@ data class RenderEventData(
     @JvmField
     val windowWidth: Int,
     @JvmField
-    val windowHeight: Int
+    val windowHeight: Int,
+    @JvmField
+    val target: GlFramebuffer
 )
