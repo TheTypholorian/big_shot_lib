@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.texture.AbstractTexture
+import net.minecraft.client.renderer.Sheets
 import net.minecraft.world.inventory.InventoryMenu
 import net.typho.big_shot_lib.BigShotLib.toMojang
 import net.typho.big_shot_lib.BigShotLib.toNeo
@@ -11,26 +11,48 @@ import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.TextureFormat
 import net.typho.big_shot_lib.api.client.opengl.util.TextureType
 import net.typho.big_shot_lib.api.client.opengl.util.TextureUtil
+import net.typho.big_shot_lib.api.client.util.quads.NeoAtlas
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
-import net.typho.big_shot_lib.mixin.util.TextureAtlasAccessor
 import org.lwjgl.opengl.GL11.*
-import java.awt.Dimension
 
 class TextureUtilImpl : TextureUtil {
-    private val textures = HashMap<AbstractTexture, GlTexture2D>()
-    override val blockAtlasId = InventoryMenu.BLOCK_ATLAS.toNeo()
+    override val blockAtlas: NeoAtlas
+        get() = getAtlas(InventoryMenu.BLOCK_ATLAS.toNeo())
+    override val signsAtlas: NeoAtlas
+        get() = getAtlas(Sheets.SIGN_SHEET.toNeo())
+    override val bannerPatternsAtlas: NeoAtlas
+        get() = getAtlas(Sheets.BANNER_SHEET.toNeo())
+    override val shieldPatternsAtlas: NeoAtlas
+        get() = getAtlas(Sheets.SHIELD_SHEET.toNeo())
+    override val chestAtlas: NeoAtlas
+        get() = getAtlas(Sheets.CHEST_SHEET.toNeo())
+    override val decoratedPotAtlas: NeoAtlas
+        get() = getAtlas(Sheets.DECORATED_POT_SHEET.toNeo())
+    override val shulkerBoxesAtlas: NeoAtlas
+        get() = getAtlas(Sheets.SHULKER_SHEET.toNeo())
+    override val bedsAtlas: NeoAtlas
+        get() = getAtlas(Sheets.BED_SHEET.toNeo())
+    override val particlesAtlas: NeoAtlas
+        get() = getAtlas(ResourceIdentifier("textures/atlas/particles.png"))
+    override val paintingsAtlas: NeoAtlas
+        get() = getAtlas(ResourceIdentifier("textures/atlas/paintings.png"))
+    override val mobEffectsAtlas: NeoAtlas
+        get() = getAtlas(ResourceIdentifier("textures/atlas/mob_effects.png"))
+    override val mapDecorationsAtlas: NeoAtlas
+        get() = getAtlas(ResourceIdentifier("textures/atlas/map_decorations.png"))
+    override val guiAtlas: NeoAtlas
+        get() = getAtlas(ResourceIdentifier("textures/atlas/gui.png"))
 
     override fun getMinecraftTexture(texture: ResourceIdentifier): GlTexture2D {
-        return textures.computeIfAbsent(Minecraft.getInstance().textureManager.getTexture(texture.toMojang())) { texture ->
-            texture.bind()
-            val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
-            GlStateStack.textures[TextureType.TEXTURE_2D]?.rebind()
-            return@computeIfAbsent NeoTexture2D(texture.id, TextureFormat.entries.first { it.internalId == format }, false)
-        }
+        val texture = Minecraft.getInstance().textureManager.getTexture(texture.toMojang())
+
+        texture.bind()
+        val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
+        GlStateStack.textures[TextureType.TEXTURE_2D]?.rebind()
+        return NeoTexture2D(texture.id, TextureFormat.entries.first { it.internalId == format }, false)
     }
 
-    override fun getTextureAtlasDimensions(atlas: ResourceIdentifier): Dimension {
-        val atlas = Minecraft.getInstance().modelManager.getAtlas(atlas.toMojang()) as TextureAtlasAccessor
-        return Dimension(atlas.width, atlas.height)
+    override fun getAtlas(texture: ResourceIdentifier): NeoAtlas {
+        return NeoAtlasImpl(Minecraft.getInstance().modelManager.getAtlas(texture.toMojang()))
     }
 }

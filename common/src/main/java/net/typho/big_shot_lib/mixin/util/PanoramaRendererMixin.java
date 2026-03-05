@@ -41,7 +41,7 @@ public class PanoramaRendererMixin {
                 );
             } else {
                 long time = System.currentTimeMillis();
-                long fadeTime = 1000; // TODO make configurable
+                long fade = panorama.fade == null ? Math.min(1000, panorama.interval) : panorama.fade;
                 int index = (int) ((time / panorama.interval) % panorama.textures.size());
 
                 original.call(
@@ -54,7 +54,7 @@ public class PanoramaRendererMixin {
 
                 long localTime = time % panorama.interval;
 
-                if (localTime - panorama.interval >= fadeTime) {
+                if (localTime - panorama.interval >= fade) {
                     original.call(
                             BigShotClientEventStorage.panoramaCubeMaps.get(
                                     panorama.textures.get(index == panorama.textures.size() - 1 ? 0 : (index + 1))
@@ -62,7 +62,7 @@ public class PanoramaRendererMixin {
                             mc,
                             pitch,
                             yaw,
-                            alpha * (localTime - panorama.interval) / fadeTime
+                            alpha * (localTime - panorama.interval) / fade
                     );
                 }
             }
