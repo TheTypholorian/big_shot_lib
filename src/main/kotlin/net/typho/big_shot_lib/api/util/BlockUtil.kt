@@ -17,7 +17,6 @@ interface BlockUtil {
     fun getBlockSettings(state: BlockState): BlockRenderSettings?
 
     fun shouldRenderFace(
-        state: BlockState,
         level: BlockGetter,
         pos: BlockPos,
         direction: Direction
