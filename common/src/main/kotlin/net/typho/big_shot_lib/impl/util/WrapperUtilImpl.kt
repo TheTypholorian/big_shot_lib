@@ -4,7 +4,6 @@ import com.mojang.blaze3d.opengl.GlConst
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.vertex.*
-import net.minecraft.client.model.geom.builders.UVPair
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
@@ -20,6 +19,7 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.*
 import net.typho.big_shot_lib.api.client.opengl.buffers.ClearBit.Companion.initAndGetClearMask
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.*
+import net.typho.big_shot_lib.api.client.util.quads.NeoBakedQuad
 import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.NeoRegistryAccess
 import net.typho.big_shot_lib.api.util.WrapperUtil
@@ -28,8 +28,6 @@ import net.typho.big_shot_lib.api.util.resources.NeoResourceManager
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.impl.meshes.NeoVertexFormatImpl
-import org.joml.Vector2f
-import org.joml.Vector3f
 import org.lwjgl.opengl.GL11.*
 import java.util.*
 import java.util.function.Predicate
@@ -115,17 +113,7 @@ class WrapperUtilImpl : WrapperUtil {
 
                         stack.pop()
 
-                        val list = mutableListOf<GlFramebufferAttachment>(
-                            NeoTexture2D(
-                                texId,
-                                TextureFormat.entries.first { it.internalId == format },
-                                false
-                            )
-                        )
-
-                        list.addAll(DynamicBufferRegistry.buffers)
-
-                        return list
+                        return listOf(NeoTexture2D(texId, TextureFormat.entries.first { it.internalId == format }, false))
                     }
                 override val depthAttachment: GlFramebufferAttachment?
                     get() {
@@ -244,24 +232,8 @@ class WrapperUtilImpl : WrapperUtil {
         }
     }
 
-    override fun wrap(quad: BakedQuad): TexturedQuad {
-        fun uv(packed: Long): Vector2f {
-            return Vector2f(UVPair.unpackU(packed), UVPair.unpackV(packed))
-        }
-
-        return TexturedQuad(
-            Vector3f(quad.position0),
-            Vector3f(quad.position1),
-            Vector3f(quad.position2),
-            Vector3f(quad.position3),
-
-            uv(quad.packedUV0),
-            uv(quad.packedUV1),
-            uv(quad.packedUV2),
-            uv(quad.packedUV3),
-
-            quad.tintIndex
-        )
+    override fun wrap(quad: BakedQuad): NeoBakedQuad {
+        return NeoBakedQuadImpl(quad)
     }
 
     override fun wrap(consumer: VertexConsumer): NeoVertexConsumer {

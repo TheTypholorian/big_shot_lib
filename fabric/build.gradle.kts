@@ -63,17 +63,7 @@ dependencies {
         api(dependency)
     }
 
-    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3")
-    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3:natives-windows")
-    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3:natives-linux")
-    externalDependency("org.lwjgl:lwjgl-shaderc:3.3.3:natives-macos")
-
-    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3")
-    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-windows")
-    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-linux")
-    externalDependency("org.lwjgl:lwjgl-spvc:3.3.3:natives-macos")
-
-    modCompileOnly(libs.sodium)
+    modImplementation(libs.sodium)
 
     modImplementation(libs.bigShotApi)
     include(libs.bigShotApi) {

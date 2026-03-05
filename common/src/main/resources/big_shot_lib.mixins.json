@@ -5,15 +5,7 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "buffers.sodium.BlockRendererMixin",
-    "buffers.sodium.ChunkVertexConsumerMixin",
-    "buffers.sodium.ChunkVertexEncoderVertexMixin",
-    "buffers.sodium.CompactChunkVertexMixin",
-    "buffers.sodium.DefaultFluidRendererMixin",
-    "event.LevelChunkMixin",
-    "shaders.mixins.GlShaderMixin",
-    "shaders.mixins.GlVertexFormatAccessor",
-    "shaders.mixins.ShaderChunkRendererMixin"
+    "event.LevelChunkMixin"
   ],
   "client": [
     "DebugScreenEntriesAccessor",
@@ -26,11 +18,7 @@
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
     "util.CubeMapAccessor",
-    "util.GlTextureMixin",
-    "util.GlTextureViewMixin",
-    "util.MultiBufferSourceBufferSourceMixin",
     "util.PanoramaRendererMixin",
-    "util.RenderTargetMixin",
     "util.TextureAtlasAccessor",
     "util.TitleScreenMixin"
   ],
