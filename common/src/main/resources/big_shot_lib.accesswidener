@@ -1,7 +1,14 @@
 accessWidener v2 named
 
-accessible class com/mojang/blaze3d/opengl/GlDevice$ShaderCompilationKey
-accessible class net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard
-accessible field net/minecraft/client/renderer/RenderType$CompositeRenderType state Lnet/minecraft/client/renderer/RenderType$CompositeState;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState textureState Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
-accessible method net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible class com/mojang/blaze3d/platform/GlStateManager$TextureState
+accessible class com/mojang/blaze3d/platform/GlStateManager$BlendState
+accessible class com/mojang/blaze3d/platform/GlStateManager$DepthState
+accessible class com/mojang/blaze3d/platform/GlStateManager$CullState
+accessible class com/mojang/blaze3d/platform/GlStateManager$PolygonOffsetState
+accessible class com/mojang/blaze3d/platform/GlStateManager$ColorLogicState
+accessible class com/mojang/blaze3d/platform/GlStateManager$StencilFunc
+accessible class com/mojang/blaze3d/platform/GlStateManager$StencilState
+accessible class com/mojang/blaze3d/platform/GlStateManager$ScissorState
+accessible class com/mojang/blaze3d/platform/GlStateManager$ColorMask
+accessible class com/mojang/blaze3d/platform/GlStateManager$BooleanState
+accessible field com/mojang/blaze3d/platform/GlStateManager$BooleanState enabled Z

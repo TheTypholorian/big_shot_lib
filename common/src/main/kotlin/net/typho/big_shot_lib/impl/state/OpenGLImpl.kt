@@ -13,6 +13,7 @@ import net.typho.big_shot_lib.api.errors.ShaderCompileException
 import net.typho.big_shot_lib.api.errors.ShaderLinkException
 import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.mixin.util.GlStateManagerAccessor
 import org.joml.*
 import org.lwjgl.opengl.ARBImaging.GL_BLEND_COLOR
 import org.lwjgl.opengl.ARBImaging.GL_BLEND_EQUATION
@@ -67,7 +68,15 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun isEnabled(flag: GlFlag): Boolean {
-        return glIsEnabled(flag.glId)
+        return when (flag) {
+            GlFlag.SCISSOR_TEST -> GlStateManagerAccessor.getScissor().mode.enabled
+            GlFlag.DEPTH_TEST -> GlStateManagerAccessor.getDepth().mode.enabled
+            GlFlag.BLEND -> GlStateManagerAccessor.getBlend().mode.enabled
+            GlFlag.CULL_FACE -> GlStateManagerAccessor.getCull().enable.enabled
+            GlFlag.POLYGON_OFFSET -> GlStateManagerAccessor.getPolygonOffset().fill.enabled
+            GlFlag.COLOR_LOGIC_OP -> GlStateManagerAccessor.getColorLogic().enable.enabled
+            else -> glIsEnabled(flag.glId)
+        }
     }
 
     override fun activeTexture(unit: Int) {
@@ -285,8 +294,8 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getBlendFunction(): BlendFunction.Basic {
-        val src = glGetInteger(GL_BLEND_SRC)
-        val dst = glGetInteger(GL_BLEND_DST)
+        val src = GlStateManagerAccessor.getBlend().srcRgb
+        val dst = GlStateManagerAccessor.getBlend().dstRgb
 
         return BlendFunction.Basic(
             BlendFactor.entries.first { it.glId == src },
@@ -305,10 +314,10 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getBlendFunctionSeparate(): BlendFunction.Separate {
-        val src = glGetInteger(GL_BLEND_SRC_RGB)
-        val dst = glGetInteger(GL_BLEND_DST_RGB)
-        val srcA = glGetInteger(GL_BLEND_SRC_ALPHA)
-        val dstA = glGetInteger(GL_BLEND_DST_ALPHA)
+        val src = GlStateManagerAccessor.getBlend().srcRgb
+        val dst = GlStateManagerAccessor.getBlend().dstRgb
+        val srcA = GlStateManagerAccessor.getBlend().srcAlpha
+        val dstA = GlStateManagerAccessor.getBlend().dstAlpha
 
         return BlendFunction.Separate(
             BlendFactor.entries.first { it.glId == src },
@@ -373,11 +382,8 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getColorMask(): ColorMask {
-        MemoryStack.stackPush().use { stack ->
-            val mask = stack.malloc(4)
-            glGetBooleanv(GL_COLOR_WRITEMASK, mask)
-            return ColorMask(mask.get(0) == 1.toByte(), mask.get(1) == 1.toByte(), mask.get(2) == 1.toByte(), mask.get(3) == 1.toByte())
-        }
+        val mask = GlStateManagerAccessor.getColorMask()
+        return ColorMask(mask.red, mask.green, mask.blue, mask.alpha)
     }
 
     override fun compileShaderSource(glId: Int, type: ShaderSourceType, name: ResourceIdentifier) {
@@ -432,7 +438,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getCullFace(): CullFace {
-        val id = glGetInteger(GL_CULL_FACE_MODE)
+        val id = GlStateManagerAccessor.getCull().mode
         return CullFace.entries.first { it.glId == id }
     }
 
@@ -477,7 +483,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getDepthFunc(): ComparisonFunc {
-        val id = glGetInteger(GL_DEPTH_FUNC)
+        val id = GlStateManagerAccessor.getDepth().func
         return ComparisonFunc.entries.first { it.glId == id }
     }
 
@@ -487,7 +493,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getDepthMask(): Boolean {
-        return glGetBoolean(GL_DEPTH_WRITEMASK)
+        return GlStateManagerAccessor.getDepth().mask
     }
 
     override fun detachShaderSource(programId: Int, glId: Int) {
@@ -528,8 +534,8 @@ class OpenGLImpl : OpenGL {
 
     override fun getPolygonOffset(): PolygonOffset {
         return PolygonOffset(
-            glGetFloat(GL_POLYGON_OFFSET_FACTOR),
-            glGetFloat(GL_POLYGON_OFFSET_UNITS)
+            GlStateManagerAccessor.getPolygonOffset().factor,
+            GlStateManagerAccessor.getPolygonOffset().units
         )
     }
 
@@ -679,13 +685,11 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getStencilFunc(): StencilFunc {
-        val func = glGetInteger(GL_STENCIL_FUNC)
-        val ref = glGetInteger(GL_STENCIL_REF)
-        val mask = glGetInteger(GL_STENCIL_VALUE_MASK)
+        val stencil = GlStateManagerAccessor.getStencil().func
         return StencilFunc(
-            ComparisonFunc.entries.first { it.glId == func },
-            ref,
-            mask
+            ComparisonFunc.entries.first { it.glId == stencil.func },
+            stencil.ref,
+            stencil.mask
         )
     }
 
@@ -695,7 +699,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getStencilMask(): Int {
-        return glGetInteger(GL_STENCIL_WRITEMASK)
+        return GlStateManagerAccessor.getStencil().mask
     }
 
     override fun stencilOp(op: StencilOp) {
@@ -704,9 +708,9 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getStencilOp(): StencilOp {
-        val stencilFail = glGetInteger(GL_STENCIL_FAIL)
-        val depthFail = glGetInteger(GL_STENCIL_PASS_DEPTH_FAIL)
-        val depthPass = glGetInteger(GL_STENCIL_PASS_DEPTH_PASS)
+        val stencilFail = GlStateManagerAccessor.getStencil().fail
+        val depthFail = GlStateManagerAccessor.getStencil().zfail
+        val depthPass = GlStateManagerAccessor.getStencil().zpass
         return StencilOp(
             IntAction.entries.first { it.glId == stencilFail },
             IntAction.entries.first { it.glId == depthFail },
