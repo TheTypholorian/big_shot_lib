@@ -14,6 +14,7 @@
     "event.MinecraftMixin",
     "registration.DebugScreenOverlayMixin",
     "util.CubeMapAccessor",
+    "util.GlStateManagerAccessor",
     "util.PanoramaRendererMixin",
     "util.TextureAtlasAccessor",
     "util.TitleScreenMixin"
