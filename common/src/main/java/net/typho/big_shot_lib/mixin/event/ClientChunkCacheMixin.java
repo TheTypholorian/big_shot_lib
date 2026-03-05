@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 public class ClientChunkCacheMixin {
     @Shadow
     @Final
-    private ClientLevel level;
+    ClientLevel level;
 
     @Inject(
             method = "drop",
