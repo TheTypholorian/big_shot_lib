@@ -29,6 +29,7 @@ class BlockUtilImpl : BlockUtil {
         return state.getOffset(pos).toVector3f()
     }
 
+    @Suppress("UNCHECKED")
     override fun getBlockRenderSettings(state: BlockState): BlockRenderSettings {
         return when (ItemBlockRenderTypes.getChunkRenderType(state)) {
             RenderType.solid() -> BlockRenderSettings.SOLID
