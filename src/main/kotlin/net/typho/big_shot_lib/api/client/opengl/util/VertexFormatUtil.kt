@@ -30,6 +30,7 @@ object VertexFormatUtil {
             val name = json.asString
 
             return when (name.uppercase()) {
+                "BLIT_SCREEN" -> NeoVertexFormat.BLIT_SCREEN
                 "POSITION_COLOR_TEXTURE_LIGHT_NORMAL", "BLOCK" -> NeoVertexFormat.BLOCK
                 "POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL", "NEW_ENTITY" -> NeoVertexFormat.NEW_ENTITY
                 "POSITION_TEXTURE_COLOR_LIGHT", "PARTICLE" -> NeoVertexFormat.PARTICLE

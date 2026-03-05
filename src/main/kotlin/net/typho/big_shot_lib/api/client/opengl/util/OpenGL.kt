@@ -145,8 +145,8 @@ interface OpenGL {
     fun polygonOffset(offset: PolygonOffset)
 
     /**
-     * `glGetInteger(GL_POLYGON_OFFSET_FACTOR)`
-     * `glGetInteger(GL_POLYGON_OFFSET_UNITS)`
+     * `glGetFloat(GL_POLYGON_OFFSET_FACTOR)`
+     * `glGetFloat(GL_POLYGON_OFFSET_UNITS)`
      */
     fun getPolygonOffset(): PolygonOffset
 

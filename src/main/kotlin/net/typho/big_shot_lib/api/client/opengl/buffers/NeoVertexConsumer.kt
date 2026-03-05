@@ -70,8 +70,18 @@ interface NeoVertexConsumer {
         return this
     }
 
+    fun overlayUV(uv: Vector2ic): NeoVertexConsumer {
+        overlayUV(uv.x(), uv.y())
+        return this
+    }
+
     fun overlayUV(packed: Int): NeoVertexConsumer {
         overlayUV(packed and 0xFFFF, (packed shr 16) and 0xFFFF)
+        return this
+    }
+
+    fun lightUV(uv: Vector2ic): NeoVertexConsumer {
+        lightUV(uv.x(), uv.y())
         return this
     }
 

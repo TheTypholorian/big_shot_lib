@@ -17,7 +17,7 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.opengl.util.GlIndexType
 import net.typho.big_shot_lib.api.client.opengl.util.GlShapeType
-import net.typho.big_shot_lib.api.client.opengl.util.TexturedQuad
+import net.typho.big_shot_lib.api.client.util.quads.NeoBakedQuad
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoResourceManager
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
@@ -31,7 +31,7 @@ interface WrapperUtil {
 
     fun wrap(access: RegistryAccess): NeoRegistryAccess
 
-    fun wrap(quad: BakedQuad): TexturedQuad
+    fun wrap(quad: BakedQuad): NeoBakedQuad
 
     fun wrap(consumer: VertexConsumer): NeoVertexConsumer
 

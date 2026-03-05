@@ -11,7 +11,9 @@ data class PanoramaSet(
     @JvmField
     val textures: List<PanoramaTexture>,
     @JvmField
-    val interval: Long? = 5000
+    val interval: Long? = 5000,
+    @JvmField
+    val fade: Long? = 1000
 ) : NamedResource {
     constructor(
         location: ResourceIdentifier,

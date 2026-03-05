@@ -8,6 +8,7 @@ import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.opengl.buffers.Mesh
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
+import net.typho.big_shot_lib.api.client.util.quads.NeoBakedQuad
 import org.joml.Vector3f
 import java.util.function.BiConsumer
 
@@ -16,7 +17,7 @@ interface MeshUtil {
         state: BlockState,
         level: Level,
         pos: BlockPos,
-        out: BiConsumer<Direction?, List<TexturedQuad>>
+        out: BiConsumer<Direction?, List<NeoBakedQuad>>
     )
 
     companion object {
