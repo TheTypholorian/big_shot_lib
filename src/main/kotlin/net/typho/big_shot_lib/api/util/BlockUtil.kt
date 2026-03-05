@@ -14,7 +14,7 @@ interface BlockUtil {
 
     fun getOffset(state: BlockState, pos: BlockPos, level: Level): Vector3f
 
-    fun getBlockSettings(state: BlockState): BlockRenderSettings?
+    fun getBlockRenderSettings(state: BlockState): BlockRenderSettings?
 
     fun shouldRenderFace(
         level: BlockGetter,
