@@ -48,9 +48,9 @@ class BlockUtilImpl : BlockUtil {
         return Block.shouldRenderFace(
             level.getBlockState(pos),
             level,
-            pos.relative(direction),
+            pos,
             direction,
-            pos
+            pos.relative(direction),
         )
     }
 }
