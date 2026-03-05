@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.impl.state
 
+import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.Minecraft
@@ -28,6 +29,11 @@ import java.nio.ByteBuffer
 import java.util.*
 
 class OpenGLImpl : OpenGL {
+    companion object {
+        @JvmField
+        var currentTarget: RenderTarget? = null
+    }
+
     private val listeners = LinkedList<OpenGL.DebugListener>()
 
     fun debugPrint(method: String, vararg args: Any?) {
