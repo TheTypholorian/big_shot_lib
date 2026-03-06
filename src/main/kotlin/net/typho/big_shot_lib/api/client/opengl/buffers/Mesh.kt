@@ -57,7 +57,7 @@ open class Mesh(
         format.initVertexArrayState()
         vbo.unbind()
 
-        ebo.bind()
+        ebo.bind(false)
 
         val buffer = built.indexBuffer()
 
@@ -68,7 +68,6 @@ open class Mesh(
         }
 
         vao.unbind()
-        ebo.unbind()
     }
 
     inner class Builder(

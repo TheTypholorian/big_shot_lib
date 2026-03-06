@@ -19,7 +19,8 @@ interface BlockUtil {
     fun shouldRenderFace(
         level: BlockGetter,
         pos: BlockPos,
-        direction: Direction
+        direction: Direction,
+        state: BlockState = level.getBlockState(pos)
     ): Boolean
 
     companion object {

@@ -30,7 +30,7 @@ enum class GlShapeType(
 
                 var j = 0
                 var k = 0
-                for (i in 0 until array.size) {
+                for (i in 0 until count / 6) {
                     array[k] = j
                     array[k + 1] = j + 1
                     array[k + 2] = j + 2
@@ -49,7 +49,7 @@ enum class GlShapeType(
 
                 var j = 0
                 var k = 0
-                for (i in 0 until array.size) {
+                for (i in 0 until count / 6) {
                     array[k] = j
                     array[k + 1] = j + 1
                     array[k + 2] = j + 2
