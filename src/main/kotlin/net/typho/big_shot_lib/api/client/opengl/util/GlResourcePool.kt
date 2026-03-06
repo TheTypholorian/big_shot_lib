@@ -24,6 +24,7 @@ open class GlResourcePool<T>(
     fun poll(check: Predicate<T> = Predicate { true }): Handle {
         for (entry in resources) {
             if (entry.value && check.test(entry.key)) {
+                entry.setValue(false)
                 return Handle(entry.key)
             }
         }

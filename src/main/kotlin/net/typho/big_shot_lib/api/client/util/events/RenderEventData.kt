@@ -25,9 +25,5 @@ data class RenderEventData(
     @JvmField
     val frustum: FrustumIntersection,
     @JvmField
-    val windowWidth: Int,
-    @JvmField
-    val windowHeight: Int,
-    @JvmField
     val target: GlFramebuffer
 )

@@ -4,7 +4,6 @@ import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 import org.lwjgl.opengl.GL11.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.util.stream.IntStream
 
 enum class GlShapeType(
     override val glId: Int,
@@ -24,15 +23,47 @@ enum class GlShapeType(
     TRIANGLE_FAN(GL_TRIANGLE_FAN, 3, 1, true),
     QUADS(GL_TRIANGLES, 4, 4, false);
 
-    fun streamIndices(count: Int): IntStream {
+    fun makeIndices(count: Int): IntArray {
         return when (this) {
-            QUADS -> IntStream.range(0, count / 6)
-                .map { i -> i * 4 }
-                .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 2, i + 3, i) }
-            LINES -> IntStream.range(0, count / 6)
-                .map { i -> i * 4 }
-                .flatMap { i -> IntStream.of(i, i + 1, i + 2, i + 3, i + 2, i + 1) }
-            else -> IntStream.range(0, count)
+            QUADS -> {
+                val array = IntArray(count / 6)
+
+                var j = 0
+                var k = 0
+                for (i in 0 until array.size) {
+                    array[k] = j
+                    array[k + 1] = j + 1
+                    array[k + 2] = j + 2
+                    array[k + 3] = j + 2
+                    array[k + 4] = j + 3
+                    array[k + 5] = j
+
+                    j += 4
+                    k += 6
+                }
+
+                array
+            }
+            LINES -> {
+                val array = IntArray(count / 6)
+
+                var j = 0
+                var k = 0
+                for (i in 0 until array.size) {
+                    array[k] = j
+                    array[k + 1] = j + 1
+                    array[k + 2] = j + 2
+                    array[k + 3] = j + 3
+                    array[k + 4] = j + 2
+                    array[k + 5] = j + 1
+
+                    j += 4
+                    k += 6
+                }
+
+                array
+            }
+            else -> IntArray(count) { it }
         }
     }
 
@@ -51,27 +82,15 @@ enum class GlShapeType(
     }
 
     fun uploadIndices(count: Int, type: GlIndexType, out: BufferUploader) {
+        val buffer = ByteBuffer.allocateDirect(count * type.sizeBytes)
+            .order(ByteOrder.nativeOrder())
+
         when (type) {
-            GlIndexType.UBYTE -> out.upload(
-                ByteBuffer.allocateDirect(count * type.sizeBytes)
-                    .order(ByteOrder.nativeOrder())
-                    .put(streamIndices(count).toArray().map { it.toByte() }.toByteArray())
-                    .flip()
-            )
-            GlIndexType.USHORT -> out.upload(
-                ByteBuffer.allocateDirect(count * type.sizeBytes)
-                    .order(ByteOrder.nativeOrder())
-                    .asShortBuffer()
-                    .put(streamIndices(count).toArray().map { it.toShort() }.toShortArray())
-                    .flip()
-            )
-            GlIndexType.UINT -> out.upload(
-                ByteBuffer.allocateDirect(count * type.sizeBytes)
-                    .order(ByteOrder.nativeOrder())
-                    .asIntBuffer()
-                    .put(streamIndices(count).toArray())
-                    .flip()
-            )
+            GlIndexType.UBYTE -> makeIndices(count).forEach { buffer.put(it.toByte()) }
+            GlIndexType.USHORT -> makeIndices(count).forEach { buffer.putShort(it.toShort()) }
+            GlIndexType.UINT -> makeIndices(count).forEach { buffer.putInt(it) }
         }
+
+        out.upload(buffer.flip())
     }
 }
