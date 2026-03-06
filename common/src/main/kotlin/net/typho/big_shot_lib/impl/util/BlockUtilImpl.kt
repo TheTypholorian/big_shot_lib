@@ -43,10 +43,11 @@ class BlockUtilImpl : BlockUtil {
     override fun shouldRenderFace(
         level: BlockGetter,
         pos: BlockPos,
-        direction: Direction
+        direction: Direction,
+        state: BlockState
     ): Boolean {
         return Block.shouldRenderFace(
-            level.getBlockState(pos),
+            state,
             level,
             pos,
             direction,
