@@ -26,7 +26,7 @@ enum class GlShapeType(
     fun makeIndices(count: Int): IntArray {
         return when (this) {
             QUADS -> {
-                val array = IntArray(count / 6)
+                val array = IntArray(count)
 
                 var j = 0
                 var k = 0
@@ -45,7 +45,7 @@ enum class GlShapeType(
                 array
             }
             LINES -> {
-                val array = IntArray(count / 6)
+                val array = IntArray(count)
 
                 var j = 0
                 var k = 0
