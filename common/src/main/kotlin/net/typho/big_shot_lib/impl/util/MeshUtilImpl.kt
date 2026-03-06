@@ -21,35 +21,50 @@ class MeshUtilImpl : MeshUtil {
         pos: BlockPos,
         out: BiConsumer<Direction?, List<NeoBakedQuad>>
     ) {
-        val directions = arrayOf(
-            Direction.DOWN,
-            Direction.UP,
-            Direction.NORTH,
-            Direction.SOUTH,
-            Direction.WEST,
-            Direction.EAST,
-            null
-        )
-
         val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
-        val random = RandomSource.create()
         val seed = state.getSeed(pos)
 
-        for (direction in directions) {
+        fun face(face: Direction?, random: RandomSource) {
             random.setSeed(seed)
+            val quads = model.getQuads(state, face, random)
             out.accept(
-                direction,
-                model.getQuads(state, direction, random)
-                    .map {
-                        if (offset.x == 0f && offset.y == 0f && offset.z == 0f)
-                            WrapperUtil.INSTANCE.wrap(it)
-                        else
-                            WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
-                                vertex.withPosition { pos -> pos.add(offset, Vector3f()) }
-                            }
-                    }
+                face,
+                quads.mapTo(ArrayList(quads.size)) { WrapperUtil.INSTANCE.wrap(it) }
             )
+        }
+
+        fun faceWithOffset(face: Direction?, random: RandomSource) {
+            random.setSeed(seed)
+            val quads = model.getQuads(state, face, random)
+            out.accept(
+                face,
+                quads.mapTo(ArrayList(quads.size)) {
+                    WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
+                        vertex.withPosition { pos -> pos.add(offset, Vector3f()) }
+                    }
+                }
+            )
+        }
+
+        val random = RandomSource.create(seed)
+
+        if (offset.equals(0f, 0f, 0f)) {
+            face(Direction.DOWN, random)
+            face(Direction.UP, random.also { it.setSeed(seed) })
+            face(Direction.NORTH, random.also { it.setSeed(seed) })
+            face(Direction.SOUTH, random.also { it.setSeed(seed) })
+            face(Direction.WEST, random.also { it.setSeed(seed) })
+            face(Direction.EAST, random.also { it.setSeed(seed) })
+            face(null, random.also { it.setSeed(seed) })
+        } else {
+            faceWithOffset(Direction.DOWN, random)
+            faceWithOffset(Direction.UP, random.also { it.setSeed(seed) })
+            faceWithOffset(Direction.NORTH, random.also { it.setSeed(seed) })
+            faceWithOffset(Direction.SOUTH, random.also { it.setSeed(seed) })
+            faceWithOffset(Direction.WEST, random.also { it.setSeed(seed) })
+            faceWithOffset(Direction.EAST, random.also { it.setSeed(seed) })
+            faceWithOffset(null, random.also { it.setSeed(seed) })
         }
     }
 }
