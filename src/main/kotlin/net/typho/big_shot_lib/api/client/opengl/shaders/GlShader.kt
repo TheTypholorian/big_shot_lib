@@ -20,7 +20,7 @@ interface GlShader : GlBindable, NamedResource, NativeResource {
         time: Float = glfwGetTime().toFloat()
     ) {
         getUniform("GLFWTime")?.setValue(time)
-        getUniform("ScreenSize")?.setValue(data.windowWidth.toFloat(), data.windowHeight.toFloat())
+        getUniform("ScreenSize")?.setValue(data.target.width.toFloat(), data.target.height.toFloat())
         getUniform("ProjMat")?.setValue(data.projMat)
         getUniform("ModelViewMat")?.setValue(data.modelViewMat)
     }
