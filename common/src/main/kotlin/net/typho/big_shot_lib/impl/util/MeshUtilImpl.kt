@@ -21,36 +21,45 @@ class MeshUtilImpl : MeshUtil {
         pos: BlockPos,
         out: BiConsumer<Direction?, List<NeoBakedQuad>>
     ) {
-        val directions = arrayOf(
-            Direction.DOWN,
-            Direction.UP,
-            Direction.NORTH,
-            Direction.SOUTH,
-            Direction.WEST,
-            Direction.EAST,
-            null
-        )
-
         val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
-        val random = RandomSource.create()
-        val seed = state.getSeed(pos)
-        val parts = model.collectParts(random)
+        val parts = model.collectParts(RandomSource.create(state.getSeed(pos)))
 
-        for (direction in directions) {
-            random.setSeed(seed)
+        fun face(face: Direction?) {
             out.accept(
-                direction,
-                parts.flatMap { it.getQuads(direction) }
-                    .map {
-                        if (offset.x == 0f && offset.y == 0f && offset.z == 0f)
-                            WrapperUtil.INSTANCE.wrap(it)
-                        else
-                            WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
-                                vertex.withPosition { pos -> pos.add(offset, Vector3f()) }
-                            }
-                    }
+                face,
+                quads.mapTo(ArrayList(quads.size)) { WrapperUtil.INSTANCE.wrap(it) }
             )
+        }
+
+        fun faceWithOffset(face: Direction?) {
+            val quads = parts.flatMap { it.getQuads(face) }
+            out.accept(
+                face,
+                quads.mapTo(ArrayList(quads.size)) {
+                    WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
+                        vertex.withPosition { pos -> pos.add(offset, Vector3f()) }
+                    }
+                }
+            )
+        }
+
+        if (offset.equals(0f, 0f, 0f)) {
+            face(Direction.DOWN)
+            face(Direction.UP)
+            face(Direction.NORTH)
+            face(Direction.SOUTH)
+            face(Direction.WEST)
+            face(Direction.EAST)
+            face(null)
+        } else {
+            faceWithOffset(Direction.DOWN)
+            faceWithOffset(Direction.UP)
+            faceWithOffset(Direction.NORTH)
+            faceWithOffset(Direction.SOUTH)
+            faceWithOffset(Direction.WEST)
+            faceWithOffset(Direction.EAST)
+            faceWithOffset(null)
         }
     }
 }
