@@ -7,7 +7,6 @@ import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LevelTargetBundle;
@@ -88,8 +87,6 @@ public class LevelRendererMixin {
                             .mulLocal(iProj.mul(projectionMatrix, new Matrix4f()))
                             .invert(),
                     new FrustumIntersection(projectionMatrix.mul(frustum, new Matrix4f())),
-                    Minecraft.getInstance().getMainRenderTarget().width,
-                    Minecraft.getInstance().getMainRenderTarget().height,
                     OpenGLImpl.currentTarget == null ? GlFramebuffer.MAIN : WrapperUtil.INSTANCE.wrap(OpenGLImpl.currentTarget)
             );
             GlFlag.BLEND.disable();
