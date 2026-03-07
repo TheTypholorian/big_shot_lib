@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 import net.minecraft.client.renderer.texture.TextureAtlas
+import net.typho.big_shot_lib.BigShotLib.glId
 import net.typho.big_shot_lib.BigShotLib.toNeo
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
@@ -34,7 +35,7 @@ data class NeoAtlasImpl(
     override val type: TextureType
         get() = TextureType.TEXTURE_2D
     override val glId: Int
-        get() = atlas.id
+        get() = atlas.texture.glId()
 
     override fun attachToFramebuffer(attachment: Int) {
         OpenGL.INSTANCE.attachFramebufferTexture2D(attachment, type, glId)
