@@ -26,6 +26,7 @@ class MeshUtilImpl : MeshUtil {
         val parts = model.collectParts(RandomSource.create(state.getSeed(pos)))
 
         fun face(face: Direction?) {
+            val quads = parts.flatMap { it.getQuads(face) }
             out.accept(
                 face,
                 quads.mapTo(ArrayList(quads.size)) { WrapperUtil.INSTANCE.wrap(it) }

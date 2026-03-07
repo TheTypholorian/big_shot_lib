@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.impl.state
 
 import com.mojang.blaze3d.opengl.GlStateManager
-import com.mojang.blaze3d.pipeline.RenderTarget
 import net.typho.big_shot_lib.BigShotLib
 import net.typho.big_shot_lib.api.client.opengl.buffers.BufferType
 import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
@@ -28,11 +27,6 @@ import java.nio.ByteBuffer
 import java.util.*
 
 class OpenGLImpl : OpenGL {
-    companion object {
-        @JvmField
-        var currentTarget: RenderTarget? = null
-    }
-
     private val listeners = LinkedList<OpenGL.DebugListener>()
 
     fun debugPrint(method: String, vararg args: Any?) {
@@ -444,7 +438,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getCullFace(): CullFace {
-        val id = GlStateManagerAccessor.getCull().mode
+        val id = glGetInteger(GL_CULL_FACE_MODE)
         return CullFace.entries.first { it.glId == id }
     }
 
@@ -691,11 +685,13 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getStencilFunc(): StencilFunc {
-        val stencil = GlStateManagerAccessor.getStencil().func
+        val func = glGetInteger(GL_STENCIL_FUNC)
+        val ref = glGetInteger(GL_STENCIL_REF)
+        val mask = glGetInteger(GL_STENCIL_VALUE_MASK)
         return StencilFunc(
-            ComparisonFunc.entries.first { it.glId == stencil.func },
-            stencil.ref,
-            stencil.mask
+            ComparisonFunc.entries.first { it.glId == func },
+            ref,
+            mask
         )
     }
 
@@ -705,7 +701,7 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getStencilMask(): Int {
-        return GlStateManagerAccessor.getStencil().mask
+        return glGetInteger(GL_STENCIL_WRITEMASK)
     }
 
     override fun stencilOp(op: StencilOp) {
@@ -714,9 +710,9 @@ class OpenGLImpl : OpenGL {
     }
 
     override fun getStencilOp(): StencilOp {
-        val stencilFail = GlStateManagerAccessor.getStencil().fail
-        val depthFail = GlStateManagerAccessor.getStencil().zfail
-        val depthPass = GlStateManagerAccessor.getStencil().zpass
+        val stencilFail = glGetInteger(GL_STENCIL_FAIL)
+        val depthFail = glGetInteger(GL_STENCIL_PASS_DEPTH_FAIL)
+        val depthPass = glGetInteger(GL_STENCIL_PASS_DEPTH_PASS)
         return StencilOp(
             IntAction.entries.first { it.glId == stencilFail },
             IntAction.entries.first { it.glId == depthFail },

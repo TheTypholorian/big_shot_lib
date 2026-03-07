@@ -1,8 +1,6 @@
 package net.typho.big_shot_lib.impl.util
 
-import com.mojang.blaze3d.opengl.GlConst
 import com.mojang.blaze3d.pipeline.RenderTarget
-import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.vertex.*
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
@@ -36,21 +34,6 @@ import java.util.stream.Stream
 import kotlin.jvm.optionals.getOrNull
 
 class WrapperUtilImpl : WrapperUtil {
-    companion object {
-        @JvmField
-        val fboCache = HashMap<RenderTarget, GlFramebuffer>()
-        private val textureCache = HashMap<GpuTexture, NeoTexture2D>()
-
-        @JvmStatic
-        fun mojangTextureToNeo(texture: GpuTexture): NeoTexture2D {
-            return textureCache.computeIfAbsent(texture) { mojTex ->
-                val glTexture = mojTex as GlTexture
-                val formatId = GlConst.toGlExternalId(mojTex.format)
-                return@computeIfAbsent NeoTexture2D(glTexture.glId(), TextureFormat.entries.first { it.internalId == formatId }, false)
-            }
-        }
-    }
-
     override fun wrap(manager: ResourceManager): NeoResourceManager {
         return object : NeoResourceManager {
             override fun getNamespaces(): MutableSet<String> {
@@ -100,28 +83,24 @@ class WrapperUtilImpl : WrapperUtil {
     }
 
     override fun wrap(target: RenderTarget): GlFramebuffer {
-        return fboCache.computeIfAbsent(target) {
-            object : GlFramebuffer {
-                override val colorAttachments: List<GlFramebufferAttachment>
-                    get() {
-                        val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
-                        val texId = (target.colorTexture as GlTexture).glId()
+        return object : GlFramebuffer {
+            override val colorAttachments: List<GlFramebufferAttachment>
+                get() {
+                    val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
+                    val texId = target.colorTexture!!.glId()
 
-                        stack.push(texId)
+                    stack.push(texId)
 
-                        val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
+                    val format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT)
 
-                        stack.pop()
+                    stack.pop()
 
-                        return listOf(NeoTexture2D(texId, TextureFormat.entries.first { it.internalId == format }, false))
-                    }
-                override val depthAttachment: GlFramebufferAttachment?
-                    get() {
-                        if (target.depthTexture == null) {
-                            return null
-                        }
-
-                        val texId = (target.depthTexture as GlTexture).glId()
+                    return listOf(NeoTexture2D(texId, TextureFormat.entries.first { it.internalId == format }, false))
+                }
+            override val depthAttachment: GlFramebufferAttachment?
+                get() {
+                    return target.depthTexture?.let { texture ->
+                        val texId = texture.glId()
 
                         val stack = GlStateStack.textures[TextureType.TEXTURE_2D]!!
 
@@ -131,44 +110,44 @@ class WrapperUtilImpl : WrapperUtil {
 
                         stack.pop()
 
-                        return NeoTexture2D(texId, TextureFormat.entries.first { it.internalId == format }, false)
-                    }
-                override val width: Int
-                    get() = target.width
-                override val height: Int
-                    get() = target.height
-
-                override fun resize(width: Int, height: Int) {
-                    target.resize(width, height)
-                }
-
-                override fun clear(vararg bits: ClearBit) {
-                    OpenGL.INSTANCE.clear(bits.initAndGetClearMask())
-                }
-
-                override fun viewport() {
-                    OpenGL.INSTANCE.viewport(0, 0, target.width, target.height)
-                }
-
-                override fun bind(pushStack: Boolean) {
-                    if (pushStack) {
-                        GlStateStack.framebuffer.push(target.glId())
-                    } else {
-                        GlStateStack.framebuffer.bind.accept(target.glId())
+                        return@let NeoTexture2D(texId, TextureFormat.entries.first { it.internalId == format }, false)
                     }
                 }
+            override val width: Int
+                get() = target.width
+            override val height: Int
+                get() = target.height
 
-                override fun unbind(popStack: Boolean) {
-                    if (popStack) {
-                        GlStateStack.framebuffer.pop()
-                    } else {
-                        GlStateStack.framebuffer.bind.accept(0)
-                    }
-                }
+            override fun resize(width: Int, height: Int) {
+                target.resize(width, height)
+            }
 
-                override fun free() {
-                    target.destroyBuffers()
+            override fun clear(vararg bits: ClearBit) {
+                OpenGL.INSTANCE.clear(bits.initAndGetClearMask())
+            }
+
+            override fun viewport() {
+                OpenGL.INSTANCE.viewport(0, 0, target.width, target.height)
+            }
+
+            override fun bind(pushStack: Boolean) {
+                if (pushStack) {
+                    GlStateStack.framebuffer.push(target.glId())
+                } else {
+                    GlStateStack.framebuffer.bind.accept(target.glId())
                 }
+            }
+
+            override fun unbind(popStack: Boolean) {
+                if (popStack) {
+                    GlStateStack.framebuffer.pop()
+                } else {
+                    GlStateStack.framebuffer.bind.accept(0)
+                }
+            }
+
+            override fun free() {
+                target.destroyBuffers()
             }
         }
     }
