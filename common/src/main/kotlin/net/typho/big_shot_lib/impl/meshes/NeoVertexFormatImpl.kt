@@ -58,7 +58,7 @@ data class NeoVertexFormatImpl(
             get() = when (inner.usage) {
                 VertexFormatElement.Usage.POSITION -> false
                 VertexFormatElement.Usage.NORMAL -> true
-                VertexFormatElement.Usage.COLOR -> false
+                VertexFormatElement.Usage.COLOR -> true
                 VertexFormatElement.Usage.UV -> if (inner.type == VertexFormatElement.Type.FLOAT) false else null
                 VertexFormatElement.Usage.GENERIC -> false
             }
