@@ -30,7 +30,7 @@ data class NeoBakedQuadImpl(
     override val sprite: NeoAtlasSprite
         get() = NeoAtlasSpriteImpl(TextureUtil.INSTANCE.getAtlas(quad.sprite.atlasLocation().toNeo()), quad.sprite)
     override val shade: Boolean
-        get() = quad.isShade
+        get() = quad.shade
 
     inner class VertexDataImpl(
         @JvmField

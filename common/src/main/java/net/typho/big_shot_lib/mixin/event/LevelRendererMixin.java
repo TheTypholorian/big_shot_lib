@@ -15,8 +15,6 @@ import net.typho.big_shot_lib.BigShotClientEventStorage;
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlFramebuffer;
 import net.typho.big_shot_lib.api.client.opengl.state.GlFlag;
 import net.typho.big_shot_lib.api.client.util.events.RenderEventData;
-import net.typho.big_shot_lib.api.util.WrapperUtil;
-import net.typho.big_shot_lib.impl.state.OpenGLImpl;
 import org.jetbrains.annotations.Nullable;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
@@ -86,7 +84,7 @@ public class LevelRendererMixin {
                             .mulLocal(iProj.mul(projectionMatrix, new Matrix4f()))
                             .invert(),
                     new FrustumIntersection(projectionMatrix.mul(frustum, new Matrix4f())),
-                    OpenGLImpl.currentTarget == null ? GlFramebuffer.MAIN : WrapperUtil.INSTANCE.wrap(OpenGLImpl.currentTarget)
+                    GlFramebuffer.MAIN
             );
             GlFlag.BLEND.disable();
 
