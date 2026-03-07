@@ -29,7 +29,7 @@ public class CubeMapMixin implements PanoramaTextureStorage {
             method = "registerTextures",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/texture/TextureManager;register(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/renderer/texture/AbstractTexture;)V"
+                    target = "Lnet/minecraft/client/renderer/texture/TextureManager;register(Lnet/minecraft/resources/Identifier;Lnet/minecraft/client/renderer/texture/AbstractTexture;)V"
             ),
             index = 1
     )

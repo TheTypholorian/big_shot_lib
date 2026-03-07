@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.renderer.texture.CubeMapTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.BigShotLib;
 import net.typho.big_shot_lib.api.client.util.panoramas.PanoramaTexture;
 import net.typho.big_shot_lib.impl.util.PanoramaTextureStorage;
@@ -32,11 +32,11 @@ public class CubeMapTextureMixin implements PanoramaTextureStorage {
             method = "loadContents",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/resources/ResourceLocation;withSuffix(Ljava/lang/String;)Lnet/minecraft/resources/ResourceLocation;",
+                    target = "Lnet/minecraft/resources/Identifier;withSuffix(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
                     ordinal = 0
             )
     )
-    private ResourceLocation loadContents1(ResourceLocation instance, String pathSuffix, Operation<ResourceLocation> original) {
+    private Identifier loadContents1(Identifier instance, String pathSuffix, Operation<Identifier> original) {
         return big_shot_lib$panorama_texture == null ? original.call(instance, pathSuffix) : BigShotLib.toMojang(big_shot_lib$panorama_texture.east);
     }
 
@@ -44,14 +44,14 @@ public class CubeMapTextureMixin implements PanoramaTextureStorage {
             method = "loadContents",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/resources/ResourceLocation;withSuffix(Ljava/lang/String;)Lnet/minecraft/resources/ResourceLocation;",
+                    target = "Lnet/minecraft/resources/Identifier;withSuffix(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
                     ordinal = 1
             )
     )
-    private ResourceLocation loadContents2(
-            ResourceLocation instance,
+    private Identifier loadContents2(
+            Identifier instance,
             String pathSuffix,
-            Operation<ResourceLocation> original,
+            Operation<Identifier> original,
             @Local(ordinal = 2) int k
     ) {
         return big_shot_lib$panorama_texture == null ? original.call(instance, pathSuffix) : BigShotLib.toMojang(switch (k) {

@@ -33,7 +33,7 @@ class BlockUtilImpl : BlockUtil {
     override fun getBlockRenderSettings(state: BlockState): BlockRenderSettings {
         return when (ItemBlockRenderTypes.getChunkRenderType(state)) {
             ChunkSectionLayer.SOLID -> BlockRenderSettings.SOLID
-            ChunkSectionLayer.CUTOUT, ChunkSectionLayer.CUTOUT_MIPPED -> BlockRenderSettings.CUTOUT
+            ChunkSectionLayer.CUTOUT -> BlockRenderSettings.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockRenderSettings.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockRenderSettings.TRIPWIRE
             else -> BlockRenderSettings.SOLID

@@ -27,7 +27,7 @@ data class NeoAtlasImpl(
     override val height: Int
         get() = (atlas as TextureAtlasAccessor).height
     override val mipLevel: Int
-        get() = (atlas as TextureAtlasAccessor).mipLevel
+        get() = (atlas as TextureAtlasAccessor).mipLevelCount
     override val location: ResourceIdentifier
         get() = atlas.location().toNeo()
     override val format: TextureFormat

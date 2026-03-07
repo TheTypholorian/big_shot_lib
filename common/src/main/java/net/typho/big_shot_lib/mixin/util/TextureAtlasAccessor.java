@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.util;
 
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -16,9 +16,9 @@ public interface TextureAtlasAccessor {
     @Accessor("height")
     int getHeight();
 
-    @Accessor("mipLevel")
-    int getMipLevel();
+    @Accessor("mipLevelCount")
+    int getMipLevelCount();
 
     @Accessor("texturesByName")
-    Map<ResourceLocation, TextureAtlasSprite> getTexturesByName();
+    Map<Identifier, TextureAtlasSprite> getTexturesByName();
 }
