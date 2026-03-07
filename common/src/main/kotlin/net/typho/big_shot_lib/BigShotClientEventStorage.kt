@@ -79,7 +79,7 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory, Panor
         for (texture in panorama.textures) {
             panoramaCubeMaps.computeIfAbsent(texture) { key ->
                 val map = CubeMap(BigShotApi.id("dummy").toMojang())
-                val array = (map as CubeMapAccessor).images
+                val array = (map as CubeMapAccessor).sides
 
                 array[0] = key.south.toMojang()
                 array[1] = key.east.toMojang()
