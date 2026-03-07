@@ -33,8 +33,9 @@ class TextureUtilImpl : TextureUtil {
         get() = getAtlas(Sheets.SHULKER_SHEET.toNeo())
     override val bedsAtlas: NeoAtlas
         get() = getAtlas(Sheets.BED_SHEET.toNeo())
+    @Suppress("DEPRECATION")
     override val particlesAtlas: NeoAtlas
-        get() = getAtlas(ResourceIdentifier("textures/atlas/particles.png"))
+        get() = getAtlas(TextureAtlas.LOCATION_PARTICLES.toNeo())
     override val paintingsAtlas: NeoAtlas
         get() = getAtlas(ResourceIdentifier("textures/atlas/paintings.png"))
     override val mobEffectsAtlas: NeoAtlas
