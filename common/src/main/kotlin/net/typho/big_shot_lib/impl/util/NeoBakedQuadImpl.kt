@@ -20,9 +20,9 @@ data class NeoBakedQuadImpl(
 ) : NeoBakedQuad {
     override val vertices: Array<NeoVertexData> = arrayOf(
         VertexDataImpl(0),
-        VertexDataImpl(8),
-        VertexDataImpl(16),
-        VertexDataImpl(24)
+        VertexDataImpl(1),
+        VertexDataImpl(2),
+        VertexDataImpl(3)
     )
     override val tintIndex: Int?
         get() = if (quad.isTinted) quad.tintIndex else null
