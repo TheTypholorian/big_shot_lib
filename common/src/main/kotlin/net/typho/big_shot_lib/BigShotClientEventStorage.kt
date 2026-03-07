@@ -13,7 +13,7 @@ import net.typho.big_shot_lib.api.client.util.events.WindowResizeEvent
 import net.typho.big_shot_lib.api.client.util.panoramas.PanoramaSet
 import net.typho.big_shot_lib.api.client.util.panoramas.PanoramaTexture
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
-import net.typho.big_shot_lib.mixin.util.CubeMapAccessor
+import net.typho.big_shot_lib.impl.util.PanoramaTextureStorage
 import java.util.*
 import java.util.function.Consumer
 
@@ -79,15 +79,7 @@ object BigShotClientEventStorage : ClientEventFactory, DebugScreenFactory, Panor
         for (texture in panorama.textures) {
             panoramaCubeMaps.computeIfAbsent(texture) { key ->
                 val map = CubeMap(BigShotApi.id("dummy").toMojang())
-                val array = (map as CubeMapAccessor).sides
-
-                array[0] = key.south.toMojang()
-                array[1] = key.east.toMojang()
-                array[2] = key.north.toMojang()
-                array[3] = key.west.toMojang()
-                array[4] = key.up.toMojang()
-                array[5] = key.down.toMojang()
-
+                (map as PanoramaTextureStorage).`big_shot_lib$panorama_texture` = key
                 return@computeIfAbsent map
             }
         }
