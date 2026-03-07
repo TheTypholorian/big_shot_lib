@@ -5,6 +5,7 @@ import com.mojang.blaze3d.opengl.GlDevice
 import com.mojang.blaze3d.opengl.GlTexture
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
@@ -40,6 +41,9 @@ object BigShotLib {
 
     @JvmStatic
     fun RenderTarget.glId(): Int = (colorTexture as GlTexture).getFbo((RenderSystem.getDevice() as GlDevice).directStateAccess(), depthTexture)
+
+    @JvmStatic
+    fun GpuTexture.glId(): Int = (this as GlTexture).glId()
 
     @JvmStatic
     fun VertexFormat.Mode.toNeo(): GlShapeType {

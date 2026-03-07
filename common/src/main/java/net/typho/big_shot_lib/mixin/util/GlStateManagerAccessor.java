@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.mixin.util;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -31,11 +31,6 @@ public interface GlStateManagerAccessor {
         return null;
     }
 
-    @Accessor("STENCIL")
-    static GlStateManager.StencilState getStencil() {
-        return null;
-    }
-
     @Accessor("SCISSOR")
     static GlStateManager.ScissorState getScissor() {
         return null;
@@ -49,5 +44,10 @@ public interface GlStateManagerAccessor {
     @Accessor("COLOR_MASK")
     static GlStateManager.ColorMask getColorMask() {
         return null;
+    }
+
+    @Accessor("writeFbo")
+    static int getWriteFBO() {
+        return 0;
     }
 }
