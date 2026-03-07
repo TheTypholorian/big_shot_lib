@@ -16,7 +16,6 @@
     "event.GameRendererMixin",
     "event.LevelRendererMixin",
     "event.MinecraftMixin",
-    "registration.DebugScreenOverlayMixin",
     "util.CubeMapMixin",
     "util.CubeMapTextureMixin",
     "util.GlStateManagerAccessor",

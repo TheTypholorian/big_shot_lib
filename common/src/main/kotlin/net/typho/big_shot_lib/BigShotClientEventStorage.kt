@@ -2,9 +2,11 @@ package net.typho.big_shot_lib
 
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
 import net.minecraft.client.gui.components.debug.DebugScreenEntry
+import net.minecraft.client.renderer.CubeMap
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.chunk.LevelChunk
 import net.typho.big_shot_lib.BigShotLib.toMojang
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
 import net.typho.big_shot_lib.api.client.util.PanoramaFactory
