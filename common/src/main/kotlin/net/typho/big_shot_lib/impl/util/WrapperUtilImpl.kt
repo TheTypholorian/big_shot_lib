@@ -269,19 +269,19 @@ class WrapperUtilImpl : WrapperUtil {
         }
     }
 
-    override fun <T> wrap(key: ResourceKey<T>): NeoResourceKey<T> {
+    override fun <T : Any> wrap(key: ResourceKey<T>): NeoResourceKey<T> {
         return key.toNeo()
     }
 
-    override fun <T> unwrap(key: NeoResourceKey<T>): ResourceKey<T> {
+    override fun <T : Any> unwrap(key: NeoResourceKey<T>): ResourceKey<T> {
         return key.toMojang()
     }
 
-    override fun <T> wrap(key: TagKey<T>): NeoTagKey<T> {
+    override fun <T : Any> wrap(key: TagKey<T>): NeoTagKey<T> {
         return key.toNeo()
     }
 
-    override fun <T> unwrap(key: NeoTagKey<T>): TagKey<T> {
+    override fun <T : Any> unwrap(key: NeoTagKey<T>): TagKey<T> {
         return key.toMojang()
     }
 
