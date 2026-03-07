@@ -20,24 +20,23 @@ public class PanoramaRendererMixin {
             method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/CubeMap;render(Lnet/minecraft/client/Minecraft;FFF)V"
+                    target = "Lnet/minecraft/client/renderer/CubeMap;render(Lnet/minecraft/client/Minecraft;FF)V"
             )
     )
-    private void render(CubeMap instance, Minecraft mc, float pitch, float yaw, float alpha, Operation<Void> original) {
+    private void render(CubeMap instance, Minecraft minecraft, float xRot, float yRot, Operation<Void> original) {
         PanoramaSet panorama = BigShotClientEventStorage.panorama;
 
         if (panorama == null) {
-            original.call(instance, mc, pitch, yaw, alpha);
+            original.call(instance, minecraft, xRot, yRot);
         } else {
             if (panorama.interval == null) {
                 original.call(
                         BigShotClientEventStorage.panoramaCubeMaps.get(
                                 panorama.textures.get((int) (big_shot_lib$startTime % panorama.textures.size()))
                         ),
-                        mc,
-                        pitch,
-                        yaw,
-                        alpha
+                        minecraft,
+                        xRot,
+                        yRot
                 );
             } else {
                 long time = System.currentTimeMillis();
@@ -46,12 +45,13 @@ public class PanoramaRendererMixin {
 
                 original.call(
                         BigShotClientEventStorage.panoramaCubeMaps.get(panorama.textures.get(index)),
-                        mc,
-                        pitch,
-                        yaw,
-                        alpha
+                        minecraft,
+                        xRot,
+                        yRot
                 );
 
+                // TODO
+                /*
                 long localTime = time % panorama.interval;
 
                 if (localTime - panorama.interval >= fade) {
@@ -59,12 +59,13 @@ public class PanoramaRendererMixin {
                             BigShotClientEventStorage.panoramaCubeMaps.get(
                                     panorama.textures.get(index == panorama.textures.size() - 1 ? 0 : (index + 1))
                             ),
-                            mc,
-                            pitch,
-                            yaw,
-                            alpha * (localTime - panorama.interval) / fade
+                            minecraft,
+                            xRot,
+                            yRot
+                            //alpha * (localTime - panorama.interval) / fade
                     );
                 }
+                 */
             }
         }
     }
