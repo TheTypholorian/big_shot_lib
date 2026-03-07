@@ -13,7 +13,6 @@ import net.typho.big_shot_lib.api.client.opengl.util.TextureFormat
 import net.typho.big_shot_lib.api.client.opengl.util.TextureUtil
 import net.typho.big_shot_lib.api.client.util.quads.NeoAtlas
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
-import org.lwjgl.opengl.GL11.*
 
 class TextureUtilImpl : TextureUtil {
     @Suppress("DEPRECATION")
@@ -44,7 +43,6 @@ class TextureUtilImpl : TextureUtil {
         get() = getAtlas(ResourceIdentifier("textures/atlas/map_decorations.png"))
     override val guiAtlas: NeoAtlas
         get() = getAtlas(ResourceIdentifier("textures/atlas/gui.png"))
-
 
     override fun getMinecraftTexture(texture: ResourceIdentifier): GlTexture2D {
         val texture = Minecraft.getInstance().textureManager.getTexture(texture.toMojang()).texture as GlTexture

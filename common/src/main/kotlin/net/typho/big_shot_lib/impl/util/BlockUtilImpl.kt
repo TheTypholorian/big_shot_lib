@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes
-import net.minecraft.client.renderer.RenderType
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.level.BlockGetter
@@ -32,10 +32,10 @@ class BlockUtilImpl : BlockUtil {
     @Suppress("UNCHECKED", "DEPRECATION")
     override fun getBlockRenderSettings(state: BlockState): BlockRenderSettings {
         return when (ItemBlockRenderTypes.getChunkRenderType(state)) {
-            RenderType.solid() -> BlockRenderSettings.SOLID
-            RenderType.cutout(), RenderType.cutoutMipped() -> BlockRenderSettings.CUTOUT
-            RenderType.translucent(), RenderType.translucentMovingBlock() -> BlockRenderSettings.TRANSLUCENT
-            RenderType.tripwire() -> BlockRenderSettings.TRIPWIRE
+            ChunkSectionLayer.SOLID -> BlockRenderSettings.SOLID
+            ChunkSectionLayer.CUTOUT, ChunkSectionLayer.CUTOUT_MIPPED -> BlockRenderSettings.CUTOUT
+            ChunkSectionLayer.TRANSLUCENT -> BlockRenderSettings.TRANSLUCENT
+            ChunkSectionLayer.TRIPWIRE -> BlockRenderSettings.TRIPWIRE
             else -> BlockRenderSettings.SOLID
         }
     }
