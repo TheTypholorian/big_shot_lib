@@ -29,7 +29,7 @@ public class LevelChunkMixin {
     public void setBlockState(
             BlockPos pos,
             BlockState state,
-            boolean isMoving,
+            int flags,
             CallbackInfoReturnable<BlockState> cir,
             @Local(ordinal = 1) BlockState oldState
     ) {
