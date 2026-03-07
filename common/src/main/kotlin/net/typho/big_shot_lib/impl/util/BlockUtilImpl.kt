@@ -29,7 +29,7 @@ class BlockUtilImpl : BlockUtil {
         return state.getOffset(pos).toVector3f()
     }
 
-    @Suppress("UNCHECKED")
+    @Suppress("UNCHECKED", "DEPRECATION")
     override fun getBlockRenderSettings(state: BlockState): BlockRenderSettings {
         return when (ItemBlockRenderTypes.getChunkRenderType(state)) {
             RenderType.solid() -> BlockRenderSettings.SOLID
@@ -40,6 +40,7 @@ class BlockUtilImpl : BlockUtil {
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun shouldRenderFace(
         level: BlockGetter,
         pos: BlockPos,
@@ -48,10 +49,8 @@ class BlockUtilImpl : BlockUtil {
     ): Boolean {
         return Block.shouldRenderFace(
             state,
-            level,
-            pos,
-            direction,
-            pos.relative(direction),
+            level.getBlockState(pos.relative(direction)),
+            direction
         )
     }
 }

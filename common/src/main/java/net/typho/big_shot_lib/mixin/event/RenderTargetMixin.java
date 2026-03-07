@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RenderTarget.class)
 public class RenderTargetMixin {
     @Inject(
-            method = "_bindWrite",
+            method = "bindWrite",
             at = @At("TAIL")
     )
     private void bindWrite(boolean setViewport, CallbackInfo ci) {
