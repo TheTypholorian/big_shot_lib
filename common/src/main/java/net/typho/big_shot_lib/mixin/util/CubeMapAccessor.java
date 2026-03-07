@@ -5,8 +5,10 @@ import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import java.util.List;
+
 @Mixin(CubeMap.class)
 public interface CubeMapAccessor {
-    @Accessor("images")
-    ResourceLocation[] getImages();
+    @Accessor("sides")
+    List<ResourceLocation> getSides();
 }
