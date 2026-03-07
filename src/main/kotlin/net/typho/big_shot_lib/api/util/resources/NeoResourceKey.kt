@@ -17,7 +17,7 @@ data class NeoResourceKey<T>(
         }
 
         @JvmStatic
-        fun <T> codec(registry: NeoResourceKey<out Registry<T>>): Codec<NeoResourceKey<T>> {
+        fun <T : Any> codec(registry: NeoResourceKey<out Registry<T>>): Codec<NeoResourceKey<T>> {
             return ResourceIdentifier.CODEC.xmap(
                 { NeoResourceKey(registry.location, it) },
                 { it.location }

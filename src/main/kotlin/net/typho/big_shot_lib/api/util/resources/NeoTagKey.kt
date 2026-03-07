@@ -17,7 +17,7 @@ data class NeoTagKey<T>(
         }
 
         @JvmStatic
-        fun <T> codec(registry: NeoTagKey<out Registry<T>>): Codec<NeoTagKey<T>> {
+        fun <T : Any> codec(registry: NeoTagKey<out Registry<T>>): Codec<NeoTagKey<T>> {
             return ResourceIdentifier.CODEC.xmap(
                 { NeoTagKey(registry.location, it) },
                 { it.location }

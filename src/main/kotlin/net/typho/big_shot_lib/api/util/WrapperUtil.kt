@@ -35,13 +35,13 @@ interface WrapperUtil {
 
     fun wrap(consumer: VertexConsumer): NeoVertexConsumer
 
-    fun <T> wrap(key: ResourceKey<T>): NeoResourceKey<T>
+    fun <T : Any> wrap(key: ResourceKey<T>): NeoResourceKey<T>
 
-    fun <T> unwrap(key: NeoResourceKey<T>): ResourceKey<T>
+    fun <T : Any> unwrap(key: NeoResourceKey<T>): ResourceKey<T>
 
-    fun <T> wrap(key: TagKey<T>): NeoTagKey<T>
+    fun <T : Any> wrap(key: TagKey<T>): NeoTagKey<T>
 
-    fun <T> unwrap(key: NeoTagKey<T>): TagKey<T>
+    fun <T : Any> unwrap(key: NeoTagKey<T>): TagKey<T>
 
     fun createVertexFormatBuilder(): NeoVertexFormat.Builder
 
