@@ -53,14 +53,14 @@ class BigShotLibNeoForge(eventBus: IEventBus, modContainer: ModContainer) {
                     location: ResourceIdentifier,
                     listener: PreparableReloadListener
                 ) {
-                    event.addListener(id.toMojang(), listener)
+                    event.addListener(location.toMojang(), listener)
                 }
 
                 override fun register(
                     location: ResourceIdentifier,
                     listener: NeoResourceManagerReloadListener
                 ) {
-                    event.addListener(id.toMojang(), object : ResourceManagerReloadListener {
+                    event.addListener(location.toMojang(), object : ResourceManagerReloadListener {
                         override fun onResourceManagerReload(resourceManager: ResourceManager) {
                             listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(resourceManager))
                         }
