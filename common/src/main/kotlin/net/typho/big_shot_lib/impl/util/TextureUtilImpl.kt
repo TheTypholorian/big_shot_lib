@@ -51,6 +51,6 @@ class TextureUtilImpl : TextureUtil {
     }
 
     override fun getAtlas(texture: ResourceIdentifier): NeoAtlas {
-        return NeoAtlasImpl(Minecraft.getInstance().modelManager.getAtlas(texture.toMojang()))
+        return NeoAtlasImpl(Minecraft.getInstance().atlasManager.getAtlasOrThrow(texture.toMojang().withPath({ it.substring("textures/atlas/".length, it.length - ".png".length) }))) // TODO
     }
 }
