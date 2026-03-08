@@ -11,8 +11,6 @@ open class FramebufferShard(
     @JvmField
     val fbo: (arguments: RenderArguments) -> Pair<GlFramebuffer?, GlBindResult>,
     @JvmField
-    val viewport: Boolean,
-    @JvmField
     vararg val clearBits: ClearBit
 ) : RenderSettingShard {
     override val type: RenderSettingShard.Type<FramebufferShard> = FramebufferShard
@@ -26,10 +24,6 @@ open class FramebufferShard(
 
         val fbo = result.first ?: GlFramebuffer.MAIN
         fbo.bind(pushStack)
-
-        if (viewport) {
-            fbo.viewport()
-        }
 
         if (clearBits.isNotEmpty()) {
             fbo.clear(*clearBits)
@@ -47,7 +41,7 @@ open class FramebufferShard(
     }
 
     companion object : RenderSettingShard.Type<FramebufferShard> {
-        override val default = FramebufferShard({ null to GlBindResult.Success }, false)
+        override val default = FramebufferShard({ null to GlBindResult.Success })
         override val codec = null
         override val location = ResourceIdentifier("opengl", "framebuffer")
     }
