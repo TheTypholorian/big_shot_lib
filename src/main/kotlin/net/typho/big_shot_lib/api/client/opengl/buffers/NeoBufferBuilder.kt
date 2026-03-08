@@ -17,10 +17,10 @@ open class NeoBufferBuilder(
     }
 
     override fun color(
-        r: Float,
-        g: Float,
-        b: Float,
-        a: Float
+        r: Int,
+        g: Int,
+        b: Int,
+        a: Int
     ): NeoVertexConsumer {
         inner.setColor(r, g, b, a)
         return this

@@ -3,11 +3,15 @@ package net.typho.big_shot_lib.api.client.opengl.shaders
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniformBufferPoint
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.NeoUniform
+import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.opengl.state.arguments.RenderArguments
+import net.typho.big_shot_lib.api.client.opengl.util.GlBindResult
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.errors.IllegalShaderSourceException
 import net.typho.big_shot_lib.api.errors.MissingShaderSourceException
+import net.typho.big_shot_lib.api.errors.ShaderCompileException
 import org.lwjgl.opengl.GL20.GL_ACTIVE_UNIFORMS
 import org.lwjgl.opengl.GL20.glGetProgrami
 import org.lwjgl.opengl.GL31.glGetUniformBlockIndex
@@ -15,8 +19,7 @@ import org.lwjgl.opengl.GL31.glUniformBlockBinding
 
 open class NeoShader(
     glId: Int,
-    @JvmField
-    val key: ShaderProgramKey
+    override val key: ShaderProgramKey
 ) : GlResource(glId, GlStateStack.shader), GlShader {
     companion object {
         @JvmField
@@ -29,8 +32,8 @@ open class NeoShader(
     protected val uniforms = HashMap<String, GlUniform?>()
     @JvmField
     protected val uniformBuffers = HashMap<String, GlUniformBufferPoint?>()
-    protected val uniformTypes: MutableMap<String, net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType> by lazy {
-        val map = HashMap<String, net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType>()
+    protected val uniformTypes: MutableMap<String, ShaderVariableType> by lazy {
+        val map = HashMap<String, ShaderVariableType>()
 
         repeat(glGetProgrami(glId, GL_ACTIVE_UNIFORMS)) { i ->
             val pair = OpenGL.INSTANCE.getUniformInfo(glId, i)
@@ -44,6 +47,11 @@ open class NeoShader(
     override val location = key.location
 
     constructor(key: ShaderProgramKey) : this(OpenGL.INSTANCE.createShaderProgram(), key)
+
+    override fun bind(arguments: RenderArguments, pushStack: Boolean): GlBindResult {
+        super<GlShader>.bind(arguments, pushStack)
+        return GlBindResult.Multiple(key.modules.map { it.setUniforms(arguments, this) })
+    }
 
     override fun free() {
         OpenGL.INSTANCE.deleteShaderProgram(glId)
@@ -60,8 +68,6 @@ open class NeoShader(
             return@computeIfAbsent samplerUnits.size
         }
     }
-
-    override fun key() = key
 
     override fun getUniform(name: String): GlUniform? {
         return uniforms.computeIfAbsent(name) { key ->
@@ -122,7 +128,7 @@ open class NeoShader(
             attached.add(entry.key)
         }
 
-        val missing = HashSet(key.sources)
+        val missing = HashSet(key.sources.keys)
         missing.removeAll(attached)
 
         if (missing.isNotEmpty()) {
@@ -149,11 +155,28 @@ open class NeoShader(
         @JvmField
         protected val instance: NeoShader = NeoShader(key)
     ) {
-        fun attach(type: ShaderSourceType, code: String, includes: ShaderFileResolver) {
-            instance.attach(
-                type,
-                includes.loadIncludes(code, ShaderSourceKey(key, type).toString())
-            )
+        fun attach(type: ShaderSourceType, code: String, files: ShaderFileResolver) {
+            val code = code.trim()
+
+            if (code.startsWith("#version")) {
+                throw ShaderCompileException("Big Shot shaders should not have #version in their code, put it in the shader json")
+            }
+
+            if (code.contains("#include")) {
+                throw ShaderCompileException("Big Shot shaders do not use #include, they use shader modules which are better")
+            }
+
+            val builder = StringBuilder()
+
+            builder.appendLine(key.version.versionString)
+
+            for (module in key.modules) {
+                module.loadGLSL(files, key, type)?.let { builder.appendLine(it) }
+            }
+
+            builder.appendLine(code)
+
+            instance.attach(type, builder.toString())
         }
 
         fun build(): NeoShader {

@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.api.util.resources
 
 import com.mojang.serialization.Codec
 import org.joml.*
-import java.util.function.Function
 
 object NeoCodecs {
     @JvmField
@@ -27,7 +26,7 @@ object NeoCodecs {
     val VEC4D: Codec<Vector4dc> = of(4, Codec.DOUBLE, { Vector4d(it[0], it[1], it[2], it[3]) }, { listOf(it.x(), it.y(), it.z(), it.w()) })
 
     @JvmStatic
-    fun <V, T> of(size: Int, codec: Codec<T>, to: Function<List<T>, V>, from: Function<V, List<T>>): Codec<V> {
+    fun <V, T> of(size: Int, codec: Codec<T>, to: (list: List<T>) -> V, from: (value: V) -> List<T>): Codec<V> {
         return codec.listOf(size, size).xmap(to, from)
     }
 

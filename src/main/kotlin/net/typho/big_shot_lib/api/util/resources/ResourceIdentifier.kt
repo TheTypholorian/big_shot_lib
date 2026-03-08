@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
-import java.util.function.Function
 
 @JvmRecord
 data class ResourceIdentifier(
@@ -42,7 +41,7 @@ data class ResourceIdentifier(
 
     fun withPath(path: String) = ResourceIdentifier(namespace, path)
 
-    fun withPath(path: Function<String, String>) = ResourceIdentifier(namespace, path.apply(this.path))
+    fun withPath(path: (path: String) -> String) = ResourceIdentifier(namespace, path(this.path))
 
     fun withPrefix(prefix: String) = ResourceIdentifier(namespace, prefix + path)
 
@@ -104,10 +103,10 @@ data class ResourceIdentifier(
         }
 
         @JvmStatic
-        fun ensureStringLegal(s: String, error: Function<Int, String>) {
+        fun ensureStringLegal(s: String, error: (index: Int) -> String) {
             s.forEachIndexed { i, c ->
                 if (!isLegalChar(c)) {
-                    throw IllegalArgumentException(error.apply(i))
+                    throw IllegalArgumentException(error(i))
                 }
             }
         }

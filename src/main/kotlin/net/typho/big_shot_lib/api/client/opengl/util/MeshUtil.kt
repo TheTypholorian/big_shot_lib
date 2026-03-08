@@ -10,14 +10,13 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.Mesh
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.util.quads.NeoBakedQuad
 import org.joml.Vector3f
-import java.util.function.BiConsumer
 
 interface MeshUtil {
     fun getBlockQuads(
         state: BlockState,
         level: Level,
         pos: BlockPos,
-        out: BiConsumer<Direction?, List<NeoBakedQuad>>
+        out: (direction: Direction?, quads: List<NeoBakedQuad>) -> Unit
     )
 
     companion object {

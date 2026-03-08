@@ -9,6 +9,7 @@ import net.typho.big_shot_lib.api.errors.IllegalTextureFormatException
 import net.typho.big_shot_lib.api.errors.IncompleteFramebufferException
 import org.lwjgl.opengl.GL11.GL_NONE
 import org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0
+import java.awt.Rectangle
 
 open class NeoFramebuffer(
     glId: Int,
@@ -59,6 +60,16 @@ open class NeoFramebuffer(
         checkStatus()
 
         unbind()
+    }
+
+    override fun bind(pushStack: Boolean) {
+        super<GlResource>.bind(pushStack)
+        GlStateStack.viewport.push(Rectangle(dimensions))
+    }
+
+    override fun unbind(popStack: Boolean) {
+        super.unbind(popStack)
+        GlStateStack.viewport.pop()
     }
 
     protected fun attachColor() {
@@ -123,14 +134,6 @@ open class NeoFramebuffer(
         }
 
         OpenGL.INSTANCE.clear(bits.initAndGetClearMask())
-
-        unbind()
-    }
-
-    override fun viewport() {
-        bind()
-
-        OpenGL.INSTANCE.viewport(0, 0, width, height)
 
         unbind()
     }

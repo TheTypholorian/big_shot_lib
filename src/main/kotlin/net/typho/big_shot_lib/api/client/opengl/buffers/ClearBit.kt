@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
-import net.typho.big_shot_lib.api.util.IColor
+import net.typho.big_shot_lib.api.util.NeoColor
 import org.lwjgl.opengl.GL11.*
 
 sealed interface ClearBit {
@@ -35,7 +35,7 @@ sealed interface ClearBit {
 
     data class Color(
         @JvmField
-        val color: IColor
+        val color: NeoColor
     ) : ClearBit {
         override fun mask() = GL_COLOR_BUFFER_BIT
 

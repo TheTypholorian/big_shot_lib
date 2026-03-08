@@ -12,7 +12,7 @@ abstract class GlResource(
         if (pushStack) {
             stack.push(glId)
         } else {
-            stack.bind.accept(glId)
+            stack.bind(glId)
         }
     }
 
@@ -20,7 +20,7 @@ abstract class GlResource(
         if (popStack) {
             stack.pop()
         } else {
-            stack.bind.accept(0)
+            stack.bind(0)
         }
     }
 

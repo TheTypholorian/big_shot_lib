@@ -1,9 +1,8 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders
 
 import com.google.gson.JsonObject
-import com.google.gson.JsonParseException
+import com.mojang.serialization.JsonOps
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.opengl.util.VertexFormatUtil
 import net.typho.big_shot_lib.api.errors.ResourceNotFoundException
 import net.typho.big_shot_lib.api.util.resources.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.util.resources.NeoResourceManager
@@ -16,36 +15,15 @@ object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"),
         json: JsonObject,
         manager: NeoResourceManager
     ): NeoShader {
-        val format = json.get("format") ?: throw JsonParseException("Shader $location is missing vertex format")
-        val sourcesObject = json.getAsJsonObject("sources") ?: throw JsonParseException("Shader $location is missing sources")
-        val sources = sourcesObject.keySet().map { ShaderSourceType.valueOf(it.uppercase()) }.toSet()
-        val builtinDynamicBuffers = json.getAsJsonArray("builtinDynamicBuffers")
-            ?.map { ResourceIdentifier(it.asString) }
-            ?.toSet() ?: setOf()
-        val disabledDynamicBuffers = json.getAsJsonArray("disabledDynamicBuffers")
-            ?.map { ResourceIdentifier(it.asString) }
-            ?.toSet() ?: setOf()
+        val builder = NeoShader.Builder(ShaderProgramKey.codec(ShaderLoaderType.BIG_SHOT, location).codec().decode(JsonOps.INSTANCE, json).orThrow.first)
+        val files = ShaderFileResolver.ResourceBacked(manager)
 
-        val builder = NeoShader.Builder(
-            ShaderProgramKey(
-                ShaderLoaderType.BIG_SHOT,
-                location,
-                VertexFormatUtil.fromJson(format),
-                sources,
-                builtinDynamicBuffers,
-                disabledDynamicBuffers
-            )
-        )
-        val resolves = ShaderFileResolver.ResourceBacked(manager)
-
-        for (source in sources) {
-            val file = sourcesObject.getAsJsonPrimitive(source.name.lowercase()).asString
-
+        for (source in builder.key.sources) {
             builder.attach(
-                source,
-                resolves.loadFile("$file.${source.extension}", location.toString(), false)
-                    ?: throw ResourceNotFoundException("Couldn't find shader file $file, requested by $location. Searched in ${ShaderFileResolver.directories}"),
-                resolves
+                source.key,
+                files.loadFile(source.value, source.key)
+                    ?: throw ResourceNotFoundException("Couldn't find shader file ${source.value}, requested by $location. Searched in ${ShaderFileResolver.directories}"),
+                files
             )
         }
 

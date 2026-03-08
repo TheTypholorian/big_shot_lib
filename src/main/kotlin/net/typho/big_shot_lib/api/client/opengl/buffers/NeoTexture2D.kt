@@ -4,7 +4,6 @@ import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.*
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 import java.nio.ByteBuffer
-import java.util.function.Consumer
 
 open class NeoTexture2D(
     glId: Int,
@@ -34,13 +33,13 @@ open class NeoTexture2D(
         OpenGL.INSTANCE.attachFramebufferTexture2D(attachment, type, glId)
     }
 
-    override fun resize(width: Int, height: Int, upload: Consumer<BufferUploader>) {
+    override fun resize(width: Int, height: Int, upload: (uploader: BufferUploader) -> Unit) {
         if (type.multisample) {
             bind()
             OpenGL.INSTANCE.textureData2DMultisample(type, 4, format, width, height)
             unbind()
         } else {
-            upload.accept(object : BufferUploader {
+            upload(object : BufferUploader {
                 override fun upload(buffer: ByteBuffer) {
                     bind()
                     OpenGL.INSTANCE.textureData2D(type, format, width, height, buffer)

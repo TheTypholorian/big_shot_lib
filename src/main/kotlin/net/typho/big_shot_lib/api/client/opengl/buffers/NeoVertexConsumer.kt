@@ -3,14 +3,14 @@ package net.typho.big_shot_lib.api.client.opengl.buffers
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.world.phys.AABB
-import net.typho.big_shot_lib.api.util.IColor
+import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.*
 import java.awt.Color
 
 interface NeoVertexConsumer {
     fun vertex(x: Float, y: Float, z: Float): NeoVertexConsumer
 
-    fun color(r: Float, g: Float, b: Float, a: Float): NeoVertexConsumer
+    fun color(r: Int, g: Int, b: Int, a: Int): NeoVertexConsumer
 
     fun textureUV(u: Float, v: Float): NeoVertexConsumer
 
@@ -19,6 +19,15 @@ interface NeoVertexConsumer {
     fun lightUV(u: Int, v: Int): NeoVertexConsumer
 
     fun normal(x: Float, y: Float, z: Float): NeoVertexConsumer
+
+    fun vertex(packed: IntArray, offset: Int): NeoVertexConsumer {
+        vertex(
+            Float.fromBits(packed[offset]),
+            Float.fromBits(packed[offset + 1]),
+            Float.fromBits(packed[offset + 2])
+        )
+        return this
+    }
 
     fun vertex(vertex: Vector3fc): NeoVertexConsumer {
         vertex(vertex.x(), vertex.y(), vertex.z())
@@ -45,8 +54,18 @@ interface NeoVertexConsumer {
         return this
     }
 
-    fun color(r: Int, g: Int, b: Int, a: Int): NeoVertexConsumer {
-        color(r / 255f, g / 255f, b / 255f, a / 255f)
+    fun color(packed: IntArray, offset: Int): NeoVertexConsumer {
+        color(packed[offset])
+        return this
+    }
+
+    fun color(r: Float, g: Float, b: Float, a: Float): NeoVertexConsumer {
+        color((r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt(), (a * 255).toInt())
+        return this
+    }
+
+    fun color(color: Vector4ic): NeoVertexConsumer {
+        color(color.x(), color.y(), color.z(), color.w())
         return this
     }
 
@@ -60,13 +79,31 @@ interface NeoVertexConsumer {
         return this
     }
 
-    fun color(color: IColor): NeoVertexConsumer {
-        color(color.toVec4F())
+    fun color(color: NeoColor): NeoVertexConsumer {
+        color(color.toVec4i())
+        return this
+    }
+
+    fun color(argb: Int): NeoVertexConsumer {
+        color(argb ushr 16 and 0xFF, argb ushr 8 and 0xFF, argb and 0xFF, argb ushr 24)
+        return this
+    }
+
+    fun textureUV(packed: IntArray, offset: Int): NeoVertexConsumer {
+        textureUV(
+            Float.fromBits(packed[offset]),
+            Float.fromBits(packed[offset + 1])
+        )
         return this
     }
 
     fun textureUV(uv: Vector2fc): NeoVertexConsumer {
         textureUV(uv.x(), uv.y())
+        return this
+    }
+
+    fun overlayUV(packed: IntArray, offset: Int): NeoVertexConsumer {
+        overlayUV(packed[offset])
         return this
     }
 
@@ -80,6 +117,11 @@ interface NeoVertexConsumer {
         return this
     }
 
+    fun lightUV(packed: IntArray, offset: Int): NeoVertexConsumer {
+        lightUV(packed[offset])
+        return this
+    }
+
     fun lightUV(uv: Vector2ic): NeoVertexConsumer {
         lightUV(uv.x(), uv.y())
         return this
@@ -90,8 +132,22 @@ interface NeoVertexConsumer {
         return this
     }
 
+    fun normal(packed: IntArray, offset: Int): NeoVertexConsumer {
+        normal(packed[offset])
+        return this
+    }
+
     fun normal(normal: Vector3fc): NeoVertexConsumer {
         normal(normal.x(), normal.y(), normal.z())
+        return this
+    }
+
+    fun normal(packed: Int): NeoVertexConsumer {
+        normal(
+            (packed ushr 24) / 127f,
+            ((packed ushr 16) and 0xFF) / 127f,
+            ((packed ushr 8) and 0xFF) / 127f
+        )
         return this
     }
 

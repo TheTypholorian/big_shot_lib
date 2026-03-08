@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.opengl.state
+package net.typho.big_shot_lib.api.client.opengl.state.shards
 
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlVertexArray
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier

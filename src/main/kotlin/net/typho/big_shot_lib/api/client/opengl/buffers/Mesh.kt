@@ -57,7 +57,7 @@ open class Mesh(
         format.initVertexArrayState()
         vbo.unbind()
 
-        ebo.bind(false)
+        ebo.bind(pushStack = false)
 
         val buffer = built.indexBuffer()
 
@@ -72,8 +72,10 @@ open class Mesh(
 
     inner class Builder(
         @JvmField
-        val buffer: ByteBufferBuilder = ByteBufferBuilder(1536)
+        val buffer: ByteBufferBuilder
     ) : NeoBufferBuilder(WrapperUtil.INSTANCE.createBufferBuilder(buffer, mode, format)) {
+        constructor(size: Int = 1536) : this(ByteBufferBuilder(size))
+
         fun end(sorting: VertexSorting? = null): MeshData {
             val built = buildOrThrow()
             sorting?.let { built.sortQuads(buffer, it) }

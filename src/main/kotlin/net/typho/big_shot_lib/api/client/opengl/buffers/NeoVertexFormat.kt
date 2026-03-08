@@ -1,7 +1,11 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
+import com.mojang.serialization.Codec
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.opengl.util.GlPrimitiveType
-import net.typho.big_shot_lib.api.util.WrapperUtil
+import net.typho.big_shot_lib.api.util.*
+import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
+import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     val vertexSizeBytes: Int
@@ -17,11 +21,42 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
 
     override fun iterator() = elements.iterator()
 
-    companion object {
+    companion object : BigShotCommonEntrypoint {
+        val REGISTRY_KEY = NeoResourceKey.registry<NeoVertexFormat>(BigShotApi.id("vertex_formats"))
+        var REGISTRY: NeoRegistry<NeoVertexFormat>? = null
+            private set
+        val CODEC: Codec<NeoVertexFormat> = NeoResourceKey.codec(REGISTRY_KEY).xmap(
+            { REGISTRY!!.get(it) },
+            { REGISTRY!!.getKey(it) }
+        )
+
+        override fun registerRegistries(factory: RegistryFactory) {
+            REGISTRY = factory.create(REGISTRY_KEY)
+        }
+
+        override fun registerContent(factory: RegistrationFactory) {
+            val registrar = factory.begin(REGISTRY_KEY, ResourceIdentifier.DEFAULT_NAMESPACE)
+            registrar.register("blit_screen") { BLIT_SCREEN }
+            registrar.register("block") { BLIT_SCREEN }
+            registrar.register("new_entity") { NEW_ENTITY }
+            registrar.register("particle") { PARTICLE }
+            registrar.register("position") { POSITION }
+            registrar.register("position_color") { POSITION_COLOR }
+            registrar.register("position_color_normal") { POSITION_COLOR_NORMAL }
+            registrar.register("position_color_lightmap") { POSITION_COLOR_LIGHTMAP }
+            registrar.register("position_tex") { POSITION_TEX }
+            registrar.register("position_tex_color") { POSITION_TEX_COLOR }
+            registrar.register("position_color_tex_lightmap") { POSITION_COLOR_TEX_LIGHTMAP }
+            registrar.register("position_tex_lightmap_color") { POSITION_TEX_LIGHTMAP_COLOR }
+            registrar.register("position_tex_color_normal") { POSITION_TEX_COLOR_NORMAL }
+        }
+
+        @JvmStatic
+        fun provider() = this
+
         /**
          * - Position
          */
-        @JvmField
         val BLIT_SCREEN = WrapperUtil.INSTANCE.blitScreenVertexFormat()
         /**
          * - Position
@@ -31,7 +66,6 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        @JvmField
         val BLOCK = WrapperUtil.INSTANCE.blockVertexFormat()
         /**
          * - Position
@@ -42,7 +76,6 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        @JvmField
         val NEW_ENTITY = WrapperUtil.INSTANCE.newEntityVertexFormat()
         /**
          * - Position
@@ -50,18 +83,15 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Color
          * - Light UV
          */
-        @JvmField
         val PARTICLE = WrapperUtil.INSTANCE.particleVertexFormat()
         /**
          * - Position
          */
-        @JvmField
         val POSITION = WrapperUtil.INSTANCE.positionVertexFormat()
         /**
          * - Position
          * - Color
          */
-        @JvmField
         val POSITION_COLOR = WrapperUtil.INSTANCE.positionColorVertexFormat()
         /**
          * - Position
@@ -69,27 +99,23 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        @JvmField
         val POSITION_COLOR_NORMAL = WrapperUtil.INSTANCE.positionColorNormalVertexFormat()
         /**
          * - Position
          * - Color
          * - Light UV
          */
-        @JvmField
         val POSITION_COLOR_LIGHTMAP = WrapperUtil.INSTANCE.positionColorLightVertexFormat()
         /**
          * - Position
          * - Texture UV
          */
-        @JvmField
         val POSITION_TEX = WrapperUtil.INSTANCE.positionTexVertexFormat()
         /**
          * - Position
          * - Texture UV
          * - Color
          */
-        @JvmField
         val POSITION_TEX_COLOR = WrapperUtil.INSTANCE.positionTexColorVertexFormat()
         /**
          * - Position
@@ -97,7 +123,6 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Texture UV
          * - Light UV
          */
-        @JvmField
         val POSITION_COLOR_TEX_LIGHTMAP = WrapperUtil.INSTANCE.positionColorTexLightVertexFormat()
         /**
          * - Position
@@ -105,7 +130,6 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Light UV
          * - Color
          */
-        @JvmField
         val POSITION_TEX_LIGHTMAP_COLOR = WrapperUtil.INSTANCE.positionTexLightColorVertexFormat()
         /**
          * - Position
@@ -114,7 +138,6 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        @JvmField
         val POSITION_TEX_COLOR_NORMAL = WrapperUtil.INSTANCE.positionTexColorNormalVertexFormat()
 
         @JvmStatic

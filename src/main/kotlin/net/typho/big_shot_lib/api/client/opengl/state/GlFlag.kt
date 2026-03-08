@@ -36,7 +36,7 @@ enum class GlFlag(
 
     val stack = GlStateStack<Boolean?>(name, this::set) { OpenGL.INSTANCE.isEnabled(this) }
 
-    fun queryValue() = stack.query.get()
+    fun queryValue() = stack.query()
 
     fun set(value: Boolean?) {
         if (value ?: false) {

@@ -1,16 +1,14 @@
 package net.typho.big_shot_lib.api.client.opengl.util
 
 import org.lwjgl.system.NativeResource
-import java.util.function.Function
 import java.util.function.Predicate
-import java.util.function.Supplier
 
 open class GlResourcePool<T>(
     @JvmField
-    protected val initializer: Function<Int, T>,
+    protected val initializer: (index: Int) -> T,
     initialSize: Int,
     @JvmField
-    protected val fallback: Supplier<T?>,
+    protected val fallback: () -> T?,
     @JvmField
     protected val putOnFallback: Boolean
 ) : NativeResource {
@@ -18,7 +16,7 @@ open class GlResourcePool<T>(
     protected val resources = HashMap<T, Boolean>()
 
     init {
-        repeat(initialSize) { resources[initializer.apply(it)] = true }
+        repeat(initialSize) { resources[initializer(it)] = true }
     }
 
     fun poll(check: Predicate<T> = Predicate { true }): Handle {
@@ -29,7 +27,7 @@ open class GlResourcePool<T>(
             }
         }
 
-        val value = fallback.get()
+        val value = fallback()
 
         if (value != null) {
             if (putOnFallback) {

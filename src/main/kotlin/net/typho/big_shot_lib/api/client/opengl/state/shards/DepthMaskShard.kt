@@ -1,7 +1,8 @@
-package net.typho.big_shot_lib.api.client.opengl.state
+package net.typho.big_shot_lib.api.client.opengl.state.shards
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 

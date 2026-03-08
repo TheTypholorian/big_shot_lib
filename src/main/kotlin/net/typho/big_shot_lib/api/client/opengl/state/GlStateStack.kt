@@ -1,17 +1,17 @@
 package net.typho.big_shot_lib.api.client.opengl.state
 
 import net.typho.big_shot_lib.api.client.opengl.buffers.BufferType
+import net.typho.big_shot_lib.api.client.opengl.buffers.GlFramebuffer
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.client.opengl.util.TextureType
-import net.typho.big_shot_lib.api.util.IColor
 import net.typho.big_shot_lib.api.util.NeoCollections
+import net.typho.big_shot_lib.api.util.NeoColor
+import java.awt.Rectangle
 import java.io.PrintStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
-import java.util.function.*
-import java.util.function.Function
 import kotlin.enums.enumEntries
 import kotlin.io.path.outputStream
 
@@ -19,9 +19,9 @@ open class GlStateStack<V>(
     @JvmField
     val name: String,
     @JvmField
-    val bind: Consumer<V?>,
+    val bind: (value: V?) -> Unit,
     @JvmField
-    val query: Supplier<V>
+    val query: () -> V
 ) {
     companion object {
         @JvmField
@@ -63,7 +63,7 @@ open class GlStateStack<V>(
         @JvmField
         val blendColor = GlStateStack(
             "BLEND_COLOR",
-            { OpenGL.INSTANCE.blendColor(it ?: IColor.FULL_ON) },
+            { OpenGL.INSTANCE.blendColor(it ?: NeoColor.FULL_ON) },
             OpenGL.INSTANCE::getBlendColor
         )
         @JvmField
@@ -132,6 +132,12 @@ open class GlStateStack<V>(
             { OpenGL.INSTANCE.stencilOp(it ?: StencilOp(IntAction.KEEP, IntAction.KEEP, IntAction.KEEP)) },
             OpenGL.INSTANCE::getStencilOp
         )
+        @JvmField
+        val viewport = GlStateStack(
+            "VIEWPORT",
+            { OpenGL.INSTANCE.viewport(it ?: Rectangle(GlFramebuffer.MAIN.dimensions)) },
+            OpenGL.INSTANCE::getViewport
+        )
         val all: List<GlStateStack<*>> by lazy {
             NeoCollections.flatListOf(
                 buffers.values,
@@ -155,20 +161,29 @@ open class GlStateStack<V>(
         var debugOut: DebugOut? = null
 
         @JvmStatic
-        inline fun <reified T : Enum<T>, V> createMap(name: Function<T, String>, bind: BiConsumer<T, V?>, query: Function<T, V>): Map<T, GlStateStack<V>> {
+        inline fun <reified T : Enum<T>, V> createMap(
+            name: (type: T) -> String,
+            crossinline bind: (type: T, value: V?) -> Unit,
+            crossinline query: (type: T) -> V
+        ): Map<T, GlStateStack<V>> {
             return createMap(name, { true }, bind, query)
         }
 
         @JvmStatic
-        inline fun <reified T : Enum<T>, V> createMap(name: Function<T, String>, predicate: Predicate<T>, bind: BiConsumer<T, V?>, query: Function<T, V>): Map<T, GlStateStack<V>> {
+        inline fun <reified T : Enum<T>, V> createMap(
+            name: (type: T) -> String,
+            predicate: (type: T) -> Boolean,
+            crossinline bind: (type: T, value: V?) -> Unit,
+            crossinline query: (type: T) -> V
+        ): Map<T, GlStateStack<V>> {
             val map = HashMap<T, GlStateStack<V>>()
 
             for (entry in enumEntries<T>()) {
-                if (predicate.test(entry)) {
+                if (predicate(entry)) {
                     map[entry] = GlStateStack(
-                        name.apply(entry),
-                        { bind.accept(entry, it) },
-                        { query.apply(entry) }
+                        name(entry),
+                        { bind(entry, it) },
+                        { query(entry) },
                     )
                 }
             }
@@ -219,12 +234,12 @@ open class GlStateStack<V>(
         var message = ""
 
         if (bound.isEmpty()) {
-            restoreTo = query.get()
+            restoreTo = query()
             message += "Pushed $name while empty, selected $restoreTo to restore to\n"
         }
 
         if (bound.lastOrNull() != value) {
-            bind.accept(value)
+            bind(value)
             message += "Pushed $name and bound $value\n"
         } else {
             message += "Pushed $name and did not bind $value\n"
@@ -245,18 +260,20 @@ open class GlStateStack<V>(
         val current = getBound()
 
         if (current == null) {
-            bind.accept(restoreTo)
             debugOut?.stream?.println("Restored $name from $removed to $restoreTo\n\tat ${getStackTrace().firstOrNull()}")
+            bind(restoreTo)
         } else if (current != removed) {
-            bind.accept(current)
             debugOut?.stream?.println("Popped $name from $removed to $current\n\tat ${getStackTrace().firstOrNull()}")
+            bind(current)
+        } else {
+            debugOut?.stream?.println("Popped $name and did not bind $current\n\tat ${getStackTrace().firstOrNull()}")
         }
     }
 
     fun rebind() {
         val value = getBound()
         listeners.forEach { it.onRebound(this, value) }
-        bind.accept(value)
+        bind(value)
         debugOut?.stream?.println("Rebound $name to $value\n\tat ${getStackTrace().firstOrNull()}")
     }
 

@@ -1,9 +1,13 @@
-package net.typho.big_shot_lib.api.client.opengl.state
+package net.typho.big_shot_lib.api.client.opengl.state.shards
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.typho.big_shot_lib.api.client.opengl.state.BlendEquation
+import net.typho.big_shot_lib.api.client.opengl.state.BlendFunction
+import net.typho.big_shot_lib.api.client.opengl.state.GlFlag
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
-import net.typho.big_shot_lib.api.util.IColor
+import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.resources.NeoCodecs
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
@@ -11,7 +15,7 @@ open class BlendShard(
     @JvmField
     val enabled: Boolean,
     @JvmField
-    val color: IColor,
+    val color: NeoColor,
     @JvmField
     val equation: BlendEquation,
     @JvmField
@@ -28,13 +32,13 @@ open class BlendShard(
     companion object : RenderSettingShard.Type<BlendShard> {
         override val default = BlendShard(
             false,
-            IColor.FULL_OFF,
+            NeoColor.FULL_OFF,
             BlendEquation.ADD,
             BlendFunction.DEFAULT
         )
         override val codec: MapCodec<BlendShard> = RecordCodecBuilder.mapCodec {
             it.group(
-                IColor.CODEC_ANY.fieldOf("color").forGetter { shard -> shard.color },
+                NeoColor.CODEC_ANY.fieldOf("color").forGetter { shard -> shard.color },
                 NeoCodecs.enumCodec<BlendEquation>().fieldOf("equation").forGetter { shard -> shard.equation },
                 BlendFunction.CODEC.fieldOf("function").forGetter { shard -> shard.function },
             ).apply(it) { color, eq, func -> BlendShard(true, color, eq, func) }

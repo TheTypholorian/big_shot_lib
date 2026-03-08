@@ -1,12 +1,11 @@
 package net.typho.big_shot_lib.api.client.util
 
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
-import java.util.function.Consumer
 
 interface DebugScreenFactory {
     fun register(
         location: ResourceIdentifier,
         allowedWithReducedDebugInfo: Boolean,
-        out: Consumer<Consumer<String>>
+        text: (out: (line: String) -> Unit) -> Unit
     )
 }

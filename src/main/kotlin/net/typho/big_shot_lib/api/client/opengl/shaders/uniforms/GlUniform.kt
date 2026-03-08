@@ -5,7 +5,7 @@ import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderProgramKey
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.client.opengl.util.TextureType
-import net.typho.big_shot_lib.api.util.IColor
+import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.*
 
 abstract class GlUniform(
@@ -192,7 +192,7 @@ abstract class GlUniform(
         OpenGL.INSTANCE.setUniformValue(location, mat, transpose)
     }
 
-    fun setValue(color: IColor) {
+    fun setValue(color: NeoColor) {
         when (type) {
             ShaderVariableType.UINT -> setValue(color.toRGBA())
             ShaderVariableType.FLOAT_VEC3 -> setValue(color.redF(), color.greenF(), color.blueF())

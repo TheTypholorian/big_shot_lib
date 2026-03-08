@@ -4,7 +4,6 @@ import net.typho.big_shot_lib.api.client.opengl.util.InterpolationType
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.client.opengl.util.WrappingType
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
-import java.util.function.Consumer
 
 interface GlTexture2D : GlTexture, GlFramebufferAttachment {
     fun setInterpolation(min: InterpolationType, mag: InterpolationType = min) {
@@ -19,5 +18,5 @@ interface GlTexture2D : GlTexture, GlFramebufferAttachment {
         unbind()
     }
 
-    override fun resize(width: Int, height: Int, upload: Consumer<BufferUploader>)
+    override fun resize(width: Int, height: Int, upload: (uploader: BufferUploader) -> Unit)
 }

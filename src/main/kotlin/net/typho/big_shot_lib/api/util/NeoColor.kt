@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.util.resources.NeoCodecs
 import org.joml.*
 import java.awt.Color
 
-interface IColor {
+interface NeoColor {
     companion object {
         @JvmField
         val FULL_ON = RGBAF(1f, 1f, 1f, 1f)
@@ -41,32 +41,32 @@ interface IColor {
         val BLUE = RGBA(Color.BLUE)
 
         @JvmField
-        val CODEC_PACKED: Codec<IColor> = Codec.INT.xmap(
+        val CODEC_PACKED: Codec<NeoColor> = Codec.INT.xmap(
             { vec -> RGBA(vec) },
             { color -> color.toRGBA() }
         )
         @JvmField
-        val CODEC_3I: Codec<IColor> = NeoCodecs.VEC3I.xmap(
+        val CODEC_3I: Codec<NeoColor> = NeoCodecs.VEC3I.xmap(
             { vec -> RGB(vec) },
-            { color -> color.toVec3() }
+            { color -> color.toVec3i() }
         )
         @JvmField
-        val CODEC_4I: Codec<IColor> = NeoCodecs.VEC4I.xmap(
+        val CODEC_4I: Codec<NeoColor> = NeoCodecs.VEC4I.xmap(
             { vec -> RGBA(vec) },
-            { color -> color.toVec4() }
+            { color -> color.toVec4i() }
         )
         @JvmField
-        val CODEC_3F: Codec<IColor> = NeoCodecs.VEC3F.xmap(
+        val CODEC_3F: Codec<NeoColor> = NeoCodecs.VEC3F.xmap(
             { vec -> RGBF(vec) },
             { color -> color.toVec3F() }
         )
         @JvmField
-        val CODEC_4F: Codec<IColor> = NeoCodecs.VEC4F.xmap(
+        val CODEC_4F: Codec<NeoColor> = NeoCodecs.VEC4F.xmap(
             { vec -> RGBAF(vec) },
             { color -> color.toVec4F() }
         )
         @JvmField
-        val CODEC_ANY: Codec<IColor> = Codec.either(
+        val CODEC_ANY: Codec<NeoColor> = Codec.either(
             CODEC_PACKED,
             Codec.either(
                 CODEC_3I,
@@ -104,11 +104,13 @@ interface IColor {
 
     fun alpha(): Int? = alphaF()?.times(255)?.toInt()
 
-    fun toVec3() = Vector3i(red(), green(), blue())
+    fun toVec3i() = Vector3i(red(), green(), blue())
 
-    fun toVec4() = Vector4i(red(), green(), blue(), alpha() ?: 255)
+    fun toVec4i() = Vector4i(red(), green(), blue(), alpha() ?: 255)
 
-    fun toRGBA() = ((alpha() ?: 0xFF) shl 24) or (red() shl 16) or (green() shl 8) or blue()
+    fun toARGB() = ((alpha() ?: 255) shl 24) or (red() shl 16) or (green() shl 8) or blue()
+
+    fun toRGBA() = (red() shl 24) or (green() shl 16) or (blue() shl 8) or (alpha() ?: 255)
 
     fun toIntArray() = intArrayOf(red(), green(), blue(), alpha() ?: 255)
 
@@ -122,7 +124,7 @@ interface IColor {
         val green: Int,
         @JvmField
         val blue: Int
-    ) : IColor {
+    ) : NeoColor {
         constructor(rgb: Int) : this(rgb ushr 16 and 0xFF, rgb ushr 8 and 0xFF, rgb and 0xFF)
 
         constructor(color: Color) : this(color.red, color.green, color.blue)
@@ -154,7 +156,7 @@ interface IColor {
         val blue: Int,
         @JvmField
         val alpha: Int
-    ) : IColor {
+    ) : NeoColor {
         constructor(argb: Int) : this(argb ushr 16 and 0xFF, argb ushr 8 and 0xFF, argb and 0xFF, argb ushr 24)
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)
@@ -184,7 +186,7 @@ interface IColor {
         val green: Float,
         @JvmField
         val blue: Float
-    ) : IColor {
+    ) : NeoColor {
         constructor(rgb: Int) : this((rgb ushr 16 and 0xFF) / 255f, (rgb ushr 8 and 0xFF) / 255f, (rgb and 0xFF) / 255f)
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f)
@@ -216,7 +218,7 @@ interface IColor {
         val blue: Float,
         @JvmField
         val alpha: Float
-    ) : IColor {
+    ) : NeoColor {
         constructor(argb: Int) : this((argb ushr 16 and 0xFF) / 255f, (argb ushr 8 and 0xFF) / 255f, (argb and 0xFF) / 255f, (argb ushr 24) / 255f)
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)

@@ -7,9 +7,10 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.GlTextureCube
 import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.opengl.state.*
-import net.typho.big_shot_lib.api.util.IColor
+import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.*
+import java.awt.Rectangle
 import java.nio.ByteBuffer
 
 interface OpenGL {
@@ -44,12 +45,12 @@ interface OpenGL {
     /**
      * `glBlendColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)`
      */
-    fun blendColor(color: IColor)
+    fun blendColor(color: NeoColor)
 
     /**
      * `glGetFloatv(GL_BLEND_COLOR, color)`
      */
-    fun getBlendColor(): IColor
+    fun getBlendColor(): NeoColor
 
     /**
      * `glBlendEquation(eq)`
@@ -556,12 +557,24 @@ interface OpenGL {
     /**
      * `glViewport(x, y, width, height)`
      */
+    fun viewport(rect: Rectangle) {
+        viewport(rect.x, rect.y, rect.width, rect.height)
+    }
+
+    /**
+     * `glViewport(x, y, width, height)`
+     */
     fun viewport(x: Int, y: Int, width: Int, height: Int)
+
+    /**
+     * `glGetIntegerv(GL_VIEWPORT)`
+     */
+    fun getViewport(): Rectangle
 
     /**
      * `glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)`
      */
-    fun clearColor(color: IColor)
+    fun clearColor(color: NeoColor)
 
     /**
      * `glClearDepth(depth)`

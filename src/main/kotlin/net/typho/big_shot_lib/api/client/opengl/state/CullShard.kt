@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client.opengl.state
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.typho.big_shot_lib.api.client.opengl.state.shards.RenderSettingShard
 import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
 import net.typho.big_shot_lib.api.util.resources.NeoCodecs
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
