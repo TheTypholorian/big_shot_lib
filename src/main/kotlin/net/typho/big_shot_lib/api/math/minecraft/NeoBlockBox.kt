@@ -12,12 +12,13 @@ class NeoBlockBox(
 ) : AbstractRect3<Int, NeoBlockBox, NeoBlockPos>(min, max), Iterable<NeoBlockPos> {
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet
-
     val mojang: BlockBox
         get() = BlockBox(
             BlockPos(min.x, min.y, min.z),
             BlockPos(max.x, max.y, max.z)
         )
+
+    override fun create(x: Int, y: Int, z: Int) = NeoBlockPos(x, y, z)
 
     override fun iterator(): Iterator<NeoBlockPos> {
         TODO("Not yet implemented")

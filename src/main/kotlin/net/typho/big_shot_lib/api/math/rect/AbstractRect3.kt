@@ -13,6 +13,8 @@ abstract class AbstractRect3<N : Number, R3 : AbstractRect3<N, R3, V3>, V3 : Abs
     val size: V3
         get() = max - min
 
+    protected abstract fun create(x: N, y: N, z: N): V3
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is AbstractRect3<*, *, *>) return false
