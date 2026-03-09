@@ -57,28 +57,68 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
         return create(opSet.max(x, this.x), opSet.max(y, this.y), opSet.max(z, this.z), opSet.max(w, this.w))
     }
 
-    fun distance(other: AbstractVec4<N, *>): Float {
-        return (this - other).length
+    fun distance(x: N, y: N, z: N, w: N): Float {
+        return minus(x, y, z, w).length
     }
 
-    fun distanceSquared(other: AbstractVec4<N, *>): N {
-        return (this - other).lengthSquared
+    fun distanceSquared(x: N, y: N, z: N, w: N): N {
+        return minus(x, y, z, w).lengthSquared
     }
 
-    fun gridDistance(other: AbstractVec4<N, *>): N {
-        return (this - other).gridLength
+    fun gridDistance(x: N, y: N, z: N, w: N): N {
+        return minus(x, y, z, w).gridLength
     }
 
-    fun inDistance(other: AbstractVec4<N, *>, dist: N): Boolean {
-        return inDistanceSquared(other, opSet.times(dist, dist))
+    fun inDistance(x: N, y: N, z: N, w: N, dist: N): Boolean {
+        return inDistanceSquared(x, y, z, w, opSet.times(dist, dist))
     }
 
-    fun inDistanceSquared(other: AbstractVec4<N, *>, dist: N): Boolean {
-        return opSet.lessThan(distanceSquared(other), dist)
+    fun inDistanceSquared(x: N, y: N, z: N, w: N, dist: N): Boolean {
+        return opSet.lessThan(distanceSquared(x, y, z, w), dist)
     }
 
-    fun inGridDistance(other: AbstractVec4<N, *>, dist: N): Boolean {
-        return opSet.lessThan(gridDistance(other), dist)
+    fun inGridDistance(x: N, y: N, z: N, w: N, dist: N): Boolean {
+        return opSet.lessThan(gridDistance(x, y, z, w), dist)
+    }
+
+    fun minComponent(): N {
+        return opSet.min(x, opSet.min(y, opSet.min(z, w)))
+    }
+
+    fun maxComponent(): N {
+        return opSet.max(x, opSet.max(y, opSet.max(z, w)))
+    }
+
+    fun anyGreaterThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.greaterThan(this.x, x) || opSet.greaterThan(this.y, y) || opSet.greaterThan(this.z, z) || opSet.greaterThan(this.w, w)
+    }
+
+    fun allGreaterThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.greaterThan(this.x, x) && opSet.greaterThan(this.y, y) && opSet.greaterThan(this.z, z) && opSet.greaterThan(this.w, w)
+    }
+
+    fun anyGequalThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.gequalThan(this.x, x) || opSet.gequalThan(this.y, y) || opSet.gequalThan(this.z, z) || opSet.gequalThan(this.w, w)
+    }
+
+    fun allGequalThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.gequalThan(this.x, x) && opSet.gequalThan(this.y, y) && opSet.gequalThan(this.z, z) && opSet.gequalThan(this.w, w)
+    }
+
+    fun anyLessThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.lessThan(this.x, x) || opSet.lessThan(this.y, y) || opSet.lessThan(this.z, z) || opSet.lessThan(this.w, w)
+    }
+
+    fun allLessThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.lessThan(this.x, x) && opSet.lessThan(this.y, y) && opSet.lessThan(this.z, z) && opSet.lessThan(this.w, w)
+    }
+
+    fun anyLequalThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.lequalThan(this.x, x) || opSet.lequalThan(this.y, y) || opSet.lequalThan(this.z, z) || opSet.lequalThan(this.w, w)
+    }
+
+    fun allLequalThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.lequalThan(this.x, x) && opSet.lequalThan(this.y, y) && opSet.lequalThan(this.z, z) && opSet.lequalThan(this.w, w)
     }
 
     operator fun plus(other: AbstractVec4<N, *>) = plus(other.x, other.y, other.z, other.w)
@@ -103,7 +143,55 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
 
     fun min(other: AbstractVec4<N, *>) = min(other.x, other.y, other.z, other.w)
 
+    fun min(x: N) = min(x, x, x, x)
+
     fun max(other: AbstractVec4<N, *>) = max(other.x, other.y, other.z, other.w)
+
+    fun max(x: N) = max(x, x, x, x)
+
+    fun distance(other: AbstractVec4<N, *>) = distance(other.x, other.y, other.z, other.w)
+
+    fun distanceSquared(other: AbstractVec4<N, *>) = distanceSquared(other.x, other.y, other.z, other.w)
+
+    fun gridDistance(other: AbstractVec4<N, *>) = gridDistance(other.x, other.y, other.z, other.w)
+
+    fun inDistance(other: AbstractVec4<N, *>, dist: N) = inDistance(other.x, other.y, other.z, other.w, dist)
+
+    fun inDistanceSquared(other: AbstractVec4<N, *>, dist: N) = inDistanceSquared(other.x, other.y, other.z, other.w, dist)
+
+    fun inGridDistance(other: AbstractVec4<N, *>, dist: N) = inGridDistance(other.x, other.y, other.z, other.w, dist)
+
+    fun anyGreaterThan(other: AbstractVec4<N, *>) = anyGreaterThan(other.x, other.y, other.z, other.w)
+
+    fun anyGreaterThan(x: N) = anyGreaterThan(x, x, x, x)
+
+    fun allGreaterThan(other: AbstractVec4<N, *>) = allGreaterThan(other.x, other.y, other.z, other.w)
+
+    fun allGreaterThan(x: N) = allGreaterThan(x, x, x, x)
+
+    fun anyGequalThan(other: AbstractVec4<N, *>) = anyGequalThan(other.x, other.y, other.z, other.w)
+
+    fun anyGequalThan(x: N) = anyGequalThan(x, x, x, x)
+
+    fun allGequalThan(other: AbstractVec4<N, *>) = allGequalThan(other.x, other.y, other.z, other.w)
+
+    fun allGequalThan(x: N) = allGequalThan(x, x, x, x)
+
+    fun anyLessThan(other: AbstractVec4<N, *>) = anyLessThan(other.x, other.y, other.z, other.w)
+
+    fun anyLessThan(x: N) = anyLessThan(x, x, x, x)
+
+    fun allLessThan(other: AbstractVec4<N, *>) = allLessThan(other.x, other.y, other.z, other.w)
+
+    fun allLessThan(x: N) = allLessThan(x, x, x, x)
+
+    fun anyLequalThan(other: AbstractVec4<N, *>) = anyLequalThan(other.x, other.y, other.z, other.w)
+
+    fun anyLequalThan(x: N) = anyLequalThan(x, x, x, x)
+
+    fun allLequalThan(other: AbstractVec4<N, *>) = allLequalThan(other.x, other.y, other.z, other.w)
+
+    fun allLequalThan(x: N) = allLequalThan(x, x, x, x)
 
     operator fun unaryPlus() = this
 
@@ -117,7 +205,7 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
         0 -> x
         1 -> y
         2 -> z
-        3 -> w
+        4 -> w
         else -> throw IndexOutOfBoundsException(index)
     }
 
@@ -139,9 +227,9 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
 
     override fun hashCode(): Int {
         var result = x.hashCode()
-        result = 31 * result + y.hashCode()
-        result = 31 * result + z.hashCode()
-        result = 31 * result + w.hashCode()
+        result = 41 * result + y.hashCode()
+        result = 41 * result + z.hashCode()
+        result = 41 * result + w.hashCode()
         return result
     }
 

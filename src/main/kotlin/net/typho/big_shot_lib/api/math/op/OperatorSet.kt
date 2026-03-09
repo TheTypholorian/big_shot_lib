@@ -4,6 +4,8 @@ interface OperatorSet<N : Number> {
     val zero: N
     val one: N
 
+    fun fromInt(a: Int): N
+
     fun plus(a: N, b: N): N
 
     fun minus(a: N, b: N): N

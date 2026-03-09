@@ -26,55 +26,95 @@ abstract class AbstractVec2<N : Number, V2 : AbstractVec2<N, V2>>(
     protected abstract fun create(x: N, y: N): V2
 
     fun plus(x: N, y: N): V2 {
-        return create(opSet.plus(x, this.x), opSet.plus(y, this.y))
+        return create(opSet.plus(this.x, x), opSet.plus(this.y, y))
     }
 
     fun minus(x: N, y: N): V2 {
-        return create(opSet.minus(x, this.x), opSet.minus(y, this.y))
+        return create(opSet.minus(this.x, x), opSet.minus(this.y, y))
     }
 
     fun times(x: N, y: N): V2 {
-        return create(opSet.times(x, this.x), opSet.times(y, this.y))
+        return create(opSet.times(this.x, x), opSet.times(this.y, y))
     }
 
     fun div(x: N, y: N): V2 {
-        return create(opSet.div(x, this.x), opSet.div(y, this.y))
+        return create(opSet.div(this.x, x), opSet.div(this.y, y))
     }
 
     fun rem(x: N, y: N): V2 {
-        return create(opSet.rem(x, this.x), opSet.rem(y, this.y))
+        return create(opSet.rem(this.x, x), opSet.rem(this.y, y))
     }
 
     fun min(x: N, y: N): V2 {
-        return create(opSet.min(x, this.x), opSet.min(y, this.y))
+        return create(opSet.min(this.x, x), opSet.min(this.y, y))
     }
 
     fun max(x: N, y: N): V2 {
-        return create(opSet.max(x, this.x), opSet.max(y, this.y))
+        return create(opSet.max(this.x, x), opSet.max(this.y, y))
     }
 
-    fun distance(other: AbstractVec2<N, *>): Float {
-        return (this - other).length
+    fun distance(x: N, y: N): Float {
+        return minus(x, y).length
     }
 
-    fun distanceSquared(other: AbstractVec2<N, *>): N {
-        return (this - other).lengthSquared
+    fun distanceSquared(x: N, y: N): N {
+        return minus(x, y).lengthSquared
     }
 
-    fun gridDistance(other: AbstractVec2<N, *>): N {
-        return (this - other).gridLength
+    fun gridDistance(x: N, y: N): N {
+        return minus(x, y).gridLength
     }
 
-    fun inDistance(other: AbstractVec2<N, *>, dist: N): Boolean {
-        return inDistanceSquared(other, opSet.times(dist, dist))
+    fun inDistance(x: N, y: N, dist: N): Boolean {
+        return inDistanceSquared(x, y, opSet.times(dist, dist))
     }
 
-    fun inDistanceSquared(other: AbstractVec2<N, *>, dist: N): Boolean {
-        return opSet.lessThan(distanceSquared(other), dist)
+    fun inDistanceSquared(x: N, y: N, dist: N): Boolean {
+        return opSet.lessThan(distanceSquared(x, y), dist)
     }
 
-    fun inGridDistance(other: AbstractVec2<N, *>, dist: N): Boolean {
-        return opSet.lessThan(gridDistance(other), dist)
+    fun inGridDistance(x: N, y: N, dist: N): Boolean {
+        return opSet.lessThan(gridDistance(x, y), dist)
+    }
+
+    fun minComponent(): N {
+        return opSet.min(x, y)
+    }
+
+    fun maxComponent(): N {
+        return opSet.max(x, y)
+    }
+
+    fun anyGreaterThan(x: N, y: N): Boolean {
+        return opSet.greaterThan(this.x, x) || opSet.greaterThan(this.y, y)
+    }
+
+    fun allGreaterThan(x: N, y: N): Boolean {
+        return opSet.greaterThan(this.x, x) && opSet.greaterThan(this.y, y)
+    }
+
+    fun anyGequalThan(x: N, y: N): Boolean {
+        return opSet.gequalThan(this.x, x) || opSet.gequalThan(this.y, y)
+    }
+
+    fun allGequalThan(x: N, y: N): Boolean {
+        return opSet.gequalThan(this.x, x) && opSet.gequalThan(this.y, y)
+    }
+
+    fun anyLessThan(x: N, y: N): Boolean {
+        return opSet.lessThan(this.x, x) || opSet.lessThan(this.y, y)
+    }
+
+    fun allLessThan(x: N, y: N): Boolean {
+        return opSet.lessThan(this.x, x) && opSet.lessThan(this.y, y)
+    }
+
+    fun anyLequalThan(x: N, y: N): Boolean {
+        return opSet.lequalThan(this.x, x) || opSet.lequalThan(this.y, y)
+    }
+
+    fun allLequalThan(x: N, y: N): Boolean {
+        return opSet.lequalThan(this.x, x) && opSet.lequalThan(this.y, y)
     }
 
     operator fun plus(other: AbstractVec2<N, *>) = plus(other.x, other.y)
@@ -99,7 +139,55 @@ abstract class AbstractVec2<N : Number, V2 : AbstractVec2<N, V2>>(
 
     fun min(other: AbstractVec2<N, *>) = min(other.x, other.y)
 
+    fun min(x: N) = min(x, x)
+
     fun max(other: AbstractVec2<N, *>) = max(other.x, other.y)
+
+    fun max(x: N) = max(x, x)
+
+    fun distance(other: AbstractVec2<N, *>) = distance(other.x, other.y)
+
+    fun distanceSquared(other: AbstractVec2<N, *>) = distanceSquared(other.x, other.y)
+
+    fun gridDistance(other: AbstractVec2<N, *>) = gridDistance(other.x, other.y)
+
+    fun inDistance(other: AbstractVec2<N, *>, dist: N) = inDistance(other.x, other.y, dist)
+
+    fun inDistanceSquared(other: AbstractVec2<N, *>, dist: N) = inDistanceSquared(other.x, other.y, dist)
+
+    fun inGridDistance(other: AbstractVec2<N, *>, dist: N) = inGridDistance(other.x, other.y, dist)
+
+    fun anyGreaterThan(other: AbstractVec2<N, *>) = anyGreaterThan(other.x, other.y)
+
+    fun anyGreaterThan(x: N) = anyGreaterThan(x, x)
+
+    fun allGreaterThan(other: AbstractVec2<N, *>) = allGreaterThan(other.x, other.y)
+
+    fun allGreaterThan(x: N) = allGreaterThan(x, x)
+
+    fun anyGequalThan(other: AbstractVec2<N, *>) = anyGequalThan(other.x, other.y)
+
+    fun anyGequalThan(x: N) = anyGequalThan(x, x)
+
+    fun allGequalThan(other: AbstractVec2<N, *>) = allGequalThan(other.x, other.y)
+
+    fun allGequalThan(x: N) = allGequalThan(x, x)
+
+    fun anyLessThan(other: AbstractVec2<N, *>) = anyLessThan(other.x, other.y)
+
+    fun anyLessThan(x: N) = anyLessThan(x, x)
+
+    fun allLessThan(other: AbstractVec2<N, *>) = allLessThan(other.x, other.y)
+
+    fun allLessThan(x: N) = allLessThan(x, x)
+
+    fun anyLequalThan(other: AbstractVec2<N, *>) = anyLequalThan(other.x, other.y)
+
+    fun anyLequalThan(x: N) = anyLequalThan(x, x)
+
+    fun allLequalThan(other: AbstractVec2<N, *>) = allLequalThan(other.x, other.y)
+
+    fun allLequalThan(x: N) = allLequalThan(x, x)
 
     operator fun unaryPlus() = this
 
@@ -131,7 +219,7 @@ abstract class AbstractVec2<N : Number, V2 : AbstractVec2<N, V2>>(
 
     override fun hashCode(): Int {
         var result = x.hashCode()
-        result = 31 * result + y.hashCode()
+        result = 21 * result + y.hashCode()
         return result
     }
 
