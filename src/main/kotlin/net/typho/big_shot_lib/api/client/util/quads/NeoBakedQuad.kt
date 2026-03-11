@@ -1,13 +1,13 @@
 package net.typho.big_shot_lib.api.client.util.quads
 
-import net.minecraft.core.Direction
+import net.typho.big_shot_lib.ap.math.NeoDirection
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexConsumer
 import java.util.function.UnaryOperator
 
 interface NeoBakedQuad {
     val vertices: Array<NeoVertexData>
     val tintIndex: Int?
-    val direction: Direction?
+    val direction: NeoDirection?
     val sprite: NeoAtlasSprite
     val shade: Boolean
 
@@ -34,7 +34,7 @@ interface NeoBakedQuad {
             override val vertices: Array<NeoVertexData> = vertices
             override val tintIndex: Int?
                 get() = parent.tintIndex
-            override val direction: Direction?
+            override val direction: NeoDirection?
                 get() = parent.direction
             override val sprite: NeoAtlasSprite
                 get() = parent.sprite
@@ -50,7 +50,7 @@ interface NeoBakedQuad {
             override val vertices: Array<NeoVertexData>
                 get() = parent.vertices
             override val tintIndex: Int? = tintIndex
-            override val direction: Direction?
+            override val direction: NeoDirection?
                 get() = parent.direction
             override val sprite: NeoAtlasSprite
                 get() = parent.sprite
@@ -59,7 +59,7 @@ interface NeoBakedQuad {
         }
     }
 
-    fun withDirection(direction: UnaryOperator<Direction?>): NeoBakedQuad {
+    fun withDirection(direction: UnaryOperator<NeoDirection?>): NeoBakedQuad {
         val parent = this
         val direction = direction.apply(parent.direction)
         return object : NeoBakedQuad {
@@ -67,7 +67,7 @@ interface NeoBakedQuad {
                 get() = parent.vertices
             override val tintIndex: Int?
                 get() = parent.tintIndex
-            override val direction: Direction? = direction
+            override val direction: NeoDirection? = direction
             override val sprite: NeoAtlasSprite
                 get() = parent.sprite
             override val shade: Boolean
@@ -83,7 +83,7 @@ interface NeoBakedQuad {
                 get() = parent.vertices
             override val tintIndex: Int?
                 get() = parent.tintIndex
-            override val direction: Direction?
+            override val direction: NeoDirection?
                 get() = parent.direction
             override val sprite: NeoAtlasSprite = sprite
             override val shade: Boolean
@@ -99,7 +99,7 @@ interface NeoBakedQuad {
                 get() = parent.vertices
             override val tintIndex: Int?
                 get() = parent.tintIndex
-            override val direction: Direction?
+            override val direction: NeoDirection?
                 get() = parent.direction
             override val sprite: NeoAtlasSprite
                 get() = parent.sprite

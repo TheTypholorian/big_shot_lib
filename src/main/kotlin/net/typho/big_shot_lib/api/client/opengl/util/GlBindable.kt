@@ -1,19 +1,21 @@
 package net.typho.big_shot_lib.api.client.opengl.util
 
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
-import net.typho.big_shot_lib.api.client.opengl.state.arguments.RenderArguments
+import net.typho.big_shot_lib.api.client.opengl.buffers.BufferType
+import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
+import net.typho.big_shot_lib.api.client.opengl.buffers.GlBuffer
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateManager
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
-interface GlBindable : GlAdvancedBindable {
+interface GlBindable {
     fun bind(pushStack: Boolean = true)
 
-    override fun bind(arguments: RenderArguments, pushStack: Boolean): GlBindResult {
-        bind(pushStack)
-        return GlBindResult.Success
-    }
+    fun unbind(popStack: Boolean = true)
 
     companion object {
         @JvmStatic
-        fun <T> ofStackDynamic(stack: GlStateStack<T>, bound: () -> T) = object : GlBindable {
+        fun <T> ofStackDynamic(stack: GlStateManager<T>, bound: () -> T) = object : GlBindable {
             override fun bind(pushStack: Boolean) {
                 if (pushStack) {
                     stack.push(bound())
@@ -32,6 +34,25 @@ interface GlBindable : GlAdvancedBindable {
         }
 
         @JvmStatic
-        fun <T> ofStack(stack: GlStateStack<T>, bound: T) = ofStackDynamic(stack) { bound }
+        fun <T> ofStack(stack: GlStateManager<T>, bound: T) = ofStackDynamic(stack) { bound }
+
+        @OptIn(ExperimentalContracts::class)
+        inline fun <B : GlBindable, R> B.glUse(touchStack: Boolean = true, crossinline task: (resource: B) -> R): R {
+            contract {
+                callsInPlace(task, InvocationKind.EXACTLY_ONCE)
+            }
+
+            bind(touchStack)
+            val r = task(this)
+            unbind(touchStack)
+            return r
+        }
+
+        fun test(): Int {
+            val bindable = GlBuffer(BufferType.ELEMENT_ARRAY_BUFFER, BufferUsage.DYNAMIC_DRAW)
+            return bindable.glUse {
+                return@glUse 3
+            }
+        }
     }
 }

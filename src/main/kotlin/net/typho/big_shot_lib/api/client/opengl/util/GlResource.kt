@@ -1,31 +1,22 @@
 package net.typho.big_shot_lib.api.client.opengl.util
 
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import org.lwjgl.system.NativeResource
 
 abstract class GlResource(
     override val glId: Int,
     @JvmField
-    val stack: GlStateStack<Int>
+    val binder: GlBinder<Int>
 ) : GlNamed, GlBindable, NativeResource {
     override fun bind(pushStack: Boolean) {
-        if (pushStack) {
-            stack.push(glId)
-        } else {
-            stack.bind(glId)
-        }
+        binder.bind(glId, pushStack)
     }
 
     override fun unbind(popStack: Boolean) {
-        if (popStack) {
-            stack.pop()
-        } else {
-            stack.bind(0)
-        }
+        binder.unbind(popStack)
     }
 
     override fun toString(): String {
-        return "${javaClass.simpleName}(glId=$glId)"
+        return "${javaClass.simpleName}($glId)"
     }
 
     override fun equals(other: Any?): Boolean {

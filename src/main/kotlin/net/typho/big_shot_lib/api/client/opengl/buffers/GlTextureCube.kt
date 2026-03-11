@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
-import net.minecraft.core.Direction
+import net.typho.big_shot_lib.ap.math.NeoDirection
 import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
 import net.typho.big_shot_lib.api.client.opengl.util.InterpolationType
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
@@ -22,13 +22,13 @@ interface GlTextureCube : GlTexture, GlFramebufferAttachment {
     enum class Face(
         override val glId: Int,
         @JvmField
-        val dir: Direction
+        val dir: NeoDirection
     ) : GlNamed {
-        POS_X(GL_TEXTURE_CUBE_MAP_POSITIVE_X, Direction.EAST),
-        NEG_X(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, Direction.WEST),
-        POS_Y(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, Direction.UP),
-        NEG_Y(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, Direction.DOWN),
-        POS_Z(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Direction.SOUTH),
-        NEG_Z(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Direction.NORTH)
+        POS_X(GL_TEXTURE_CUBE_MAP_POSITIVE_X, NeoDirection.EAST),
+        NEG_X(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, NeoDirection.WEST),
+        POS_Y(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, NeoDirection.UP),
+        NEG_Y(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, NeoDirection.DOWN),
+        POS_Z(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, NeoDirection.SOUTH),
+        NEG_Z(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, NeoDirection.NORTH)
     }
 }

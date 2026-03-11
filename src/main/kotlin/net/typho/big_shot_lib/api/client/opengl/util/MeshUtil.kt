@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.client.opengl.util
 
-import net.minecraft.core.Direction
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import net.typho.big_shot_lib.ap.math.NeoDirection
 import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.opengl.buffers.Mesh
@@ -16,7 +16,7 @@ interface MeshUtil {
         state: BlockState,
         level: Level,
         pos: NeoBlockPos,
-        out: (direction: Direction?, quads: List<NeoBakedQuad>) -> Unit
+        out: (direction: NeoDirection?, quads: List<NeoBakedQuad>) -> Unit
     )
 
     companion object {

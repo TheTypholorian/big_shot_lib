@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.api.client.opengl.shaders
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.opengl.state.arguments.RenderArgumentType
 import net.typho.big_shot_lib.api.client.opengl.state.arguments.RenderArguments
-import net.typho.big_shot_lib.api.client.opengl.util.GlBindResult
 
 /**
  * Defines uniforms:

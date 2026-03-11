@@ -11,7 +11,7 @@ import org.joml.Vector3i
 class NeoBlockPos : AbstractVec3<Int, NeoBlockPos> {
     constructor(x: Int, y: Int, z: Int) : super(x, y, z)
 
-    constructor(other: AbstractVec3<Int, *>) : super(other)
+    constructor(other: AbstractVec3i) : super(other)
 
     constructor(other: Vec3i) : super(other.x, other.y, other.z)
 
@@ -20,7 +20,7 @@ class NeoBlockPos : AbstractVec3<Int, NeoBlockPos> {
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet
 
-    val center: AbstractVec3<Float, *>
+    val center: AbstractVec3f
         get() = NeoVec3f(x + 0.5f, y + 0.5f, z + 0.5f)
     val mojang: BlockPos
         get() = BlockPos(x, y, z)

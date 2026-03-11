@@ -9,11 +9,10 @@ import net.typho.big_shot_lib.api.BigShotApi
 import java.util.*
 
 abstract class ResourceRegistry<T>(
-    @JvmField
-    val name: ResourceIdentifier,
+    override val location: ResourceIdentifier,
     @JvmField
     val idConverter: NeoFileToIdConverter,
-) : NeoResourceManagerReloadListener {
+) : NeoResourceManagerReloadListener, NamedResource {
     companion object {
         @JvmField
         val registries = LinkedList<ResourceRegistry<*>>()
@@ -47,6 +46,6 @@ abstract class ResourceRegistry<T>(
             }
         }
 
-        BigShotApi.LOGGER.info("Loaded ${map.size} entries of resource registry $name")
+        BigShotApi.LOGGER.info("Loaded ${map.size} entries of resource registry $location")
     }
 }

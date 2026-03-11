@@ -13,6 +13,14 @@ class NeoVec3f : AbstractVec3<Float, NeoVec3f> {
 
     override val opSet: OperatorSet<Float>
         get() = FloatOperatorSet
+    override val xy: AbstractVec2<Float, *>
+        get() = NeoVec2f(x, y)
+    override val yz: AbstractVec2<Float, *>
+        get() = NeoVec2f(y, z)
+    override val rg: AbstractVec2<Float, *>
+        get() = NeoVec2f(r, g)
+    override val gb: AbstractVec2<Float, *>
+        get() = NeoVec2f(g, b)
 
     override fun create(x: Float, y: Float, z: Float) = NeoVec3f(x, y, z)
 }

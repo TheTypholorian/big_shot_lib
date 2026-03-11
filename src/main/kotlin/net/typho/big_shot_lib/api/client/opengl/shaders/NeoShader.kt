@@ -4,9 +4,7 @@ import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniformBufferPoint
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.NeoUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
-import net.typho.big_shot_lib.api.client.opengl.state.arguments.RenderArguments
-import net.typho.big_shot_lib.api.client.opengl.util.GlBindResult
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateManager
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.errors.IllegalShaderSourceException
@@ -20,7 +18,7 @@ import org.lwjgl.opengl.GL31.glUniformBlockBinding
 open class NeoShader(
     glId: Int,
     override val key: ShaderProgramKey
-) : GlResource(glId, GlStateStack.shader), GlShader {
+) : GlResource(glId, GlStateManager.shader), GlShader {
     companion object {
         @JvmField
         val NULL = NeoShader(0, ShaderProgramKey.NULL)
@@ -47,11 +45,6 @@ open class NeoShader(
     override val location = key.location
 
     constructor(key: ShaderProgramKey) : this(OpenGL.INSTANCE.createShaderProgram(), key)
-
-    override fun bind(arguments: RenderArguments, pushStack: Boolean): GlBindResult {
-        super<GlShader>.bind(arguments, pushStack)
-        return GlBindResult.Multiple(key.modules.map { it.setUniforms(arguments, this) })
-    }
 
     override fun free() {
         OpenGL.INSTANCE.deleteShaderProgram(glId)

@@ -1,7 +1,5 @@
 package net.typho.big_shot_lib.api.errors
 
-import net.typho.big_shot_lib.api.client.opengl.util.GlBindResult
-
 open class GlBindException : RuntimeException {
     constructor() : super()
 

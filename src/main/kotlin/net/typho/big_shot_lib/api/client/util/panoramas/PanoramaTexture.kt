@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.util.panoramas
 
-import net.minecraft.core.Direction
+import net.typho.big_shot_lib.ap.math.NeoDirection
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 @JvmRecord
@@ -27,14 +27,14 @@ data class PanoramaTexture(
         location.withPath { it + "_5.png" }
     )
 
-    fun get(dir: Direction): ResourceIdentifier {
+    fun get(dir: NeoDirection): ResourceIdentifier {
         return when (dir) {
-            Direction.DOWN -> down
-            Direction.UP -> up
-            Direction.NORTH -> north
-            Direction.SOUTH -> south
-            Direction.WEST -> west
-            Direction.EAST -> east
+            NeoDirection.DOWN -> down
+            NeoDirection.UP -> up
+            NeoDirection.NORTH -> north
+            NeoDirection.SOUTH -> south
+            NeoDirection.WEST -> west
+            NeoDirection.EAST -> east
         }
     }
 }

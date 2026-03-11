@@ -34,4 +34,16 @@ enum class NeoDirection(
         Y,
         Z
     }
+
+    companion object {
+        @JvmStatic
+        fun Direction.toNeo() = when (this) {
+            Direction.DOWN -> DOWN
+            Direction.UP -> UP
+            Direction.NORTH -> NORTH
+            Direction.SOUTH -> SOUTH
+            Direction.WEST -> WEST
+            Direction.EAST -> EAST
+        }
+    }
 }

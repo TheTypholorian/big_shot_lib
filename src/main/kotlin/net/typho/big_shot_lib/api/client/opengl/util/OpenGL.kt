@@ -7,10 +7,10 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.GlTextureCube
 import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.opengl.state.*
+import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import org.joml.*
-import java.awt.Rectangle
 import java.nio.ByteBuffer
 
 interface OpenGL {
@@ -557,8 +557,8 @@ interface OpenGL {
     /**
      * `glViewport(x, y, width, height)`
      */
-    fun viewport(rect: Rectangle) {
-        viewport(rect.x, rect.y, rect.width, rect.height)
+    fun viewport(rect: AbstractRect2<Int, *, *>) {
+        viewport(rect.min.x, rect.min.y, rect.size.x, rect.size.y)
     }
 
     /**
@@ -569,7 +569,7 @@ interface OpenGL {
     /**
      * `glGetIntegerv(GL_VIEWPORT)`
      */
-    fun getViewport(): Rectangle
+    fun getViewport(): AbstractRect2<Int, *, *>
 
     /**
      * `glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)`

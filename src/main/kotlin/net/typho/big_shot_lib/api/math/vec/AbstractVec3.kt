@@ -1,7 +1,9 @@
 package net.typho.big_shot_lib.api.math.vec
 
+import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.op.OperatorSet
+import net.typho.big_shot_lib.api.util.resources.NeoCodecs
 import org.joml.Vector3d
 import org.joml.Vector3f
 import org.joml.Vector3i
@@ -23,6 +25,18 @@ abstract class AbstractVec3<N : Number, V3 : AbstractVec3<N, V3>>(
         get() = opSet.sqrt(lengthSquared)
     val abs: V3
         get() = create(opSet.abs(x), opSet.abs(y), opSet.abs(z))
+    abstract val xy: AbstractVec2<N, *>
+    abstract val yz: AbstractVec2<N, *>
+
+    val r: N
+        get() = x
+    val g: N
+        get() = y
+    val b: N
+        get() = z
+
+    abstract val rg: AbstractVec2<N, *>
+    abstract val gb: AbstractVec2<N, *>
 
     constructor(other: AbstractVec3<N, *>) : this(other.x, other.y, other.z)
 
@@ -242,6 +256,13 @@ abstract class AbstractVec3<N : Number, V3 : AbstractVec3<N, V3>>(
     }
 
     companion object {
+        @JvmField
+        val INT_CODEC: Codec<AbstractVec3<Int, *>> = NeoCodecs.createList(3, Codec.INT, { NeoVec3i(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
+        @JvmField
+        val FLOAT_CODEC: Codec<AbstractVec3<Float, *>> = NeoCodecs.createList(3, Codec.FLOAT, { NeoVec3f(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
+        @JvmField
+        val DOUBLE_CODEC: Codec<AbstractVec3<Double, *>> = NeoCodecs.createList(3, Codec.DOUBLE, { NeoVec3d(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
+
         @JvmStatic
         fun AbstractVec3<Int, *>.toJOML() = Vector3i(x, y, z)
 

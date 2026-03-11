@@ -3,8 +3,6 @@ package net.typho.big_shot_lib.api.client.opengl.shaders
 import com.mojang.serialization.MapCodec
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.BigShotApi.loadService
-import net.typho.big_shot_lib.api.client.opengl.state.arguments.RenderArguments
-import net.typho.big_shot_lib.api.client.opengl.util.GlBindResult
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.RegistrationConsumer.Companion.register
@@ -16,10 +14,6 @@ import kotlin.reflect.KClass
 
 interface ShaderModule {
     val type: Type<*>
-
-    fun setUniforms(arguments: RenderArguments, shader: GlShader): GlBindResult {
-        return GlBindResult.Success
-    }
 
     fun loadGLSL(files: ShaderFileResolver, key: ShaderProgramKey, source: ShaderSourceType): String? {
         return files.loadFile(type.location, source)

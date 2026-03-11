@@ -1,32 +1,48 @@
 package net.typho.big_shot_lib.api.util.resources
 
+import com.google.gson.JsonElement
+import com.mojang.authlib.GameProfile
+import com.mojang.authlib.properties.PropertyMap
 import com.mojang.serialization.Codec
+import net.minecraft.util.ExtraCodecs
+import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.*
+import java.nio.ByteBuffer
+import java.util.*
+import java.util.stream.IntStream
+import java.util.stream.LongStream
 
 object NeoCodecs {
-    @JvmField
-    val VEC2I: Codec<Vector2ic> = of(2, Codec.INT, { Vector2i(it[0], it[1]) }, { listOf(it.x(), it.y()) })
-    @JvmField
-    val VEC2F: Codec<Vector2fc> = of(2, Codec.FLOAT, { Vector2f(it[0], it[1]) }, { listOf(it.x(), it.y()) })
-    @JvmField
-    val VEC2D: Codec<Vector2dc> = of(2, Codec.DOUBLE, { Vector2d(it[0], it[1]) }, { listOf(it.x(), it.y()) })
+    private val codecs = HashMap<Class<*>, Codec<*>>()
 
-    @JvmField
-    val VEC3I: Codec<Vector3ic> = of(3, Codec.INT, { Vector3i(it[0], it[1], it[2]) }, { listOf(it.x(), it.y(), it.z()) })
-    @JvmField
-    val VEC3F: Codec<Vector3fc> = of(3, Codec.FLOAT, { Vector3f(it[0], it[1], it[2]) }, { listOf(it.x(), it.y(), it.z()) })
-    @JvmField
-    val VEC3D: Codec<Vector3dc> = of(3, Codec.DOUBLE, { Vector3d(it[0], it[1], it[2]) }, { listOf(it.x(), it.y(), it.z()) })
+    init {
+        codecs[Boolean::class.java] = Codec.BOOL
+        codecs[Byte::class.java] = Codec.BYTE
+        codecs[Short::class.java] = Codec.SHORT
+        codecs[Int::class.java] = Codec.INT
+        codecs[Long::class.java] = Codec.LONG
+        codecs[Float::class.java] = Codec.FLOAT
+        codecs[Double::class.java] = Codec.DOUBLE
+        codecs[String::class.java] = Codec.STRING
+        codecs[ByteBuffer::class.java] = Codec.BYTE_BUFFER
+        codecs[IntStream::class.java] = Codec.INT_STREAM
+        codecs[LongStream::class.java] = Codec.LONG_STREAM
 
-    @JvmField
-    val VEC4I: Codec<Vector4ic> = of(4, Codec.INT, { Vector4i(it[0], it[1], it[2], it[3]) }, { listOf(it.x(), it.y(), it.z(), it.w()) })
-    @JvmField
-    val VEC4F: Codec<Vector4fc> = of(4, Codec.FLOAT, { Vector4f(it[0], it[1], it[2], it[3]) }, { listOf(it.x(), it.y(), it.z(), it.w()) })
-    @JvmField
-    val VEC4D: Codec<Vector4dc> = of(4, Codec.DOUBLE, { Vector4d(it[0], it[1], it[2], it[3]) }, { listOf(it.x(), it.y(), it.z(), it.w()) })
+        codecs[JsonElement::class.java] = ExtraCodecs.JSON
+        codecs[Vector3f::class.java] = ExtraCodecs.VECTOR3F
+        codecs[Vector4f::class.java] = ExtraCodecs.VECTOR4F
+        codecs[Quaternionf::class.java] = ExtraCodecs.QUATERNIONF
+        codecs[AxisAngle4f::class.java] = ExtraCodecs.AXISANGLE4F
+        codecs[Matrix4f::class.java] = ExtraCodecs.MATRIX4F
+        codecs[BitSet::class.java] = ExtraCodecs.BIT_SET
+        codecs[PropertyMap::class.java] = ExtraCodecs.PROPERTY_MAP
+        codecs[GameProfile::class.java] = ExtraCodecs.GAME_PROFILE
+
+        codecs[NeoColor::class.java] = NeoColor.CODEC_ANY
+    }
 
     @JvmStatic
-    fun <V, T> of(size: Int, codec: Codec<T>, to: (list: List<T>) -> V, from: (value: V) -> List<T>): Codec<V> {
+    fun <V, T> createList(size: Int, codec: Codec<T>, to: (list: List<T>) -> V, from: (value: V) -> List<T>): Codec<V> {
         return codec.listOf(size, size).xmap(to, from)
     }
 

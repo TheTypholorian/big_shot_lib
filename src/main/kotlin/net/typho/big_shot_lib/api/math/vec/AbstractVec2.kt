@@ -1,6 +1,8 @@
 package net.typho.big_shot_lib.api.math.vec
 
+import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.math.op.OperatorSet
+import net.typho.big_shot_lib.api.util.resources.NeoCodecs
 import org.joml.Vector2d
 import org.joml.Vector2f
 import org.joml.Vector2i
@@ -224,6 +226,13 @@ abstract class AbstractVec2<N : Number, V2 : AbstractVec2<N, V2>>(
     }
 
     companion object {
+        @JvmField
+        val INT_CODEC: Codec<AbstractVec2<Int, *>> = NeoCodecs.createList(2, Codec.INT, { NeoVec2i(it[0], it[1]) }, { listOf(it.x, it.y) })
+        @JvmField
+        val FLOAT_CODEC: Codec<AbstractVec2<Float, *>> = NeoCodecs.createList(2, Codec.FLOAT, { NeoVec2f(it[0], it[1]) }, { listOf(it.x, it.y) })
+        @JvmField
+        val DOUBLE_CODEC: Codec<AbstractVec2<Double, *>> = NeoCodecs.createList(2, Codec.DOUBLE, { NeoVec2d(it[0], it[1]) }, { listOf(it.x, it.y) })
+
         @JvmStatic
         fun AbstractVec2<Int, *>.toJOML() = Vector2i(x, y)
 

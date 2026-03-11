@@ -13,6 +13,22 @@ class NeoVec4d : AbstractVec4<Double, NeoVec4d> {
 
     override val opSet: OperatorSet<Double>
         get() = DoubleOperatorSet
+    override val xy: AbstractVec2<Double, *>
+        get() = NeoVec2d(x, y)
+    override val yz: AbstractVec2<Double, *>
+        get() = NeoVec2d(y, z)
+    override val zw: AbstractVec2<Double, *>
+        get() = NeoVec2d(z, w)
+    override val xyz: AbstractVec3<Double, *>
+        get() = NeoVec3d(x, y, z)
+    override val rg: AbstractVec2<Double, *>
+        get() = NeoVec2d(r, g)
+    override val gb: AbstractVec2<Double, *>
+        get() = NeoVec2d(g, b)
+    override val ba: AbstractVec2<Double, *>
+        get() = NeoVec2d(b, a)
+    override val rgb: AbstractVec3<Double, *>
+        get() = NeoVec3d(r, g, b)
 
     override fun create(x: Double, y: Double, z: Double, w: Double) = NeoVec4d(x, y, z, w)
 }

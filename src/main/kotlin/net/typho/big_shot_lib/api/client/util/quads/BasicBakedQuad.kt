@@ -1,12 +1,12 @@
 package net.typho.big_shot_lib.api.client.util.quads
 
-import net.minecraft.core.Direction
+import net.typho.big_shot_lib.ap.math.NeoDirection
 
 @JvmRecord
 data class BasicBakedQuad(
     override val vertices: Array<NeoVertexData>,
     override val tintIndex: Int?,
-    override val direction: Direction?,
+    override val direction: NeoDirection?,
     override val sprite: NeoAtlasSprite,
     override val shade: Boolean
 ) : NeoBakedQuad {

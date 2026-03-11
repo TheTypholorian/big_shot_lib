@@ -11,22 +11,10 @@ class GlUniformBufferPoint(
     val binding: Int
 ) {
     fun set(buffer: GlBuffer) {
-        set(buffer.type, buffer.glId)
+        OpenGL.INSTANCE.bindBufferBase(BufferType.UNIFORM_BUFFER, binding, buffer.glId)
     }
 
-    fun set(type: BufferType, glId: Int) {
-        if (!type.isIndexed) {
-            throw IllegalArgumentException("Buffer type must be indexed, $type is not")
-        }
-
-        OpenGL.INSTANCE.bindBufferBase(type, binding, glId)
-    }
-
-    fun setRange(type: BufferType, glId: Int, offset: Long, length: Long) {
-        if (!type.isIndexed) {
-            throw IllegalArgumentException("Buffer type must be indexed, $type is not")
-        }
-
-        OpenGL.INSTANCE.bindBufferRange(type, binding, glId, offset, length)
+    fun setRange(range: GlBuffer.Range) {
+        OpenGL.INSTANCE.bindBufferRange(BufferType.UNIFORM_BUFFER, binding, range.buffer.glId, range.offset, range.length)
     }
 }

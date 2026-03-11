@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateManager
+import net.typho.big_shot_lib.api.client.opengl.util.GlBinder
 import net.typho.big_shot_lib.api.client.opengl.util.GlIndexedBindable
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
@@ -14,7 +15,7 @@ open class GlBuffer(
     val type: BufferType,
     @JvmField
     val usage: BufferUsage
-) : GlResource(glId, GlStateStack.buffers[type]!!), BufferUploader, GlIndexedBindable {
+) : GlResource(glId, GlStateManager.buffers[type] ?: GlBinder.simple { OpenGL.INSTANCE.bindBuffer(type, it) }), BufferUploader, GlIndexedBindable {
     constructor(type: BufferType, usage: BufferUsage) : this(OpenGL.INSTANCE.createBuffer(), type, usage)
 
     override fun bindBase(index: Int) {
@@ -54,4 +55,14 @@ open class GlBuffer(
     override fun toString(): String {
         return "${javaClass.simpleName}(glId=$glId, type=$type, usage=$usage)"
     }
+
+    @JvmRecord
+    data class Range(
+        @JvmField
+        val buffer: GlBuffer,
+        @JvmField
+        val offset: Long,
+        @JvmField
+        val length: Long
+    )
 }

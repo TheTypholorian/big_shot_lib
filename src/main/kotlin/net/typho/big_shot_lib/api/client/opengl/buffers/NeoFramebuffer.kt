@@ -1,15 +1,15 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
 import net.typho.big_shot_lib.api.client.opengl.buffers.ClearBit.Companion.initAndGetClearMask
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateManager
 import net.typho.big_shot_lib.api.client.opengl.util.FramebufferStatus
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.errors.IllegalTextureFormatException
 import net.typho.big_shot_lib.api.errors.IncompleteFramebufferException
+import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import org.lwjgl.opengl.GL11.GL_NONE
 import org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0
-import java.awt.Rectangle
 
 open class NeoFramebuffer(
     glId: Int,
@@ -17,7 +17,7 @@ open class NeoFramebuffer(
     depthAttachment: GlFramebufferAttachment?,
     width: Int,
     height: Int
-) : GlResource(glId, GlStateStack.framebuffer), GlFramebuffer {
+) : GlResource(glId, GlStateManager.framebuffer), GlFramebuffer {
     override var colorAttachments: List<GlFramebufferAttachment> = colorAttachments
         set(value) {
             field = value
@@ -63,13 +63,13 @@ open class NeoFramebuffer(
     }
 
     override fun bind(pushStack: Boolean) {
-        super<GlResource>.bind(pushStack)
-        GlStateStack.viewport.push(Rectangle(dimensions))
+        super.bind(pushStack)
+        GlStateManager.viewport.push(NeoRect2i(0, 0, width, height))
     }
 
     override fun unbind(popStack: Boolean) {
+        GlStateManager.viewport.pop()
         super.unbind(popStack)
-        GlStateStack.viewport.pop()
     }
 
     protected fun attachColor() {

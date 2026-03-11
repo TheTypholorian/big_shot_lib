@@ -16,7 +16,7 @@ open class CullShard(
     CullShard,
     if (enabled) listOf(
         GlBindable.ofStack(GlFlag.CULL_FACE.stack, true),
-        GlBindable.ofStack(GlStateStack.cullFace, face)
+        GlBindable.ofStack(GlStateManager.cullFace, face)
     ) else listOf(GlBindable.ofStack(GlFlag.CULL_FACE.stack, false))
 ) {
     companion object : RenderSettingShard.Type<CullShard> {

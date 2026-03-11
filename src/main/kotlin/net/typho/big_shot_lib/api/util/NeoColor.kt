@@ -2,8 +2,7 @@ package net.typho.big_shot_lib.api.util
 
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
-import net.typho.big_shot_lib.api.util.resources.NeoCodecs
-import org.joml.*
+import net.typho.big_shot_lib.api.math.vec.*
 import java.awt.Color
 
 interface NeoColor {
@@ -46,22 +45,22 @@ interface NeoColor {
             { color -> color.toRGBA() }
         )
         @JvmField
-        val CODEC_3I: Codec<NeoColor> = NeoCodecs.VEC3I.xmap(
+        val CODEC_3I: Codec<NeoColor> = AbstractVec3.INT_CODEC.xmap(
             { vec -> RGB(vec) },
             { color -> color.toVec3i() }
         )
         @JvmField
-        val CODEC_4I: Codec<NeoColor> = NeoCodecs.VEC4I.xmap(
+        val CODEC_4I: Codec<NeoColor> = AbstractVec4.INT_CODEC.xmap(
             { vec -> RGBA(vec) },
             { color -> color.toVec4i() }
         )
         @JvmField
-        val CODEC_3F: Codec<NeoColor> = NeoCodecs.VEC3F.xmap(
+        val CODEC_3F: Codec<NeoColor> = AbstractVec3.FLOAT_CODEC.xmap(
             { vec -> RGBF(vec) },
             { color -> color.toVec3F() }
         )
         @JvmField
-        val CODEC_4F: Codec<NeoColor> = NeoCodecs.VEC4F.xmap(
+        val CODEC_4F: Codec<NeoColor> = AbstractVec4.FLOAT_CODEC.xmap(
             { vec -> RGBAF(vec) },
             { color -> color.toVec4F() }
         )
@@ -84,159 +83,127 @@ interface NeoColor {
         )
     }
 
-    fun redF(): Float = red() / 255f
+    val redF: Float
+        get() = red / 255f
 
-    fun greenF(): Float = green() / 255f
+    val greenF: Float
+        get() = green / 255f
 
-    fun blueF(): Float = blue() / 255f
+    val blueF: Float
+        get() = blue / 255f
 
-    fun alphaF(): Float? = alpha()?.div(255f)
+    val alphaF: Float?
+        get() = alpha?.div(255f)
 
-    fun toVec3F() = Vector3f(redF(), greenF(), blueF())
+    fun toVec3F(): AbstractVec3<Float, *> = NeoVec3f(redF, greenF, blueF)
 
-    fun toVec4F() = Vector4f(redF(), greenF(), blueF(), alphaF() ?: 1f)
+    fun toVec4F(): AbstractVec4<Float, *> = NeoVec4f(redF, greenF, blueF, alphaF ?: 1f)
 
-    fun red(): Int = (redF() * 255).toInt()
+    val red: Int
+        get() = (redF * 255).toInt()
 
-    fun green(): Int = (greenF() * 255).toInt()
+    val green: Int
+        get() = (greenF * 255).toInt()
 
-    fun blue(): Int = (blueF() * 255).toInt()
+    val blue: Int
+        get() = (blueF * 255).toInt()
 
-    fun alpha(): Int? = alphaF()?.times(255)?.toInt()
+    val alpha: Int?
+        get() = alphaF?.times(255)?.toInt()
 
-    fun toVec3i() = Vector3i(red(), green(), blue())
+    fun toVec3i() = NeoVec3i(red, green, blue)
 
-    fun toVec4i() = Vector4i(red(), green(), blue(), alpha() ?: 255)
+    fun toVec4i() = NeoVec4i(red, green, blue, alpha ?: 255)
 
-    fun toARGB() = ((alpha() ?: 255) shl 24) or (red() shl 16) or (green() shl 8) or blue()
+    fun toARGB() = ((alpha ?: 255) shl 24) or (red shl 16) or (green shl 8) or blue
 
-    fun toRGBA() = (red() shl 24) or (green() shl 16) or (blue() shl 8) or (alpha() ?: 255)
+    fun toRGBA() = (red shl 24) or (green shl 16) or (blue shl 8) or (alpha ?: 255)
 
-    fun toIntArray() = intArrayOf(red(), green(), blue(), alpha() ?: 255)
+    fun toIntArray() = intArrayOf(red, green, blue, alpha ?: 255)
 
-    fun toFloatArray() = floatArrayOf(redF(), greenF(), blueF(), alphaF() ?: 1f)
+    fun toFloatArray() = floatArrayOf(redF, greenF, blueF, alphaF ?: 1f)
 
     @JvmRecord
     data class RGB(
-        @JvmField
-        val red: Int,
-        @JvmField
-        val green: Int,
-        @JvmField
-        val blue: Int
+        override val red: Int,
+        override val green: Int,
+        override val blue: Int
     ) : NeoColor {
         constructor(rgb: Int) : this(rgb ushr 16 and 0xFF, rgb ushr 8 and 0xFF, rgb and 0xFF)
 
         constructor(color: Color) : this(color.red, color.green, color.blue)
 
-        constructor(color: Vector3ic) : this(color.x(), color.y(), color.z())
+        constructor(color: AbstractVec3<Int, *>) : this(color.r, color.g, color.b)
 
-        constructor(color: Vector3fc) : this((color.x() * 255).toInt(), (color.y() * 255).toInt(), (color.z() * 255).toInt())
+        constructor(color: AbstractVec3<Float, *>) : this((color.r * 255).toInt(), (color.g * 255).toInt(), (color.b * 255).toInt())
 
         constructor(color: IntArray) : this(color[0], color[1], color[2])
 
         constructor(color: FloatArray) : this((color[0] * 255).toInt(), (color[1] * 255).toInt(), (color[2] * 255).toInt())
 
-        override fun red() = red
-
-        override fun green() = green
-
-        override fun blue() = blue
-
-        override fun alpha() = null
+        override val alpha: Int?
+            get() = null
     }
 
     @JvmRecord
     data class RGBA(
-        @JvmField
-        val red: Int,
-        @JvmField
-        val green: Int,
-        @JvmField
-        val blue: Int,
-        @JvmField
-        val alpha: Int
+        override val red: Int,
+        override val green: Int,
+        override val blue: Int,
+        override val alpha: Int
     ) : NeoColor {
         constructor(argb: Int) : this(argb ushr 16 and 0xFF, argb ushr 8 and 0xFF, argb and 0xFF, argb ushr 24)
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)
 
-        constructor(color: Vector4ic) : this(color.x(), color.y(), color.z(), color.w())
+        constructor(color: AbstractVec4<Int, *>) : this(color.r, color.g, color.b, color.a)
 
-        constructor(color: Vector4fc) : this((color.x() * 255).toInt(), (color.y() * 255).toInt(), (color.z() * 255).toInt(), (color.w() * 255).toInt())
+        constructor(color: AbstractVec4<Float, *>) : this((color.r * 255).toInt(), (color.g * 255).toInt(), (color.b * 255).toInt(), (color.a * 255).toInt())
 
         constructor(color: IntArray) : this(color[0], color[1], color[2], color[3])
 
         constructor(color: FloatArray) : this((color[0] * 255).toInt(), (color[1] * 255).toInt(), (color[2] * 255).toInt(), (color[3] * 255).toInt())
-
-        override fun red() = red
-
-        override fun green() = green
-
-        override fun blue() = blue
-
-        override fun alpha() = alpha
     }
 
     @JvmRecord
     data class RGBF(
-        @JvmField
-        val red: Float,
-        @JvmField
-        val green: Float,
-        @JvmField
-        val blue: Float
+        override val redF: Float,
+        override val greenF: Float,
+        override val blueF: Float
     ) : NeoColor {
         constructor(rgb: Int) : this((rgb ushr 16 and 0xFF) / 255f, (rgb ushr 8 and 0xFF) / 255f, (rgb and 0xFF) / 255f)
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f)
 
-        constructor(color: Vector3ic) : this(color.x() / 255f, color.y() / 255f, color.z() / 255f)
+        constructor(color: AbstractVec3<Int, *>) : this(color.r / 255f, color.g / 255f, color.b / 255f)
 
-        constructor(color: Vector3fc) : this(color.x(), color.y(), color.z())
+        constructor(color: AbstractVec3<Float, *>) : this(color.r, color.g, color.b)
 
         constructor(color: IntArray) : this(color[0] / 255f, color[1] / 255f, color[2] / 255f)
 
         constructor(color: FloatArray) : this(color[0], color[1], color[2])
 
-        override fun redF() = red
-
-        override fun greenF() = green
-
-        override fun blueF() = blue
-
-        override fun alphaF() = null
+        override val alphaF: Float?
+            get() = null
     }
 
     @JvmRecord
     data class RGBAF(
-        @JvmField
-        val red: Float,
-        @JvmField
-        val green: Float,
-        @JvmField
-        val blue: Float,
-        @JvmField
-        val alpha: Float
+        override val redF: Float,
+        override val greenF: Float,
+        override val blueF: Float,
+        override val alphaF: Float
     ) : NeoColor {
         constructor(argb: Int) : this((argb ushr 16 and 0xFF) / 255f, (argb ushr 8 and 0xFF) / 255f, (argb and 0xFF) / 255f, (argb ushr 24) / 255f)
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
 
-        constructor(color: Vector4ic) : this(color.x() / 255f, color.y() / 255f, color.z() / 255f, color.w() / 255f)
+        constructor(color: AbstractVec4<Int, *>) : this(color.r / 255f, color.g / 255f, color.b / 255f, color.a / 255f)
 
-        constructor(color: Vector4fc) : this(color.x(), color.y(), color.z(), color.w())
+        constructor(color: AbstractVec4<Float, *>) : this(color.r, color.g, color.b, color.a)
 
         constructor(color: IntArray) : this(color[0] / 255f, color[1] / 255f, color[2] / 255f, color[3] / 255f)
 
         constructor(color: FloatArray) : this(color[0], color[1], color[2], color[3])
-
-        override fun redF() = red
-
-        override fun greenF() = green
-
-        override fun blueF() = blue
-
-        override fun alphaF() = alpha
     }
 }
