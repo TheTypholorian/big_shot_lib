@@ -1,8 +1,6 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders
 
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.opengl.state.arguments.RenderArgumentType
-import net.typho.big_shot_lib.api.client.opengl.state.arguments.RenderArguments
 
 /**
  * A utility method for sampling the block atlas when rendering terrain, includes RGSS sampling.
@@ -13,12 +11,14 @@ import net.typho.big_shot_lib.api.client.opengl.state.arguments.RenderArguments
  * ```
  */
 interface TerrainTextureSampleShaderModule : ShaderModule {
+    /*
     override fun setUniforms(arguments: RenderArguments, shader: GlShader): GlBindResult {
         val atlas = arguments.get(RenderArgumentType.BLOCK_ATLAS) { return it }
         shader.getUniform("BlockAtlasSampler")?.setSampler(atlas)
         shader.getUniform("BlockAtlasSize")?.setValue(atlas.width, atlas.height)
         return GlBindResult.Success
     }
+     */
 
     override fun loadGLSL(files: ShaderFileResolver, key: ShaderProgramKey, source: ShaderSourceType): String? {
         return files.loadFile(type.location.withSuffix(".glsl"))

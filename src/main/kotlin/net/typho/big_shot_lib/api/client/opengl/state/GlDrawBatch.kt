@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.opengl.state
 
-import net.typho.big_shot_lib.api.client.opengl.buffers.BufferType
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlBuffer
 import net.typho.big_shot_lib.api.client.opengl.buffers.Mesh
 import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
@@ -11,11 +10,13 @@ open class GlDrawBatch : NativeResource {
     protected val touched = HashSet<GlStateManager<*>>()
     @JvmField
     protected val values = HashMap<GlStateManager<*>, () -> Unit>()
+    /*
     var arrayBuffer: GlBuffer
         set(value) {
             field = value
             set(GlStateManager.buffers[BufferType.])
         }
+     */
 
     fun <V> set(stack: GlStateManager<V>, value: V) {
         values[stack] = { stack.bind(value, false) }
@@ -27,7 +28,7 @@ open class GlDrawBatch : NativeResource {
     }
 
     fun set(buffer: GlBuffer) {
-        set()
+        //set()
     }
 
     fun flush() {

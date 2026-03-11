@@ -195,10 +195,10 @@ abstract class GlUniform(
     fun setValue(color: NeoColor) {
         when (type) {
             ShaderVariableType.UINT -> setValue(color.toRGBA())
-            ShaderVariableType.FLOAT_VEC3 -> setValue(color.redF(), color.greenF(), color.blueF())
-            ShaderVariableType.FLOAT_VEC4 -> setValue(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)
-            ShaderVariableType.INT_VEC3, ShaderVariableType.UINT_VEC3 -> setValue(color.red(), color.green(), color.blue())
-            ShaderVariableType.INT_VEC4, ShaderVariableType.UINT_VEC4 -> setValue(color.red(), color.green(), color.blue(), color.alpha() ?: 255)
+            ShaderVariableType.FLOAT_VEC3 -> setValue(color.redF, color.greenF, color.blueF)
+            ShaderVariableType.FLOAT_VEC4 -> setValue(color.redF, color.greenF, color.blueF, color.alphaF ?: 1f)
+            ShaderVariableType.INT_VEC3, ShaderVariableType.UINT_VEC3 -> setValue(color.red, color.green, color.blue)
+            ShaderVariableType.INT_VEC4, ShaderVariableType.UINT_VEC4 -> setValue(color.red, color.green, color.blue, color.alpha ?: 255)
             else -> assertType(
                 ShaderVariableType.UINT,
                 ShaderVariableType.FLOAT_VEC3,

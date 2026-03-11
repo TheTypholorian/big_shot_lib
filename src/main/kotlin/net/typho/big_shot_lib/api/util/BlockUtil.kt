@@ -3,9 +3,9 @@ package net.typho.big_shot_lib.api.util
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
-import net.typho.big_shot_lib.ap.math.NeoDirection
 import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.util.BlockRenderSettings
+import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.minecraft.NeoBlockPos
 import org.joml.Vector3f
 

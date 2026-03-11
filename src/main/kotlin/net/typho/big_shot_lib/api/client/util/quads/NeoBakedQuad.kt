@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.util.quads
 
-import net.typho.big_shot_lib.ap.math.NeoDirection
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexConsumer
+import net.typho.big_shot_lib.api.math.NeoDirection
 import java.util.function.UnaryOperator
 
 interface NeoBakedQuad {

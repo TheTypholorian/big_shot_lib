@@ -1,16 +1,15 @@
 package net.typho.big_shot_lib.api.client.util.quads
 
+import net.typho.big_shot_lib.api.math.vec.AbstractVec2
+import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import net.typho.big_shot_lib.api.util.NeoColor
-import org.joml.Vector2fc
-import org.joml.Vector2ic
-import org.joml.Vector3fc
 
 @JvmRecord
 data class BasicVertexData(
-    override val pos: Vector3fc,
+    override val pos: AbstractVec3<Float, *>,
     override val color: NeoColor?,
-    override val textureUV: Vector2fc?,
-    override val overlayUV: Vector2ic?,
-    override val lightUV: Vector2ic?,
-    override val normal: Vector3fc?
+    override val textureUV: AbstractVec2<Float, *>?,
+    override val overlayUV: AbstractVec2<Int, *>?,
+    override val lightUV: AbstractVec2<Int, *>?,
+    override val normal: AbstractVec3<Float, *>?
 ) : NeoVertexData

@@ -135,8 +135,6 @@ interface NeoColor {
 
         constructor(color: AbstractVec3<Int, *>) : this(color.r, color.g, color.b)
 
-        constructor(color: AbstractVec3<Float, *>) : this((color.r * 255).toInt(), (color.g * 255).toInt(), (color.b * 255).toInt())
-
         constructor(color: IntArray) : this(color[0], color[1], color[2])
 
         constructor(color: FloatArray) : this((color[0] * 255).toInt(), (color[1] * 255).toInt(), (color[2] * 255).toInt())
@@ -158,8 +156,6 @@ interface NeoColor {
 
         constructor(color: AbstractVec4<Int, *>) : this(color.r, color.g, color.b, color.a)
 
-        constructor(color: AbstractVec4<Float, *>) : this((color.r * 255).toInt(), (color.g * 255).toInt(), (color.b * 255).toInt(), (color.a * 255).toInt())
-
         constructor(color: IntArray) : this(color[0], color[1], color[2], color[3])
 
         constructor(color: FloatArray) : this((color[0] * 255).toInt(), (color[1] * 255).toInt(), (color[2] * 255).toInt(), (color[3] * 255).toInt())
@@ -174,8 +170,6 @@ interface NeoColor {
         constructor(rgb: Int) : this((rgb ushr 16 and 0xFF) / 255f, (rgb ushr 8 and 0xFF) / 255f, (rgb and 0xFF) / 255f)
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f)
-
-        constructor(color: AbstractVec3<Int, *>) : this(color.r / 255f, color.g / 255f, color.b / 255f)
 
         constructor(color: AbstractVec3<Float, *>) : this(color.r, color.g, color.b)
 
@@ -197,8 +191,6 @@ interface NeoColor {
         constructor(argb: Int) : this((argb ushr 16 and 0xFF) / 255f, (argb ushr 8 and 0xFF) / 255f, (argb and 0xFF) / 255f, (argb ushr 24) / 255f)
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
-
-        constructor(color: AbstractVec4<Int, *>) : this(color.r / 255f, color.g / 255f, color.b / 255f, color.a / 255f)
 
         constructor(color: AbstractVec4<Float, *>) : this(color.r, color.g, color.b, color.a)
 

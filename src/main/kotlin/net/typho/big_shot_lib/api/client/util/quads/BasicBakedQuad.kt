@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.util.quads
 
-import net.typho.big_shot_lib.ap.math.NeoDirection
+import net.typho.big_shot_lib.api.math.NeoDirection
 
 @JvmRecord
 data class BasicBakedQuad(

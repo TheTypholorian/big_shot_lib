@@ -7,9 +7,6 @@ interface GlBinder<V> {
 
     companion object {
         @JvmStatic
-        fun simple(bind: (glId: Int) -> Unit) = simple { bind(it ?: 0) }
-
-        @JvmStatic
         fun simple(bind: (glId: Int?) -> Unit) = object : GlBinder<Int> {
             override fun bind(value: Int, pushStack: Boolean) {
                 bind(value)

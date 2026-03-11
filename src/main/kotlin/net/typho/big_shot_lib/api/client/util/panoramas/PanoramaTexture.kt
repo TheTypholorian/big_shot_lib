@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.util.panoramas
 
-import net.typho.big_shot_lib.ap.math.NeoDirection
+import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 @JvmRecord

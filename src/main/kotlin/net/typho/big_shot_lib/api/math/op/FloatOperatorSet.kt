@@ -4,6 +4,10 @@ object FloatOperatorSet : OperatorSet<Float> {
     override val zero: Float = 0f
     override val one: Float = 1f
 
+    override fun fromInt(a: Int): Float {
+        return a.toFloat()
+    }
+
     override fun plus(a: Float, b: Float): Float {
         return a + b
     }
