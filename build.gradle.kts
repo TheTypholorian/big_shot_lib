@@ -44,6 +44,8 @@ repositories {
 dependencies {
     minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())
+    include(kotlin("reflect"))
+    implementation(kotlin("reflect"))
 }
 
 configurations {
