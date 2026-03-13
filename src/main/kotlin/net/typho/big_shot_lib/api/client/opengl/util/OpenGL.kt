@@ -4,193 +4,26 @@ import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlTextureCube
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
-import net.typho.big_shot_lib.api.client.opengl.state.*
+import net.typho.big_shot_lib.api.client.opengl.state.ComparisonFunc
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import org.joml.*
 import java.nio.ByteBuffer
 
-interface OpenGL {
+interface OpenGL : GlStateTracker {
     companion object {
         @JvmField
         val INSTANCE: OpenGL = OpenGL::class.loadService()
     }
 
-    fun interface DebugListener {
-        fun accept(method: String, vararg args: Any)
-    }
-
-    fun addDebugListener(listener: DebugListener)
-
     fun recordRenderCall(task: Runnable)
 
     /**
-     * `glEnable(flag)`
+     * `glObjectLabel(type, glId, label)
      */
-    fun enable(flag: GlFlag)
-
-    /**
-     * `glDisable(flag)`
-     */
-    fun disable(flag: GlFlag)
-
-    /**
-     * `glIsEnabled(flag)`
-     */
-    fun isEnabled(flag: GlFlag): Boolean
-
-    /**
-     * `glBlendColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)`
-     */
-    fun blendColor(color: NeoColor)
-
-    /**
-     * `glGetFloatv(GL_BLEND_COLOR, color)`
-     */
-    fun getBlendColor(): NeoColor
-
-    /**
-     * `glBlendEquation(eq)`
-     */
-    fun blendEquation(eq: BlendEquation)
-
-    /**
-     * `glGetInteger(GL_BLEND_EQUATION)`
-     */
-    fun getBlendEquation(): BlendEquation
-
-    /**
-     * `glBlendFunc(src, dst)`
-     */
-    fun blendFunc(src: BlendFactor, dst: BlendFactor)
-
-    /**
-     * ```
-     * glGetInteger(GL_BLEND_SRC);
-     * glGetInteger(GL_BLEND_DST);
-     * ```
-     */
-    fun getBlendFunction(): BlendFunction.Basic
-
-    /**
-     * `glBlendFuncSeparate(src, dst, srcA, dstA)`
-     */
-    fun blendFuncSeparate(src: BlendFactor, dst: BlendFactor, srcA: BlendFactor, dstA: BlendFactor)
-
-    /**
-     * ```
-     * glGetInteger(GL_BLEND_SRC_RGB);
-     * glGetInteger(GL_BLEND_DST_RGB);
-     * glGetInteger(GL_BLEND_SRC_ALPHA);
-     * glGetInteger(GL_BLEND_DST_ALPHA);
-     * ```
-     */
-    fun getBlendFunctionSeparate(): BlendFunction.Separate
-
-    /**
-     * `glColorMask(mask.red, mask.green, mask.blue, mask.alpha)`
-     */
-    fun colorMask(mask: ColorMask)
-
-    /**
-     * `glGetBooleanv(GL_COLOR_WRITEMASK, mask)`
-     */
-    fun getColorMask(): ColorMask
-
-    /**
-     * `glCullFace(face)`
-     */
-    fun cullFace(face: CullFace)
-
-    /**
-     * `glGetInteger(GL_CULL_FACE_MODE)`
-     */
-    fun getCullFace(): CullFace
-
-    /**
-     * `glDepthMask(mask)`
-     */
-    fun depthMask(mask: Boolean)
-
-    /**
-     * `glGetBoolean(GL_DEPTH_WRITEMASK)`
-     */
-    fun getDepthMask(): Boolean
-
-    /**
-     * `glDepthFunc(func)`
-     */
-    fun depthFunc(func: ComparisonFunc)
-
-    /**
-     * `glGetInteger(GL_DEPTH_FUNC)`
-     */
-    fun getDepthFunc(): ComparisonFunc
-
-    /**
-     * `glPolygonMode(mode)`
-     */
-    fun polygonMode(mode: PolygonMode)
-
-    /**
-     * `glGetIntegerv(GL_POLYGON_MODE, mode)`
-     */
-    fun getPolygonMode(): PolygonMode
-
-    /**
-     * `glPolygonOffset(offset.factor, offset.units)`
-     */
-    fun polygonOffset(offset: PolygonOffset)
-
-    /**
-     * `glGetFloat(GL_POLYGON_OFFSET_FACTOR)`
-     * `glGetFloat(GL_POLYGON_OFFSET_UNITS)`
-     */
-    fun getPolygonOffset(): PolygonOffset
-
-    /**
-     * `glScissor(x, y, width, height)`
-     */
-    fun scissor(x: Int, y: Int, width: Int, height: Int)
-
-    /**
-     * `glStencilFunc(func.func, func.ref, func.mask)`
-     */
-    fun stencilFunc(func: StencilFunc)
-
-    /**
-     * ```
-     * glGetInteger(GL_STENCIL_FUNC);
-     * glGetInteger(GL_STENCIL_REF);
-     * glGetInteger(GL_STENCIL_VALUE_MASK);
-     * ```
-     */
-    fun getStencilFunc(): StencilFunc
-
-    /**
-     * `glStencilMask(mask)`
-     */
-    fun stencilMask(mask: Int)
-
-    /**
-     * `glGetInteger(GL_STENCIL_WRITEMASK)`
-     */
-    fun getStencilMask(): Int
-
-    /**
-     * `glStencilOp(op.stencilFail, op.depthFail, op.depthPass)`
-     */
-    fun stencilOp(op: StencilOp)
-
-    /**
-     * ```
-     * glGetInteger(GL_STENCIL_FAIL);
-     * glGetInteger(GL_STENCIL_PASS_DEPTH_FAIL);
-     * glGetInteger(GL_STENCIL_PASS_DEPTH_PASS);
-     * ```
-     */
-    fun getStencilOp(): StencilOp
+    fun debugLabel(type: Int, glId: Int, label: String)
 
     /**
      * `glGenBuffers()`
@@ -200,32 +33,32 @@ interface OpenGL {
     /**
      * `glBindBuffer(type, glId ?: 0)`
      */
-    fun bindBuffer(type: GlResourceType.Buffer, glId: Int?)
+    fun bindBuffer(type: Int, glId: Int?)
 
     /**
      * `glGetInteger(type.bindingId)`
      */
-    fun getBoundBuffer(type: GlResourceType.Buffer): Int
+    fun getBoundBuffer(type: Int): Int
 
     /**
      * `glBindBufferBase(type, index, glId ?: 0)`
      */
-    fun bindBufferBase(type: GlResourceType.Buffer.Indexed, index: Int, glId: Int?)
+    fun bindBufferBase(type: Int, index: Int, glId: Int?)
 
     /**
      * `glBindBufferRange(type, index, glId ?: 0, offset, length)`
      */
-    fun bindBufferRange(type: GlResourceType.Buffer, index: Int, glId: Int?, offset: Long, length: Long)
+    fun bindBufferRange(type: Int, index: Int, glId: Int?, offset: Long, length: Long)
 
     /**
      * `glBufferData(type, buffer, usage)`
      */
-    fun bufferData(type: GlResourceType.Buffer, buffer: ByteBuffer, usage: BufferUsage)
+    fun bufferData(type: Int, buffer: ByteBuffer, usage: BufferUsage)
 
     /**
      * `glBufferData(type, size, usage)`
      */
-    fun bufferData(type: GlResourceType.Buffer, size: Long, usage: BufferUsage)
+    fun bufferData(type: Int, size: Long, usage: BufferUsage)
 
     /**
      * `glDeleteBuffers(glId)`
@@ -272,7 +105,7 @@ interface OpenGL {
     /**
      * `glBindTexture(type, glId ?: 0)`
      */
-    fun bindTexture(type: GlResourceType.Texture, glId: Int?)
+    fun bindTexture(type: Int, glId: Int?)
 
     /**
      * `glBindSampler(unit, glId ?: 0)`
@@ -282,7 +115,7 @@ interface OpenGL {
     /**
      * `glGetInteger(type.bindingId)`
      */
-    fun getBoundTexture(type: GlResourceType.Texture): Int
+    fun getBoundTexture(type: Int): Int
 
     /**
      * `glActiveTexture(unit)`
@@ -295,14 +128,14 @@ interface OpenGL {
      * glTexParameteri(type, GL_TEXTURE_MAG_FILTER, mag)
      * ```
      */
-    fun textureInterpolation(type: GlResourceType.Texture, min: InterpolationType, mag: InterpolationType)
+    fun textureInterpolation(type: Int, min: InterpolationType, mag: InterpolationType)
 
     /**
      * ```
      * glTexParameteri(type, GL_TEXTURE_WRAP_S, s)
      * ```
      */
-    fun textureWrapping(type: GlResourceType.Texture, s: WrappingType)
+    fun textureWrapping(type: Int, s: WrappingType)
 
     /**
      * ```
@@ -310,7 +143,7 @@ interface OpenGL {
      * glTexParameteri(type, GL_TEXTURE_WRAP_T, t)
      * ```
      */
-    fun textureWrapping(type: GlResourceType.Texture, s: WrappingType, t: WrappingType)
+    fun textureWrapping(type: Int, s: WrappingType, t: WrappingType)
 
     /**
      * ```
@@ -319,21 +152,21 @@ interface OpenGL {
      * glTexParameteri(type, GL_TEXTURE_WRAP_R, r)
      * ```
      */
-    fun textureWrapping(type: GlResourceType.Texture, s: WrappingType, t: WrappingType, r: WrappingType)
+    fun textureWrapping(type: Int, s: WrappingType, t: WrappingType, r: WrappingType)
 
     /**
      * ```
      * glTexParameteri(type, GL_TEXTURE_COMPARISON_MODE, mode)
      * ```
      */
-    fun textureComparisonMode(type: GlResourceType.Texture, mode: TextureComparisonMode)
+    fun textureComparisonMode(type: Int, mode: TextureComparisonMode)
 
     /**
      * ```
      * glTexParameteri(type, GL_TEXTURE_COMPARISON_FUNC, mode)
      * ```
      */
-    fun textureComparisonFunc(type: GlResourceType.Texture, mode: ComparisonFunc)
+    fun textureComparisonFunc(type: Int, mode: ComparisonFunc)
 
     /**
      * ```
@@ -349,7 +182,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData1D(type: GlResourceType.Texture, format: TextureFormat, width: Int, buffer: ByteBuffer)
+    fun textureData1D(type: Int, format: TextureFormat, width: Int, buffer: ByteBuffer)
 
     /**
      * ```
@@ -365,7 +198,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData1D(type: GlResourceType.Texture, format: TextureFormat, width: Int, size: Long)
+    fun textureData1D(type: Int, format: TextureFormat, width: Int, size: Long)
 
     /**
      * ```
@@ -382,7 +215,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData2D(type: GlResourceType.Texture, format: TextureFormat, width: Int, height: Int, buffer: ByteBuffer)
+    fun textureData2D(type: Int, format: TextureFormat, width: Int, height: Int, buffer: ByteBuffer)
 
     /**
      * ```
@@ -399,7 +232,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData2D(type: GlResourceType.Texture, format: TextureFormat, width: Int, height: Int, size: Long)
+    fun textureData2D(type: Int, format: TextureFormat, width: Int, height: Int, size: Long)
 
     /**
      * ```
@@ -413,7 +246,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData2DMultisample(type: GlResourceType.Texture, samples: Int, format: TextureFormat, width: Int, height: Int)
+    fun textureData2DMultisample(type: Int, samples: Int, format: TextureFormat, width: Int, height: Int)
 
     /**
      * ```
@@ -465,7 +298,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData3D(type: GlResourceType.Texture, format: TextureFormat, width: Int, height: Int, depth: Int, buffer: ByteBuffer)
+    fun textureData3D(type: Int, format: TextureFormat, width: Int, height: Int, depth: Int, buffer: ByteBuffer)
 
     /**
      * ```
@@ -483,7 +316,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData3D(type: GlResourceType.Texture, format: TextureFormat, width: Int, height: Int, depth: Int, size: Long)
+    fun textureData3D(type: Int, format: TextureFormat, width: Int, height: Int, depth: Int, size: Long)
 
     /**
      * `glDeleteTextures(glId)`
@@ -528,7 +361,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun attachFramebufferTexture2D(attachment: Int, type: GlResourceType.Texture, glId: Int)
+    fun attachFramebufferTexture2D(attachment: Int, type: Int, glId: Int)
 
     /**
      * ```
@@ -673,7 +506,7 @@ interface OpenGL {
     /**
      * `glCreateShader(type)`
      */
-    fun createShaderSource(type: GlResourceType.Shader): Int
+    fun createShaderSource(type: Int): Int
 
     /**
      * `glShaderSource(glId, code)`
@@ -684,7 +517,7 @@ interface OpenGL {
      * `glCompileShader(glId)`
      * @throws net.typho.big_shot_lib.api.errors.ShaderCompileException
      */
-    fun compileShaderSource(glId: Int, type: GlResourceType.Shader, name: NeoIdentifier)
+    fun compileShaderSource(glId: Int, type: Int, name: NeoIdentifier)
 
     /**
      * `glAttachShader(programId, glId)`

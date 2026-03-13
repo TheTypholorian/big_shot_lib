@@ -4,7 +4,6 @@ import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniformBufferPoint
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.NeoUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.errors.IllegalShaderSourceException
@@ -139,7 +138,7 @@ open class NeoShader(
     }
 
     override fun toString(): String {
-        return "${javaClass.simpleName}(glId=$glId, location=${key.location})"
+        return "${type.name}(glId=$glId, location=${key.location})"
     }
 
     open class Builder(

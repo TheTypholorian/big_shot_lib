@@ -1,55 +1,49 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
+import net.typho.big_shot_lib.api.client.opengl.state.GlBufferType
 import net.typho.big_shot_lib.api.client.opengl.state.GlResourceType
-import net.typho.big_shot_lib.api.client.opengl.util.GlIndexedBindable
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
-import net.typho.big_shot_lib.api.errors.InvalidEnumException
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
+import org.lwjgl.system.NativeResource
 import java.nio.ByteBuffer
 
 open class GlBuffer(
-    type: GlResourceType.Buffer,
     @JvmField
     val usage: BufferUsage,
-    glId: Int = type.create()
-) : GlResource(type, glId), BufferUploader, GlIndexedBindable {
-    override fun bindBase(index: Int) {
-        if (type !is GlResourceType.Buffer.Indexed) {
-            throw InvalidEnumException("$this is not indexed")
+    glId: Int = GlResourceType.Buffer.create()
+) : GlResource<GlResourceType.Buffer>(GlResourceType.Buffer, glId) {
+    fun bind(type: GlBufferType): Bound {
+        type.state.push(glId)
+
+        return object : Bound {
+            override val buffer = this@GlBuffer
+            override val type = type
+
+            override fun free() {
+                type.state.pop()
+            }
+
+            override fun upload(buffer: ByteBuffer) {
+                OpenGL.INSTANCE.bufferData(type.state.glId, buffer, usage)
+            }
+
+            override fun uploadNull() {
+                OpenGL.INSTANCE.bufferData(type.state.glId, 0L, usage)
+            }
         }
-
-        OpenGL.INSTANCE.bindBufferBase(type, index, glId)
     }
 
-    override fun unbindBase(index: Int) {
-        if (type !is GlResourceType.Buffer.Indexed) {
-            throw InvalidEnumException("$this is not indexed")
-        }
-
-        OpenGL.INSTANCE.bindBufferBase(type, index, 0)
+    fun bindBase(type: GlBufferType, index: Int) {
+        OpenGL.INSTANCE.bindBufferBase(type.state.glId, index, glId)
     }
 
-    override fun free() {
-        OpenGL.INSTANCE.deleteBuffer(glId)
+    fun unbindBase(type: GlBufferType, index: Int) {
+        OpenGL.INSTANCE.bindBufferBase(type.state.glId, index, 0)
     }
-
-    override fun upload(buffer: ByteBuffer) {
-        bind()
-        OpenGL.INSTANCE.bufferData(type, buffer, usage)
-        unbind()
-    }
-
-    override fun uploadNull() {
-        bind()
-        OpenGL.INSTANCE.bufferData(type, 0L, usage)
-        unbind()
-    }
-
-    fun cast(type: GlBufferResourceType) = if (this.type == type) this else GlBuffer(glId, type, usage)
 
     override fun toString(): String {
-        return "${javaClass.simpleName}(glId=$glId, type=$type, usage=$usage)"
+        return "${type.name}(glId=$glId, type=$type, usage=$usage)"
     }
 
     @JvmRecord
@@ -61,4 +55,9 @@ open class GlBuffer(
         @JvmField
         val length: Long
     )
+
+    interface Bound : NativeResource, BufferUploader {
+        val buffer: GlBuffer
+        val type: GlBufferType
+    }
 }

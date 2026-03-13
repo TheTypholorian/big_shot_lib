@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.opengl.state
 
-import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
 import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import org.lwjgl.opengl.GL14.*
@@ -14,8 +13,8 @@ enum class BlendEquation(
     MIN(GL_MIN),
     MAX(GL_MAX);
 
-    override fun bind(pushStack: Boolean) = OpenGL.INSTANCE.blendEquation(this)
+    override fun bind() = OpenGL.INSTANCE.blendEquation(this)
 
-    override fun unbind(popStack: Boolean) {
+    override fun unbind() {
     }
 }

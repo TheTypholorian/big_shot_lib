@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.*
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 import java.nio.ByteBuffer
@@ -78,6 +77,6 @@ open class NeoTextureCube(
     }
 
     override fun toString(): String {
-        return "${javaClass.simpleName}(glId=$glId, format=$format)"
+        return "${type.name}(glId=$glId, format=$format)"
     }
 }

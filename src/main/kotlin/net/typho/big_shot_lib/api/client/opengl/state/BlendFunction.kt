@@ -4,7 +4,6 @@ import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.util.resources.NeoCodecs
 
@@ -35,11 +34,11 @@ sealed interface BlendFunction : GlBindable {
         @JvmField
         val dst: BlendFactor
     ) : BlendFunction {
-        override fun bind(pushStack: Boolean) {
+        override fun bind() {
             OpenGL.INSTANCE.blendFunc(src, dst)
         }
 
-        override fun unbind(popStack: Boolean) {
+        override fun unbind() {
         }
 
         companion object {
@@ -64,11 +63,11 @@ sealed interface BlendFunction : GlBindable {
         @JvmField
         val dstA: BlendFactor
     ) : BlendFunction {
-        override fun bind(pushStack: Boolean) {
+        override fun bind() {
             OpenGL.INSTANCE.blendFuncSeparate(src, dst, srcA, dstA)
         }
 
-        override fun unbind(popStack: Boolean) {
+        override fun unbind() {
         }
 
         companion object {

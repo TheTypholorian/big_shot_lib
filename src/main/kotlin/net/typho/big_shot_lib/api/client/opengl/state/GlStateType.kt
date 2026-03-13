@@ -1,27 +1,27 @@
 package net.typho.big_shot_lib.api.client.opengl.state
 
 import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
+import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 
-sealed class GlStateType<V>(
+class GlStateType<V> internal constructor(
     override val glId: Int,
     @JvmField
-    val default: V
+    val default: V,
+    @JvmField
+    val name: String,
+    @JvmField
+    val tracker: GlStateTracker = OpenGL.INSTANCE
 ) : GlNamed {
-    protected val stack = arrayListOf<V>()
-    protected var restoreTo: V? = null
-    abstract val name: String
+    private val stack = arrayListOf<V>()
+    private var restoreTo: V? = null
 
-    abstract fun rawBind(value: V)
-
-    abstract fun rawQueryValue(): V
-    
     fun push(value: V) {
         if (stack.isEmpty()) {
-            restoreTo = rawQueryValue()
+            restoreTo = tracker[this]
         }
 
         if (stack.lastOrNull() != value) {
-            rawBind(value)
+            tracker[this] = value
         }
 
         stack.add(value)
@@ -32,9 +32,9 @@ sealed class GlStateType<V>(
         val current = currentValue()
 
         if (current == null) {
-            rawBind(restoreTo ?: default)
+            tracker[this] = restoreTo ?: default
         } else if (current != removed) {
-            rawBind(current)
+            tracker[this] = current
         }
     }
 

@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
 import net.minecraft.client.Minecraft
-import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
 import net.typho.big_shot_lib.api.math.vec.AbstractVec2
 import net.typho.big_shot_lib.api.math.vec.NeoVec2i
 import net.typho.big_shot_lib.api.util.WrapperUtil

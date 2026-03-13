@@ -7,13 +7,9 @@ abstract class GlResource<T : GlResourceType>(
     @JvmField
     val type: T,
     override val glId: Int = type.create()
-) : GlNamed, GlBindable, NativeResource {
-    override fun bind(pushStack: Boolean) {
-        type.bind(glId, pushStack)
-    }
-
-    override fun unbind(popStack: Boolean) {
-        type.unbind(popStack)
+) : GlNamed, NativeResource {
+    override fun free() {
+        type.delete(glId)
     }
 
     override fun toString(): String {

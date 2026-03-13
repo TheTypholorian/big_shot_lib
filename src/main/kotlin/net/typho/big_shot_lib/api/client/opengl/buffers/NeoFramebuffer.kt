@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
 import net.typho.big_shot_lib.api.client.opengl.buffers.ClearBit.Companion.initAndGetClearMask
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.FramebufferStatus
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
@@ -62,14 +61,14 @@ open class NeoFramebuffer(
         unbind()
     }
 
-    override fun bind(pushStack: Boolean) {
-        super.bind(pushStack)
+    override fun bind() {
+        super.bind()
         GlStateStack.viewport.push(NeoRect2i(0, 0, width, height))
     }
 
-    override fun unbind(popStack: Boolean) {
+    override fun unbind() {
         GlStateStack.viewport.pop()
-        super.unbind(popStack)
+        super.unbind()
     }
 
     protected fun attachColor() {
