@@ -1,15 +1,13 @@
 package net.typho.big_shot_lib.api.client.opengl.util
 
 import net.typho.big_shot_lib.api.BigShotApi.loadService
-import net.typho.big_shot_lib.api.client.opengl.buffers.BufferType
 import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlTextureCube
-import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.opengl.state.*
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.util.NeoColor
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import org.joml.*
 import java.nio.ByteBuffer
 
@@ -202,32 +200,32 @@ interface OpenGL {
     /**
      * `glBindBuffer(type, glId ?: 0)`
      */
-    fun bindBuffer(type: BufferType, glId: Int?)
+    fun bindBuffer(type: GlResourceType.Buffer, glId: Int?)
 
     /**
      * `glGetInteger(type.bindingId)`
      */
-    fun getBoundBuffer(type: BufferType): Int
+    fun getBoundBuffer(type: GlResourceType.Buffer): Int
 
     /**
      * `glBindBufferBase(type, index, glId ?: 0)`
      */
-    fun bindBufferBase(type: BufferType, index: Int, glId: Int?)
+    fun bindBufferBase(type: GlResourceType.Buffer.Indexed, index: Int, glId: Int?)
 
     /**
      * `glBindBufferRange(type, index, glId ?: 0, offset, length)`
      */
-    fun bindBufferRange(type: BufferType, index: Int, glId: Int?, offset: Long, length: Long)
+    fun bindBufferRange(type: GlResourceType.Buffer, index: Int, glId: Int?, offset: Long, length: Long)
 
     /**
      * `glBufferData(type, buffer, usage)`
      */
-    fun bufferData(type: BufferType, buffer: ByteBuffer, usage: BufferUsage)
+    fun bufferData(type: GlResourceType.Buffer, buffer: ByteBuffer, usage: BufferUsage)
 
     /**
      * `glBufferData(type, size, usage)`
      */
-    fun bufferData(type: BufferType, size: Long, usage: BufferUsage)
+    fun bufferData(type: GlResourceType.Buffer, size: Long, usage: BufferUsage)
 
     /**
      * `glDeleteBuffers(glId)`
@@ -274,7 +272,7 @@ interface OpenGL {
     /**
      * `glBindTexture(type, glId ?: 0)`
      */
-    fun bindTexture(type: TextureType, glId: Int?)
+    fun bindTexture(type: GlResourceType.Texture, glId: Int?)
 
     /**
      * `glBindSampler(unit, glId ?: 0)`
@@ -284,7 +282,7 @@ interface OpenGL {
     /**
      * `glGetInteger(type.bindingId)`
      */
-    fun getBoundTexture(type: TextureType): Int
+    fun getBoundTexture(type: GlResourceType.Texture): Int
 
     /**
      * `glActiveTexture(unit)`
@@ -297,14 +295,14 @@ interface OpenGL {
      * glTexParameteri(type, GL_TEXTURE_MAG_FILTER, mag)
      * ```
      */
-    fun textureInterpolation(type: TextureType, min: InterpolationType, mag: InterpolationType)
+    fun textureInterpolation(type: GlResourceType.Texture, min: InterpolationType, mag: InterpolationType)
 
     /**
      * ```
      * glTexParameteri(type, GL_TEXTURE_WRAP_S, s)
      * ```
      */
-    fun textureWrapping(type: TextureType, s: WrappingType)
+    fun textureWrapping(type: GlResourceType.Texture, s: WrappingType)
 
     /**
      * ```
@@ -312,7 +310,7 @@ interface OpenGL {
      * glTexParameteri(type, GL_TEXTURE_WRAP_T, t)
      * ```
      */
-    fun textureWrapping(type: TextureType, s: WrappingType, t: WrappingType)
+    fun textureWrapping(type: GlResourceType.Texture, s: WrappingType, t: WrappingType)
 
     /**
      * ```
@@ -321,21 +319,21 @@ interface OpenGL {
      * glTexParameteri(type, GL_TEXTURE_WRAP_R, r)
      * ```
      */
-    fun textureWrapping(type: TextureType, s: WrappingType, t: WrappingType, r: WrappingType)
+    fun textureWrapping(type: GlResourceType.Texture, s: WrappingType, t: WrappingType, r: WrappingType)
 
     /**
      * ```
      * glTexParameteri(type, GL_TEXTURE_COMPARISON_MODE, mode)
      * ```
      */
-    fun textureComparisonMode(type: TextureType, mode: TextureComparisonMode)
+    fun textureComparisonMode(type: GlResourceType.Texture, mode: TextureComparisonMode)
 
     /**
      * ```
      * glTexParameteri(type, GL_TEXTURE_COMPARISON_FUNC, mode)
      * ```
      */
-    fun textureComparisonFunc(type: TextureType, mode: ComparisonFunc)
+    fun textureComparisonFunc(type: GlResourceType.Texture, mode: ComparisonFunc)
 
     /**
      * ```
@@ -351,7 +349,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData1D(type: TextureType, format: TextureFormat, width: Int, buffer: ByteBuffer)
+    fun textureData1D(type: GlResourceType.Texture, format: TextureFormat, width: Int, buffer: ByteBuffer)
 
     /**
      * ```
@@ -367,7 +365,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData1D(type: TextureType, format: TextureFormat, width: Int, size: Long)
+    fun textureData1D(type: GlResourceType.Texture, format: TextureFormat, width: Int, size: Long)
 
     /**
      * ```
@@ -384,7 +382,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData2D(type: TextureType, format: TextureFormat, width: Int, height: Int, buffer: ByteBuffer)
+    fun textureData2D(type: GlResourceType.Texture, format: TextureFormat, width: Int, height: Int, buffer: ByteBuffer)
 
     /**
      * ```
@@ -401,7 +399,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData2D(type: TextureType, format: TextureFormat, width: Int, height: Int, size: Long)
+    fun textureData2D(type: GlResourceType.Texture, format: TextureFormat, width: Int, height: Int, size: Long)
 
     /**
      * ```
@@ -415,7 +413,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData2DMultisample(type: TextureType, samples: Int, format: TextureFormat, width: Int, height: Int)
+    fun textureData2DMultisample(type: GlResourceType.Texture, samples: Int, format: TextureFormat, width: Int, height: Int)
 
     /**
      * ```
@@ -467,7 +465,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData3D(type: TextureType, format: TextureFormat, width: Int, height: Int, depth: Int, buffer: ByteBuffer)
+    fun textureData3D(type: GlResourceType.Texture, format: TextureFormat, width: Int, height: Int, depth: Int, buffer: ByteBuffer)
 
     /**
      * ```
@@ -485,7 +483,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun textureData3D(type: TextureType, format: TextureFormat, width: Int, height: Int, depth: Int, size: Long)
+    fun textureData3D(type: GlResourceType.Texture, format: TextureFormat, width: Int, height: Int, depth: Int, size: Long)
 
     /**
      * `glDeleteTextures(glId)`
@@ -530,7 +528,7 @@ interface OpenGL {
      * )
      * ```
      */
-    fun attachFramebufferTexture2D(attachment: Int, type: TextureType, glId: Int)
+    fun attachFramebufferTexture2D(attachment: Int, type: GlResourceType.Texture, glId: Int)
 
     /**
      * ```
@@ -665,7 +663,7 @@ interface OpenGL {
      * `glLinkProgram(glId)`
      * @throws net.typho.big_shot_lib.api.errors.ShaderLinkException
      */
-    fun linkShaderProgram(glId: Int, name: ResourceIdentifier)
+    fun linkShaderProgram(glId: Int, name: NeoIdentifier)
 
     /**
      * `glDeleteProgram(glId)`
@@ -675,7 +673,7 @@ interface OpenGL {
     /**
      * `glCreateShader(type)`
      */
-    fun createShaderSource(type: ShaderSourceType): Int
+    fun createShaderSource(type: GlResourceType.Shader): Int
 
     /**
      * `glShaderSource(glId, code)`
@@ -686,7 +684,7 @@ interface OpenGL {
      * `glCompileShader(glId)`
      * @throws net.typho.big_shot_lib.api.errors.ShaderCompileException
      */
-    fun compileShaderSource(glId: Int, type: ShaderSourceType, name: ResourceIdentifier)
+    fun compileShaderSource(glId: Int, type: GlResourceType.Shader, name: NeoIdentifier)
 
     /**
      * `glAttachShader(programId, glId)`

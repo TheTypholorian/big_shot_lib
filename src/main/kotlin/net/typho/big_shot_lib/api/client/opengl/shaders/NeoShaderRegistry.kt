@@ -5,13 +5,13 @@ import com.mojang.serialization.JsonOps
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.errors.ResourceNotFoundException
 import net.typho.big_shot_lib.api.util.resources.NeoFileToIdConverter
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resources.NeoResourceManager
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import net.typho.big_shot_lib.api.util.resources.ResourceRegistry
 
 object NeoShaderRegistry : ResourceRegistry<NeoShader>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")) {
     override fun decode(
-        location: ResourceIdentifier,
+        location: NeoIdentifier,
         json: JsonObject,
         manager: NeoResourceManager
     ): NeoShader {

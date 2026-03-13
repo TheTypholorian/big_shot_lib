@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.api.client.util
 
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 
 interface DebugScreenFactory {
     fun register(
-        location: ResourceIdentifier,
+        location: NeoIdentifier,
         allowedWithReducedDebugInfo: Boolean,
         text: (out: (line: String) -> Unit) -> Unit
     )

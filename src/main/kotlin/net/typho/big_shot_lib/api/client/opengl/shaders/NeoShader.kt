@@ -4,7 +4,7 @@ import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniformBufferPoint
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.NeoUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateManager
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.errors.IllegalShaderSourceException
@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL31.glUniformBlockBinding
 open class NeoShader(
     glId: Int,
     override val key: ShaderProgramKey
-) : GlResource(glId, GlStateManager.shader), GlShader {
+) : GlResource(glId, GlStateStack.shader), GlShader {
     companion object {
         @JvmField
         val NULL = NeoShader(0, ShaderProgramKey.NULL)

@@ -2,31 +2,31 @@ package net.typho.big_shot_lib.api.client.util
 
 import com.mojang.blaze3d.platform.InputConstants
 import net.minecraft.client.KeyMapping
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 
 interface KeyMappingFactory {
     val movement: KeyMappingCategory
-        get() = getOrCreateCategory(ResourceIdentifier("movement"))
+        get() = getOrCreateCategory(NeoIdentifier("movement"))
     val gameplay: KeyMappingCategory
-        get() = getOrCreateCategory(ResourceIdentifier("gameplay")) 
+        get() = getOrCreateCategory(NeoIdentifier("gameplay"))
     val inventory : KeyMappingCategory
-        get() = getOrCreateCategory(ResourceIdentifier("inventory")) 
+        get() = getOrCreateCategory(NeoIdentifier("inventory"))
     val multiplayer : KeyMappingCategory
-        get() = getOrCreateCategory(ResourceIdentifier("multiplayer")) 
+        get() = getOrCreateCategory(NeoIdentifier("multiplayer"))
     val ui : KeyMappingCategory
-        get() = getOrCreateCategory(ResourceIdentifier("ui")) 
+        get() = getOrCreateCategory(NeoIdentifier("ui"))
     val creative : KeyMappingCategory
-        get() = getOrCreateCategory(ResourceIdentifier("creative")) 
+        get() = getOrCreateCategory(NeoIdentifier("creative"))
     val spectator : KeyMappingCategory
-        get() = getOrCreateCategory(ResourceIdentifier("spectator")) 
+        get() = getOrCreateCategory(NeoIdentifier("spectator"))
     val misc : KeyMappingCategory
-        get() = getOrCreateCategory(ResourceIdentifier("misc")) 
+        get() = getOrCreateCategory(NeoIdentifier("misc"))
     val debug : KeyMappingCategory
-        get() = getOrCreateCategory(ResourceIdentifier("debug"))
+        get() = getOrCreateCategory(NeoIdentifier("debug"))
     
-    fun getOrCreateCategory(location: ResourceIdentifier): KeyMappingCategory
+    fun getOrCreateCategory(location: NeoIdentifier): KeyMappingCategory
 
-    fun create(location: ResourceIdentifier, key: Int, category: KeyMappingCategory): KeyMapping
+    fun create(location: NeoIdentifier, key: Int, category: KeyMappingCategory): KeyMapping
 
-    fun create(location: ResourceIdentifier, type: InputConstants.Type, key: Int, category: KeyMappingCategory): KeyMapping
+    fun create(location: NeoIdentifier, type: InputConstants.Type, key: Int, category: KeyMappingCategory): KeyMapping
 }

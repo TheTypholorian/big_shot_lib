@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateManager
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.GlIndexType
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.GlShapeType
@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11.glDrawElements
 
 open class GlVertexArray(
     glId: Int
-) : GlResource(glId, GlStateManager.vertexArray) {
+) : GlResource(glId, GlStateStack.vertexArray) {
     companion object {
         @JvmField
         val NULL = GlVertexArray(0)

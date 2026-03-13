@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.api.util.resources
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
-import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
 
 @JvmRecord
 data class NeoFileToIdConverter(
@@ -12,15 +11,15 @@ data class NeoFileToIdConverter(
     @JvmField
     val extension: String
 ) {
-    fun idToFile(location: ResourceIdentifier): ResourceIdentifier {
+    fun idToFile(location: NeoIdentifier): NeoIdentifier {
         return location.withPrefix(prefix + PATH_DELIMITER).withSuffix(EXTENSION_DELIMITER + extension)
     }
 
-    fun fileToId(file: ResourceIdentifier): ResourceIdentifier {
+    fun fileToId(file: NeoIdentifier): NeoIdentifier {
         return file.withPath { it.substring(prefix.length + 1, it.length - extension.length - 1) }
     }
 
-    fun listMatchingResources(manager: NeoResourceManager): MutableMap<ResourceIdentifier, Resource> {
+    fun listMatchingResources(manager: NeoResourceManager): MutableMap<NeoIdentifier, Resource> {
         return manager.listResources(prefix) { it.path.endsWith(extension) }
     }
 

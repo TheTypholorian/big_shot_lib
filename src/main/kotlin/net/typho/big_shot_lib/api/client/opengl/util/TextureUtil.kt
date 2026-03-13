@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.client.opengl.util
 import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlTexture2D
 import net.typho.big_shot_lib.api.client.util.quads.NeoAtlas
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 
 interface TextureUtil {
     val blockAtlas: NeoAtlas
@@ -20,9 +20,9 @@ interface TextureUtil {
     val mapDecorationsAtlas: NeoAtlas
     val guiAtlas: NeoAtlas
 
-    fun getMinecraftTexture(texture: ResourceIdentifier): GlTexture2D
+    fun getMinecraftTexture(texture: NeoIdentifier): GlTexture2D
 
-    fun getAtlas(texture: ResourceIdentifier): NeoAtlas
+    fun getAtlas(texture: NeoIdentifier): NeoAtlas
 
     companion object {
         @JvmField

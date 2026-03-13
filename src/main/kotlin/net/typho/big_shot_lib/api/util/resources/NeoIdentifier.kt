@@ -6,7 +6,7 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 
 @JvmRecord
-data class ResourceIdentifier(
+data class NeoIdentifier(
     @JvmField
     val namespace: String,
     @JvmField
@@ -39,13 +39,13 @@ data class ResourceIdentifier(
 
     fun toLanguageKey(prefix: String, suffix: String) = "$prefix.${toLanguageKey()}.$suffix"
 
-    fun withPath(path: String) = ResourceIdentifier(namespace, path)
+    fun withPath(path: String) = NeoIdentifier(namespace, path)
 
-    fun withPath(path: (path: String) -> String) = ResourceIdentifier(namespace, path(this.path))
+    fun withPath(path: (path: String) -> String) = NeoIdentifier(namespace, path(this.path))
 
-    fun withPrefix(prefix: String) = ResourceIdentifier(namespace, prefix + path)
+    fun withPrefix(prefix: String) = NeoIdentifier(namespace, prefix + path)
 
-    fun withSuffix(suffix: String) = ResourceIdentifier(namespace, path + suffix)
+    fun withSuffix(suffix: String) = NeoIdentifier(namespace, path + suffix)
 
     fun equals(pair: Pair<String, String>): Boolean {
         return toPair() == pair
@@ -63,7 +63,7 @@ data class ResourceIdentifier(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as ResourceIdentifier
+        other as NeoIdentifier
 
         if (namespace != other.namespace) return false
         if (path != other.path) return false
@@ -79,14 +79,14 @@ data class ResourceIdentifier(
 
     companion object {
         @JvmField
-        val CODEC: Codec<ResourceIdentifier> = Codec.STRING.xmap(
-            ::ResourceIdentifier,
-            ResourceIdentifier::toString
+        val CODEC: Codec<NeoIdentifier> = Codec.STRING.xmap(
+            ::NeoIdentifier,
+            NeoIdentifier::toString
         )
         @JvmField
-        val STREAM_CODEC: StreamCodec<ByteBuf, ResourceIdentifier> = ByteBufCodecs.STRING_UTF8.map(
-            ::ResourceIdentifier,
-            ResourceIdentifier::toString
+        val STREAM_CODEC: StreamCodec<ByteBuf, NeoIdentifier> = ByteBufCodecs.STRING_UTF8.map(
+            ::NeoIdentifier,
+            NeoIdentifier::toString
         )
         const val DEFAULT_NAMESPACE = "minecraft"
         const val DEFAULT_DELIMITER = ':'

@@ -5,30 +5,23 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.Mesh
 import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
 import org.lwjgl.system.NativeResource
 
-open class GlDrawBatch : NativeResource {
+open class GlWhiteboard : NativeResource {
     @JvmField
-    protected val touched = HashSet<GlStateManager<*>>()
+    protected val touched = HashSet<GlStateStack<*>>()
     @JvmField
-    protected val values = HashMap<GlStateManager<*>, () -> Unit>()
-    /*
-    var arrayBuffer: GlBuffer
-        set(value) {
-            field = value
-            set(GlStateManager.buffers[BufferType.])
-        }
-     */
+    protected val values = HashMap<GlStateStack<*>, () -> Unit>()
 
-    fun <V> set(stack: GlStateManager<V>, value: V) {
+    fun <V> bind(stack: GlStateStack<V>, value: V) {
         values[stack] = { stack.bind(value, false) }
         touched.add(stack)
     }
 
-    fun set(stack: GlStateManager<Int>, resource: GlNamed) {
-        set(stack, resource.glId)
+    fun bind(stack: GlStateStack<Int>, resource: GlNamed) {
+        bind(stack, resource.glId)
     }
 
-    fun set(buffer: GlBuffer) {
-        //set()
+    fun bind(buffer: GlBuffer) {
+        bind(buffer.binder)
     }
 
     fun flush() {

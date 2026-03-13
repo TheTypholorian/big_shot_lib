@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateManager
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.opengl.util.*
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 import java.nio.ByteBuffer
@@ -9,8 +9,8 @@ open class NeoTextureCube(
     glId: Int,
     override val format: TextureFormat,
     defaultParams: Boolean = true,
-    override val type: TextureType = TextureType.TEXTURE_CUBE_MAP
-) : GlResource(glId, GlStateManager.textures[type]!!), GlTextureCube {
+    override val type: GlTextureResourceType = GlTextureResourceType.TEXTURE_CUBE_MAP
+) : GlResource(glId, GlStateStack.textures[type]!!), GlTextureCube {
     companion object {
         @JvmField
         val NULL = NeoTextureCube(0, TextureFormat.NULL)

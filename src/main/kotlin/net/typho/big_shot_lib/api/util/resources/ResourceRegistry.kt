@@ -9,7 +9,7 @@ import net.typho.big_shot_lib.api.BigShotApi
 import java.util.*
 
 abstract class ResourceRegistry<T>(
-    override val location: ResourceIdentifier,
+    override val location: NeoIdentifier,
     @JvmField
     val idConverter: NeoFileToIdConverter,
 ) : NeoResourceManagerReloadListener, NamedResource {
@@ -19,9 +19,9 @@ abstract class ResourceRegistry<T>(
     }
 
     @JvmField
-    val map: BiMap<ResourceIdentifier, T> = HashBiMap.create()
+    val map: BiMap<NeoIdentifier, T> = HashBiMap.create()
     @JvmField
-    val lookupCodec: Codec<T> = ResourceIdentifier.CODEC.xmap(this::get, this::getKey)
+    val lookupCodec: Codec<T> = NeoIdentifier.CODEC.xmap(this::get, this::getKey)
 
     init {
         registries.add(this)
@@ -29,9 +29,9 @@ abstract class ResourceRegistry<T>(
 
     fun getKey(t: T) = map.inverse()[t]
 
-    fun get(location: ResourceIdentifier) = map[location]
+    fun get(location: NeoIdentifier) = map[location]
 
-    abstract fun decode(location: ResourceIdentifier, json: JsonObject, manager: NeoResourceManager): T
+    abstract fun decode(location: NeoIdentifier, json: JsonObject, manager: NeoResourceManager): T
 
     override fun onResourceManagerReload(manager: NeoResourceManager) {
         map.values.forEach { value -> if (value is AutoCloseable) value.close() }

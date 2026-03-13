@@ -1,11 +1,11 @@
 package net.typho.big_shot_lib.api.client.util.panoramas
 
 import net.typho.big_shot_lib.api.util.resources.NamedResource
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 
 @JvmRecord
 data class PanoramaSet(
-    override val location: ResourceIdentifier,
+    override val location: NeoIdentifier,
     @JvmField
     val priority: PanoramaPriority,
     @JvmField
@@ -16,7 +16,7 @@ data class PanoramaSet(
     val fade: Long? = 1000
 ) : NamedResource {
     constructor(
-        location: ResourceIdentifier,
+        location: NeoIdentifier,
         priority: PanoramaPriority,
         texture: PanoramaTexture
     ) : this(location, priority, listOf(texture), null)

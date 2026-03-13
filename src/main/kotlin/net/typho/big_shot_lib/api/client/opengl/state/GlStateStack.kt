@@ -1,17 +1,13 @@
 package net.typho.big_shot_lib.api.client.opengl.state
 
-import net.typho.big_shot_lib.api.client.opengl.buffers.BufferType
 import net.typho.big_shot_lib.api.client.opengl.buffers.GlFramebuffer
 import net.typho.big_shot_lib.api.client.opengl.util.GlBinder
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
-import net.typho.big_shot_lib.api.client.opengl.util.TextureType
 import net.typho.big_shot_lib.api.math.rect.NeoRect2i
-import net.typho.big_shot_lib.api.util.NeoCollections
 import net.typho.big_shot_lib.api.util.NeoColor
 import java.util.*
-import kotlin.enums.enumEntries
 
-open class GlStateManager<V>(
+open class GlStateStack<V>(
     @JvmField
     val name: String,
     @JvmField
@@ -21,169 +17,83 @@ open class GlStateManager<V>(
 ) : GlBinder<V> {
     companion object {
         @JvmField
-        val buffers = createMap<BufferType, Int>(
-            BufferType::name,
-            OpenGL.INSTANCE::bindBuffer,
-            OpenGL.INSTANCE::getBoundBuffer
-        )
-        @JvmField
-        val renderBuffer = GlStateManager(
-            "RENDER_BUFFER",
-            OpenGL.INSTANCE::bindRenderBuffer,
-            OpenGL.INSTANCE::getBoundRenderBuffer
-        )
-        @JvmField
-        val textures = createMap<TextureType, Int>(
-            TextureType::name,
-            OpenGL.INSTANCE::bindTexture,
-            OpenGL.INSTANCE::getBoundTexture
-        )
-        @JvmField
-        val framebuffer = GlStateManager(
-            "FRAMEBUFFER",
-            OpenGL.INSTANCE::bindFramebuffer,
-            OpenGL.INSTANCE::getBoundFramebuffer
-        )
-        @JvmField
-        val vertexArray = GlStateManager(
-            "VERTEX_ARRAY",
-            OpenGL.INSTANCE::bindVertexArray,
-            OpenGL.INSTANCE::getBoundVertexArray
-        )
-        @JvmField
-        val shader = GlStateManager(
-            "SHADER",
-            OpenGL.INSTANCE::bindShaderProgram,
-            OpenGL.INSTANCE::getBoundShaderProgram
-        )
-        @JvmField
-        val blendColor = GlStateManager(
+        val blendColor = GlStateStack(
             "BLEND_COLOR",
             { OpenGL.INSTANCE.blendColor(it ?: NeoColor.FULL_ON) },
             OpenGL.INSTANCE::getBlendColor
         )
         @JvmField
-        val blendEquation = GlStateManager(
+        val blendEquation = GlStateStack(
             "BLEND_EQUATION",
             { OpenGL.INSTANCE.blendEquation(it ?: BlendEquation.ADD) },
             OpenGL.INSTANCE::getBlendEquation
         )
         @JvmField
-        val blendFunc = GlStateManager<BlendFunction>(
+        val blendFunc = GlStateStack<BlendFunction>(
             "BLEND_FUNCTION",
             { (it ?: BlendFunction.DEFAULT).bind() },
             OpenGL.INSTANCE::getBlendFunctionSeparate
         )
         @JvmField
-        val colorMask = GlStateManager(
+        val colorMask = GlStateStack(
             "COLOR_MASK",
             { OpenGL.INSTANCE.colorMask(it ?: ColorMask.DEFAULT) },
             OpenGL.INSTANCE::getColorMask
         )
         @JvmField
-        val cullFace = GlStateManager(
+        val cullFace = GlStateStack(
             "CULL_FACE",
             { OpenGL.INSTANCE.cullFace(it ?: CullFace.BACK) },
             OpenGL.INSTANCE::getCullFace
         )
         @JvmField
-        val depthMask = GlStateManager(
+        val depthMask = GlStateStack(
             "COLOR_MASK",
             { OpenGL.INSTANCE.depthMask(it ?: true) },
             OpenGL.INSTANCE::getDepthMask
         )
         @JvmField
-        val depthFunc = GlStateManager(
+        val depthFunc = GlStateStack(
             "DEPTH_FUNC",
             { OpenGL.INSTANCE.depthFunc(it ?: ComparisonFunc.LEQUAL) },
             OpenGL.INSTANCE::getDepthFunc
         )
         @JvmField
-        val polygonMode = GlStateManager(
+        val polygonMode = GlStateStack(
             "POLYGON_MODE",
             { OpenGL.INSTANCE.polygonMode(it ?: PolygonMode.FILL) },
             OpenGL.INSTANCE::getPolygonMode
         )
         @JvmField
-        val polygonOffset = GlStateManager(
+        val polygonOffset = GlStateStack(
             "POLYGON_OFFSET",
             { OpenGL.INSTANCE.polygonOffset(it ?: PolygonOffset(0f, 0f)) },
             OpenGL.INSTANCE::getPolygonOffset
         )
         @JvmField
-        val stencilFunc = GlStateManager(
+        val stencilFunc = GlStateStack(
             "STENCIL_FUNC",
             { OpenGL.INSTANCE.stencilFunc(it ?: StencilFunc(ComparisonFunc.ALWAYS, 0, 0)) },
             OpenGL.INSTANCE::getStencilFunc
         )
         @JvmField
-        val stencilMask = GlStateManager(
+        val stencilMask = GlStateStack(
             "STENCIL_MASK",
             { OpenGL.INSTANCE.stencilMask(it ?: 0xFFFFFFFF.toInt()) },
             OpenGL.INSTANCE::getStencilMask
         )
         @JvmField
-        val stencilOp = GlStateManager(
+        val stencilOp = GlStateStack(
             "STENCIL_MASK",
             { OpenGL.INSTANCE.stencilOp(it ?: StencilOp(IntAction.KEEP, IntAction.KEEP, IntAction.KEEP)) },
             OpenGL.INSTANCE::getStencilOp
         )
         @JvmField
-        val viewport = GlStateManager(
+        val viewport = GlStateStack(
             "VIEWPORT",
             { OpenGL.INSTANCE.viewport(it ?: NeoRect2i(0, 0, GlFramebuffer.MAIN.width, GlFramebuffer.MAIN.height)) },
             OpenGL.INSTANCE::getViewport
         )
-        val all: List<GlStateManager<*>> by lazy {
-            NeoCollections.flatListOf(
-                buffers.values,
-                renderBuffer,
-                textures.values,
-                framebuffer,
-                vertexArray,
-                shader,
-                blendColor,
-                colorMask,
-                depthMask,
-                depthFunc,
-                polygonMode,
-                stencilFunc,
-                stencilMask,
-                stencilOp,
-                GlFlag.entries.map { it.stack }
-            )
-        }
-
-        @JvmStatic
-        inline fun <reified T : Enum<T>, V> createMap(
-            name: (type: T) -> String,
-            crossinline bind: (type: T, value: V?) -> Unit,
-            crossinline query: (type: T) -> V
-        ): Map<T, GlStateManager<V>> {
-            return createMap(name, { true }, bind, query)
-        }
-
-        @JvmStatic
-        inline fun <reified T : Enum<T>, V> createMap(
-            name: (type: T) -> String,
-            predicate: (type: T) -> Boolean,
-            crossinline bind: (type: T, value: V?) -> Unit,
-            crossinline query: (type: T) -> V
-        ): Map<T, GlStateManager<V>> {
-            val map = HashMap<T, GlStateManager<V>>()
-
-            for (entry in enumEntries<T>()) {
-                if (predicate(entry)) {
-                    map[entry] = GlStateManager(
-                        name(entry),
-                        { bind(entry, it) },
-                        { query(entry) },
-                    )
-                }
-            }
-
-            return map
-        }
     }
 
     @JvmField

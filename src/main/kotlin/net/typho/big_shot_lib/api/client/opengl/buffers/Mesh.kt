@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.opengl.buffers
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.MeshData
 import com.mojang.blaze3d.vertex.VertexSorting
+import net.typho.big_shot_lib.api.client.opengl.GlBufferResourceType
 import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
 import net.typho.big_shot_lib.api.client.opengl.util.GlIndexType
 import net.typho.big_shot_lib.api.client.opengl.util.GlShapeType
@@ -19,9 +20,9 @@ open class Mesh(
     @JvmField
     val vao: GlVertexArray = GlVertexArray(),
     @JvmField
-    val vbo: GlBuffer = GlBuffer(BufferType.ARRAY_BUFFER, usage),
+    val vbo: GlBuffer = GlBuffer(GlBufferResourceType.ARRAY_BUFFER, usage),
     @JvmField
-    val ebo: GlBuffer = GlBuffer(BufferType.ELEMENT_ARRAY_BUFFER, usage)
+    val ebo: GlBuffer = GlBuffer(GlBufferResourceType.ELEMENT_ARRAY_BUFFER, usage)
 ) : GlBindable, NativeResource {
     @JvmField
     protected var indexCount = 0

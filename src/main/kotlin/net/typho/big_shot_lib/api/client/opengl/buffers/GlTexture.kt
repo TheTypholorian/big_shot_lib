@@ -6,7 +6,7 @@ import org.lwjgl.system.NativeResource
 
 interface GlTexture : GlBindable, GlNamed, NativeResource {
     val format: TextureFormat
-    val type: TextureType
+    val type: GlTextureResourceType
 
     fun setCompareMode(mode: TextureComparisonMode) {
         OpenGL.INSTANCE.textureComparisonMode(type, mode)

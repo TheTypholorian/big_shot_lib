@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
-import net.typho.big_shot_lib.api.client.opengl.state.GlStateManager
-import net.typho.big_shot_lib.api.client.opengl.util.GlBinder
+import net.typho.big_shot_lib.api.client.opengl.state.GlResourceType
 import net.typho.big_shot_lib.api.client.opengl.util.GlIndexedBindable
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
@@ -10,16 +9,13 @@ import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 import java.nio.ByteBuffer
 
 open class GlBuffer(
-    glId: Int,
+    type: GlResourceType.Buffer,
     @JvmField
-    val type: BufferType,
-    @JvmField
-    val usage: BufferUsage
-) : GlResource(glId, GlStateManager.buffers[type] ?: GlBinder.simple { OpenGL.INSTANCE.bindBuffer(type, it) }), BufferUploader, GlIndexedBindable {
-    constructor(type: BufferType, usage: BufferUsage) : this(OpenGL.INSTANCE.createBuffer(), type, usage)
-
+    val usage: BufferUsage,
+    glId: Int = type.create()
+) : GlResource(type, glId), BufferUploader, GlIndexedBindable {
     override fun bindBase(index: Int) {
-        if (!type.isIndexed) {
+        if (type !is GlResourceType.Buffer.Indexed) {
             throw InvalidEnumException("$this is not indexed")
         }
 
@@ -27,7 +23,7 @@ open class GlBuffer(
     }
 
     override fun unbindBase(index: Int) {
-        if (!type.isIndexed) {
+        if (type !is GlResourceType.Buffer.Indexed) {
             throw InvalidEnumException("$this is not indexed")
         }
 
@@ -50,7 +46,7 @@ open class GlBuffer(
         unbind()
     }
 
-    fun cast(type: BufferType) = if (this.type == type) this else GlBuffer(glId, type, usage)
+    fun cast(type: GlBufferResourceType) = if (this.type == type) this else GlBuffer(glId, type, usage)
 
     override fun toString(): String {
         return "${javaClass.simpleName}(glId=$glId, type=$type, usage=$usage)"

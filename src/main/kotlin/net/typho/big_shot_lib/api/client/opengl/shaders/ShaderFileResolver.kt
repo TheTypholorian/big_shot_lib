@@ -1,14 +1,14 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders
 
 import net.minecraft.server.packs.resources.Resource
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resources.NeoResourceManager
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 import java.io.InputStream
 
 interface ShaderFileResolver {
     fun loadFile(key: String): String? {
         return loadFile(
-            ResourceIdentifier(key).withPath { path ->
+            NeoIdentifier(key).withPath { path ->
                 if (path.contains('.')) {
                     return@withPath path
                 } else {
@@ -18,11 +18,11 @@ interface ShaderFileResolver {
         )
     }
 
-    fun loadFile(location: ResourceIdentifier, source: ShaderSourceType): String? {
+    fun loadFile(location: NeoIdentifier, source: ShaderSourceType): String? {
         return loadFile(location.withSuffix(".${source.extension}"))
     }
 
-    fun loadFile(location: ResourceIdentifier): String?
+    fun loadFile(location: NeoIdentifier): String?
 
     /*
     fun loadIncludes(code: String): String {
@@ -59,7 +59,7 @@ interface ShaderFileResolver {
         @JvmField
         val manager: NeoResourceManager
     ) : ShaderFileResolver {
-        override fun loadFile(location: ResourceIdentifier): String? {
+        override fun loadFile(location: NeoIdentifier): String? {
             var resource: Resource? = null
 
             for (dir in directories) {

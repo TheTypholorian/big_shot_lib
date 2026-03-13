@@ -1,31 +1,33 @@
 package net.typho.big_shot_lib.api.client.opengl.util
 
+import net.typho.big_shot_lib.api.client.opengl.state.GlResourceType
 import org.lwjgl.system.NativeResource
 
-abstract class GlResource(
-    override val glId: Int,
+abstract class GlResource<T : GlResourceType>(
     @JvmField
-    val binder: GlBinder<Int>
+    val type: T,
+    override val glId: Int = type.create()
 ) : GlNamed, GlBindable, NativeResource {
     override fun bind(pushStack: Boolean) {
-        binder.bind(glId, pushStack)
+        type.bind(glId, pushStack)
     }
 
     override fun unbind(popStack: Boolean) {
-        binder.unbind(popStack)
+        type.unbind(popStack)
     }
 
     override fun toString(): String {
-        return "${javaClass.simpleName}($glId)"
+        return "${type.name}($glId)"
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other !is GlResource<*>) return false
 
-        other as GlResource
+        if (glId != other.glId) return false
+        if (type != other.type) return false
 
-        return glId == other.glId
+        return true
     }
 
     override fun hashCode(): Int {

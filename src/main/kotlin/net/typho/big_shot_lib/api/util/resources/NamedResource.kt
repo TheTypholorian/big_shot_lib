@@ -1,5 +1,5 @@
 package net.typho.big_shot_lib.api.util.resources
 
 interface NamedResource {
-    val location: ResourceIdentifier
+    val location: NeoIdentifier
 }

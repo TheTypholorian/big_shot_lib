@@ -34,7 +34,7 @@ enum class GlFlag(
     TEXTURE_CUBE_MAP_SEAMLESS(GL_TEXTURE_CUBE_MAP_SEAMLESS),
     PROGRAM_POINT_SIZE(GL_PROGRAM_POINT_SIZE);
 
-    val stack = GlStateManager<Boolean?>(name, this::set) { OpenGL.INSTANCE.isEnabled(this) }
+    val stack = GlStateStack<Boolean?>(this@GlFlag.name, this::set) { OpenGL.INSTANCE.isEnabled(this) }
 
     fun queryValue() = stack.query()
 

@@ -6,20 +6,20 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
 import net.typho.big_shot_lib.api.util.resources.NamedResource
 import net.typho.big_shot_lib.api.util.resources.NeoCodecs
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import java.util.*
 
 @JvmRecord
 data class ShaderProgramKey(
     @JvmField
     val loader: ShaderLoaderType,
-    override val location: ResourceIdentifier,
+    override val location: NeoIdentifier,
     @JvmField
     val format: NeoVertexFormat,
     @JvmField
     val version: GLSLVersion,
     @JvmField
-    val sources: Map<ShaderSourceType, ResourceIdentifier>,
+    val sources: Map<ShaderSourceType, NeoIdentifier>,
     @JvmField
     val modules: List<ShaderModule>,
 ) : NamedResource {
@@ -27,7 +27,7 @@ data class ShaderProgramKey(
         @JvmField
         val NULL = ShaderProgramKey(
             ShaderLoaderType.NULL,
-            ResourceIdentifier("opengl", "null"),
+            NeoIdentifier("opengl", "null"),
             NeoVertexFormat.POSITION,
             GLSLVersion.DEFAULT,
             mapOf(),
@@ -52,11 +52,11 @@ data class ShaderProgramKey(
         }
 
         @JvmStatic
-        fun codec(loader: ShaderLoaderType, location: ResourceIdentifier): MapCodec<ShaderProgramKey> = RecordCodecBuilder.mapCodec {
+        fun codec(loader: ShaderLoaderType, location: NeoIdentifier): MapCodec<ShaderProgramKey> = RecordCodecBuilder.mapCodec {
             it.group(
                 NeoVertexFormat.CODEC.fieldOf("format").forGetter { key -> key.format },
                 GLSLVersion.CODEC.optionalFieldOf("version", GLSLVersion.DEFAULT).forGetter { key -> key.version },
-                Codec.unboundedMap(NeoCodecs.enumCodec<ShaderSourceType>(), ResourceIdentifier.CODEC).fieldOf("sources").forGetter { key -> key.sources },
+                Codec.unboundedMap(NeoCodecs.enumCodec<ShaderSourceType>(), NeoIdentifier.CODEC).fieldOf("sources").forGetter { key -> key.sources },
                 ShaderModule.CODEC.codec().listOf().optionalFieldOf("modules", listOf()).forGetter { key -> key.modules }
             ).apply(it) { format, version, sources, modules -> ShaderProgramKey(loader, location, format, version, sources, loadDependencies(modules)) }
         }

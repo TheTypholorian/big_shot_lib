@@ -1,24 +1,24 @@
 package net.typho.big_shot_lib.api.client.util.panoramas
 
 import net.typho.big_shot_lib.api.math.NeoDirection
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 
 @JvmRecord
 data class PanoramaTexture(
     @JvmField
-    val south: ResourceIdentifier,
+    val south: NeoIdentifier,
     @JvmField
-    val east: ResourceIdentifier,
+    val east: NeoIdentifier,
     @JvmField
-    val north: ResourceIdentifier,
+    val north: NeoIdentifier,
     @JvmField
-    val west: ResourceIdentifier,
+    val west: NeoIdentifier,
     @JvmField
-    val up: ResourceIdentifier,
+    val up: NeoIdentifier,
     @JvmField
-    val down: ResourceIdentifier,
+    val down: NeoIdentifier,
 ) {
-    constructor(location: ResourceIdentifier) : this(
+    constructor(location: NeoIdentifier) : this(
         location.withPath { it + "_0.png" },
         location.withPath { it + "_1.png" },
         location.withPath { it + "_2.png" },
@@ -27,7 +27,7 @@ data class PanoramaTexture(
         location.withPath { it + "_5.png" }
     )
 
-    fun get(dir: NeoDirection): ResourceIdentifier {
+    fun get(dir: NeoDirection): NeoIdentifier {
         return when (dir) {
             NeoDirection.DOWN -> down
             NeoDirection.UP -> up

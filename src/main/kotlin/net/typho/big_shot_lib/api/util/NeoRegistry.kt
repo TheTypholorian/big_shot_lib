@@ -1,20 +1,20 @@
 package net.typho.big_shot_lib.api.util
 
 import net.minecraft.core.Registry
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resources.NeoTagKey
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 interface NeoRegistry<T : Any> {
     val key: NeoResourceKey<out Registry<T>>
 
-    fun get(value: ResourceIdentifier): T?
+    fun get(value: NeoIdentifier): T?
 
     fun get(value: NeoResourceKey<T>) = get(value.location)
 
     fun getKey(value: T): NeoResourceKey<T>
 
-    fun contains(value: ResourceIdentifier): Boolean
+    fun contains(value: NeoIdentifier): Boolean
 
     fun contains(value: NeoResourceKey<T>) = contains(value.location)
 

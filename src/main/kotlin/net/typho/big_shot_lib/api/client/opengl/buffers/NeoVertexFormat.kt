@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.opengl.util.GlPrimitiveType
 import net.typho.big_shot_lib.api.util.*
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
 
 interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     val vertexSizeBytes: Int
@@ -35,7 +35,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
         }
 
         override fun registerContent(factory: RegistrationFactory) {
-            val registrar = factory.begin(REGISTRY_KEY, ResourceIdentifier.DEFAULT_NAMESPACE)
+            val registrar = factory.begin(REGISTRY_KEY, NeoIdentifier.DEFAULT_NAMESPACE)
             registrar.register("blit_screen") { BLIT_SCREEN }
             registrar.register("block") { BLIT_SCREEN }
             registrar.register("new_entity") { NEW_ENTITY }

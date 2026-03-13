@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api
 
 import net.typho.big_shot_lib.api.util.NeoServiceLoader
-import net.typho.big_shot_lib.api.util.resources.ResourceIdentifier
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
@@ -12,7 +12,7 @@ object BigShotApi {
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
 
     @JvmStatic
-    fun id(path: String): ResourceIdentifier = ResourceIdentifier(MOD_ID, path)
+    fun id(path: String): NeoIdentifier = NeoIdentifier(MOD_ID, path)
 
     @JvmStatic
     fun <T : Any> KClass<T>.loadService(): T = NeoServiceLoader.load(java).first()

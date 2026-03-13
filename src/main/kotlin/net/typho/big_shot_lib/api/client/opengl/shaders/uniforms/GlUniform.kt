@@ -4,7 +4,6 @@ import net.typho.big_shot_lib.api.client.opengl.buffers.GlTexture
 import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderProgramKey
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
-import net.typho.big_shot_lib.api.client.opengl.util.TextureType
 import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.*
 
@@ -26,7 +25,7 @@ abstract class GlUniform(
 
     protected abstract fun pickSamplerUnit(): Int
 
-    fun setSampler(type: TextureType, textureId: Int, samplerId: Int? = null) {
+    fun setSampler(type: GlTextureResourceType, textureId: Int, samplerId: Int? = null) {
         if (this.type.category != ShaderVariableType.Category.SAMPLER) {
             throw UnsupportedOperationException("Uniform $name in program $programKey is of type ${this.type} which isn't a sampler")
         }

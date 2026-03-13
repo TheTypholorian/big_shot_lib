@@ -13,35 +13,35 @@ import java.util.stream.Stream
 interface NeoResourceManager {
     fun getNamespaces(): MutableSet<String>
 
-    fun getResourceStack(location: ResourceIdentifier): MutableList<Resource>
+    fun getResourceStack(location: NeoIdentifier): MutableList<Resource>
 
     fun listResources(
         folder: String,
-        predicate: Predicate<ResourceIdentifier>
-    ): MutableMap<ResourceIdentifier, Resource>
+        predicate: Predicate<NeoIdentifier>
+    ): MutableMap<NeoIdentifier, Resource>
 
     fun listResourceStacks(
         folder: String,
-        predicate: Predicate<ResourceIdentifier>
-    ): MutableMap<ResourceIdentifier, MutableList<Resource>>
+        predicate: Predicate<NeoIdentifier>
+    ): MutableMap<NeoIdentifier, MutableList<Resource>>
 
     fun listPacks(): Stream<PackResources>
 
-    fun getResource(location: ResourceIdentifier): Optional<Resource>
+    fun getResource(location: NeoIdentifier): Optional<Resource>
 
     @Throws(FileNotFoundException::class)
-    fun getResourceOrThrow(location: ResourceIdentifier): Resource {
+    fun getResourceOrThrow(location: NeoIdentifier): Resource {
         return getResource(location)
             .orElseThrow { FileNotFoundException(location.toString()) }
     }
 
     @Throws(IOException::class)
-    fun open(location: ResourceIdentifier): InputStream {
+    fun open(location: NeoIdentifier): InputStream {
         return getResourceOrThrow(location).open()
     }
 
     @Throws(IOException::class)
-    fun openAsReader(location: ResourceIdentifier): BufferedReader {
+    fun openAsReader(location: NeoIdentifier): BufferedReader {
         return getResourceOrThrow(location).openAsReader()
     }
 }

@@ -6,19 +6,19 @@ import net.minecraft.core.Registry
 @JvmRecord
 data class NeoTagKey<T>(
     @JvmField
-    val registry: ResourceIdentifier,
+    val registry: NeoIdentifier,
     @JvmField
-    val location: ResourceIdentifier
+    val location: NeoIdentifier
 ) {
     companion object {
         @JvmStatic
-        fun <T : Any> registry(location: ResourceIdentifier): NeoTagKey<Registry<T>> {
-            return NeoTagKey(ResourceIdentifier("root"), location)
+        fun <T : Any> registry(location: NeoIdentifier): NeoTagKey<Registry<T>> {
+            return NeoTagKey(NeoIdentifier("root"), location)
         }
 
         @JvmStatic
         fun <T : Any> codec(registry: NeoTagKey<out Registry<T>>): Codec<NeoTagKey<T>> {
-            return ResourceIdentifier.CODEC.xmap(
+            return NeoIdentifier.CODEC.xmap(
                 { NeoTagKey(registry.location, it) },
                 { it.location }
             )
