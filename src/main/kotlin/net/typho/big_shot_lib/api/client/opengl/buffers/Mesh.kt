@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.client.opengl.buffers
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import com.mojang.blaze3d.vertex.MeshData
 import com.mojang.blaze3d.vertex.VertexSorting
-import net.typho.big_shot_lib.api.client.opengl.state.GlResourceType
+import net.typho.big_shot_lib.api.client.opengl.state.GlBufferType
 import net.typho.big_shot_lib.api.client.opengl.util.GlIndexType
 import net.typho.big_shot_lib.api.client.opengl.util.GlShapeType
 import net.typho.big_shot_lib.api.util.WrapperUtil
@@ -15,14 +15,14 @@ open class Mesh(
     @JvmField
     val mode: GlShapeType,
     @JvmField
-    val usage: BufferUsage,
+    val usage: GlBufferUsage,
     @JvmField
     val vao: GlVertexArray = GlVertexArray(),
     @JvmField
-    val vbo: GlBuffer = GlBuffer(GlResourceType.Buffer.Normal.ARRAY_BUFFER, usage),
+    val vbo: GlBuffer = GlBuffer(usage),
     @JvmField
-    val ebo: GlBuffer = GlBuffer(GlResourceType.Buffer.Normal.ARRAY_BUFFER, usage)
-) : GlBindable, NativeResource {
+    val ebo: GlBuffer = GlBuffer(usage)
+) : NativeResource {
     @JvmField
     protected var indexCount = 0
     @JvmField
@@ -34,40 +34,32 @@ open class Mesh(
         ebo.free()
     }
 
-    override fun bind() {
-        vao.bind()
-    }
-
-    override fun unbind() {
-        vao.unbind()
-    }
-
     fun draw() {
-        vao.drawElements(mode, indexCount, indexType)
+        vao.bind().use {
+            it.drawElements(mode, indexCount, indexType)
+        }
     }
 
     fun upload(built: MeshData) {
         indexCount = built.drawState().indexCount
         indexType = WrapperUtil.INSTANCE.getIndexType(built.drawState())
 
-        vao.bind()
+        vao.bind().use {
+            vbo.bind(GlBufferType.ARRAY_BUFFER).use {
+                it.upload(built.vertexBuffer())
+                format.initVertexArrayState()
+            }
 
-        vbo.bind()
-        vbo.upload(built.vertexBuffer())
-        format.initVertexArrayState()
-        vbo.unbind()
+            ebo.bindEbo().use {
+                val buffer = built.indexBuffer()
 
-        ebo.bind()
-
-        val buffer = built.indexBuffer()
-
-        if (buffer != null) {
-            ebo.upload(buffer)
-        } else {
-            indexType = mode.uploadIndices(indexCount, ebo)
+                if (buffer != null) {
+                    it.upload(buffer)
+                } else {
+                    indexType = mode.uploadIndices(indexCount, it)
+                }
+            }
         }
-
-        vao.unbind()
     }
 
     inner class Builder(

@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.client.opengl.buffers
 import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
 import org.lwjgl.opengl.GL15.*
 
-enum class BufferUsage(
+enum class GlBufferUsage(
     override val glId: Int
 ): GlNamed {
     STREAM_DRAW(GL_STREAM_DRAW),

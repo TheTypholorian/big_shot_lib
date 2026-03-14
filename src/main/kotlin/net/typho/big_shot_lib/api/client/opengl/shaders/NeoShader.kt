@@ -4,6 +4,10 @@ import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.GlUniformBufferPoint
 import net.typho.big_shot_lib.api.client.opengl.shaders.uniforms.NeoUniform
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
+import net.typho.big_shot_lib.api.client.opengl.state.GlResourceType
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateType
+import net.typho.big_shot_lib.api.client.opengl.state.GlTextureType
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.errors.IllegalShaderSourceException
@@ -15,12 +19,12 @@ import org.lwjgl.opengl.GL31.glGetUniformBlockIndex
 import org.lwjgl.opengl.GL31.glUniformBlockBinding
 
 open class NeoShader(
-    glId: Int,
-    override val key: ShaderProgramKey
-) : GlResource(glId, GlStateStack.shader), GlShader {
+    override val key: ShaderProgramKey,
+    glId: Int = GlResourceType.SHADER_PROGRAM.create()
+) : GlResource(GlResourceType.SHADER_PROGRAM, glId), GlShader {
     companion object {
         @JvmField
-        val NULL = NeoShader(0, ShaderProgramKey.NULL)
+        val NULL = NeoShader(ShaderProgramKey.NULL, 0)
     }
 
     @JvmField
@@ -43,8 +47,6 @@ open class NeoShader(
     protected val samplerUnits = HashMap<Int, Int>()
     override val location = key.location
 
-    constructor(key: ShaderProgramKey) : this(OpenGL.INSTANCE.createShaderProgram(), key)
-
     override fun free() {
         OpenGL.INSTANCE.deleteShaderProgram(glId)
     }
@@ -61,36 +63,50 @@ open class NeoShader(
         }
     }
 
-    override fun getUniform(name: String): GlUniform? {
-        return uniforms.computeIfAbsent(name) { key ->
-            val location = OpenGL.INSTANCE.getUniformLocation(glId, key)
+    override fun bind(tracker: GlStateTracker): GlShader.Bound {
+        GlStateType.SHADER_PROGRAM.push(glId, tracker)
 
-            if (location == -1) {
-                return@computeIfAbsent null
-            } else {
-                return@computeIfAbsent NeoUniform(
-                    name,
-                    location,
-                    uniformTypes[name]!!,
-                    this
-                )
+        return object : GlShader.Bound {
+            override val shader = this@NeoShader
+
+            override fun getUniform(name: String): GlUniform? {
+                return uniforms.computeIfAbsent(name) { key ->
+                    val location = OpenGL.INSTANCE.getUniformLocation(glId, key)
+
+                    if (location == -1) {
+                        return@computeIfAbsent null
+                    } else {
+                        return@computeIfAbsent NeoUniform(
+                            name,
+                            location,
+                            uniformTypes[name]!!,
+                            shader
+                        )
+                    }
+                }
             }
-        }
-    }
 
-    override fun getUniformBuffer(name: String): GlUniformBufferPoint? {
-        return uniformBuffers.computeIfAbsent(name) { key ->
-            val index = glGetUniformBlockIndex(glId, name)
+            override fun getUniformBuffer(name: String): GlUniformBufferPoint? {
+                return uniformBuffers.computeIfAbsent(name) { key ->
+                    val index = glGetUniformBlockIndex(glId, name)
 
-            if (index == -1) {
-                return@computeIfAbsent null
-            } else {
-                val binding = uniformBuffers.count { it.value != null }
-                glUniformBlockBinding(glId, index, binding)
-                return@computeIfAbsent GlUniformBufferPoint(
-                    name,
-                    binding
-                )
+                    if (index == -1) {
+                        return@computeIfAbsent null
+                    } else {
+                        val binding = uniformBuffers.count { it.value != null }
+                        glUniformBlockBinding(glId, index, binding)
+                        return@computeIfAbsent GlUniformBufferPoint(
+                            name,
+                            binding
+                        )
+                    }
+                }
+            }
+
+            override fun unbind() {
+                GlStateType.SHADER_PROGRAM.pop(tracker)
+                OpenGL.INSTANCE.activeTexture(0)
+                GlTextureType.entries.forEach { it.state.rebind(tracker) }
             }
         }
     }
@@ -104,10 +120,10 @@ open class NeoShader(
     }
 
     internal fun attach(type: ShaderSourceType, code: String) {
-        val glId = OpenGL.INSTANCE.createShaderSource(type)
+        val glId = OpenGL.INSTANCE.createShaderSource(type.glId)
 
         OpenGL.INSTANCE.shaderSourceCode(glId, code)
-        OpenGL.INSTANCE.compileShaderSource(glId, type, key.location)
+        OpenGL.INSTANCE.compileShaderSource(glId, type.glId, key.location)
 
         attach(type, glId)
     }
@@ -138,7 +154,7 @@ open class NeoShader(
     }
 
     override fun toString(): String {
-        return "${type.name}(glId=$glId, location=${key.location})"
+        return "${resourceType.name}(glId=$glId, location=${key.location})"
     }
 
     open class Builder(

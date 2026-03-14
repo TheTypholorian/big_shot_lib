@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.client.opengl.util
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.typho.big_shot_lib.api.BigShotApi.loadService
-import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
+import net.typho.big_shot_lib.api.client.opengl.buffers.GlBufferUsage
 import net.typho.big_shot_lib.api.client.opengl.buffers.Mesh
 import net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.util.quads.NeoBakedQuad
@@ -24,7 +24,7 @@ interface MeshUtil {
             val mesh = Mesh(
                 NeoVertexFormat.POSITION_TEX,
                 GlShapeType.QUADS,
-                BufferUsage.STATIC_DRAW
+                GlBufferUsage.STATIC_DRAW
             )
             val builder = mesh.Builder()
             builder.quad(

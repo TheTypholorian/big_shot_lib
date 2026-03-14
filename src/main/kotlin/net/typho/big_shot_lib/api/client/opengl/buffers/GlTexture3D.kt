@@ -1,18 +1,21 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
-import net.typho.big_shot_lib.api.client.opengl.util.InterpolationType
-import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
+import net.typho.big_shot_lib.api.client.opengl.state.GlTextureType
 import net.typho.big_shot_lib.api.client.opengl.util.WrappingType
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 
 interface GlTexture3D : GlTexture {
-    fun setInterpolation(min: InterpolationType, mag: InterpolationType = min) {
-        OpenGL.INSTANCE.textureInterpolation(type, min, mag)
-    }
+    override val type: GlTextureType
+        get() = GlTextureType.TEXTURE_3D
 
-    fun setWrapping(s: WrappingType, t: WrappingType = s, r: WrappingType = s) {
-        OpenGL.INSTANCE.textureWrapping(type, s, t, r)
-    }
+    override fun bind(tracker: GlStateTracker): Bound<*>
 
-    fun resize(width: Int, height: Int, depth: Int): BufferUploader
+    interface Bound<T : GlTexture3D> : GlTexture.Bound<T> {
+        var sWrapping: WrappingType
+        var tWrapping: WrappingType
+        var rWrapping: WrappingType
+
+        fun resize(width: Int, height: Int, depth: Int, upload: (uploader: BufferUploader) -> Unit = { it.uploadNull() })
+    }
 }

@@ -1,22 +1,17 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
-import net.typho.big_shot_lib.api.client.opengl.util.InterpolationType
-import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
+import net.typho.big_shot_lib.api.client.opengl.state.GlTextureType
 import net.typho.big_shot_lib.api.client.opengl.util.WrappingType
-import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 
 interface GlTexture2D : GlTexture, GlFramebufferAttachment {
-    fun setInterpolation(min: InterpolationType, mag: InterpolationType = min) {
-        bind()
-        OpenGL.INSTANCE.textureInterpolation(type, min, mag)
-        unbind()
-    }
+    override val type: GlTextureType
+        get() = GlTextureType.TEXTURE_2D
 
-    fun setWrapping(s: WrappingType, t: WrappingType = s) {
-        bind()
-        OpenGL.INSTANCE.textureWrapping(type, s, t)
-        unbind()
-    }
+    override fun bind(tracker: GlStateTracker): Bound<*>
 
-    override fun resize(width: Int, height: Int, upload: (uploader: BufferUploader) -> Unit)
+    interface Bound<T : GlTexture2D> : GlTexture.Bound<T>, GlFramebufferAttachment.Bound<T> {
+        var sWrapping: WrappingType
+        var tWrapping: WrappingType
+    }
 }

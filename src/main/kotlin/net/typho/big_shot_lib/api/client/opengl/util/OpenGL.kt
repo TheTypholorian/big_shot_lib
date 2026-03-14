@@ -1,12 +1,9 @@
 package net.typho.big_shot_lib.api.client.opengl.util
 
 import net.typho.big_shot_lib.api.BigShotApi.loadService
-import net.typho.big_shot_lib.api.client.opengl.buffers.BufferUsage
-import net.typho.big_shot_lib.api.client.opengl.buffers.GlTextureCube
+import net.typho.big_shot_lib.api.client.opengl.buffers.GlBufferUsage
 import net.typho.big_shot_lib.api.client.opengl.shaders.variables.ShaderVariableType
-import net.typho.big_shot_lib.api.client.opengl.state.ComparisonFunc
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
-import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import org.joml.*
@@ -31,16 +28,6 @@ interface OpenGL : GlStateTracker {
     fun createBuffer(): Int
 
     /**
-     * `glBindBuffer(type, glId ?: 0)`
-     */
-    fun bindBuffer(type: Int, glId: Int?)
-
-    /**
-     * `glGetInteger(type.bindingId)`
-     */
-    fun getBoundBuffer(type: Int): Int
-
-    /**
      * `glBindBufferBase(type, index, glId ?: 0)`
      */
     fun bindBufferBase(type: Int, index: Int, glId: Int?)
@@ -53,12 +40,12 @@ interface OpenGL : GlStateTracker {
     /**
      * `glBufferData(type, buffer, usage)`
      */
-    fun bufferData(type: Int, buffer: ByteBuffer, usage: BufferUsage)
+    fun bufferData(type: Int, buffer: ByteBuffer, usage: GlBufferUsage)
 
     /**
      * `glBufferData(type, size, usage)`
      */
-    fun bufferData(type: Int, size: Long, usage: BufferUsage)
+    fun bufferData(type: Int, size: Long, usage: GlBufferUsage)
 
     /**
      * `glDeleteBuffers(glId)`
@@ -69,16 +56,6 @@ interface OpenGL : GlStateTracker {
      * `glGenRenderbuffers()`
      */
     fun createRenderBuffer(): Int
-
-    /**
-     * `glBindRenderbuffer(GL_RENDERBUFFER, glId ?: 0)`
-     */
-    fun bindRenderBuffer(glId: Int?)
-
-    /**
-     * `glGetInteger(GL_RENDERBUFFER_BINDING)`
-     */
-    fun getBoundRenderBuffer(): Int
 
     /**
      * ```
@@ -103,19 +80,9 @@ interface OpenGL : GlStateTracker {
     fun createTexture(): Int
 
     /**
-     * `glBindTexture(type, glId ?: 0)`
-     */
-    fun bindTexture(type: Int, glId: Int?)
-
-    /**
      * `glBindSampler(unit, glId ?: 0)`
      */
     fun bindSampler(unit: Int, glId: Int?)
-
-    /**
-     * `glGetInteger(type.bindingId)`
-     */
-    fun getBoundTexture(type: Int): Int
 
     /**
      * `glActiveTexture(unit)`
@@ -124,49 +91,17 @@ interface OpenGL : GlStateTracker {
 
     /**
      * ```
-     * glTexParameteri(type, GL_TEXTURE_MIN_FILTER, min)
-     * glTexParameteri(type, GL_TEXTURE_MAG_FILTER, mag)
+     * glGetTexParameteri(target, pname)
      * ```
      */
-    fun textureInterpolation(type: Int, min: InterpolationType, mag: InterpolationType)
+    fun getTextureParameter(target: Int, pname: Int): Int
 
     /**
      * ```
-     * glTexParameteri(type, GL_TEXTURE_WRAP_S, s)
+     * glTexParameteri(target, pname, param)
      * ```
      */
-    fun textureWrapping(type: Int, s: WrappingType)
-
-    /**
-     * ```
-     * glTexParameteri(type, GL_TEXTURE_WRAP_S, s)
-     * glTexParameteri(type, GL_TEXTURE_WRAP_T, t)
-     * ```
-     */
-    fun textureWrapping(type: Int, s: WrappingType, t: WrappingType)
-
-    /**
-     * ```
-     * glTexParameteri(type, GL_TEXTURE_WRAP_S, s)
-     * glTexParameteri(type, GL_TEXTURE_WRAP_T, t)
-     * glTexParameteri(type, GL_TEXTURE_WRAP_R, r)
-     * ```
-     */
-    fun textureWrapping(type: Int, s: WrappingType, t: WrappingType, r: WrappingType)
-
-    /**
-     * ```
-     * glTexParameteri(type, GL_TEXTURE_COMPARISON_MODE, mode)
-     * ```
-     */
-    fun textureComparisonMode(type: Int, mode: TextureComparisonMode)
-
-    /**
-     * ```
-     * glTexParameteri(type, GL_TEXTURE_COMPARISON_FUNC, mode)
-     * ```
-     */
-    fun textureComparisonFunc(type: Int, mode: ComparisonFunc)
+    fun textureParameter(target: Int, pname: Int, param: Int)
 
     /**
      * ```
@@ -250,40 +185,6 @@ interface OpenGL : GlStateTracker {
 
     /**
      * ```
-     * glTexImage2D(
-     *     face,
-     *     0,
-     *     format.internalId,
-     *     width,
-     *     height,
-     *     0,
-     *     format,
-     *     format.type,
-     *     buffer
-     * )
-     * ```
-     */
-    fun textureData2D(face: GlTextureCube.Face, format: TextureFormat, width: Int, height: Int, buffer: ByteBuffer)
-
-    /**
-     * ```
-     * glTexImage2D(
-     *     face,
-     *     0,
-     *     format.internalId,
-     *     width,
-     *     height,
-     *     0,
-     *     format,
-     *     format.type,
-     *     size
-     * )
-     * ```
-     */
-    fun textureData2D(face: GlTextureCube.Face, format: TextureFormat, width: Int, height: Int, size: Long)
-
-    /**
-     * ```
      * glTexImage3D(
      *     type,
      *     0,
@@ -327,16 +228,6 @@ interface OpenGL : GlStateTracker {
      * `glGenFramebuffers()`
      */
     fun createFramebuffer(): Int
-
-    /**
-     * `glBindFramebuffer(glId ?: 0)`
-     */
-    fun bindFramebuffer(glId: Int?)
-
-    /**
-     * `glGetInteger(GL_DRAW_FRAMEBUFFER_BINDING)`
-     */
-    fun getBoundFramebuffer(): Int
 
     /**
      * ```
@@ -386,23 +277,6 @@ interface OpenGL : GlStateTracker {
     fun checkFramebufferStatus(): FramebufferStatus
 
     /**
-     * `glViewport(x, y, width, height)`
-     */
-    fun viewport(rect: AbstractRect2<Int, *, *>) {
-        viewport(rect.min.x, rect.min.y, rect.size.x, rect.size.y)
-    }
-
-    /**
-     * `glViewport(x, y, width, height)`
-     */
-    fun viewport(x: Int, y: Int, width: Int, height: Int)
-
-    /**
-     * `glGetIntegerv(GL_VIEWPORT)`
-     */
-    fun getViewport(): AbstractRect2<Int, *, *>
-
-    /**
      * `glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF() ?: 1f)`
      */
     fun clearColor(color: NeoColor)
@@ -431,16 +305,6 @@ interface OpenGL : GlStateTracker {
      * `glGenVertexArrays()`
      */
     fun createVertexArray(): Int
-
-    /**
-     * `glBindVertexArray(glId ?: 0)`
-     */
-    fun bindVertexArray(glId: Int?)
-
-    /**
-     * `glGetInteger(GL_VERTEX_ARRAY_BINDING)`
-     */
-    fun getBoundVertexArray(): Int
 
     /**
      * `glEnableVertexAttribArray(index)`
@@ -481,16 +345,6 @@ interface OpenGL : GlStateTracker {
      * `glCreateProgram()`
      */
     fun createShaderProgram(): Int
-
-    /**
-     * `glUseProgram(glId ?: 0)`
-     */
-    fun bindShaderProgram(glId: Int?)
-
-    /**
-     * `glGetInteger(GL_CURRENT_PROGRAM)`
-     */
-    fun getBoundShaderProgram(): Int
 
     /**
      * `glLinkProgram(glId)`

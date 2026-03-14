@@ -54,7 +54,7 @@ interface ShaderModule {
         }
 
         override fun registerContent(factory: RegistrationFactory) {
-            val registrar = factory.begin(REGISTRY_KEY, BigShotApi.MOD_ID)
+            val registrar = factory.begin(REGISTRY_KEY)
             registrar.register(FogShaderModule)
             registrar.register(InverseMatricesShaderModule)
             registrar.register(TerrainTextureSampleShaderModule)

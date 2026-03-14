@@ -1,13 +1,13 @@
 package net.typho.big_shot_lib.api.client.opengl.state
 
+import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL14.GL_DECR_WRAP
 import org.lwjgl.opengl.GL14.GL_INCR_WRAP
 
 enum class IntAction(
-    @JvmField
-    val glId: Int
-) {
+    override val glId: Int
+) : GlNamed {
     KEEP(GL_KEEP),
     ZERO(GL_ZERO),
     REPLACE(GL_REPLACE),

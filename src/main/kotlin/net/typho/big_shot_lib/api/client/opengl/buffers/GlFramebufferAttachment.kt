@@ -1,5 +1,7 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
+import net.typho.big_shot_lib.api.client.opengl.util.BoundResource
 import net.typho.big_shot_lib.api.client.opengl.util.TextureFormat
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 
@@ -8,5 +10,9 @@ interface GlFramebufferAttachment {
 
     fun attachToFramebuffer(attachment: Int)
 
-    fun resize(width: Int, height: Int, upload: (uploader: BufferUploader) -> Unit = { it.uploadNull() })
+    fun bind(tracker: GlStateTracker): Bound<*>
+
+    interface Bound<A : GlFramebufferAttachment> : BoundResource {
+        fun resize(width: Int, height: Int, upload: (uploader: BufferUploader) -> Unit = { it.uploadNull() })
+    }
 }

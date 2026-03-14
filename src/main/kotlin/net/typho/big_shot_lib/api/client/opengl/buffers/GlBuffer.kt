@@ -2,48 +2,70 @@ package net.typho.big_shot_lib.api.client.opengl.buffers
 
 import net.typho.big_shot_lib.api.client.opengl.state.GlBufferType
 import net.typho.big_shot_lib.api.client.opengl.state.GlResourceType
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
+import net.typho.big_shot_lib.api.client.opengl.util.BoundResource
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
-import org.lwjgl.system.NativeResource
 import java.nio.ByteBuffer
 
 open class GlBuffer(
     @JvmField
-    val usage: BufferUsage,
-    glId: Int = GlResourceType.Buffer.create()
-) : GlResource<GlResourceType.Buffer>(GlResourceType.Buffer, glId) {
-    fun bind(type: GlBufferType): Bound {
-        type.state.push(glId)
+    val usage: GlBufferUsage,
+    glId: Int = GlResourceType.BUFFER.create()
+) : GlResource(GlResourceType.BUFFER, glId) {
+    fun bind(type: GlBufferType, tracker: GlStateTracker = OpenGL.INSTANCE): Bound {
+        type.state.push(glId, tracker)
 
         return object : Bound {
             override val buffer = this@GlBuffer
             override val type = type
 
-            override fun free() {
-                type.state.pop()
+            override fun unbind() {
+                type.state.pop(tracker)
             }
 
             override fun upload(buffer: ByteBuffer) {
-                OpenGL.INSTANCE.bufferData(type.state.glId, buffer, usage)
+                OpenGL.INSTANCE.bufferData(type.glId, buffer, usage)
             }
 
             override fun uploadNull() {
-                OpenGL.INSTANCE.bufferData(type.state.glId, 0L, usage)
+                OpenGL.INSTANCE.bufferData(type.glId, 0L, usage)
+            }
+        }
+    }
+
+    fun bindEbo(tracker: GlStateTracker = OpenGL.INSTANCE): Bound {
+        val type = GlBufferType.ELEMENT_ARRAY_BUFFER
+        type.state.raw.set(tracker, glId)
+
+        return object : Bound {
+            override val buffer = this@GlBuffer
+            override val type = type
+
+            override fun unbind() {
+            }
+
+            override fun upload(buffer: ByteBuffer) {
+                OpenGL.INSTANCE.bufferData(type.glId, buffer, usage)
+            }
+
+            override fun uploadNull() {
+                OpenGL.INSTANCE.bufferData(type.glId, 0L, usage)
             }
         }
     }
 
     fun bindBase(type: GlBufferType, index: Int) {
-        OpenGL.INSTANCE.bindBufferBase(type.state.glId, index, glId)
+        OpenGL.INSTANCE.bindBufferBase(type.glId, index, glId)
     }
 
     fun unbindBase(type: GlBufferType, index: Int) {
-        OpenGL.INSTANCE.bindBufferBase(type.state.glId, index, 0)
+        OpenGL.INSTANCE.bindBufferBase(type.glId, index, 0)
     }
 
     override fun toString(): String {
-        return "${type.name}(glId=$glId, type=$type, usage=$usage)"
+        return "${resourceType.name}(glId=$glId, type=$resourceType, usage=$usage)"
     }
 
     @JvmRecord
@@ -56,7 +78,7 @@ open class GlBuffer(
         val length: Long
     )
 
-    interface Bound : NativeResource, BufferUploader {
+    interface Bound : BoundResource, BufferUploader {
         val buffer: GlBuffer
         val type: GlBufferType
     }

@@ -1,22 +1,42 @@
 package net.typho.big_shot_lib.api.client.opengl.buffers
 
 import net.minecraft.client.Minecraft
-import net.typho.big_shot_lib.api.math.vec.AbstractVec2
-import net.typho.big_shot_lib.api.math.vec.NeoVec2i
+import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
+import net.typho.big_shot_lib.api.client.opengl.util.BoundResource
+import net.typho.big_shot_lib.api.client.opengl.util.FramebufferStatus
+import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
+import net.typho.big_shot_lib.api.errors.IncompleteFramebufferException
+import net.typho.big_shot_lib.api.util.KeyedDelegate
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import org.lwjgl.system.NativeResource
 
-interface GlFramebuffer : GlBindable, NativeResource {
-    val colorAttachments: List<GlFramebufferAttachment>
-    val depthAttachment: GlFramebufferAttachment?
+interface GlFramebuffer : NativeResource {
     val width: Int
     val height: Int
-    val dimensions: AbstractVec2<Int, *>
-        get() = NeoVec2i(width, height)
+    val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?>
+    val depthAttachment: GlFramebufferAttachment?
 
-    fun resize(width: Int, height: Int)
+    fun bind(viewport: Boolean, tracker: GlStateTracker = OpenGL.INSTANCE): Bound<*>
 
-    fun clear(vararg bits: ClearBit)
+    interface Bound<F : GlFramebuffer> : BoundResource {
+        val framebuffer: F
+        var width: Int
+        var height: Int
+        val colorAttachments: KeyedDelegate<Int, GlFramebufferAttachment?>
+        var depthAttachment: GlFramebufferAttachment?
+
+        fun checkStatus(): FramebufferStatus
+
+        fun checkStatusOrThrow() {
+            val status = checkStatus()
+
+            if (status != FramebufferStatus.COMPLETE) {
+                throw IncompleteFramebufferException(status)
+            }
+        }
+
+        fun clear(vararg bits: ClearBit)
+    }
 
     companion object {
         @JvmField

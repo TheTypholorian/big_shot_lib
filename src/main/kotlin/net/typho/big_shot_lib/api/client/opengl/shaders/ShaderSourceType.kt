@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.opengl.shaders
 
+import net.typho.big_shot_lib.api.client.opengl.util.GlNamed
 import org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER
 import org.lwjgl.opengl.GL20.GL_VERTEX_SHADER
 import org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER
@@ -10,9 +11,8 @@ enum class ShaderSourceType(
     val inRenderPipeline: Boolean,
     @JvmField
     val extension: String,
-    @JvmField
-    val glId: Int
-) {
+    override val glId: Int
+) : GlNamed {
     VERTEX(true, "vsh", GL_VERTEX_SHADER),
     GEOMETRY(true, "gsh", GL_GEOMETRY_SHADER),
     FRAGMENT(true, "fsh", GL_FRAGMENT_SHADER),
@@ -21,8 +21,5 @@ enum class ShaderSourceType(
     companion object {
         @JvmStatic
         fun fromExtension(ext: String) = entries.first { type -> type.extension == ext }
-
-        @JvmStatic
-        fun fromGlId(id: Int) = entries.first { type -> type.glId == id }
     }
 }
