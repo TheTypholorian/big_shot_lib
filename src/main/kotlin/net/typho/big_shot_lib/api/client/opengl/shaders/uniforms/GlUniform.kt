@@ -39,12 +39,12 @@ abstract class GlUniform(
 
         val unit = pickSamplerUnit()
         OpenGL.INSTANCE.activeTexture(unit)
-        OpenGL.INSTANCE[type.state] = textureId
+        type.state.raw.set(OpenGL.INSTANCE, textureId)
         OpenGL.INSTANCE.bindSampler(unit, samplerId)
         setValue(unit)
     }
 
-    fun setSampler(texture: GlTexture) {
+    fun setSampler(texture: GlTexture<*>) {
         setSampler(texture.type, texture.glId)
     }
 

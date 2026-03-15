@@ -5,13 +5,13 @@ import net.typho.big_shot_lib.api.client.opengl.state.GlTextureType
 import net.typho.big_shot_lib.api.client.opengl.util.WrappingType
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
 
-interface GlTexture3D : GlTexture {
+interface GlTexture3D : GlTexture<GlTexture3D.Bound> {
     override val type: GlTextureType
         get() = GlTextureType.TEXTURE_3D
 
-    override fun bind(tracker: GlStateTracker): Bound<*>
+    override fun bind(tracker: GlStateTracker): Bound
 
-    interface Bound<T : GlTexture3D> : GlTexture.Bound<T> {
+    interface Bound : GlTexture.Bound {
         var sWrapping: WrappingType
         var tWrapping: WrappingType
         var rWrapping: WrappingType

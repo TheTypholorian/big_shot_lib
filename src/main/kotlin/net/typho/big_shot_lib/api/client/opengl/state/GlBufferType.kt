@@ -15,19 +15,23 @@ enum class GlBufferType(
     @JvmField
     val isIndexed: Boolean = false
 ) : GlNamed {
-    ARRAY_BUFFER(GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::arrayBufferBinding)),
-    ELEMENT_ARRAY_BUFFER(GL_ELEMENT_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::elementArrayBufferBinding)),
-    PIXEL_PACK_BUFFER(GL_PIXEL_PACK_BUFFER, GL_PIXEL_PACK_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::pixelPackBufferBinding)),
-    PIXEL_UNPACK_BUFFER(GL_PIXEL_UNPACK_BUFFER, GL_PIXEL_UNPACK_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::pixelUnpackBufferBinding)),
-    TEXTURE_BUFFER(GL_TEXTURE_BUFFER, GL_TEXTURE_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::textureBufferBinding)),
-    COPY_READ_BUFFER(GL_COPY_READ_BUFFER, GL_COPY_READ_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::copyReadBufferBinding)),
-    COPY_WRITE_BUFFER(GL_COPY_WRITE_BUFFER, GL_COPY_WRITE_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::copyWriteBufferBinding)),
-    DRAW_INDIRECT_BUFFER(GL_DRAW_INDIRECT_BUFFER, GL_DRAW_INDIRECT_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::drawIndirectBufferBinding)),
-    DISPATCH_INDIRECT_BUFFER(GL_DISPATCH_INDIRECT_BUFFER, GL_DISPATCH_INDIRECT_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::drawIndirectBufferBinding)),
-    QUERY_BUFFER(GL_QUERY_BUFFER, GL_QUERY_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::queryBufferBinding)),
+    ARRAY_BUFFER(GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING, GlStateType(GlStateTracker::arrayBufferBinding)),
+    ELEMENT_ARRAY_BUFFER(GL_ELEMENT_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER_BINDING, GlStateType(GlStateTracker::elementArrayBufferBinding)),
+    PIXEL_PACK_BUFFER(GL_PIXEL_PACK_BUFFER, GL_PIXEL_PACK_BUFFER_BINDING, GlStateType(GlStateTracker::pixelPackBufferBinding)),
+    PIXEL_UNPACK_BUFFER(GL_PIXEL_UNPACK_BUFFER, GL_PIXEL_UNPACK_BUFFER_BINDING, GlStateType(GlStateTracker::pixelUnpackBufferBinding)),
+    TEXTURE_BUFFER(GL_TEXTURE_BUFFER, GL_TEXTURE_BUFFER_BINDING, GlStateType(GlStateTracker::textureBufferBinding)),
+    COPY_READ_BUFFER(GL_COPY_READ_BUFFER, GL_COPY_READ_BUFFER_BINDING, GlStateType(GlStateTracker::copyReadBufferBinding)),
+    COPY_WRITE_BUFFER(GL_COPY_WRITE_BUFFER, GL_COPY_WRITE_BUFFER_BINDING, GlStateType(GlStateTracker::copyWriteBufferBinding)),
+    DRAW_INDIRECT_BUFFER(GL_DRAW_INDIRECT_BUFFER, GL_DRAW_INDIRECT_BUFFER_BINDING, GlStateType(GlStateTracker::drawIndirectBufferBinding)),
+    DISPATCH_INDIRECT_BUFFER(GL_DISPATCH_INDIRECT_BUFFER, GL_DISPATCH_INDIRECT_BUFFER_BINDING, GlStateType(
+        GlStateTracker::dispatchIndirectBufferBinding
+    )),
+    QUERY_BUFFER(GL_QUERY_BUFFER, GL_QUERY_BUFFER_BINDING, GlStateType(GlStateTracker::queryBufferBinding)),
 
-    TRANSFORM_FEEDBACK_BUFFER(GL_TRANSFORM_FEEDBACK_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::transformFeedbackBufferBinding), true),
-    UNIFORM_BUFFER(GL_UNIFORM_BUFFER, GL_UNIFORM_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::uniformBufferBinding), true),
-    ATOMIC_COUNTER_BUFFER(GL_ATOMIC_COUNTER_BUFFER, GL_ATOMIC_COUNTER_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::atomicCounterBufferBinding), true),
-    SHADER_STORAGE_BUFFER(GL_SHADER_STORAGE_BUFFER, GL_SHADER_STORAGE_BUFFER_BINDING, GlStateType({ 0 }, GlStateTracker::shaderStorageBufferBinding), true)
+    TRANSFORM_FEEDBACK_BUFFER(GL_TRANSFORM_FEEDBACK_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER_BINDING, GlStateType(
+        GlStateTracker::transformFeedbackBufferBinding
+    ), true),
+    UNIFORM_BUFFER(GL_UNIFORM_BUFFER, GL_UNIFORM_BUFFER_BINDING, GlStateType(GlStateTracker::uniformBufferBinding), true),
+    ATOMIC_COUNTER_BUFFER(GL_ATOMIC_COUNTER_BUFFER, GL_ATOMIC_COUNTER_BUFFER_BINDING, GlStateType(GlStateTracker::atomicCounterBufferBinding), true),
+    SHADER_STORAGE_BUFFER(GL_SHADER_STORAGE_BUFFER, GL_SHADER_STORAGE_BUFFER_BINDING, GlStateType(GlStateTracker::shaderStorageBufferBinding), true)
 }

@@ -4,22 +4,21 @@ import net.minecraft.client.Minecraft
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
 import net.typho.big_shot_lib.api.client.opengl.util.BoundResource
 import net.typho.big_shot_lib.api.client.opengl.util.FramebufferStatus
-import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
+import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
 import net.typho.big_shot_lib.api.errors.IncompleteFramebufferException
 import net.typho.big_shot_lib.api.util.KeyedDelegate
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import org.lwjgl.system.NativeResource
 
-interface GlFramebuffer : NativeResource {
+interface GlFramebuffer : NativeResource, GlBindable<GlFramebuffer.Bound> {
     val width: Int
     val height: Int
     val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?>
     val depthAttachment: GlFramebufferAttachment?
 
-    fun bind(viewport: Boolean, tracker: GlStateTracker = OpenGL.INSTANCE): Bound<*>
+    override fun bind(tracker: GlStateTracker): Bound
 
-    interface Bound<F : GlFramebuffer> : BoundResource {
-        val framebuffer: F
+    interface Bound : BoundResource {
         var width: Int
         var height: Int
         val colorAttachments: KeyedDelegate<Int, GlFramebufferAttachment?>
@@ -34,6 +33,8 @@ interface GlFramebuffer : NativeResource {
                 throw IncompleteFramebufferException(status)
             }
         }
+
+        fun viewport()
 
         fun clear(vararg bits: ClearBit)
     }

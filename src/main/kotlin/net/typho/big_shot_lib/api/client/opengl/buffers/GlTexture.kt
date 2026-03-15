@@ -6,14 +6,13 @@ import net.typho.big_shot_lib.api.client.opengl.state.GlTextureType
 import net.typho.big_shot_lib.api.client.opengl.util.*
 import org.lwjgl.system.NativeResource
 
-interface GlTexture : GlNamed, NativeResource {
+interface GlTexture<B : GlTexture.Bound> : GlNamed, NativeResource, GlBindable<B> {
     val format: TextureFormat
     val type: GlTextureType
 
-    fun bind(tracker: GlStateTracker = OpenGL.INSTANCE): Bound<*>
+    override fun bind(tracker: GlStateTracker): B
 
-    interface Bound<T : GlTexture> : BoundResource {
-        val texture: T
+    interface Bound : BoundResource {
         var compareMode: TextureComparisonMode
         var compareFunc: ComparisonFunc
         var minInterpolation: InterpolationType

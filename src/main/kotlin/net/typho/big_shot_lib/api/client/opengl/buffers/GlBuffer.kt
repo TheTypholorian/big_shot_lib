@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.api.client.opengl.state.GlBufferType
 import net.typho.big_shot_lib.api.client.opengl.state.GlResourceType
 import net.typho.big_shot_lib.api.client.opengl.state.GlStateTracker
 import net.typho.big_shot_lib.api.client.opengl.util.BoundResource
+import net.typho.big_shot_lib.api.client.opengl.util.GlBindable
 import net.typho.big_shot_lib.api.client.opengl.util.GlResource
 import net.typho.big_shot_lib.api.client.opengl.util.OpenGL
 import net.typho.big_shot_lib.api.util.buffers.BufferUploader
@@ -13,8 +14,8 @@ open class GlBuffer(
     @JvmField
     val usage: GlBufferUsage,
     glId: Int = GlResourceType.BUFFER.create()
-) : GlResource(GlResourceType.BUFFER, glId) {
-    fun bind(type: GlBufferType, tracker: GlStateTracker = OpenGL.INSTANCE): Bound {
+) : GlResource(GlResourceType.BUFFER, glId), GlBindable.Typed<GlBufferType, GlBuffer.Bound> {
+    override fun bind(type: GlBufferType, tracker: GlStateTracker): Bound {
         type.state.push(glId, tracker)
 
         return object : Bound {

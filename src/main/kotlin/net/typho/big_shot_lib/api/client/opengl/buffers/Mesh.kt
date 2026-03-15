@@ -62,6 +62,14 @@ open class Mesh(
         }
     }
 
+    fun upload(vertices: (builder: Builder) -> Unit) {
+        Builder().also(vertices).end()
+    }
+
+    fun upload(sorting: VertexSorting, vertices: (builder: Builder) -> Unit) {
+        Builder().also(vertices).end(sorting)
+    }
+
     inner class Builder(
         @JvmField
         val buffer: ByteBufferBuilder

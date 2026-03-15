@@ -36,7 +36,7 @@ enum class GlFlag(
     TEXTURE_CUBE_MAP_SEAMLESS(GL_TEXTURE_CUBE_MAP_SEAMLESS, GlStateTracker::textureCubeMapSeamlessEnabled),
     PROGRAM_POINT_SIZE(GL_PROGRAM_POINT_SIZE, GlStateTracker::programPointSizeEnabled);
 
-    val state = GlStateType({ false }, raw)
+    val state = GlStateType(raw)
 
     fun set(value: Boolean?, tracker: GlStateTracker = OpenGL.INSTANCE) {
         state.raw.set(tracker, value ?: false)

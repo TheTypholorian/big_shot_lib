@@ -20,11 +20,10 @@ open class NeoTexture3D(
         val NULL = NeoTexture3D(TextureFormat.NULL, 0)
     }
 
-    override fun bind(tracker: GlStateTracker): GlTexture3D.Bound<*> {
+    override fun bind(tracker: GlStateTracker): GlTexture3D.Bound {
         type.state.push(glId, tracker)
 
-        return object : GlTexture3D.Bound<NeoTexture3D> {
-            override val texture = this@NeoTexture3D
+        return object : GlTexture3D.Bound {
             override var sWrapping: WrappingType
                 get() = GlNamed.glIdToEnum<WrappingType>(OpenGL.INSTANCE.getTextureParameter(type.glId, GL_TEXTURE_WRAP_S))
                 set(value) {

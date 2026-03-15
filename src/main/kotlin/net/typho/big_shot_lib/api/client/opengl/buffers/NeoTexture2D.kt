@@ -14,8 +14,13 @@ open class NeoTexture2D(
     override val format: TextureFormat,
     glId: Int = GlResourceType.TEXTURE.create()
 ) : GlResource(GlResourceType.TEXTURE, glId), GlTexture2D {
-    override fun attachToFramebuffer(attachment: Int) {
+    override fun attachToFramebuffer(attachment: Int, width: Int, height: Int, tracker: GlStateTracker) {
+        type.state.push(glId, tracker)
+
         OpenGL.INSTANCE.attachFramebufferTexture2D(attachment, type.glId, glId)
+        OpenGL.INSTANCE.textureData2D(type.glId, format, width, height, 0L)
+
+        type.state.pop(tracker)
     }
 
     companion object {
@@ -23,11 +28,10 @@ open class NeoTexture2D(
         val NULL = NeoTexture2D(TextureFormat.NULL, 0)
     }
 
-    override fun bind(tracker: GlStateTracker): GlTexture2D.Bound<*> {
+    override fun bind(tracker: GlStateTracker): GlTexture2D.Bound {
         type.state.push(glId, tracker)
 
-        return object : GlTexture2D.Bound<NeoTexture2D> {
-            override val texture = this@NeoTexture2D
+        return object : GlTexture2D.Bound {
             override var sWrapping: WrappingType
                 get() = GlNamed.glIdToEnum<WrappingType>(OpenGL.INSTANCE.getTextureParameter(type.glId, GL_TEXTURE_WRAP_S))
                 set(value) {

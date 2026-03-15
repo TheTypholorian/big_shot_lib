@@ -9,13 +9,13 @@ import org.lwjgl.opengl.GL11.glDrawElements
 
 open class GlVertexArray(
     glId: Int = GlResourceType.VERTEX_ARRAY.create()
-) : GlResource(GlResourceType.VERTEX_ARRAY, glId) {
+) : GlResource(GlResourceType.VERTEX_ARRAY, glId), GlBindable<GlVertexArray.Bound> {
     companion object {
         @JvmField
         val NULL = GlVertexArray(0)
     }
 
-    fun bind(tracker: GlStateTracker = OpenGL.INSTANCE): Bound {
+    override fun bind(tracker: GlStateTracker): Bound {
         GlStateType.VERTEX_ARRAY.push(glId, tracker)
 
         return object : Bound {

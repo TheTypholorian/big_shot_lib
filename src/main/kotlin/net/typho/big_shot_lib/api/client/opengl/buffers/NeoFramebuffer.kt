@@ -20,14 +20,14 @@ open class NeoFramebuffer(
     override var width = width
         protected set(value) {
             field = value
-            colorAttachmentsBacking.forEach { it?.bind(OpenGL.INSTANCE)?.use { bound -> bound.resize(value, height) } }
-            depthAttachment?.bind(OpenGL.INSTANCE)?.use { it.resize(value, height) }
+            colorAttachmentsBacking.forEachIndexed { index, attachment -> attachment?.attachToFramebuffer(GL_COLOR_ATTACHMENT0 + index, width, height) }
+            depthAttachment?.attachToFramebuffer(depthAttachment?.format?.getDepthStencilAttachmentId() ?: GL_DEPTH_STENCIL_ATTACHMENT, width, height)
         }
     override var height = height
         protected set(value) {
             field = value
-            colorAttachmentsBacking.forEach { it?.bind(OpenGL.INSTANCE)?.use { bound -> bound.resize(width, value) } }
-            depthAttachment?.bind(OpenGL.INSTANCE)?.use { it.resize(width, value) }
+            colorAttachmentsBacking.forEachIndexed { index, attachment -> attachment?.attachToFramebuffer(GL_COLOR_ATTACHMENT0 + index, width, height) }
+            depthAttachment?.attachToFramebuffer(depthAttachment?.format?.getDepthStencilAttachmentId() ?: GL_DEPTH_STENCIL_ATTACHMENT, width, height)
         }
     protected val colorAttachmentsBacking = arrayListOf<GlFramebufferAttachment?>()
     override val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?>
@@ -35,50 +35,42 @@ open class NeoFramebuffer(
     override var depthAttachment: GlFramebufferAttachment? = null
         protected set
 
-    override fun bind(viewport: Boolean, tracker: GlStateTracker): GlFramebuffer.Bound<NeoFramebuffer> = Bound(this, viewport, tracker)
+    override fun bind(tracker: GlStateTracker): GlFramebuffer.Bound = Bound(tracker)
 
-    protected open class Bound<F : NeoFramebuffer>(
-        override val framebuffer: F,
-        val viewport: Boolean,
-        val tracker: GlStateTracker
-    ) : GlFramebuffer.Bound<F> {
-        override var width: Int
-            get() = framebuffer.width
-            set(value) {
-                framebuffer.width = value
-            }
-        override var height: Int
-            get() = framebuffer.height
-            set(value) {
-                framebuffer.height = value
-            }
-        override val colorAttachments: KeyedDelegate<Int, GlFramebufferAttachment?> = framebuffer.colorAttachments.withSet { index, attachment ->
-            framebuffer.colorAttachmentsBacking[index] = attachment
-            attachment?.bind(OpenGL.INSTANCE)?.use { it.resize(width, height) }
-            (attachment ?: NeoTexture2D.NULL).attachToFramebuffer(GL_COLOR_ATTACHMENT0 + index)
+    protected open inner class Bound(
+        val tracker: GlStateTracker,
+        var viewport: Boolean = false
+    ) : GlFramebuffer.Bound {
+        override var width: Int by this@NeoFramebuffer::width
+        override var height: Int by this@NeoFramebuffer::height
+        override val colorAttachments: KeyedDelegate<Int, GlFramebufferAttachment?> = this@NeoFramebuffer.colorAttachments.withSet { index, attachment ->
+            colorAttachmentsBacking[index] = attachment
+            (attachment ?: NeoTexture2D.NULL).attachToFramebuffer(GL_COLOR_ATTACHMENT0 + index, width, height)
             OpenGL.INSTANCE.drawBuffers(
-                *framebuffer.colorAttachmentsBacking.mapIndexedNotNull { index, attachment -> if (attachment == null) null else GL_COLOR_ATTACHMENT0 + index }
+                *colorAttachmentsBacking.mapIndexedNotNull { index, attachment -> if (attachment == null) null else GL_COLOR_ATTACHMENT0 + index }
                     .ifEmpty { listOf(GL_NONE) }
                     .toIntArray()
             )
         }
         override var depthAttachment: GlFramebufferAttachment?
-            get() = framebuffer.depthAttachment
+            get() = this@NeoFramebuffer.depthAttachment
             set(attachment) {
-                framebuffer.depthAttachment = attachment
-                attachment?.bind(OpenGL.INSTANCE)?.use { it.resize(width, height) }
-                (attachment ?: NeoTexture2D.NULL).attachToFramebuffer(attachment?.format?.getDepthStencilAttachmentId() ?: GL_DEPTH_STENCIL_ATTACHMENT)
+                this@NeoFramebuffer.depthAttachment = attachment
+                (attachment ?: NeoTexture2D.NULL).attachToFramebuffer(attachment?.format?.getDepthStencilAttachmentId() ?: GL_DEPTH_STENCIL_ATTACHMENT, width, height)
             }
 
         init {
-            GlStateType.FRAMEBUFFER.push(framebuffer.glId, tracker)
-
-            if (viewport) {
-                GlStateType.VIEWPORT.push(NeoRect2i(0, 0, width, height), tracker)
-            }
+            GlStateType.FRAMEBUFFER.push(glId, tracker)
         }
 
         override fun checkStatus() = OpenGL.INSTANCE.checkFramebufferStatus()
+
+        override fun viewport() {
+            if (!viewport) {
+                viewport = true
+                GlStateType.VIEWPORT.push(NeoRect2i(0, 0, width, height), tracker)
+            }
+        }
 
         override fun clear(vararg bits: ClearBit) {
             if (bits.isEmpty()) {

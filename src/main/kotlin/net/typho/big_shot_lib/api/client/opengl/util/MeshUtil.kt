@@ -26,15 +26,15 @@ interface MeshUtil {
                 GlShapeType.QUADS,
                 GlBufferUsage.STATIC_DRAW
             )
-            val builder = mesh.Builder()
-            builder.quad(
-                NeoVec3f(-1f, 1f, 0f),
-                NeoVec3f(1f, 1f, 0f),
-                NeoVec3f(1f, -1f, 0f),
-                NeoVec3f(-1f, -1f, 0f),
-                NeoVec3f(0f, 0f, -1f)
-            )
-            builder.end()
+            mesh.upload { builder ->
+                builder.quad(
+                    NeoVec3f(-1f, 1f, 0f),
+                    NeoVec3f(1f, 1f, 0f),
+                    NeoVec3f(1f, -1f, 0f),
+                    NeoVec3f(-1f, -1f, 0f),
+                    NeoVec3f(0f, 0f, -1f)
+                )
+            }
             return@lazy mesh
         }
 
