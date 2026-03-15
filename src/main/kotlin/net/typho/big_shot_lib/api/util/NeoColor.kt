@@ -150,7 +150,7 @@ interface NeoColor {
         override val blue: Int,
         override val alpha: Int
     ) : NeoColor {
-        constructor(argb: Int) : this(argb ushr 16 and 0xFF, argb ushr 8 and 0xFF, argb and 0xFF, argb ushr 24)
+        constructor(rgba: Int) : this(rgba ushr 24 and 0xFF, rgba ushr 16 and 0xFF, rgba ushr 8 and 0xFF, rgba and 0xFF)
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)
 
@@ -188,7 +188,7 @@ interface NeoColor {
         override val blueF: Float,
         override val alphaF: Float
     ) : NeoColor {
-        constructor(argb: Int) : this((argb ushr 16 and 0xFF) / 255f, (argb ushr 8 and 0xFF) / 255f, (argb and 0xFF) / 255f, (argb ushr 24) / 255f)
+        constructor(rgba: Int) : this((rgba ushr 24 and 0xFF) / 255f, (rgba ushr 16 and 0xFF) / 255f, (rgba ushr 8 and 0xFF) / 255f, (rgba and 0xFF) / 255f)
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
 
