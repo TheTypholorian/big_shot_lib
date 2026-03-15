@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api
 
 import net.typho.big_shot_lib.api.util.NeoServiceLoader
-import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass

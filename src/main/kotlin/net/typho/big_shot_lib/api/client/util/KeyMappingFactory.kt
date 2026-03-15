@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.client.util
 
 import com.mojang.blaze3d.platform.InputConstants
 import net.minecraft.client.KeyMapping
-import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface KeyMappingFactory {
     val movement: KeyMappingCategory

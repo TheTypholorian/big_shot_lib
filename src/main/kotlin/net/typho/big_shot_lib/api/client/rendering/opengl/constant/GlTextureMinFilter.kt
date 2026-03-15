@@ -1,0 +1,11 @@
+package net.typho.big_shot_lib.api.client.rendering.opengl.constant
+
+import org.lwjgl.opengl.GL11.GL_LINEAR
+import org.lwjgl.opengl.GL11.GL_NEAREST
+
+enum class GlTextureMinFilter(
+    override val glId: Int
+) : net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlConstant {
+    NEAREST(GL_NEAREST),
+    LINEAR(GL_LINEAR),
+}

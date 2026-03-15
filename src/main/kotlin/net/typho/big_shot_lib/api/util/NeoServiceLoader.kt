@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.util
 
 import com.google.gson.JsonParser
-import net.typho.big_shot_lib.api.errors.ServiceLoaderException
+import net.typho.big_shot_lib.api.error.ServiceLoaderException
 import kotlin.reflect.KVisibility
 
 object NeoServiceLoader {

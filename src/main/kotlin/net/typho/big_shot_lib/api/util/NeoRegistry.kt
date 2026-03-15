@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.util
 
 import net.minecraft.core.Registry
-import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
-import net.typho.big_shot_lib.api.util.resources.NeoTagKey
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
+import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
+import net.typho.big_shot_lib.api.util.resource.NeoTagKey
 
 interface NeoRegistry<T : Any> {
     val key: NeoResourceKey<out Registry<T>>

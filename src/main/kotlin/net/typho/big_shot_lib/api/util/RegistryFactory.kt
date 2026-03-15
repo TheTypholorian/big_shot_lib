@@ -2,8 +2,8 @@ package net.typho.big_shot_lib.api.util
 
 import com.mojang.serialization.Lifecycle
 import net.minecraft.core.Registry
-import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
+import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 
 interface RegistryFactory {
     fun <T : Any> create(location: NeoIdentifier, lifecycle: Lifecycle = Lifecycle.stable(), isIntrusive: Boolean = false): NeoRegistry<T>

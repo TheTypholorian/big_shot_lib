@@ -2,8 +2,8 @@ package net.typho.big_shot_lib.api.util
 
 import net.minecraft.core.Registry
 import net.minecraft.resources.ResourceKey
-import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resources.NeoResourceKey
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
+import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 
 interface RegistrationFactory {
     fun <T : Any> begin(key: ResourceKey<Registry<T>>): RegistrationConsumer<T, NeoIdentifier>

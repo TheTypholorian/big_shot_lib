@@ -4,8 +4,8 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.typho.big_shot_lib.api.util.resources.NamedResource
-import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
+import net.typho.big_shot_lib.api.util.resource.NamedResource
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface RegistrationConsumer<T : Any, I> {
     fun <V : T> register(id: I, value: () -> V): RegisteredObject<V>

@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.util
 
 import net.typho.big_shot_lib.api.BigShotApi.loadServices
-import net.typho.big_shot_lib.api.util.events.CommonEventFactory
+import net.typho.big_shot_lib.api.util.event.CommonEventFactory
 
 interface BigShotCommonEntrypoint {
     fun registerRegistries(factory: RegistryFactory) {

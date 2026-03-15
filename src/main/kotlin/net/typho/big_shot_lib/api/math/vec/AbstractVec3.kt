@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.math.vec
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.util.resources.NeoCodecs
+import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import org.joml.Vector3d
 import org.joml.Vector3f
 import org.joml.Vector3i
