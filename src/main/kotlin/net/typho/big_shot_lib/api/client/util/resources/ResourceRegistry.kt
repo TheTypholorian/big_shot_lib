@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.util.resources
+package net.typho.big_shot_lib.api.client.util.resources
 
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
@@ -6,6 +6,9 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.util.resources.NamedResource
+import net.typho.big_shot_lib.api.util.resources.NeoFileToIdConverter
+import net.typho.big_shot_lib.api.util.resources.NeoIdentifier
 import java.util.*
 
 abstract class ResourceRegistry<T>(
