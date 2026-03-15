@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11.*
 
 enum class GlBeginMode(
     override val glId: Int
-) : net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlConstant {
+) : GlConstant {
     POINTS(GL_POINTS),
     LINES(GL_LINES),
     LINE_LOOP(GL_LINE_LOOP),

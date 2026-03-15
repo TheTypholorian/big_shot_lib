@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11.*
 
 enum class GlStencilOp(
     override val glId: Int
-) : net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlConstant {
+) : GlConstant {
     KEEP(GL_KEEP),
     REPLACE(GL_REPLACE),
     INCR(GL_INCR),

@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11.*
 
 enum class GlAlphaFunction(
     override val glId: Int
-) : net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlConstant {
+) : GlConstant {
     NEVER(GL_NEVER),
     LESS(GL_LESS),
     EQUAL(GL_EQUAL),

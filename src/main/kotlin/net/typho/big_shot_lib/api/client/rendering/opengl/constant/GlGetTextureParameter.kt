@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11.*
 
 enum class GlGetTextureParameter(
     override val glId: Int
-) : net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlConstant {
+) : GlConstant {
     WIDTH(GL_TEXTURE_WIDTH),
     HEIGHT(GL_TEXTURE_HEIGHT),
     INTERNAL_FORMAT(GL_TEXTURE_INTERNAL_FORMAT),

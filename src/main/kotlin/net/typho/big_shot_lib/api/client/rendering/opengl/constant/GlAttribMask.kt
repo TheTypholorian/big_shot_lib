@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11.*
 
 enum class GlAttribMask(
     override val glId: Int
-) : net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlConstant {
+) : GlConstant {
     CURRENT_BIT(GL_CURRENT_BIT),
     POINT_BIT(GL_POINT_BIT),
     LINE_BIT(GL_LINE_BIT),

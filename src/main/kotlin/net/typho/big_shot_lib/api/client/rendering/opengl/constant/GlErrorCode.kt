@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11.*
 
 enum class GlErrorCode(
     override val glId: Int
-) : net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlConstant {
+) : GlConstant {
     NO_ERROR(GL_NO_ERROR),
     INVALID_ENUM(GL_INVALID_ENUM),
     INVALID_VALUE(GL_INVALID_VALUE),

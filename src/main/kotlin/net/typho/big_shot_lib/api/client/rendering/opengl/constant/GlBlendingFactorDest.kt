@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11.*
 
 enum class GlBlendingFactorDest(
     override val glId: Int
-) : net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlConstant {
+) : GlConstant {
     ZERO(GL_ZERO),
     ONE(GL_ONE),
     SRC_COLOR(GL_SRC_COLOR),

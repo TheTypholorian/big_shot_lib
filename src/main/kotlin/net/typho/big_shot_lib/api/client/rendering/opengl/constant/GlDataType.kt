@@ -8,7 +8,7 @@ enum class GlDataType(
     override val glId: Int,
     @JvmField
     val sizeBytes: Int
-) : net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlConstant {
+) : GlConstant {
     UNSIGNED_BYTE(GL_UNSIGNED_BYTE, UByte.SIZE_BYTES),
     BYTE(GL_BYTE, Byte.SIZE_BYTES),
     UNSIGNED_SHORT(GL_UNSIGNED_SHORT, UShort.SIZE_BYTES),
