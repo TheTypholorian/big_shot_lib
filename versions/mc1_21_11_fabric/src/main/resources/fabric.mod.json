@@ -17,14 +17,6 @@
     "big_shot_api.mixins.json",
     "${mod_id}.mixins.json"
   ],
-  "entrypoints": {
-    "main": [
-      {
-        "adapter": "kotlin",
-        "value": "net.typho.big_shot_lib.BigShotFabric"
-      }
-    ]
-  },
   "depends": {
     "fabricloader": "*",
     "fabric-api-base": "*",
