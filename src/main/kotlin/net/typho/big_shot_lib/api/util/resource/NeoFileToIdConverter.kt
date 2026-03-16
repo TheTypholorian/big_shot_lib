@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.util.resource
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
-import net.typho.big_shot_lib.api.client.opengl.shaders.ShaderSourceType
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 
 @JvmRecord
@@ -37,6 +37,6 @@ data class NeoFileToIdConverter(
         fun json(prefix: String) = NeoFileToIdConverter(prefix, "json")
 
         @JvmStatic
-        fun shader(prefix: String, shader: ShaderSourceType) = NeoFileToIdConverter(prefix, shader.extension)
+        fun shader(prefix: String, shader: GlShaderType) = NeoFileToIdConverter(prefix, shader.extension)
     }
 }

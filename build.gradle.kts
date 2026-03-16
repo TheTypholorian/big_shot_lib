@@ -30,6 +30,10 @@ repositories {
         name = "Modrinth"
         url = uri("https://api.modrinth.com/maven")
     }
+    maven {
+        name = "Spongepowered"
+        url = uri("https://repo.spongepowered.org/repository/maven-public")
+    }
     ivy {
         url = uri("https://github.com/TheTypholorian/")
         patternLayout {
@@ -46,6 +50,14 @@ dependencies {
     mappings(loom.officialMojangMappings())
     include(kotlin("reflect"))
     implementation(kotlin("reflect"))
+
+    compileOnly(libs.mixin)
+    compileOnly(libs.mixinExtras.common)
+    annotationProcessor(libs.mixinExtras.common)
+
+    implementation(libs.asm.tree)
+    implementation(libs.asm.commons)
+    implementation(libs.asm.util)
 }
 
 configurations {

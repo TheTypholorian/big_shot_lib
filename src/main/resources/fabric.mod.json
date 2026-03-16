@@ -25,5 +25,8 @@
   },
   "breaks": {
     "vibrancy": "<=${vibrancy_incompat_version}"
-  }
+  },
+  "mixins": [
+    "${mod_id}.mixins.json"
+  ]
 }
