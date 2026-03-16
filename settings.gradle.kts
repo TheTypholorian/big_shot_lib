@@ -19,6 +19,8 @@ pluginManagement {
                 includeGroup("fabric-loom")
             }
         }
+        maven("https://maven.kikugie.dev/snapshots") { name = "KikuGie" }
+        maven("https://maven.kikugie.dev/releases") { name = "KikuGie Releases" }
     }
 }
 
@@ -32,5 +34,18 @@ dependencyResolutionManagement {
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    id("dev.kikugie.stonecutter") version "0.7-beta.4"
 }
 include("api")
+include("impl")
+
+stonecutter {
+    create(project(":impl")) {
+        fun match(version: String, vararg loaders: String) = loaders
+            .forEach { vers("mc${version.replace(".", "_")}-$it", version).buildscript = "build.$it.gradle.kts" }
+
+        match("1.21.11", "fabric", "neoforge")
+
+        vcsVersion = "mc1_21_11-fabric"
+    }
+}
