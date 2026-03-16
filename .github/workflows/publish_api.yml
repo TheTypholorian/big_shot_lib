@@ -17,12 +17,12 @@ jobs:
           distribution: temurin
           java-version: 21
       - name: build
-        run: ./gradlew build
+        run: ./gradlew :api:build
       - name: release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
-          files: build/libs/*.jar
+          files: api/build/libs/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
