@@ -4,8 +4,9 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferAccess
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.state.GlStateStack
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundResource.Companion.assertBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL30.*
@@ -62,22 +63,36 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
             size: Long,
             usage: GlBufferUsage
         ) {
-            glBufferData(target.glId, size, usage.glId)
+            assertBound {
+                glBufferData(target.glId, size, usage.glId)
+            }
         }
 
         override fun bufferData(data: NeoBuffer, usage: GlBufferUsage) {
-            nglBufferData(target.glId, data.size, data.address, usage.glId)
+            assertBound {
+                nglBufferData(target.glId, data.size, data.address, usage.glId)
+            }
         }
 
         override fun bufferSubData(offset: Long, data: NeoBuffer) {
-            nglBufferSubData(target.glId, offset, data.size, data.address)
+            assertBound {
+                nglBufferSubData(target.glId, offset, data.size, data.address)
+            }
         }
 
         override fun mapBuffer(
             access: GlBufferAccess,
             size: Long
         ): GlMappedBuffer {
-            return GlMappedBuffer(NeoBuffer.Impl(glMapBuffer(target.glId, access.glId, size, null) ?: throw NullPointerException("Failed to map buffer $target")), target)
+            return assertBound {
+                GlMappedBuffer(
+                    NeoBuffer.Impl(
+                        glMapBuffer(target.glId, access.glId, size, null)
+                            ?: throw NullPointerException("Failed to map buffer $target")
+                    ),
+                    target
+                )
+            }
         }
     }
 }

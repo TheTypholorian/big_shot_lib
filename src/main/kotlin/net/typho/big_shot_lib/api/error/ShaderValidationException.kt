@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.error
 
-open class MissingShaderSourceException : RuntimeException {
+open class ShaderValidationException : RuntimeException {
     constructor() : super()
 
     constructor(message: String?) : super(message)

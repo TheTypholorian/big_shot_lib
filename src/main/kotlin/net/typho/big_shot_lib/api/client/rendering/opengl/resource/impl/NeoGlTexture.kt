@@ -2,9 +2,9 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundTexture
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 
 class NeoGlTexture(glId: Int) : NeoGlResource(GlResourceType.TEXTURE, glId), GlTexture {
     constructor() : this(GlResourceType.TEXTURE.create())
