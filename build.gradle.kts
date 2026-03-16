@@ -5,3 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     id("co.uzzu.dotenv.gradle") version "4.0.0"
 }
+
+dependencies {
+    implementation(project(":api"))
+}

@@ -10,8 +10,15 @@ plugins {
 
 tasks.named<ProcessResources>("processResources") {
     val props = HashMap<String, String>().apply {
-        this["version"] = project.property("mod.version") as String
         this["minecraft"] = project.property("deps.minecraft") as String
+        this["mod_id"] = project.property("mod.id") as String
+        this["mod_name"] = project.property("mod.name") as String
+        this["mod_version"] = project.property("mod.version") as String
+        this["mod_author"] = project.property("mod.author") as String
+        this["mod_description"] = project.property("mod.description") as String
+        this["mod_credits"] = project.property("mod.credits") as String
+        this["mod_license"] = project.property("mod.license") as String
+        this["vibrancy_incompat_version"] = project.property("vibrancyIncompatVersion") as String
     }
 
     filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml")) {
@@ -23,7 +30,7 @@ version = "${property("mod.version")}+${property("deps.minecraft")}-fabric"
 base.archivesName = property("mod.id") as String
 
 loom {
-    accessWidenerPath = project(":impl").file("src/main/resources/${property("mod.id")}.accesswidener")
+    accessWidenerPath = rootProject.file("src/main/resources/${property("mod.id")}.accesswidener")
 }
 
 jsonlang {
@@ -35,6 +42,10 @@ repositories {
     mavenLocal()
 }
 
+tasks.withType<Javadoc>().configureEach {
+    enabled = false
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:${property("deps.minecraft")}")
     mappings(loom.layered {
@@ -43,11 +54,8 @@ dependencies {
             parchment("org.parchmentmc.data:parchment-${property("deps.parchment")}@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric-loader")}")
-    //modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
+    //modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
     modImplementation(libs.flk)
-
-    //val modules = listOf("transitive-access-wideners-v1", "registry-sync-v0", "resource-loader-v0")
-    //for (it in modules) modImplementation(fabricApi.module("fabric-$it", property("deps.fabric-api") as String))
 }
 
 fabricApi {
@@ -72,10 +80,11 @@ tasks {
 
 java {
     withSourcesJar()
-    val javaCompat = if (stonecutter.eval(stonecutter.current.version, ">=1.21")) {
-        JavaVersion.VERSION_21
-    } else {
-        JavaVersion.VERSION_17
+    val javaCompat = when {
+        sc.current.parsed >= "1.20.6" -> JavaVersion.VERSION_21
+        sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17
+        sc.current.parsed >= "1.17" -> JavaVersion.VERSION_16
+        else -> JavaVersion.VERSION_1_8
     }
     sourceCompatibility = javaCompat
     targetCompatibility = javaCompat
@@ -116,3 +125,9 @@ publishMods {
     }
 }
  */
+
+sourceSets.named("main") {
+    java.srcDirs(project(":api").sourceSets["main"].java.srcDirs)
+    kotlin.srcDirs(project(":api").sourceSets["main"].kotlin.srcDirs)
+    resources.srcDirs(project(":api").sourceSets["main"].resources.srcDirs)
+}

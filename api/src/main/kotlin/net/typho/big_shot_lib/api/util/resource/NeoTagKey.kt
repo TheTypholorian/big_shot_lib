@@ -26,7 +26,7 @@ data class NeoTagKey<T>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <E> cast(key: NeoTagKey<Registry<E>>): NeoTagKey<E>? {
+    fun <E : Any> cast(key: NeoTagKey<Registry<E>>): NeoTagKey<E>? {
         return if (registry == key.location) this as NeoTagKey<E> else null
     }
 }

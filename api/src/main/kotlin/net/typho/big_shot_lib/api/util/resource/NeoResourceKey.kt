@@ -26,7 +26,7 @@ data class NeoResourceKey<T>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <E> cast(key: NeoResourceKey<Registry<E>>): NeoResourceKey<E>? {
+    fun <E : Any> cast(key: NeoResourceKey<Registry<E>>): NeoResourceKey<E>? {
         return if (registry == key.location) this as NeoResourceKey<E> else null
     }
 }

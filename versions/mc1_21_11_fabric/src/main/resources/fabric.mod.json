@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {
+    "sources": "https://github.com/TheTypholorian/${mod_id}"
+  },
+  "license": "${mod_license}",
+  "icon": "${mod_id}.png",
+  "environment": "client",
+  "mixins": [
+    "big_shot_api.mixins.json",
+    "${mod_id}.mixins.json"
+  ],
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "net.typho.big_shot_lib.BigShotFabric"
+      }
+    ]
+  },
+  "depends": {
+    "fabricloader": "*",
+    "fabric-api-base": "*",
+    "minecraft": [
+      "1.21.11"
+    ],
+    "fabric-language-kotlin": "*"
+  },
+  "accessWidener": "${mod_id}.accesswidener"
+}

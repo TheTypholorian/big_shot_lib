@@ -4,24 +4,9 @@ plugins {
 }
 
 val version: String by project
-val modId: String by project
 
 base {
-    archivesName = modId
-}
-
-tasks.remapJar {
-    archiveClassifier = "intermediary"
-}
-
-val namedJar = tasks.register<Jar>("namedJar") {
-    group = "build"
-    dependsOn(tasks.classes)
-    from(sourceSets.main.get().output)
-}
-
-tasks.build {
-    dependsOn(namedJar)
+    archivesName = project.property("mod.id") as String
 }
 
 repositories {
@@ -49,7 +34,6 @@ repositories {
 dependencies {
     minecraft(libs.minecraftForAPI)
     mappings(loom.officialMojangMappings())
-    include(kotlin("reflect"))
     implementation(kotlin("reflect"))
 
     compileOnly(libs.mixin)

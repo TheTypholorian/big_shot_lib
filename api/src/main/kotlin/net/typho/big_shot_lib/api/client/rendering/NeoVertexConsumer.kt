@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering
 
 import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.blaze3d.vertex.VertexConsumer
 import net.typho.big_shot_lib.api.math.rect.AbstractRect3
 import net.typho.big_shot_lib.api.math.vec.AbstractVec2
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
@@ -151,6 +150,7 @@ interface NeoVertexConsumer {
         return this
     }
 
+    /*
     fun toMojang(): VertexConsumer {
         return object : VertexConsumer {
             override fun addVertex(
@@ -197,6 +197,7 @@ interface NeoVertexConsumer {
             }
         }
     }
+     */
 
     fun cube(
         box: AbstractRect3<*, *, *>,

@@ -8,8 +8,15 @@ plugins {
 
 tasks.named<ProcessResources>("processResources") {
     val props = HashMap<String, String>().apply {
-        this["version"] = project.property("mod.version") as String
         this["minecraft"] = project.property("deps.minecraft") as String
+        this["mod_id"] = project.property("mod.id") as String
+        this["mod_name"] = project.property("mod.name") as String
+        this["mod_version"] = project.property("mod.version") as String
+        this["mod_author"] = project.property("mod.author") as String
+        this["mod_description"] = project.property("mod.description") as String
+        this["mod_credits"] = project.property("mod.credits") as String
+        this["mod_license"] = project.property("mod.license") as String
+        this["vibrancy_incompat_version"] = project.property("vibrancyIncompatVersion") as String
     }
 
     filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml")) {
@@ -126,3 +133,9 @@ publishMods {
     }
 }
  */
+
+sourceSets.named("main") {
+    java.srcDirs(project(":api").sourceSets["main"].java.srcDirs)
+    kotlin.srcDirs(project(":api").sourceSets["main"].kotlin.srcDirs)
+    resources.srcDirs(project(":api").sourceSets["main"].resources.srcDirs)
+}

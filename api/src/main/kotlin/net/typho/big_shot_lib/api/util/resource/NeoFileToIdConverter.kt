@@ -1,8 +1,6 @@
 package net.typho.big_shot_lib.api.util.resource
 
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.resources.Resource
-import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 
@@ -25,7 +23,7 @@ data class NeoFileToIdConverter(
         return manager.listResources(prefix) { it.path.endsWith(extension) }
     }
 
-    fun listMatchingResourceStacks(manager: ResourceManager): MutableMap<ResourceLocation, MutableList<Resource>> {
+    fun listMatchingResourceStacks(manager: NeoResourceManager): MutableMap<NeoIdentifier, MutableList<Resource>> {
         return manager.listResourceStacks(prefix) { it.path.endsWith(extension) }
     }
 

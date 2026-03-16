@@ -35,18 +35,17 @@ dependencyResolutionManagement {
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
-    id("dev.kikugie.stonecutter") version "0.7-beta.4"
+    id("dev.kikugie.stonecutter") version "0.8.3"
 }
 include("api")
-include("impl")
 
 stonecutter {
-    create(project(":impl")) {
+    create(rootProject) {
         fun match(version: String, vararg loaders: String) = loaders
-            .forEach { vers("mc${version.replace(".", "_")}-$it", version).buildscript = "build.$it.gradle.kts" }
+            .forEach { versions("mc${version}_$it").buildscript = "build.$it.gradle.kts" }
 
         match("1_21_11", "fabric", "neoforge")
 
-        vcsVersion = "mc1_21_11-fabric"
+        vcsVersion = "mc1_21_11_fabric"
     }
 }
