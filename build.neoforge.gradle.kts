@@ -104,6 +104,17 @@ java {
     targetCompatibility = javaCompat
 }
 
+kotlin {
+    jvmToolchain(
+        when {
+            sc.current.parsed >= "1.20.6" -> 21
+            sc.current.parsed >= "1.18" -> 17
+            sc.current.parsed >= "1.17" -> 16
+            else -> 8
+        }
+    )
+}
+
 val additionalVersionsStr = findProperty("publish.additionalVersions") as String?
 val additionalVersions: List<String> = additionalVersionsStr
     ?.split(",")

@@ -59,7 +59,7 @@ dependencies {
         if (hasProperty("deps.parchment"))
             parchment("org.parchmentmc.data:parchment-${property("deps.parchment")}@zip")
     })
-    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric-loader")}")
+    modImplementation("net.fabricmc:fabric-loader:0.17.3")
     //modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
     modImplementation(libs.flk)
 }
@@ -94,6 +94,17 @@ java {
     }
     sourceCompatibility = javaCompat
     targetCompatibility = javaCompat
+}
+
+kotlin {
+    jvmToolchain(
+        when {
+            sc.current.parsed >= "1.20.6" -> 21
+            sc.current.parsed >= "1.18" -> 17
+            sc.current.parsed >= "1.17" -> 16
+            else -> 8
+        }
+    )
 }
 
 val additionalVersionsStr = findProperty("publish.additionalVersions") as String?

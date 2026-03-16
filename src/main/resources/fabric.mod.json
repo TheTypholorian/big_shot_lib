@@ -21,7 +21,7 @@
     "fabricloader": "*",
     "fabric-api-base": "*",
     "minecraft": [
-      "${version}"
+      "${minecraft}"
     ],
     "fabric-language-kotlin": "*"
   },
