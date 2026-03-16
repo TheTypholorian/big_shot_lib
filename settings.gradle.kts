@@ -16,6 +16,7 @@ pluginManagement {
             }
             filter {
                 includeGroup("net.fabricmc")
+                includeGroup("net.fabricmc.unpick")
                 includeGroup("fabric-loom")
             }
         }
@@ -44,7 +45,7 @@ stonecutter {
         fun match(version: String, vararg loaders: String) = loaders
             .forEach { vers("mc${version.replace(".", "_")}-$it", version).buildscript = "build.$it.gradle.kts" }
 
-        match("1.21.11", "fabric", "neoforge")
+        match("1_21_11", "fabric", "neoforge")
 
         vcsVersion = "mc1_21_11-fabric"
     }

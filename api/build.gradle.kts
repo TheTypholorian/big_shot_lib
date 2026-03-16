@@ -1,5 +1,5 @@
 plugins {
-    id("multiloader-common")
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.loom)
 }
 
@@ -25,6 +25,7 @@ tasks.build {
 }
 
 repositories {
+    gradlePluginPortal()
     mavenCentral()
     maven {
         name = "Modrinth"
@@ -46,7 +47,7 @@ repositories {
 }
 
 dependencies {
-    minecraft(libs.minecraft)
+    minecraft(libs.minecraftForAPI)
     mappings(loom.officialMojangMappings())
     include(kotlin("reflect"))
     implementation(kotlin("reflect"))

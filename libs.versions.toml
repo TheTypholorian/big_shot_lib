@@ -2,28 +2,20 @@
 java = "21"
 kotlin = "2.2.0"
 moddev = "2.0.95"
-loom = "1.8-SNAPSHOT"
+loom = "1.11-SNAPSHOT"
 dokka = "1.9.20"
 
-minecraft = "1.21"
-
-# The version of ParchmentMC that is used, see https://parchmentmc.org/docs/getting-started#choose-a-version for new versions
-parchment = "2024.11.10"
-parchmentMC = "1.21"
-
-## This is the version of minecraft that the 'common' project uses, you can find a list of all versions here
-## https://projects.neoforged.net/neoforged/neoform
-neoForm = "1.21.1-20240808.144430"
+minecraftForAPI = "1.21"
 
 mixin = "0.8.5"
 mixinExtras = "0.5.3"
 asm = "9.5"
 
-kff = "5.6.0"
-flk = "1.12.3+kotlin.2.0.21"
+kff = "5.9.0"
+flk = "1.13.4+kotlin.2.2.0"
 
 [libraries]
-minecraft = { group = "com.mojang", name = "minecraft", version.ref = "minecraft" }
+minecraftForAPI = { group = "com.mojang", name = "minecraft", version.ref = "minecraftForAPI" }
 mixin = { group = "org.spongepowered", name = "mixin", version.ref = "mixin" }
 mixinExtras-common = { group = "io.github.llamalad7", name = "mixinextras-common", version.ref = "mixinExtras" }
 asm-tree = { group = "org.ow2.asm", name = "asm-tree", version.ref = "asm" }
@@ -35,3 +27,4 @@ kff = { group = "thedarkcolour", name = "kotlinforforge-neoforge", version.ref =
 [plugins]
 moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
 loom = { id = "fabric-loom", version.ref = "loom" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

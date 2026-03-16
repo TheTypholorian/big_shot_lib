@@ -1,5 +1,5 @@
 plugins {
-    //kotlin("jvm") version "2.2.0" apply false
+    kotlin("jvm") version libs.versions.kotlin apply false
     id("dev.kikugie.stonecutter")
     alias(libs.plugins.loom) apply false
     alias(libs.plugins.moddev) apply false
