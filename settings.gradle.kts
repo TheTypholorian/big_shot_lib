@@ -41,11 +41,13 @@ include("api")
 
 stonecutter {
     create(rootProject) {
-        fun match(version: String, vararg loaders: String) = loaders
-            .forEach { versions("mc${version}_$it").buildscript = "build.$it.gradle.kts" }
+        fun match(loader: String, vararg versions: String) = versions
+            .forEach { versions("$it-$loader").buildscript = "build.$loader.gradle.kts" }
 
-        match("1_21_11", "fabric", "neoforge")
+        match("fabric", "1.16.1", "1.16.5", "1.18.2", "1.19", "1.19.1", "1.19.2", "1.19.3", "1.19.4", "1.20", "1.20.1", "1.20.2", "1.20.3", "1.20.4", "1.20.5", "1.20.6", "1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11")
+        match("neoforge", "1.20.6", "1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11")
+        match("forge", "1.16.1", "1.16.5", "1.18.2", "1.19", "1.19.1", "1.19.2", "1.19.3", "1.19.4", "1.20", "1.20.1", "1.20.2", "1.20.3", "1.20.4", "1.20.5")
 
-        vcsVersion = "mc1_21_11_fabric"
+        vcsVersion = "1.21.11"
     }
 }

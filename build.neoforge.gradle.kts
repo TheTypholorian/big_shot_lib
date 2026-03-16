@@ -9,6 +9,12 @@ plugins {
 tasks.named<ProcessResources>("processResources") {
     val props = HashMap<String, String>().apply {
         this["minecraft"] = project.property("deps.minecraft") as String
+        this["java"] = when {
+            sc.current.parsed >= "1.20.6" -> "21"
+            sc.current.parsed >= "1.18" -> "17"
+            sc.current.parsed >= "1.17" -> "16"
+            else -> "8"
+        }
         this["mod_id"] = project.property("mod.id") as String
         this["mod_name"] = project.property("mod.name") as String
         this["mod_version"] = project.property("mod.version") as String
