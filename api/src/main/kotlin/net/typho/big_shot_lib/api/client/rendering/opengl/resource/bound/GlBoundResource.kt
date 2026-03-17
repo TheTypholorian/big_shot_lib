@@ -20,7 +20,7 @@ interface GlBoundResource<R : GlResource> : NativeResource {
     companion object {
         @JvmStatic
         @OptIn(ExperimentalContracts::class)
-        fun <R> GlBoundResource<*>.assertBound(action: () -> R): R {
+        inline fun <R> GlBoundResource<*>.assertBound(action: () -> R): R {
             contract {
                 callsInPlace(action, InvocationKind.EXACTLY_ONCE)
             }

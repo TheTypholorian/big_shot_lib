@@ -117,4 +117,9 @@ enum class GlTextureFormat(
             else -> null
         }
     }
+
+    companion object {
+        @JvmStatic
+        fun fromInternalId(internalId: Int) = entries.firstOrNull { it.internalId == internalId }
+    }
 }
