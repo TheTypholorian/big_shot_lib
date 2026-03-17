@@ -23,7 +23,6 @@ data class RenderEventData(
     val inverseModelViewMat: Matrix4f,
     @JvmField
     val frustum: FrustumIntersection,
-    // TODO
-    //@JvmField
-    //val target: GlFramebuffer
+    @JvmField
+    val target: GlFramebuffer
 )
