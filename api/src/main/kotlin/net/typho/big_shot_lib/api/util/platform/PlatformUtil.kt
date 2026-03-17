@@ -10,6 +10,6 @@ interface PlatformUtil {
 
     companion object {
         @JvmField
-        val INSTANCE: PlatformUtil = PlatformUtil::class.loadService()
+        val INSTANCE = PlatformUtil::class.loadService()
     }
 }

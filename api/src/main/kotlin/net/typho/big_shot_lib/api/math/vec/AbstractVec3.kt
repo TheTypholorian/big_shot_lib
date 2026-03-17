@@ -138,7 +138,7 @@ abstract class AbstractVec3<N : Number, V3 : AbstractVec3<N, V3>>(
 
     operator fun plus(x: N) = plus(x, x, x)
 
-    fun plus(direction: NeoDirection) = plus(
+    operator fun plus(direction: NeoDirection) = plus(
         opSet.fromInt(direction.inc.x),
         opSet.fromInt(direction.inc.y),
         opSet.fromInt(direction.inc.z)

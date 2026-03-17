@@ -1,9 +1,7 @@
 [versions]
-java = "21"
 kotlin = "2.2.0"
 moddev = "2.0.140"
 loom = "1.11-SNAPSHOT"
-dokka = "1.9.20"
 
 minecraftForAPI = "1.21"
 

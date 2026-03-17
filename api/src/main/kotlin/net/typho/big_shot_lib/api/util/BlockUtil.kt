@@ -7,12 +7,12 @@ import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.util.BlockRenderSettings
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.minecraft.NeoBlockPos
-import org.joml.Vector3f
+import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 
 interface BlockUtil {
     fun isSolidRender(state: BlockState, pos: NeoBlockPos, level: Level): Boolean
 
-    fun getOffset(state: BlockState, pos: NeoBlockPos, level: Level): Vector3f
+    fun getOffset(state: BlockState, pos: NeoBlockPos, level: Level): AbstractVec3<Float, *>
 
     fun getBlockRenderSettings(state: BlockState): BlockRenderSettings?
 
@@ -25,6 +25,6 @@ interface BlockUtil {
 
     companion object {
         @JvmField
-        val INSTANCE: BlockUtil = BlockUtil::class.loadService()
+        val INSTANCE = BlockUtil::class.loadService()
     }
 }

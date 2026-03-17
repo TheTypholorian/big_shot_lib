@@ -14,7 +14,7 @@ interface NeoGlStateManager {
     val renderbuffer: GlStateStack<Int>
     val framebuffer: GlStateStack<Int>
 
-    var textureUnit: Int
+    var activeTexture: Int
 
     companion object {
         @JvmField

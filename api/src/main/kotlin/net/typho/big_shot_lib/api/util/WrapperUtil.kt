@@ -85,6 +85,6 @@ interface WrapperUtil {
 
     companion object {
         @JvmField
-        val INSTANCE: WrapperUtil = WrapperUtil::class.loadService()
+        val INSTANCE = WrapperUtil::class.loadService()
     }
 }

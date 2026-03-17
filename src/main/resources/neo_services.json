@@ -1,0 +1,17 @@
+{
+  "net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint": [
+    "net.typho.big_shot_lib.impl.client.rendering.opengl.GlQueueImpl"
+  ],
+  "net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue": [
+    "net.typho.big_shot_lib.impl.client.rendering.opengl.GlQueueImpl"
+  ],
+  "net.typho.big_shot_lib.api.util.BlockUtil": [
+    "net.typho.big_shot_lib.impl.util.BlockUtilImpl"
+  ],
+  "net.typho.big_shot_lib.api.util.platform.PlatformUtil": [
+    "net.typho.big_shot_lib.impl.util.platform.PlatformUtilImpl"
+  ],
+  "net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager": [
+    "net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManagerImpl"
+  ]
+}
