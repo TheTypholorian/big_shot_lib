@@ -4,7 +4,6 @@ import net.minecraft.server.packs.resources.Resource
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 
-@JvmRecord
 data class NeoFileToIdConverter(
     @JvmField
     val prefix: String,
@@ -19,11 +18,11 @@ data class NeoFileToIdConverter(
         return file.withPath { it.substring(prefix.length + 1, it.length - extension.length - 1) }
     }
 
-    fun listMatchingResources(manager: NeoResourceManager): MutableMap<NeoIdentifier, Resource> {
+    fun listMatchingResources(manager: NeoResourceManager): Map<NeoIdentifier, Resource> {
         return manager.listResources(prefix) { it.path.endsWith(extension) }
     }
 
-    fun listMatchingResourceStacks(manager: NeoResourceManager): MutableMap<NeoIdentifier, MutableList<Resource>> {
+    fun listMatchingResourceStacks(manager: NeoResourceManager): Map<NeoIdentifier, List<Resource>> {
         return manager.listResourceStacks(prefix) { it.path.endsWith(extension) }
     }
 

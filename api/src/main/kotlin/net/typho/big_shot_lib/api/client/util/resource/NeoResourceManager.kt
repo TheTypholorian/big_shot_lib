@@ -8,23 +8,22 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
-import java.util.function.Predicate
 import java.util.stream.Stream
 
 interface NeoResourceManager {
-    fun getNamespaces(): MutableSet<String>
+    fun getNamespaces(): Set<String>
 
-    fun getResourceStack(location: NeoIdentifier): MutableList<Resource>
+    fun getResourceStack(location: NeoIdentifier): List<Resource>
 
     fun listResources(
         folder: String,
-        predicate: Predicate<NeoIdentifier>
-    ): MutableMap<NeoIdentifier, Resource>
+        predicate: (id: NeoIdentifier) -> Boolean
+    ): Map<NeoIdentifier, Resource>
 
     fun listResourceStacks(
         folder: String,
-        predicate: Predicate<NeoIdentifier>
-    ): MutableMap<NeoIdentifier, MutableList<Resource>>
+        predicate: (id: NeoIdentifier) -> Boolean
+    ): Map<NeoIdentifier, List<Resource>>
 
     fun listPacks(): Stream<PackResources>
 

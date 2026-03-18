@@ -29,7 +29,7 @@ interface WrapperUtil {
 
     fun wrap(access: RegistryAccess): NeoRegistryAccess
 
-    fun wrap(quad: BakedQuad, cache: Boolean): NeoBakedQuad
+    fun wrap(quad: BakedQuad): NeoBakedQuad
 
     fun wrap(consumer: VertexConsumer): NeoVertexConsumer
 

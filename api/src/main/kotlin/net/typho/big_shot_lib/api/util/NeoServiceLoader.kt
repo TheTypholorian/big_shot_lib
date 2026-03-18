@@ -8,7 +8,7 @@ object NeoServiceLoader {
     private val services: Map<String, Set<String>> = NeoServiceLoader::class.java.classLoader.getResources("neo_services.json")
         .toList()
         .map { url ->
-            val file = url.openStream().use { stream -> String(stream.readAllBytes()) }
+            val file = url.openStream().use { String(it.readBytes()) }
             val json = JsonParser.parseString(file).asJsonObject
             return@map json.asMap().mapValues { (key, value) -> value.asJsonArray.map { it.asString }.toSet() }
         }

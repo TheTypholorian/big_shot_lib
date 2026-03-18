@@ -48,7 +48,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
         format: GlTextureFormat,
         level: Int = 0,
         border: Int = 0,
-        data: NeoBuffer = NeoBuffer.NULL
+        data: NeoBuffer? = null
     )
 
     fun textureDataMutable2D(
@@ -57,7 +57,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
         format: GlTextureFormat,
         level: Int = 0,
         border: Int = 0,
-        data: NeoBuffer = NeoBuffer.NULL
+        data: NeoBuffer? = null
     )
 
     fun textureDataMutable2DMultisample(
@@ -75,7 +75,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
         format: GlTextureFormat,
         level: Int = 0,
         border: Int = 0,
-        data: NeoBuffer = NeoBuffer.NULL
+        data: NeoBuffer? = null
     )
 
     fun textureDataMutable3DMultisample(
@@ -192,7 +192,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
             format: GlTextureFormat,
             level: Int,
             border: Int,
-            data: NeoBuffer
+            data: NeoBuffer?
         ) {
             assertBound {
                 glTexImage1D(
@@ -203,7 +203,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
                     border,
                     format.glId,
                     format.type,
-                    data.address
+                    data?.address ?: 0
                 )
                 resize(width, -1, -1, format)
             }
@@ -215,7 +215,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
             format: GlTextureFormat,
             level: Int,
             border: Int,
-            data: NeoBuffer
+            data: NeoBuffer?
         ) {
             assertBound {
                 glTexImage2D(
@@ -227,7 +227,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
                     border,
                     format.glId,
                     format.type,
-                    data.address
+                    data?.address ?: 0
                 )
                 resize(width, height, -1, format)
             }
@@ -260,7 +260,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
             format: GlTextureFormat,
             level: Int,
             border: Int,
-            data: NeoBuffer
+            data: NeoBuffer?
         ) {
             assertBound {
                 glTexImage3D(
@@ -273,7 +273,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
                     border,
                     format.glId,
                     format.type,
-                    data.address
+                    data?.address ?: 0
                 )
                 resize(width, height, depth, format)
             }

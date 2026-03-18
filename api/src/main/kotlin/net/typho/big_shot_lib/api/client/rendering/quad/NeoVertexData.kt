@@ -1,8 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.quad
 
 import net.typho.big_shot_lib.api.client.rendering.NeoVertexConsumer
-import net.typho.big_shot_lib.api.math.vec.AbstractVec2
-import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.math.vec.*
 import net.typho.big_shot_lib.api.util.NeoColor
 import java.util.function.UnaryOperator
 
@@ -99,5 +98,47 @@ interface NeoVertexData {
         overlayUV?.let(consumer::overlayUV)
         lightUV?.let(consumer::lightUV)
         normal?.let(consumer::normal)
+    }
+
+    open class LazyPacked(
+        @JvmField
+        val data: IntArray,
+        @JvmField
+        val offset: Int
+    ) : NeoVertexData {
+        override val pos: AbstractVec3<Float, *> by lazy { NeoVec3f(
+            Float.fromBits(data[offset]),
+            Float.fromBits(data[offset + 1]),
+            Float.fromBits(data[offset + 2])
+        ) }
+        override val color: NeoColor by lazy { NeoColor.RGBA(data[offset + 3]) }
+        override val textureUV: AbstractVec2<Float, *> by lazy { NeoVec2f(
+            Float.fromBits(data[offset + 4]),
+            Float.fromBits(data[offset + 5])
+        ) }
+        override val overlayUV: AbstractVec2<Int, *> by lazy {
+            val packed = data[offset + 6]
+            NeoVec2i(
+                packed ushr 16,
+                packed and 0xFFFF
+            )
+        }
+        override val lightUV: AbstractVec2<Int, *>? = null
+        override val normal: AbstractVec3<Float, *> by lazy {
+            val packed = data[offset + 7]
+            NeoVec3f(
+                (packed ushr 24).toByte() / 127f,
+                ((packed ushr 16) and 0xFF).toByte() / 127f,
+                ((packed ushr 8) and 0xFF).toByte() / 127f
+            )
+        }
+
+        override fun put(consumer: NeoVertexConsumer) {
+            consumer.vertex(data, offset)
+            consumer.color(data, offset + 3)
+            consumer.textureUV(data, offset + 4)
+            consumer.overlayUV(data, offset + 6)
+            consumer.normal(data, offset + 7)
+        }
     }
 }

@@ -3,10 +3,10 @@ package net.typho.big_shot_lib.impl.util
 //? if >=1.21.9 {
 /*import net.minecraft.client.renderer.chunk.ChunkSectionLayer
 *///? } else {
-import net.minecraft.client.renderer.RenderType
 //? }
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -48,6 +48,9 @@ object BlockUtilImpl : BlockUtil {
             //? if >=1.21.9 {
             /*ChunkSectionLayer.SOLID -> BlockRenderSettings.SOLID
             ChunkSectionLayer.CUTOUT -> BlockRenderSettings.CUTOUT
+            //? if >= 1.21.11 {
+            ChunkSectionLayer.CUTOUT_MIPPED -> BlockRenderSettings.CUTOUT
+            //? }
             ChunkSectionLayer.TRANSLUCENT -> BlockRenderSettings.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockRenderSettings.TRIPWIRE
             *///? } else {

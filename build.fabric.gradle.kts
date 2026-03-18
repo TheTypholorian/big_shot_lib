@@ -6,13 +6,19 @@ plugins {
     id("dev.kikugie.postprocess.jsonlang")
     //id("me.modmuss50.mod-publish-plugin")
     id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
+}
+
+val accessWidener = when {
+    stonecutter.eval(stonecutter.current.version, ">=1.21.5") -> "accesswideners/big_shot_lib-1.21.5.accesswidener"
+    else -> "accesswideners/big_shot_lib.accesswidener"
 }
 
 tasks.named<ProcessResources>("processResources") {
     val props = HashMap<String, String>().apply {
         this["minecraft"] = project.property("deps.minecraft") as String
         this["java"] = when {
-            sc.current.parsed >= "1.20.6" -> "21"
+            sc.current.parsed >= "1.20.5" -> "21"
             sc.current.parsed >= "1.18" -> "17"
             sc.current.parsed >= "1.17" -> "16"
             else -> "8"
@@ -24,6 +30,7 @@ tasks.named<ProcessResources>("processResources") {
         this["mod_description"] = project.property("mod.description") as String
         this["mod_credits"] = project.property("mod.credits") as String
         this["mod_license"] = project.property("mod.license") as String
+        this["access_widener"] = accessWidener
         this["vibrancy_incompat_version"] = project.property("vibrancyIncompatVersion") as String
     }
 
@@ -36,7 +43,7 @@ version = "${property("mod.version")}+${property("deps.minecraft")}-fabric"
 base.archivesName = property("mod.id") as String
 
 loom {
-    accessWidenerPath = rootProject.file("src/main/resources/${property("mod.id")}.accesswidener")
+    accessWidenerPath = rootProject.file("src/main/resources/${accessWidener}")
 }
 
 jsonlang {
@@ -87,7 +94,7 @@ tasks {
 java {
     withSourcesJar()
     val javaCompat = when {
-        sc.current.parsed >= "1.20.6" -> JavaVersion.VERSION_21
+        sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
         sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17
         sc.current.parsed >= "1.17" -> JavaVersion.VERSION_16
         else -> JavaVersion.VERSION_1_8
@@ -99,7 +106,7 @@ java {
 kotlin {
     jvmToolchain(
         when {
-            sc.current.parsed >= "1.20.6" -> 21
+            sc.current.parsed >= "1.20.5" -> 21
             sc.current.parsed >= "1.18" -> 17
             sc.current.parsed >= "1.17" -> 16
             else -> 8

@@ -22,6 +22,8 @@ interface NeoVertexConsumer {
 
     fun normal(x: Float, y: Float, z: Float): NeoVertexConsumer
 
+    fun endVertex()
+
     fun vertex(packed: IntArray, offset: Int): NeoVertexConsumer {
         vertex(
             Float.fromBits(packed[offset]),

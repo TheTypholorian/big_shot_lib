@@ -25,5 +25,5 @@
     ],
     "fabric-language-kotlin": "*"
   },
-  "accessWidener": "${mod_id}.accesswidener"
+  "accessWidener": "${access_widener}"
 }

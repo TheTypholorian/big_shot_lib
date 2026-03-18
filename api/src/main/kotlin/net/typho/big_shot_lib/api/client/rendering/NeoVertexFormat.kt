@@ -145,12 +145,10 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     }
 
     interface Element {
-        val id: Int
         val index: Int
         val type: GlDataType
         val normalized: Boolean?
         val count: Int
-        val mask: Int
         val sizeBytes: Int
 
         fun vertexAttribPointer(index: Int, offset: Long, stride: Int)

@@ -12,6 +12,9 @@
   "net.typho.big_shot_lib.api.util.BlockUtil": [
     "net.typho.big_shot_lib.impl.util.BlockUtilImpl"
   ],
+  "net.typho.big_shot_lib.api.util.WrapperUtil": [
+    "net.typho.big_shot_lib.impl.util.WrapperUtilImpl"
+  ],
   "net.typho.big_shot_lib.api.util.platform.PlatformUtil": [
     "net.typho.big_shot_lib.impl.util.platform.PlatformUtilImpl"
   ],

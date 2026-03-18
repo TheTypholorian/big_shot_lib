@@ -4,13 +4,26 @@ plugins {
     id("dev.kikugie.postprocess.jsonlang")
     //id("me.modmuss50.mod-publish-plugin")
     id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
 }
 
-tasks.named<ProcessResources>("processResources") {
+val accessTransformer = project.file("build/resources/main/META-INF/accesstransformer.cfg").absolutePath
+val accessWidener = when {
+    stonecutter.eval(stonecutter.current.version, ">=1.21.5") -> "accesswideners/big_shot_lib-1.21.5.accesswidener"
+    else -> "accesswideners/big_shot_lib.accesswidener"
+}
+
+fletchingTable {
+    accessConverter.register(sourceSets.main) {
+        add(accessWidener)
+    }
+}
+
+val processResources = tasks.named<ProcessResources>("processResources") {
     val props = HashMap<String, String>().apply {
         this["minecraft"] = project.property("deps.minecraft") as String
         this["java"] = when {
-            sc.current.parsed >= "1.20.6" -> "21"
+            sc.current.parsed >= "1.20.5" -> "21"
             sc.current.parsed >= "1.18" -> "17"
             sc.current.parsed >= "1.17" -> "16"
             else -> "8"
@@ -40,6 +53,7 @@ jsonlang {
 
 neoForge {
     version = property("deps.neoforge") as String
+    accessTransformers.from(accessTransformer)
     validateAccessTransformers = true
 
     if (hasProperty("deps.parchment")) parchment {
@@ -77,8 +91,12 @@ dependencies {
 }
 
 tasks {
+    jar {
+        exclude("**/*.accesswidener")
+    }
+
     processResources {
-        exclude("**/fabric.mod.json", "**/*.accesswidener", "**/mods.toml")
+        exclude("**/fabric.mod.json", "**/mods.toml")
     }
 
     named("createMinecraftArtifacts") {
@@ -107,7 +125,7 @@ java {
 kotlin {
     jvmToolchain(
         when {
-            sc.current.parsed >= "1.20.6" -> 21
+            sc.current.parsed >= "1.20.5" -> 21
             sc.current.parsed >= "1.18" -> 17
             sc.current.parsed >= "1.17" -> 16
             else -> 8

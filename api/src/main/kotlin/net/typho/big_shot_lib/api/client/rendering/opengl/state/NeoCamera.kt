@@ -4,7 +4,6 @@ import net.typho.big_shot_lib.api.math.vec.AbstractVec2
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import org.joml.Quaternionf
 
-@JvmRecord
 data class NeoCamera(
     @JvmField
     val pos: AbstractVec3<Float, *>,

@@ -1,10 +1,5 @@
 package net.typho.big_shot_lib.impl.client.rendering.opengl.state
 
-//? if <1.21.5 {
-//? } else {
-/*import com.mojang.blaze3d.opengl.GlStateManager
-*///? }
-
 import com.mojang.blaze3d.platform.GlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
