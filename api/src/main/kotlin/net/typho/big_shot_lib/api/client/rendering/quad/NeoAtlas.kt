@@ -6,7 +6,9 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface NeoAtlas : NamedResource, GlTexture {
     val sprites: Map<NeoIdentifier, NeoAtlasSprite>
-    val width: Int
-    val height: Int
+    override val width: Int
+    override val height: Int
+    override val depth: Int?
+        get() = null
     val mipLevel: Int
 }

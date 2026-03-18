@@ -6,5 +6,7 @@ interface GlFramebuffer : GlResource {
     val width: Int
     val height: Int
 
+    var colorAttachments:
+
     fun bind(viewport: Boolean): GlBoundFramebuffer
 }

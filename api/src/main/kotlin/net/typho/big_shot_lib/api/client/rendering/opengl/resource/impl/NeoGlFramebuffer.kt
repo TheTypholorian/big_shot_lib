@@ -8,7 +8,19 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManage
 class NeoGlFramebuffer(glId: Int) : NeoGlResource(GlResourceType.FRAMEBUFFER, glId), GlFramebuffer {
     constructor() : this(GlResourceType.FRAMEBUFFER.create())
 
+    override var width: Int = 1
+        private set(value) {
+            field = value
+        }
+    override var height: Int = 1
+        private set(value) {
+            field = value
+        }
+
     override fun bind(viewport: Boolean): GlBoundFramebuffer {
-        return GlBoundFramebuffer.Basic(this, viewport, NeoGlStateManager.INSTANCE.framebuffer.push(glId))
+        return object : GlBoundFramebuffer.Basic(this, viewport, NeoGlStateManager.INSTANCE.framebuffer.push(glId)) {
+            override var width by this@NeoGlFramebuffer::width
+            override var height by this@NeoGlFramebuffer::height
+        }
     }
 }

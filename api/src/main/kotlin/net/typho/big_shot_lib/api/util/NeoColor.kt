@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.util
 
-import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.math.vec.*
+import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import java.awt.Color
 
 interface NeoColor {
@@ -65,21 +65,10 @@ interface NeoColor {
             { color -> color.toVec4F() }
         )
         @JvmField
-        val CODEC_ANY: Codec<NeoColor> = Codec.either(
-            CODEC_PACKED,
-            Codec.either(
-                CODEC_3I,
-                Codec.either(
-                    CODEC_4I,
-                    Codec.either(
-                        CODEC_3F,
-                        CODEC_4F
-                    )
-                )
-            )
-        ).xmap(
-            { either -> either.map({ l -> l }, { r -> r.map({ l -> l }, { r1 -> r1.map({ l -> l }, { r2 -> r2.map({ l -> l }, { r3 -> r3 }) }) }) }) },
-            { color -> Either.left(color) }
+        val CODEC_ANY: Codec<out NeoColor> = NeoCodecs.any(
+            CODEC_4I,
+            CODEC_3I,
+            CODEC_PACKED
         )
     }
 

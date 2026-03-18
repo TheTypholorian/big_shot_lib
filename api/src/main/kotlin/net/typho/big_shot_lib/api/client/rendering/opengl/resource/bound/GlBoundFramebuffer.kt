@@ -2,36 +2,25 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAttachmentIndex
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit.Companion.initAndGetMask
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlFramebufferStatus
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundResource.Companion.assertBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlRenderbuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
-import org.lwjgl.opengl.GL11.GL_FALSE
-import org.lwjgl.opengl.GL11.GL_NONE
-import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
-import org.lwjgl.opengl.GL11.GL_TRUE
-import org.lwjgl.opengl.GL11.glClear
-import org.lwjgl.opengl.GL11.glReadBuffer
-import org.lwjgl.opengl.GL11.glViewport
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
+import net.typho.big_shot_lib.api.math.rect.NeoRect2i
+import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20.glDrawBuffers
 import org.lwjgl.opengl.GL30.GL_FRAMEBUFFER
-import org.lwjgl.opengl.GL30.GL_RENDERBUFFER
 import org.lwjgl.opengl.GL30.glCheckFramebufferStatus
-import org.lwjgl.opengl.GL30.glFramebufferRenderbuffer
-import org.lwjgl.opengl.GL30.glFramebufferTexture2D
-import org.lwjgl.opengl.GL43.GL_FRAMEBUFFER_DEFAULT_FIXED_SAMPLE_LOCATIONS
-import org.lwjgl.opengl.GL43.GL_FRAMEBUFFER_DEFAULT_HEIGHT
-import org.lwjgl.opengl.GL43.GL_FRAMEBUFFER_DEFAULT_LAYERS
-import org.lwjgl.opengl.GL43.GL_FRAMEBUFFER_DEFAULT_SAMPLES
-import org.lwjgl.opengl.GL43.GL_FRAMEBUFFER_DEFAULT_WIDTH
-import org.lwjgl.opengl.GL43.glFramebufferParameteri
-import org.lwjgl.opengl.GL43.glGetFramebufferParameteri
+import org.lwjgl.opengl.GL43.*
 
 interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
+    var width: Int
+    var height: Int
+
     var defaultWidth: Int
     var defaultHeight: Int
     var defaultLayers: Int
@@ -40,9 +29,11 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
 
     fun clear(vararg bits: GlClearBit)
 
-    fun attach(index: GlAttachmentIndex, texture: GlTexture, level: Int)
+    fun attach(index: GlAttachmentIndex, type: GlFramebufferAttachmentType, format: GlTextureFormat)
 
-    fun attach(index: GlAttachmentIndex, renderbuffer: GlRenderbuffer)
+    fun attachTexture2D(index: GlAttachmentIndex, format: GlTextureFormat): GlTexture
+
+    fun attachTexture2D(index: GlAttachmentIndex, texture: GlTexture)
 
     fun readBuffer(buffer: GlAttachmentIndex.Color)
 
@@ -50,7 +41,7 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
 
     fun checkStatus(): GlFramebufferStatus
 
-    open class Basic(
+    abstract class Basic(
         override val resource: GlFramebuffer,
         @JvmField
         val viewport: Boolean,
@@ -75,7 +66,7 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
         init {
             if (viewport) {
                 assertBound {
-                    glViewport()
+                    NeoGlStateManager.INSTANCE.viewport.push(NeoRect2i(0, 0, width, height))
                 }
             }
         }
@@ -88,21 +79,24 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
 
         override fun attach(
             index: GlAttachmentIndex,
-            texture: GlTexture,
-            level: Int
+            type: GlFramebufferAttachmentType,
+            format: GlTextureFormat
         ) {
-            assertBound {
-                glFramebufferTexture2D(GL_FRAMEBUFFER, index.glId, GL_TEXTURE_2D, texture.glId, level)
-            }
+            TODO("Not yet implemented")
         }
 
-        override fun attach(
+        override fun attachTexture2D(
             index: GlAttachmentIndex,
-            renderbuffer: GlRenderbuffer
+            format: GlTextureFormat
+        ): GlTexture {
+            TODO("Not yet implemented")
+        }
+
+        override fun attachTexture2D(
+            index: GlAttachmentIndex,
+            texture: GlTexture
         ) {
-            assertBound {
-                glFramebufferRenderbuffer(GL_FRAMEBUFFER, index.glId, GL_RENDERBUFFER, renderbuffer.glId)
-            }
+            TODO("Not yet implemented")
         }
 
         override fun readBuffer(buffer: GlAttachmentIndex.Color) {

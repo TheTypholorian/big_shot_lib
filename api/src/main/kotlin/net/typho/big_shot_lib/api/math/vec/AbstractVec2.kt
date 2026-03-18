@@ -27,55 +27,55 @@ abstract class AbstractVec2<N : Number, V2 : AbstractVec2<N, V2>>(
 
     protected abstract fun create(x: N, y: N): V2
 
-    fun plus(x: N, y: N): V2 {
-        return create(opSet.plus(this.x, x), opSet.plus(this.y, y))
+    fun plus(x: Number, y: Number): V2 {
+        return create(opSet.plus(this.x, opSet.convert(x)), opSet.plus(this.y, opSet.convert(y)))
     }
 
-    fun minus(x: N, y: N): V2 {
-        return create(opSet.minus(this.x, x), opSet.minus(this.y, y))
+    fun minus(x: Number, y: Number): V2 {
+        return create(opSet.minus(this.x, opSet.convert(x)), opSet.minus(this.y, opSet.convert(y)))
     }
 
-    fun times(x: N, y: N): V2 {
-        return create(opSet.times(this.x, x), opSet.times(this.y, y))
+    fun times(x: Number, y: Number): V2 {
+        return create(opSet.times(this.x, opSet.convert(x)), opSet.times(this.y, opSet.convert(y)))
     }
 
-    fun div(x: N, y: N): V2 {
-        return create(opSet.div(this.x, x), opSet.div(this.y, y))
+    fun div(x: Number, y: Number): V2 {
+        return create(opSet.div(this.x, opSet.convert(x)), opSet.div(this.y, opSet.convert(y)))
     }
 
-    fun rem(x: N, y: N): V2 {
-        return create(opSet.rem(this.x, x), opSet.rem(this.y, y))
+    fun rem(x: Number, y: Number): V2 {
+        return create(opSet.rem(this.x, opSet.convert(x)), opSet.rem(this.y, opSet.convert(y)))
     }
 
-    fun min(x: N, y: N): V2 {
-        return create(opSet.min(this.x, x), opSet.min(this.y, y))
+    fun min(x: Number, y: Number): V2 {
+        return create(opSet.min(this.x, opSet.convert(x)), opSet.min(this.y, opSet.convert(y)))
     }
 
-    fun max(x: N, y: N): V2 {
-        return create(opSet.max(this.x, x), opSet.max(this.y, y))
+    fun max(x: Number, y: Number): V2 {
+        return create(opSet.max(this.x, opSet.convert(x)), opSet.max(this.y, opSet.convert(y)))
     }
 
-    fun distance(x: N, y: N): Float {
+    fun distance(x: Number, y: Number): Float {
         return minus(x, y).length
     }
 
-    fun distanceSquared(x: N, y: N): N {
+    fun distanceSquared(x: Number, y: Number): N {
         return minus(x, y).lengthSquared
     }
 
-    fun gridDistance(x: N, y: N): N {
+    fun gridDistance(x: Number, y: Number): N {
         return minus(x, y).gridLength
     }
 
-    fun inDistance(x: N, y: N, dist: N): Boolean {
+    fun inDistance(x: Number, y: Number, dist: N): Boolean {
         return inDistanceSquared(x, y, opSet.times(dist, dist))
     }
 
-    fun inDistanceSquared(x: N, y: N, dist: N): Boolean {
+    fun inDistanceSquared(x: Number, y: Number, dist: N): Boolean {
         return opSet.lessThan(distanceSquared(x, y), dist)
     }
 
-    fun inGridDistance(x: N, y: N, dist: N): Boolean {
+    fun inGridDistance(x: Number, y: Number, dist: N): Boolean {
         return opSet.lessThan(gridDistance(x, y), dist)
     }
 
@@ -87,109 +87,109 @@ abstract class AbstractVec2<N : Number, V2 : AbstractVec2<N, V2>>(
         return opSet.max(x, y)
     }
 
-    fun anyGreaterThan(x: N, y: N): Boolean {
-        return opSet.greaterThan(this.x, x) || opSet.greaterThan(this.y, y)
+    fun anyGreaterThan(x: Number, y: Number): Boolean {
+        return opSet.greaterThan(this.x, opSet.convert(x)) || opSet.greaterThan(this.y, opSet.convert(y))
     }
 
-    fun allGreaterThan(x: N, y: N): Boolean {
-        return opSet.greaterThan(this.x, x) && opSet.greaterThan(this.y, y)
+    fun allGreaterThan(x: Number, y: Number): Boolean {
+        return opSet.greaterThan(this.x, opSet.convert(x)) && opSet.greaterThan(this.y, opSet.convert(y))
     }
 
-    fun anyGequalThan(x: N, y: N): Boolean {
-        return opSet.gequalThan(this.x, x) || opSet.gequalThan(this.y, y)
+    fun anyGequalThan(x: Number, y: Number): Boolean {
+        return opSet.gequalThan(this.x, opSet.convert(x)) || opSet.gequalThan(this.y, opSet.convert(y))
     }
 
-    fun allGequalThan(x: N, y: N): Boolean {
-        return opSet.gequalThan(this.x, x) && opSet.gequalThan(this.y, y)
+    fun allGequalThan(x: Number, y: Number): Boolean {
+        return opSet.gequalThan(this.x, opSet.convert(x)) && opSet.gequalThan(this.y, opSet.convert(y))
     }
 
-    fun anyLessThan(x: N, y: N): Boolean {
-        return opSet.lessThan(this.x, x) || opSet.lessThan(this.y, y)
+    fun anyLessThan(x: Number, y: Number): Boolean {
+        return opSet.lessThan(this.x, opSet.convert(x)) || opSet.lessThan(this.y, opSet.convert(y))
     }
 
-    fun allLessThan(x: N, y: N): Boolean {
-        return opSet.lessThan(this.x, x) && opSet.lessThan(this.y, y)
+    fun allLessThan(x: Number, y: Number): Boolean {
+        return opSet.lessThan(this.x, opSet.convert(x)) && opSet.lessThan(this.y, opSet.convert(y))
     }
 
-    fun anyLequalThan(x: N, y: N): Boolean {
-        return opSet.lequalThan(this.x, x) || opSet.lequalThan(this.y, y)
+    fun anyLequalThan(x: Number, y: Number): Boolean {
+        return opSet.lequalThan(this.x, opSet.convert(x)) || opSet.lequalThan(this.y, opSet.convert(y))
     }
 
-    fun allLequalThan(x: N, y: N): Boolean {
-        return opSet.lequalThan(this.x, x) && opSet.lequalThan(this.y, y)
+    fun allLequalThan(x: Number, y: Number): Boolean {
+        return opSet.lequalThan(this.x, opSet.convert(x)) && opSet.lequalThan(this.y, opSet.convert(y))
     }
 
-    operator fun plus(other: AbstractVec2<N, *>) = plus(other.x, other.y)
+    operator fun plus(other: AbstractVec2<*, *>) = plus(other.x, other.y)
 
-    operator fun plus(x: N) = plus(x, x)
+    operator fun plus(x: Number) = plus(x, x)
 
-    operator fun minus(other: AbstractVec2<N, *>) = minus(other.x, other.y)
+    operator fun minus(other: AbstractVec2<*, *>) = minus(other.x, other.y)
 
-    operator fun minus(x: N) = minus(x, x)
+    operator fun minus(x: Number) = minus(x, x)
 
-    operator fun times(other: AbstractVec2<N, *>) = times(other.x, other.y)
+    operator fun times(other: AbstractVec2<*, *>) = times(other.x, other.y)
 
-    operator fun times(x: N) = times(x, x)
+    operator fun times(x: Number) = times(x, x)
 
-    operator fun div(other: AbstractVec2<N, *>) = div(other.x, other.y)
+    operator fun div(other: AbstractVec2<*, *>) = div(other.x, other.y)
 
-    operator fun div(x: N) = div(x, x)
+    operator fun div(x: Number) = div(x, x)
 
-    operator fun rem(other: AbstractVec2<N, *>) = rem(other.x, other.y)
+    operator fun rem(other: AbstractVec2<*, *>) = rem(other.x, other.y)
 
-    operator fun rem(x: N) = rem(x, x)
+    operator fun rem(x: Number) = rem(x, x)
 
-    fun min(other: AbstractVec2<N, *>) = min(other.x, other.y)
+    fun min(other: AbstractVec2<*, *>) = min(other.x, other.y)
 
-    fun min(x: N) = min(x, x)
+    fun min(x: Number) = min(x, x)
 
-    fun max(other: AbstractVec2<N, *>) = max(other.x, other.y)
+    fun max(other: AbstractVec2<*, *>) = max(other.x, other.y)
 
-    fun max(x: N) = max(x, x)
+    fun max(x: Number) = max(x, x)
 
-    fun distance(other: AbstractVec2<N, *>) = distance(other.x, other.y)
+    fun distance(other: AbstractVec2<*, *>) = distance(other.x, other.y)
 
-    fun distanceSquared(other: AbstractVec2<N, *>) = distanceSquared(other.x, other.y)
+    fun distanceSquared(other: AbstractVec2<*, *>) = distanceSquared(other.x, other.y)
 
-    fun gridDistance(other: AbstractVec2<N, *>) = gridDistance(other.x, other.y)
+    fun gridDistance(other: AbstractVec2<*, *>) = gridDistance(other.x, other.y)
 
-    fun inDistance(other: AbstractVec2<N, *>, dist: N) = inDistance(other.x, other.y, dist)
+    fun inDistance(other: AbstractVec2<*, *>, dist: N) = inDistance(other.x, other.y, dist)
 
-    fun inDistanceSquared(other: AbstractVec2<N, *>, dist: N) = inDistanceSquared(other.x, other.y, dist)
+    fun inDistanceSquared(other: AbstractVec2<*, *>, dist: N) = inDistanceSquared(other.x, other.y, dist)
 
-    fun inGridDistance(other: AbstractVec2<N, *>, dist: N) = inGridDistance(other.x, other.y, dist)
+    fun inGridDistance(other: AbstractVec2<*, *>, dist: N) = inGridDistance(other.x, other.y, dist)
 
-    fun anyGreaterThan(other: AbstractVec2<N, *>) = anyGreaterThan(other.x, other.y)
+    fun anyGreaterThan(other: AbstractVec2<*, *>) = anyGreaterThan(other.x, other.y)
 
-    fun anyGreaterThan(x: N) = anyGreaterThan(x, x)
+    fun anyGreaterThan(x: Number) = anyGreaterThan(x, x)
 
-    fun allGreaterThan(other: AbstractVec2<N, *>) = allGreaterThan(other.x, other.y)
+    fun allGreaterThan(other: AbstractVec2<*, *>) = allGreaterThan(other.x, other.y)
 
-    fun allGreaterThan(x: N) = allGreaterThan(x, x)
+    fun allGreaterThan(x: Number) = allGreaterThan(x, x)
 
-    fun anyGequalThan(other: AbstractVec2<N, *>) = anyGequalThan(other.x, other.y)
+    fun anyGequalThan(other: AbstractVec2<*, *>) = anyGequalThan(other.x, other.y)
 
-    fun anyGequalThan(x: N) = anyGequalThan(x, x)
+    fun anyGequalThan(x: Number) = anyGequalThan(x, x)
 
-    fun allGequalThan(other: AbstractVec2<N, *>) = allGequalThan(other.x, other.y)
+    fun allGequalThan(other: AbstractVec2<*, *>) = allGequalThan(other.x, other.y)
 
-    fun allGequalThan(x: N) = allGequalThan(x, x)
+    fun allGequalThan(x: Number) = allGequalThan(x, x)
 
-    fun anyLessThan(other: AbstractVec2<N, *>) = anyLessThan(other.x, other.y)
+    fun anyLessThan(other: AbstractVec2<*, *>) = anyLessThan(other.x, other.y)
 
-    fun anyLessThan(x: N) = anyLessThan(x, x)
+    fun anyLessThan(x: Number) = anyLessThan(x, x)
 
-    fun allLessThan(other: AbstractVec2<N, *>) = allLessThan(other.x, other.y)
+    fun allLessThan(other: AbstractVec2<*, *>) = allLessThan(other.x, other.y)
 
-    fun allLessThan(x: N) = allLessThan(x, x)
+    fun allLessThan(x: Number) = allLessThan(x, x)
 
-    fun anyLequalThan(other: AbstractVec2<N, *>) = anyLequalThan(other.x, other.y)
+    fun anyLequalThan(other: AbstractVec2<*, *>) = anyLequalThan(other.x, other.y)
 
-    fun anyLequalThan(x: N) = anyLequalThan(x, x)
+    fun anyLequalThan(x: Number) = anyLequalThan(x, x)
 
-    fun allLequalThan(other: AbstractVec2<N, *>) = allLequalThan(other.x, other.y)
+    fun allLequalThan(other: AbstractVec2<*, *>) = allLequalThan(other.x, other.y)
 
-    fun allLequalThan(x: N) = allLequalThan(x, x)
+    fun allLequalThan(x: Number) = allLequalThan(x, x)
 
     operator fun unaryPlus() = this
 
