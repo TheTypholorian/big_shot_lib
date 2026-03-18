@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.util
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.VertexConsumer
+import com.mojang.serialization.DataResult
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
@@ -81,6 +82,8 @@ interface WrapperUtil {
     fun positionTexColorNormalVertexFormat(): NeoVertexFormat
 
     fun createBufferBuilder(size: Int, mode: GlBeginMode, format: NeoVertexFormat): BufferBuilder
+
+    fun <R> dataResultError(message: () -> String): DataResult<R>
 
     companion object {
         @JvmField
