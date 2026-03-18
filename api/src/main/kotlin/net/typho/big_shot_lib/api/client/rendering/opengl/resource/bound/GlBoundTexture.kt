@@ -185,7 +185,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
             get() = assertBound { GlNamed.getEnum<GlTextureSwizzle>(glGetTexParameteri(target.glId, GL_TEXTURE_SWIZZLE_RGBA)) }
             set(value) = assertBound { glTexParameteri(target.glId, GL_TEXTURE_SWIZZLE_RGBA, value.glId) }
 
-        protected abstract fun resize(width: Int, height: Int?, depth: Int?, format: GlTextureFormat)
+        protected abstract fun resize(width: Int, height: Int, depth: Int, format: GlTextureFormat)
 
         override fun textureDataMutable1D(
             width: Int,
@@ -205,7 +205,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
                     format.type,
                     data.address
                 )
-                resize(width, null, null, format)
+                resize(width, -1, -1, format)
             }
         }
 
@@ -229,7 +229,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
                     format.type,
                     data.address
                 )
-                resize(width, height, null, format)
+                resize(width, height, -1, format)
             }
         }
 
@@ -249,7 +249,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
                     height,
                     fixedSampleLocations
                 )
-                resize(width, height, null, format)
+                resize(width, height, -1, format)
             }
         }
 
@@ -308,7 +308,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
         ) {
             assertBound {
                 glTexStorage1D(target.glId, levels, format.internalId, width)
-                resize(width, null, null, format)
+                resize(width, -1, -1, format)
             }
         }
 
@@ -320,7 +320,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
         ) {
             assertBound {
                 glTexStorage2D(target.glId, levels, format.internalId, width, height)
-                resize(width, height, null, format)
+                resize(width, height, -1, format)
             }
         }
 
@@ -333,7 +333,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
         ) {
             assertBound {
                 glTexStorage2DMultisample(target.glId, samples, format.internalId, width, height, fixedSampleLocations)
-                resize(width, height, null, format)
+                resize(width, height, -1, format)
             }
         }
 

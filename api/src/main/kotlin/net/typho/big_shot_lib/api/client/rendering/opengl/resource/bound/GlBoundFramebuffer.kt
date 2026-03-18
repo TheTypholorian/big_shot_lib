@@ -4,13 +4,13 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit.Companion.initAndGetMask
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlFramebufferStatus
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundResource.Companion.assertBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebufferAttachment
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
-import net.typho.big_shot_lib.api.math.rect.NeoRect2i
+import net.typho.big_shot_lib.api.math.rect.AbstractRect2
+import net.typho.big_shot_lib.api.util.KeyedDelegate
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20.glDrawBuffers
 import org.lwjgl.opengl.GL30.GL_FRAMEBUFFER
@@ -18,33 +18,27 @@ import org.lwjgl.opengl.GL30.glCheckFramebufferStatus
 import org.lwjgl.opengl.GL43.*
 
 interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
-    var width: Int
-    var height: Int
-
     var defaultWidth: Int
     var defaultHeight: Int
     var defaultLayers: Int
     var defaultSamples: Int
     var defaultFixedSampleLocations: Boolean
 
+    val colorAttachments: KeyedDelegate<Int, GlFramebufferAttachment?>
+    var depthAttachment: GlFramebufferAttachment?
+
     fun clear(vararg bits: GlClearBit)
 
-    fun attach(index: GlAttachmentIndex, type: GlFramebufferAttachmentType, format: GlTextureFormat)
+    fun readBuffer(buffer: Int)
 
-    fun attachTexture2D(index: GlAttachmentIndex, format: GlTextureFormat): GlTexture
-
-    fun attachTexture2D(index: GlAttachmentIndex, texture: GlTexture)
-
-    fun readBuffer(buffer: GlAttachmentIndex.Color)
-
-    fun drawBuffers(vararg buffers: GlAttachmentIndex.Color)
+    fun drawBuffers(vararg buffers: Int)
 
     fun checkStatus(): GlFramebufferStatus
 
     abstract class Basic(
         override val resource: GlFramebuffer,
         @JvmField
-        val viewport: Boolean,
+        val viewport: AbstractRect2<Int, *, *>?,
         override val handle: GlStateStack.Handle<Int>
     ) : GlBoundFramebuffer {
         override var defaultWidth: Int
@@ -64,10 +58,8 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
             set(value) = assertBound { glFramebufferParameteri(GL_FRAMEBUFFER, GL_FRAMEBUFFER_DEFAULT_WIDTH, if (value) GL_TRUE else GL_FALSE) }
 
         init {
-            if (viewport) {
-                assertBound {
-                    NeoGlStateManager.INSTANCE.viewport.push(NeoRect2i(0, 0, width, height))
-                }
+            viewport?.let {
+                NeoGlStateManager.INSTANCE.viewport.push(it)
             }
         }
 
@@ -77,42 +69,28 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
             }
         }
 
-        override fun attach(
-            index: GlAttachmentIndex,
-            type: GlFramebufferAttachmentType,
-            format: GlTextureFormat
-        ) {
-            TODO("Not yet implemented")
-        }
-
-        override fun attachTexture2D(
-            index: GlAttachmentIndex,
-            format: GlTextureFormat
-        ): GlTexture {
-            TODO("Not yet implemented")
-        }
-
-        override fun attachTexture2D(
-            index: GlAttachmentIndex,
-            texture: GlTexture
-        ) {
-            TODO("Not yet implemented")
-        }
-
-        override fun readBuffer(buffer: GlAttachmentIndex.Color) {
+        override fun readBuffer(buffer: Int) {
             assertBound {
-                glReadBuffer(buffer.glId)
+                glReadBuffer(buffer)
             }
         }
 
-        override fun drawBuffers(vararg buffers: GlAttachmentIndex.Color) {
+        override fun drawBuffers(vararg buffers: Int) {
             assertBound {
-                glDrawBuffers(buffers.map { it.glId }.ifEmpty { listOf(GL_NONE) }.toIntArray())
+                glDrawBuffers(buffers)
             }
         }
 
         override fun checkStatus(): GlFramebufferStatus {
             return assertBound { GlNamed.getEnum(glCheckFramebufferStatus(GL_FRAMEBUFFER)) }
+        }
+
+        override fun unbind() {
+            if (viewport != null) {
+                NeoGlStateManager.INSTANCE.viewport.pop()
+            }
+
+            super.unbind()
         }
     }
 }

@@ -14,14 +14,14 @@ class NeoGlTexture(glId: Int) : NeoGlResource(GlResourceType.TEXTURE, glId), GlT
         private set
     override var width: Int = 1
         private set
-    override var height: Int? = null
+    override var height: Int = -1
         private set
-    override var depth: Int? = null
+    override var depth: Int = -1
         private set
 
     override fun bind(target: GlTextureTarget): GlBoundTexture {
         return object : GlBoundTexture.Basic(this, target, NeoGlStateManager.INSTANCE.textures[target].push(glId)) {
-            override fun resize(width: Int, height: Int?, depth: Int?, format: GlTextureFormat) {
+            override fun resize(width: Int, height: Int, depth: Int, format: GlTextureFormat) {
                 this@NeoGlTexture.format = format
                 this@NeoGlTexture.width = width
                 this@NeoGlTexture.height = height

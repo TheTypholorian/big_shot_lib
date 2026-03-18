@@ -1,5 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
+
 interface GlFramebufferAttachment {
-    fun attach(target: Int, attachment: Int, width: Int, height: Int)
+    val format: GlTextureFormat?
+    val width: Int
+    val height: Int
+
+    fun attach(target: Int, attachment: Int)
 }
