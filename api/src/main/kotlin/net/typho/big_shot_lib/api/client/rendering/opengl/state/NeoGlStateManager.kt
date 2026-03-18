@@ -32,6 +32,32 @@ interface NeoGlStateManager {
     val stencilOp: GlStateStack<StencilOp>
     val viewport: GlStateStack<AbstractRect2<Int, *, *>>
 
+    val blendEnabled: GlStateStack<Boolean>
+    val colorLogicOpEnabled: GlStateStack<Boolean>
+    val cullFaceEnabled: GlStateStack<Boolean>
+    val debugOutputEnabled: GlStateStack<Boolean>
+    val debugOutputSynchronousEnabled: GlStateStack<Boolean>
+    val depthClampEnabled: GlStateStack<Boolean>
+    val depthEnabled: GlStateStack<Boolean>
+    val ditherEnabled: GlStateStack<Boolean>
+    val framebufferSRGBEnabled: GlStateStack<Boolean>
+    val lineSmoothEnabled: GlStateStack<Boolean>
+    val multisampleEnabled: GlStateStack<Boolean>
+    val polygonOffsetEnabled: GlStateStack<Boolean>
+    val polygonSmoothEnabled: GlStateStack<Boolean>
+    val primitiveRestartEnabled: GlStateStack<Boolean>
+    val primitiveRestartFixedIndexEnabled: GlStateStack<Boolean>
+    val rasterizerDiscardEnabled: GlStateStack<Boolean>
+    val sampleAlphaToCoverageEnabled: GlStateStack<Boolean>
+    val sampleAlphaToOneEnabled: GlStateStack<Boolean>
+    val sampleCoverageEnabled: GlStateStack<Boolean>
+    val sampleShadingEnabled: GlStateStack<Boolean>
+    val sampleMaskEnabled: GlStateStack<Boolean>
+    val scissorEnabled: GlStateStack<Boolean>
+    val stencilEnabled: GlStateStack<Boolean>
+    val textureCubeMapSeamlessEnabled: GlStateStack<Boolean>
+    val programPointSizeEnabled: GlStateStack<Boolean>
+
     companion object {
         @JvmField
         val INSTANCE = NeoGlStateManager::class.loadService()

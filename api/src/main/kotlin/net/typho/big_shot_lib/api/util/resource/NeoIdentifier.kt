@@ -1,9 +1,6 @@
 package net.typho.big_shot_lib.api.util.resource
 
 import com.mojang.serialization.Codec
-import io.netty.buffer.ByteBuf
-import net.minecraft.network.codec.ByteBufCodecs
-import net.minecraft.network.codec.StreamCodec
 
 @JvmRecord
 data class NeoIdentifier(
@@ -83,11 +80,13 @@ data class NeoIdentifier(
             ::NeoIdentifier,
             NeoIdentifier::toString
         )
+        /*
         @JvmField
         val STREAM_CODEC: StreamCodec<ByteBuf, NeoIdentifier> = ByteBufCodecs.STRING_UTF8.map(
             ::NeoIdentifier,
             NeoIdentifier::toString
         )
+         */
         const val DEFAULT_NAMESPACE = "minecraft"
         const val DEFAULT_DELIMITER = ':'
 

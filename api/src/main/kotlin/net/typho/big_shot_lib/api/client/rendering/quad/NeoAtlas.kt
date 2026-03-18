@@ -8,7 +8,7 @@ interface NeoAtlas : NamedResource, GlTexture {
     val sprites: Map<NeoIdentifier, NeoAtlasSprite>
     override val width: Int
     override val height: Int
-    override val depth: Int?
-        get() = null
+    override val depth: Int
+        get() = -1
     val mipLevel: Int
 }

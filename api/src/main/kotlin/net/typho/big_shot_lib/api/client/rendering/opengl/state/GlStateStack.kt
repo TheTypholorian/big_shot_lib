@@ -1,5 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
+import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.NativeResource
 
 interface GlStateStack<V> {
@@ -28,7 +30,7 @@ interface GlStateStack<V> {
         override fun free() = pop()
     }
 
-    class Impl<V>(
+    open class Impl<V>(
         @JvmField
         val bind: (value: V) -> Unit,
         @JvmField
@@ -93,4 +95,11 @@ interface GlStateStack<V> {
             }
         }
     }
+
+    open class Flag(
+        override val glId: Int
+    ) : Impl<Boolean>(
+        { if (it) glEnable(glId) else glDisable(glId) },
+        { glIsEnabled(glId) }
+    ), GlNamed
 }

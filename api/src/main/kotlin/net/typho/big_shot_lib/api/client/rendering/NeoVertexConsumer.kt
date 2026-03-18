@@ -139,11 +139,7 @@ interface NeoVertexConsumer {
         return this
     }
 
-    fun normal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): NeoVertexConsumer {
-        val transformed = pose.transformNormal(x, y, z, Vector3f())
-        normal(transformed.x, transformed.y, transformed.z)
-        return this
-    }
+    fun normal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): NeoVertexConsumer
 
     fun normal(pose: PoseStack.Pose, normal: AbstractVec3<*, *>): NeoVertexConsumer {
         normal(pose, normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())

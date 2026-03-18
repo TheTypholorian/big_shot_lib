@@ -50,15 +50,15 @@ abstract class AbstractRect3<N : Number, R3 : AbstractRect3<N, R3, V3>, V3 : Abs
 
     fun extend(direction: NeoDirection, x: N): R3 {
         return if (direction.axisDirection == NeoDirection.AxisDirection.POSITIVE) {
-            create(min, max.plus(direction, x))
+            create(min, max.plus(direction.inc * x))
         } else {
-            create(min.plus(direction, x), max)
+            create(min.plus(direction.inc * x), max)
         }
     }
 
     fun move(direction: NeoDirection) = create(min.plus(direction), max.plus(direction))
 
-    fun move(direction: NeoDirection, x: N) = create(min.plus(direction, x), max.plus(direction, x))
+    fun move(direction: NeoDirection, x: N) = create(min.plus(direction.inc * x), max.plus(direction.inc * x))
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

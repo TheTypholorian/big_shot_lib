@@ -1,7 +1,5 @@
 package net.typho.big_shot_lib.api.math.minecraft
 
-import net.minecraft.core.BlockBox
-import net.minecraft.core.BlockPos
 import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.rect.AbstractRect3
@@ -9,12 +7,6 @@ import net.typho.big_shot_lib.api.math.rect.AbstractRect3
 class NeoBlockBox : AbstractRect3<Int, NeoBlockBox, NeoBlockPos>, Iterable<NeoBlockPos> {
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet
-
-    val mojang: BlockBox
-        get() = BlockBox(
-            BlockPos(min.x, min.y, min.z),
-            BlockPos(max.x, max.y, max.z)
-        )
 
     constructor(min: NeoBlockPos, max: NeoBlockPos) : super(min, max)
 

@@ -5,6 +5,7 @@ import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
 
 object BigShotApiClient : BigShotClientEntrypoint {
     override fun registerReloadListeners(factory: ResourceListenerFactory) {
-        factory.register(NeoShaderRegistry)
+        // TODO
+        //factory.register(NeoShaderRegistry)
     }
 }
