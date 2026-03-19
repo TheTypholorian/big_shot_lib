@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.quad
 
-import net.typho.big_shot_lib.api.client.rendering.NeoVertexConsumer
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.math.vec.*
 import net.typho.big_shot_lib.api.util.NeoColor
 import java.util.function.UnaryOperator
@@ -100,6 +100,20 @@ interface NeoVertexData {
         normal?.let(consumer::normal)
     }
 
+    open class PositionTexture(
+        override val pos: AbstractVec3<Float, *>,
+        override val textureUV: AbstractVec2<Float, *>
+    ) : NeoVertexData {
+        override val color: NeoColor?
+            get() = null
+        override val overlayUV: AbstractVec2<Int, *>?
+            get() = null
+        override val lightUV: AbstractVec2<Int, *>?
+            get() = null
+        override val normal: AbstractVec3<Float, *>?
+            get() = null
+    }
+
     open class LazyPacked(
         @JvmField
         val data: IntArray,
@@ -139,6 +153,7 @@ interface NeoVertexData {
             consumer.textureUV(data, offset + 4)
             consumer.overlayUV(data, offset + 6)
             consumer.normal(data, offset + 7)
+            consumer.endVertex()
         }
     }
 }

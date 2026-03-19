@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering
+package net.typho.big_shot_lib.api.client.rendering.util
 
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi

@@ -45,12 +45,12 @@ object BlockUtilImpl : BlockUtil {
 
     override fun getBlockRenderSettings(state: BlockState): BlockRenderSettings? {
         return when (ItemBlockRenderTypes.getChunkRenderType(state)) {
+            //? if >=1.21.10 {
+            /*ChunkSectionLayer.CUTOUT_MIPPED -> BlockRenderSettings.CUTOUT
+            *///? }
             //? if >=1.21.9 {
             /*ChunkSectionLayer.SOLID -> BlockRenderSettings.SOLID
             ChunkSectionLayer.CUTOUT -> BlockRenderSettings.CUTOUT
-            //? if >= 1.21.11 {
-            ChunkSectionLayer.CUTOUT_MIPPED -> BlockRenderSettings.CUTOUT
-            //? }
             ChunkSectionLayer.TRANSLUCENT -> BlockRenderSettings.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockRenderSettings.TRIPWIRE
             *///? } else {

@@ -1,5 +1,9 @@
 package net.typho.big_shot_lib.impl.mixin;
 
+//? if >=1.21.11 {
+/*import org.joml.Vector3fc;
+*///? }
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -7,6 +11,9 @@ import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlasSprite;
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad;
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoVertexData;
 import net.typho.big_shot_lib.api.math.NeoDirection;
+import net.typho.big_shot_lib.api.math.NeoDirectionKt;
+import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
+import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +25,7 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(BakedQuad.class)
 public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad> {
+    //? if <1.21.11 {
     @Shadow
     @Final
     protected int[] vertices;
@@ -36,15 +44,16 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
     protected TextureAtlasSprite sprite;
 
     @Shadow
-    public abstract boolean isShade();
-
+    @Final
+    private boolean shade;
     @Unique
     private final NeoBakedQuad big_shot_lib$extension_value = new NeoBakedQuad() {
         private NeoVertexData[] vertices;
 
         @Override
         @NotNull
-        public NeoVertexData @NotNull [] getVertices() {
+        @SuppressWarnings("NullableProblems")
+        public NeoVertexData[] getVertices() {
             if (vertices == null) {
                 vertices = new NeoVertexData[]{
                         new NeoVertexData.LazyPacked(BakedQuadMixin.this.vertices, 0),
@@ -66,18 +75,7 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
         @Override
         @Nullable
         public NeoDirection getDirection() {
-            if (direction == null) {
-                return null;
-            }
-
-            return switch (direction) {
-                case DOWN -> NeoDirection.DOWN;
-                case UP -> NeoDirection.UP;
-                case NORTH -> NeoDirection.NORTH;
-                case SOUTH -> NeoDirection.SOUTH;
-                case WEST -> NeoDirection.WEST;
-                case EAST -> NeoDirection.EAST;
-            };
+            return direction == null ? null : NeoDirectionKt.getNeo(direction);
         }
 
         @Override
@@ -89,9 +87,89 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
 
         @Override
         public boolean getShade() {
-            return isShade();
+            return shade;
         }
     };
+    //? } else {
+    /*@Shadow
+    @Final
+    private int tintIndex;
+
+    @Shadow
+    public abstract boolean isTinted();
+
+    @Shadow
+    @Final
+    private Direction direction;
+    @Shadow
+    @Final
+    private TextureAtlasSprite sprite;
+    @Shadow
+    @Final
+    private boolean shade;
+    @Shadow
+    @Final
+    private Vector3fc position0;
+    @Shadow
+    @Final
+    private Vector3fc position1;
+    @Shadow
+    @Final
+    private Vector3fc position2;
+    @Shadow
+    @Final
+    private Vector3fc position3;
+    @Shadow
+    @Final
+    private long packedUV0;
+    @Shadow
+    @Final
+    private long packedUV1;
+    @Shadow
+    @Final
+    private long packedUV2;
+    @Shadow
+    @Final
+    private long packedUV3;
+
+    @Unique
+    private final NeoBakedQuad big_shot_lib$extension_value = new NeoBakedQuad() {
+        @Override
+        @NotNull
+        @SuppressWarnings("NullableProblems")
+        public NeoVertexData[] getVertices() {
+            return new NeoVertexData[]{
+                    new NeoVertexData.PositionTexture(new NeoVec3f(position0), new NeoVec2f(packedUV0)),
+                    new NeoVertexData.PositionTexture(new NeoVec3f(position1), new NeoVec2f(packedUV1)),
+                    new NeoVertexData.PositionTexture(new NeoVec3f(position2), new NeoVec2f(packedUV2)),
+                    new NeoVertexData.PositionTexture(new NeoVec3f(position3), new NeoVec2f(packedUV3))
+            };
+        }
+
+        @Override
+        @Nullable
+        public Integer getTintIndex() {
+            return isTinted() ? tintIndex : null;
+        }
+
+        @Override
+        @Nullable
+        public NeoDirection getDirection() {
+            return direction == null ? null : NeoDirectionKt.getNeo(direction);
+        }
+
+        @Override
+        @NotNull
+        public NeoAtlasSprite getSprite() {
+            return ImmutableExtensionKt.getExtensionValue(sprite);
+        }
+
+        @Override
+        public boolean getShade() {
+            return shade;
+        }
+    };
+    *///? }
 
     @Override
     public NeoBakedQuad getBig_shot_lib$extension_value() {

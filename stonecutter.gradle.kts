@@ -7,7 +7,7 @@ plugins {
     //id("me.modmuss50.mod-publish-plugin") version "0.8.+" apply false
 }
 
-stonecutter active "mc1_20_6_neoforge"
+stonecutter active "mc1_21_1_fabric"
 stonecutter parameters {
     constants.match(node.metadata.project.substringAfterLast('_'), "fabric", "neoforge")
     filters.include("**/*.fsh", "**/*.vsh")
@@ -15,10 +15,6 @@ stonecutter parameters {
 
     replacements.string(current.parsed >= "1.21.5") {
         replace("com.mojang.blaze3d.platform.GlStateManager", "com.mojang.blaze3d.opengl.GlStateManager")
-    }
-
-    replacements.string(current.parsed >= "1.21.11") {
-        replace("net.minecraft.resources.ResourceLocation", "net.minecraft.resources.Identifier")
     }
 }
 

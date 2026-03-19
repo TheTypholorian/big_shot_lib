@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.quad
 
-import net.typho.big_shot_lib.api.client.rendering.NeoVertexConsumer
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.math.NeoDirection
 import java.util.function.UnaryOperator
 

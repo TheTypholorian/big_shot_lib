@@ -2,6 +2,9 @@ package net.typho.big_shot_lib.api.util
 
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.math.vec.*
+import net.typho.big_shot_lib.api.util.NeoColor.RGB
+import net.typho.big_shot_lib.api.util.NeoColor.RGBA
+import net.typho.big_shot_lib.api.util.NeoColor.RGBF
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import java.awt.Color
 
@@ -104,9 +107,9 @@ interface NeoColor {
 
     fun toVec4i() = NeoVec4i(red, green, blue, alpha ?: 255)
 
-    fun toARGB() = ((alpha ?: 255) shl 24) or (red shl 16) or (green shl 8) or blue
+    fun toARGB() = packInt((alpha ?: 255).toByte(), red.toByte(), green.toByte(), blue.toByte())
 
-    fun toRGBA() = (red shl 24) or (green shl 16) or (blue shl 8) or (alpha ?: 255)
+    fun toRGBA() = packInt(red.toByte(), green.toByte(), blue.toByte(), (alpha ?: 255).toByte())
 
     fun toIntArray() = intArrayOf(red, green, blue, alpha ?: 255)
 
@@ -118,7 +121,11 @@ interface NeoColor {
         override val green: Int,
         override val blue: Int
     ) : NeoColor {
-        constructor(rgb: Int) : this(rgb ushr 16 and 0xFF, rgb ushr 8 and 0xFF, rgb and 0xFF)
+        constructor(rgb: Int) : this(
+            rgb.byteAt(2).toInt(),
+            rgb.byteAt(1).toInt(),
+            rgb.byteAt(0).toInt()
+        )
 
         constructor(color: Color) : this(color.red, color.green, color.blue)
 
@@ -139,7 +146,12 @@ interface NeoColor {
         override val blue: Int,
         override val alpha: Int
     ) : NeoColor {
-        constructor(rgba: Int) : this(rgba ushr 24 and 0xFF, rgba ushr 16 and 0xFF, rgba ushr 8 and 0xFF, rgba and 0xFF)
+        constructor(rgba: Int) : this(
+            rgba.byteAt(3).toInt(),
+            rgba.byteAt(2).toInt(),
+            rgba.byteAt(1).toInt(),
+            rgba.byteAt(0).toInt()
+        )
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)
 
@@ -156,7 +168,11 @@ interface NeoColor {
         override val greenF: Float,
         override val blueF: Float
     ) : NeoColor {
-        constructor(rgb: Int) : this((rgb ushr 16 and 0xFF) / 255f, (rgb ushr 8 and 0xFF) / 255f, (rgb and 0xFF) / 255f)
+        constructor(rgb: Int) : this(
+            rgb.byteAt(2).toInt() / 255f,
+            rgb.byteAt(1).toInt() / 255f,
+            rgb.byteAt(0).toInt() / 255f
+        )
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f)
 
@@ -177,7 +193,12 @@ interface NeoColor {
         override val blueF: Float,
         override val alphaF: Float
     ) : NeoColor {
-        constructor(rgba: Int) : this((rgba ushr 24 and 0xFF) / 255f, (rgba ushr 16 and 0xFF) / 255f, (rgba ushr 8 and 0xFF) / 255f, (rgba and 0xFF) / 255f)
+        constructor(rgba: Int) : this(
+            rgba.byteAt(3).toInt() / 255f,
+            rgba.byteAt(2).toInt() / 255f,
+            rgba.byteAt(1).toInt() / 255f,
+            rgba.byteAt(0).toInt() / 255f
+        )
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
 

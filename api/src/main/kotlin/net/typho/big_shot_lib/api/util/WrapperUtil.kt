@@ -11,8 +11,8 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.api.BigShotApi.loadService
-import net.typho.big_shot_lib.api.client.rendering.NeoVertexConsumer
-import net.typho.big_shot_lib.api.client.rendering.NeoVertexFormat
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
@@ -32,6 +32,8 @@ interface WrapperUtil {
     fun wrap(quad: BakedQuad): NeoBakedQuad
 
     fun wrap(consumer: VertexConsumer): NeoVertexConsumer
+
+    fun unwrap(consumer: NeoVertexConsumer): VertexConsumer
 
     fun <T : Any> wrap(key: ResourceKey<T>): NeoResourceKey<T>
 

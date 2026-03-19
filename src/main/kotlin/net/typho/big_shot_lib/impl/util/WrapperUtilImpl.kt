@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 //? if >=1.21 {
-//import com.mojang.blaze3d.vertex.ByteBufferBuilder
+import com.mojang.blaze3d.vertex.ByteBufferBuilder
 //? }
 
 import com.mojang.blaze3d.pipeline.RenderTarget
@@ -9,6 +9,8 @@ import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
+import com.mojang.blaze3d.vertex.VertexFormat
+import com.mojang.blaze3d.vertex.VertexFormatElement
 import com.mojang.serialization.DataResult
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
@@ -18,19 +20,20 @@ import net.minecraft.server.packs.PackResources
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.tags.TagKey
-import net.typho.big_shot_lib.api.client.rendering.NeoVertexConsumer
-import net.typho.big_shot_lib.api.client.rendering.NeoVertexFormat
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
+import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.NeoRegistryAccess
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resource.NeoTagKey
-import net.typho.big_shot_lib.impl.client.rendering.NeoVertexFormatImpl
+import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
 import java.util.*
@@ -82,7 +85,11 @@ object WrapperUtilImpl : WrapperUtil {
             override val key: NeoResourceKey<out Registry<T>> = registry.key().neo
 
             override fun get(value: NeoIdentifier): T? {
+                //? if <1.21.2 {
                 return registry.get(value.mojang)
+                //? } else {
+                /*return registry.get(value.mojang).getOrNull()?.value()
+                *///? }
             }
 
             override fun getKey(value: T): NeoResourceKey<T> {
@@ -106,6 +113,7 @@ object WrapperUtilImpl : WrapperUtil {
             }
 
             override fun getTag(key: NeoTagKey<T>): Set<T>? {
+                //? if <1.21.2 {
                 return registry.getTag(key.mojang)
                     .map { set ->
                         set.stream()
@@ -113,10 +121,22 @@ object WrapperUtilImpl : WrapperUtil {
                             .collect(Collectors.toSet())
                     }
                     .getOrNull()
+                //? } else {
+                /*return if (registry.listTagIds().anyMatch { it.neo == key }) {
+                    registry.getTagOrEmpty(key.mojang).toList()
+                        .stream()
+                        .map { it.value() }
+                        .collect(Collectors.toSet())
+                } else null
+                *///? }
             }
 
             override fun tags(): Set<NeoTagKey<T>> {
+                //? if <1.21.2 {
                 return registry.tags.map { it.first.neo }.collect(Collectors.toSet())
+                //? } else {
+                /*return registry.listTagIds().map { it.neo }.collect(Collectors.toSet())
+                *///? }
             }
         }
     }
@@ -124,7 +144,11 @@ object WrapperUtilImpl : WrapperUtil {
     override fun wrap(access: RegistryAccess): NeoRegistryAccess {
         return object : NeoRegistryAccess {
             override fun <T : Any> registry(key: NeoResourceKey<Registry<T>>): NeoRegistry<T>? {
+                //? if <1.21.2 {
                 return access.registry(key.mojang).map { wrap(it) }.getOrNull()
+                //? } else {
+                /*return access.lookup(key.mojang).map { wrap(it) }.getOrNull()
+                *///? }
             }
         }
     }
@@ -136,26 +160,18 @@ object WrapperUtilImpl : WrapperUtil {
     }
 
     override fun wrap(consumer: VertexConsumer): NeoVertexConsumer {
-        return object : NeoVertexConsumer {
-            //? if >=1.21 {
-           // var started = false
-            //? }
-
+        return object : NeoVertexConsumer() {
             override fun vertex(
                 x: Float,
                 y: Float,
                 z: Float
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                /*if (started) {
-                    throw IllegalStateException("Forgot to call endVertex")
-                }
-
-                started = true
+                
                 consumer.addVertex(x, y, z)
-                *///? } else {
-                consumer.vertex(x.toDouble(), y.toDouble(), z.toDouble())
-                //? }
+                //? } else {
+                /*consumer.vertex(x.toDouble(), y.toDouble(), z.toDouble())
+                *///? }
                 return this
             }
 
@@ -166,10 +182,10 @@ object WrapperUtilImpl : WrapperUtil {
                 a: Int
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                //consumer.setColor(r, g, b, a)
+                consumer.setColor(r, g, b, a)
                 //? } else {
-                consumer.color(r, g, b, a)
-                //? }
+                /*consumer.color(r, g, b, a)
+                *///? }
                 return this
             }
 
@@ -178,10 +194,10 @@ object WrapperUtilImpl : WrapperUtil {
                 v: Float
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                //consumer.setUv(u, v)
+                consumer.setUv(u, v)
                 //? } else {
-                consumer.uv(u, v)
-                //? }
+                /*consumer.uv(u, v)
+                *///? }
                 return this
             }
 
@@ -190,10 +206,10 @@ object WrapperUtilImpl : WrapperUtil {
                 v: Int
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                //consumer.setUv1(u, v)
+                consumer.setUv1(u, v)
                 //? } else {
-                consumer.overlayCoords(u, v)
-                //? }
+                /*consumer.overlayCoords(u, v)
+                *///? }
                 return this
             }
 
@@ -202,10 +218,10 @@ object WrapperUtilImpl : WrapperUtil {
                 v: Int
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                //consumer.setUv2(u, v)
+                consumer.setUv2(u, v)
                 //? } else {
-                consumer.uv2(u, v)
-                //? }
+                /*consumer.uv2(u, v)
+                *///? }
                 return this
             }
 
@@ -215,10 +231,10 @@ object WrapperUtilImpl : WrapperUtil {
                 z: Float
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                //consumer.setNormal(x, y, z)
+                consumer.setNormal(x, y, z)
                 //? } else {
-                consumer.normal(x, y, z)
-                //? }
+                /*consumer.normal(x, y, z)
+                *///? }
                 return this
             }
 
@@ -229,22 +245,127 @@ object WrapperUtilImpl : WrapperUtil {
                 z: Float
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                //consumer.setNormal(pose, x, y, z)
+                consumer.setNormal(pose, x, y, z)
                 //? } else if >=1.20.5 {
-                consumer.normal(pose, x, y, z)
-                //? } else {
+                /*consumer.normal(pose, x, y, z)
+                *///? } else {
                 /*consumer.normal(pose.normal(), x, y, z)
                 *///? }
                 return this
             }
 
-            override fun endVertex() {
+            override fun _endVertex() {
                 //? if <1.21 {
-                consumer.endVertex()
-                //? } else {
-                //started = false
-                //? }
+                /*consumer.endVertex()
+                *///? }
             }
+        }
+    }
+
+    override fun unwrap(consumer: NeoVertexConsumer): VertexConsumer {
+        return object : VertexConsumer {
+            //? if >=1.21 {
+            override fun addVertex(
+                f: Float,
+                g: Float,
+                h: Float
+            ): VertexConsumer {
+                consumer.vertex(f, g, h)
+                return this
+            }
+
+            override fun setColor(
+                i: Int,
+                j: Int,
+                k: Int,
+                l: Int
+            ): VertexConsumer {
+                consumer.color(i, j, k, l)
+                return this
+            }
+
+            override fun setUv(f: Float, g: Float): VertexConsumer {
+                consumer.textureUV(f, g)
+                return this
+            }
+
+            override fun setUv1(i: Int, j: Int): VertexConsumer {
+                consumer.overlayUV(i, j)
+                return this
+            }
+
+            override fun setUv2(i: Int, j: Int): VertexConsumer {
+                consumer.lightUV(i, j)
+                return this
+            }
+
+            override fun setNormal(
+                f: Float,
+                g: Float,
+                h: Float
+            ): VertexConsumer {
+                consumer.normal(f, g, h)
+                return this
+            }
+            //? } else {
+            /*var defaultColor: NeoColor? = null
+
+            override fun vertex(
+                d: Double,
+                e: Double,
+                f: Double
+            ): VertexConsumer {
+                consumer.vertex(d.toFloat(), e.toFloat(), f.toFloat())
+                defaultColor?.let { consumer.color(it) }
+                return this
+            }
+
+            override fun color(
+                i: Int,
+                j: Int,
+                k: Int,
+                l: Int
+            ): VertexConsumer {
+                consumer.color(i, j, k, l)
+                return this
+            }
+
+            override fun uv(f: Float, g: Float): VertexConsumer {
+                consumer.textureUV(f, g)
+                return this
+            }
+
+            override fun overlayCoords(i: Int, j: Int): VertexConsumer {
+                consumer.overlayUV(i, j)
+                return this
+            }
+
+            override fun uv2(i: Int, j: Int): VertexConsumer {
+                consumer.lightUV(i, j)
+                return this
+            }
+
+            override fun normal(
+                f: Float,
+                g: Float,
+                h: Float
+            ): VertexConsumer {
+                consumer.normal(f, g, h)
+                return this
+            }
+
+            override fun endVertex() {
+                consumer.endVertex()
+            }
+
+            override fun defaultColor(i: Int, j: Int, k: Int, l: Int) {
+                defaultColor = NeoColor.RGBA(i, j, k, l)
+            }
+
+            override fun unsetDefaultColor() {
+                defaultColor = null
+            }
+            *///? }
         }
     }
 
@@ -270,54 +391,58 @@ object WrapperUtilImpl : WrapperUtil {
 
     override fun positionVertexElement(): NeoVertexFormat.Element {
         //? if >=1.21 {
-        //return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.POSITION)
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.POSITION)
         //? } else {
-        return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_POSITION)
-        //? }
+        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_POSITION)
+        *///? }
     }
 
     override fun colorVertexElement(): NeoVertexFormat.Element {
         //? if >=1.21 {
-        //return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.COLOR)
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.COLOR)
         //? } else {
-        return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_COLOR)
-        //? }
+        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_COLOR)
+        *///? }
     }
 
     override fun textureUVVertexElement(): NeoVertexFormat.Element {
         //? if >=1.21 {
-        //return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV0)
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV0)
         //? } else {
-        return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV0)
-        //? }
+        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV0)
+        *///? }
     }
 
     override fun overlayUVVertexElement(): NeoVertexFormat.Element {
         //? if >=1.21 {
-        //return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV1)
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV1)
         //? } else {
-        return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV1)
-        //? }
+        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV1)
+        *///? }
     }
 
     override fun lightUVVertexElement(): NeoVertexFormat.Element {
         //? if >=1.21 {
-        //return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV2)
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV2)
         //? } else {
-        return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV2)
-        //? }
+        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV2)
+        *///? }
     }
 
     override fun normalVertexElement(): NeoVertexFormat.Element {
         //? if >=1.21 {
-        //return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.NORMAL)
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.NORMAL)
         //? } else {
-        return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_NORMAL)
-        //? }
+        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_NORMAL)
+        *///? }
     }
 
     override fun blitScreenVertexFormat(): NeoVertexFormat {
+        //? if <1.21.10 {
         return NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
+        //? } else {
+        /*return NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
+        *///? }
     }
 
     override fun blockVertexFormat(): NeoVertexFormat {
@@ -374,7 +499,7 @@ object WrapperUtilImpl : WrapperUtil {
         format: NeoVertexFormat
     ): BufferBuilder {
         //? if >=1.21 {
-        /*return BufferBuilder(ByteBufferBuilder(size), when (mode) {
+        return BufferBuilder(ByteBufferBuilder(size), when (mode) {
             GlBeginMode.LINES -> VertexFormat.Mode.LINES
             GlBeginMode.LINE_STRIP -> VertexFormat.Mode.LINE_STRIP
             GlBeginMode.TRIANGLES -> VertexFormat.Mode.TRIANGLES
@@ -383,9 +508,9 @@ object WrapperUtilImpl : WrapperUtil {
             GlBeginMode.QUADS -> VertexFormat.Mode.QUADS
             else -> throw IllegalArgumentException("Minecraft does not support GlBeginMode $mode")
         }, (format as NeoVertexFormatImpl).inner)
-        *///? } else {
-        throw UnsupportedOperationException("TODO buffer builders") // TODO
-        //? }
+        //? } else {
+        /*throw UnsupportedOperationException("TODO buffer builders") // TODO
+        *///? }
     }
 
     override fun <R> dataResultError(message: () -> String): DataResult<R> {

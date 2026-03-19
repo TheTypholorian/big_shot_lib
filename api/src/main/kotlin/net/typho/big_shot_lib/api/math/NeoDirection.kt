@@ -1,8 +1,24 @@
 package net.typho.big_shot_lib.api.math
 
 import net.minecraft.core.Direction
+import net.typho.big_shot_lib.api.math.NeoDirection.DOWN
+import net.typho.big_shot_lib.api.math.NeoDirection.EAST
+import net.typho.big_shot_lib.api.math.NeoDirection.NORTH
+import net.typho.big_shot_lib.api.math.NeoDirection.SOUTH
+import net.typho.big_shot_lib.api.math.NeoDirection.UP
+import net.typho.big_shot_lib.api.math.NeoDirection.WEST
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3i
+
+val Direction.neo: NeoDirection
+    get() = when (this) {
+        Direction.DOWN -> DOWN
+        Direction.UP -> UP
+        Direction.NORTH -> NORTH
+        Direction.SOUTH -> SOUTH
+        Direction.WEST -> WEST
+        Direction.EAST -> EAST
+    }
 
 enum class NeoDirection(
     @JvmField
@@ -33,17 +49,5 @@ enum class NeoDirection(
         X,
         Y,
         Z
-    }
-
-    companion object {
-        @JvmStatic
-        fun Direction.toNeo() = when (this) {
-            Direction.DOWN -> DOWN
-            Direction.UP -> UP
-            Direction.NORTH -> NORTH
-            Direction.SOUTH -> SOUTH
-            Direction.WEST -> WEST
-            Direction.EAST -> EAST
-        }
     }
 }
