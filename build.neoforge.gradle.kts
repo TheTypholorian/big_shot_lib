@@ -1,3 +1,5 @@
+import java.nio.file.Files
+
 plugins {
     kotlin("jvm")
     id("net.neoforged.moddev")
@@ -7,7 +9,7 @@ plugins {
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
 }
 
-val accessTransformer = project.file("build/resources/main/META-INF/accesstransformer.cfg").absolutePath
+val accessTransformer = project.file("build/resources/main/META-INF/accesstransformer.cfg")
 val accessWidener = when {
     stonecutter.eval(stonecutter.current.version, ">=1.21.5") -> "accesswideners/big_shot_lib-1.21.5.accesswidener"
     else -> "accesswideners/big_shot_lib.accesswidener"
@@ -53,7 +55,11 @@ jsonlang {
 
 neoForge {
     version = property("deps.neoforge") as String
-    accessTransformers.from(accessTransformer)
+
+    if (accessTransformer.exists()) {
+        accessTransformers.from(accessTransformer)
+    }
+
     validateAccessTransformers = true
 
     if (hasProperty("deps.parchment")) parchment {
