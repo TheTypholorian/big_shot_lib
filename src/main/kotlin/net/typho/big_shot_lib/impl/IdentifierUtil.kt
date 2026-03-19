@@ -20,16 +20,15 @@ val ResourceLocation.neo: NeoIdentifier
     get() = NeoIdentifier(namespace, path)
 *///? }
 
-//? if <1.21.11 {
-val NeoIdentifier.mojang: ResourceLocation
-    //? if >=1.21 {
-    get() = ResourceLocation.fromNamespaceAndPath(namespace, path)
-    //? } else {
-    /*get() = ResourceLocation(namespace, path)
-    *///? }
-//? } else {
+//? if >=1.21.11 {
 /*val NeoIdentifier.mojang: Identifier
     get() = Identifier.fromNamespaceAndPath(namespace, path)
+*///? } else if >=1.21 {
+val NeoIdentifier.mojang: ResourceLocation
+    get() = ResourceLocation.fromNamespaceAndPath(namespace, path)
+//? } else {
+/*val NeoIdentifier.mojang: ResourceLocation
+    get() = ResourceLocation(namespace, path)
 *///? }
 
 val <T : Any> ResourceKey<T>.neo: NeoResourceKey<T>

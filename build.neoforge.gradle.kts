@@ -15,6 +15,10 @@ val accessWidener = when {
     else -> "accesswideners/big_shot_lib.accesswidener"
 }
 
+tasks.withType<Jar> {
+    destinationDirectory.set(rootProject.file("build/libs/${project(":api").version}"))
+}
+
 fletchingTable {
     accessConverter.register(sourceSets.main) {
         add(accessWidener)
@@ -118,7 +122,6 @@ tasks {
 }
 
 java {
-    withSourcesJar()
     val javaCompat = if (stonecutter.eval(stonecutter.current.version, ">=1.20.5")) {
         JavaVersion.VERSION_21
     } else {

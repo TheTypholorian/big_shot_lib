@@ -45,6 +45,11 @@ dependencies {
     implementation(libs.asm.util)
 }
 
+tasks.jar {
+    destinationDirectory.set(rootProject.file("build/libs/${project.version}"))
+    archiveClassifier = ""
+}
+
 java {
     withSourcesJar()
 }

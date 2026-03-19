@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import net.fabricmc.loom.task.RemapJarTask
+import net.fabricmc.loom.task.RemapSourcesJarTask
+
 plugins {
     kotlin("jvm")
     alias(libs.plugins.loom)
@@ -12,6 +15,14 @@ plugins {
 val accessWidener = when {
     stonecutter.eval(stonecutter.current.version, ">=1.21.5") -> "accesswideners/big_shot_lib-1.21.5.accesswidener"
     else -> "accesswideners/big_shot_lib.accesswidener"
+}
+
+tasks.withType<RemapJarTask> {
+    destinationDirectory.set(rootProject.file("build/libs/${project(":api").version}"))
+}
+
+tasks.withType<RemapSourcesJarTask> {
+    destinationDirectory.set(rootProject.file("build/libs/${project(":api").version}"))
 }
 
 tasks.named<ProcessResources>("processResources") {
@@ -92,7 +103,6 @@ tasks {
 }
 
 java {
-    withSourcesJar()
     val javaCompat = when {
         sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
         sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17

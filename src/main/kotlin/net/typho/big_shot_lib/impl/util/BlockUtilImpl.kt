@@ -1,12 +1,12 @@
 package net.typho.big_shot_lib.impl.util
 
-//? if >=1.21.9 {
-/*import net.minecraft.client.renderer.chunk.ChunkSectionLayer
-*///? } else {
-//? }
+//? if >=1.21.6 {
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer
+//? } else {
+/*import net.minecraft.client.renderer.RenderType
+*///? }
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes
-import net.minecraft.client.renderer.RenderType
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -24,11 +24,11 @@ object BlockUtilImpl : BlockUtil {
         pos: NeoBlockPos,
         level: Level
     ): Boolean {
-        //? if <1.21.5 {
-        return state.isSolidRender(level, pos.mojang)
-        //? } else {
-        /*return state.isSolidRender
-        *///? }
+        //? if <1.21.2 {
+        /*return state.isSolidRender(level, pos.mojang)
+        *///? } else {
+        return state.isSolidRender
+        //? }
     }
 
     override fun getOffset(
@@ -36,43 +36,48 @@ object BlockUtilImpl : BlockUtil {
         pos: NeoBlockPos,
         level: Level
     ): AbstractVec3<Float, *> {
-        //? if <1.21.5 {
-        return NeoVec3f(state.getOffset(level, pos.mojang).toVector3f())
-        //? } else {
-        /*return NeoVec3f(state.getOffset(pos.mojang).toVector3f())
-        *///? }
+        //? if <1.21.2 {
+        /*return NeoVec3f(state.getOffset(level, pos.mojang).toVector3f())
+        *///? } else {
+        return NeoVec3f(state.getOffset(pos.mojang).toVector3f())
+        //? }
     }
 
+    @Suppress("DEPRECATION")
     override fun getBlockRenderSettings(state: BlockState): BlockRenderSettings? {
         return when (ItemBlockRenderTypes.getChunkRenderType(state)) {
-            //? if >=1.21.10 {
-            /*ChunkSectionLayer.CUTOUT_MIPPED -> BlockRenderSettings.CUTOUT
-            *///? }
-            //? if >=1.21.9 {
+            //? if >=1.21.11 {
             /*ChunkSectionLayer.SOLID -> BlockRenderSettings.SOLID
             ChunkSectionLayer.CUTOUT -> BlockRenderSettings.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockRenderSettings.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockRenderSettings.TRIPWIRE
-            *///? } else {
-            RenderType.solid() -> BlockRenderSettings.SOLID
+            *///? } else if >=1.21.6 {
+            ChunkSectionLayer.SOLID -> BlockRenderSettings.SOLID
+            ChunkSectionLayer.CUTOUT -> BlockRenderSettings.CUTOUT
+            ChunkSectionLayer.CUTOUT_MIPPED -> BlockRenderSettings.CUTOUT
+            ChunkSectionLayer.TRANSLUCENT -> BlockRenderSettings.TRANSLUCENT
+            ChunkSectionLayer.TRIPWIRE -> BlockRenderSettings.TRIPWIRE
+            //? } else {
+            /*RenderType.solid() -> BlockRenderSettings.SOLID
             RenderType.cutout(), RenderType.cutoutMipped() -> BlockRenderSettings.CUTOUT
             RenderType.translucent() -> BlockRenderSettings.TRANSLUCENT
             RenderType.tripwire() -> BlockRenderSettings.TRIPWIRE
             else -> null
-            //? }
+            *///? }
         }
     }
 
+    @Suppress("DEPRECATION")
     override fun shouldRenderFace(
         level: BlockGetter,
         pos: NeoBlockPos,
         direction: NeoDirection,
         state: BlockState
     ): Boolean {
-        //? if >=1.21.5 {
-        /*return Block.shouldRenderFace(state, level.getBlockState((pos + direction).mojang), direction.mojang)
-        *///? } else {
-        return Block.shouldRenderFace(state, level, (pos + direction).mojang, direction.mojang, pos.mojang)
-        //? }
+        //? if >=1.21.2 {
+        return Block.shouldRenderFace(state, level.getBlockState((pos + direction).mojang), direction.mojang)
+        //? } else {
+        /*return Block.shouldRenderFace(state, level, (pos + direction).mojang, direction.mojang, pos.mojang)
+        *///? }
     }
 }
