@@ -9,12 +9,8 @@ import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.client.util.resource.ResourceRegistry
-import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
-import net.typho.big_shot_lib.api.util.NeoRegistry
+import net.typho.big_shot_lib.api.util.*
 import net.typho.big_shot_lib.api.util.RegistrationConsumer.Companion.register
-import net.typho.big_shot_lib.api.util.RegistrationFactory
-import net.typho.big_shot_lib.api.util.RegistryFactory
-import net.typho.big_shot_lib.api.util.enumArrayMapOf
 import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
@@ -58,7 +54,7 @@ object NeoShaderLoader : ResourceRegistry<GlShader>(BigShotApi.id("shaders"), Ne
                 manager: NeoResourceManager
             ): GlShader {
                 val shader = NeoGlShader(location, shaderType)
-                shader.source = reader.readText()
+                shader.source = PREPROCESSORS_REGISTRY!!.values().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
                 shader.compile()
                 return shader
             }
