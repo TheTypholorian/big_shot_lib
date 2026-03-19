@@ -1,7 +1,7 @@
 {
   "net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint": [
-    "net.typho.big_shot_lib.api.client.BigShotApiClient",
-    "net.typho.big_shot_lib.impl.client.rendering.opengl.GlQueueImpl"
+    "net.typho.big_shot_lib.impl.client.rendering.opengl.GlQueueImpl",
+    "net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader"
   ],
   "net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint": [
     "net.typho.big_shot_lib.api.client.opengl.buffers.NeoVertexFormat$Companion"
