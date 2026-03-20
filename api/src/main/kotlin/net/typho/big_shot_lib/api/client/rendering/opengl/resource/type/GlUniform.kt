@@ -32,11 +32,11 @@ interface GlUniform {
 
     fun set(d1: Double, d2: Double, d3: Double, d4: Double)
 
-    fun set(v: AbstractVec2<*, *>)
+    fun set(v: AbstractVec2<*>)
 
-    fun set(v: AbstractVec3<*, *>)
+    fun set(v: AbstractVec3<*>)
 
-    fun set(v: AbstractVec4<*, *>)
+    fun set(v: AbstractVec4<*>)
 
     fun set(mat: Matrix2f, transpose: Boolean = false)
 
@@ -100,15 +100,15 @@ interface GlUniform {
             glUniform4d(location, d1, d2, d3, d4)
         }
 
-        override fun set(v: AbstractVec2<*, *>) {
+        override fun set(v: AbstractVec2<*>) {
             glUniform2f(location, v.x.toFloat(), v.y.toFloat())
         }
 
-        override fun set(v: AbstractVec3<*, *>) {
+        override fun set(v: AbstractVec3<*>) {
             glUniform3f(location, v.x.toFloat(), v.y.toFloat(), v.z.toFloat())
         }
 
-        override fun set(v: AbstractVec4<*, *>) {
+        override fun set(v: AbstractVec4<*>) {
             glUniform4f(location, v.x.toFloat(), v.y.toFloat(), v.z.toFloat(), v.w.toFloat())
         }
 

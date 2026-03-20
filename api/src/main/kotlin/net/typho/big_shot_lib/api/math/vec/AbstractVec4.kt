@@ -7,7 +7,7 @@ import org.joml.Vector4d
 import org.joml.Vector4f
 import org.joml.Vector4i
 
-abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
+abstract class AbstractVec4<N : Number>(
     @JvmField
     val x: N,
     @JvmField
@@ -24,12 +24,12 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
         get() = opSet.plus(opSet.times(x, x), opSet.plus(opSet.times(y, y), opSet.plus(opSet.times(z, z), opSet.times(w, w))))
     val length: Float
         get() = opSet.sqrt(lengthSquared)
-    val abs: V4
+    val abs: AbstractVec4<N>
         get() = create(opSet.abs(x), opSet.abs(y), opSet.abs(z), opSet.abs(w))
-    abstract val xy: AbstractVec2<N, *>
-    abstract val yz: AbstractVec2<N, *>
-    abstract val zw: AbstractVec2<N, *>
-    abstract val xyz: AbstractVec3<N, *>
+    abstract val xy: AbstractVec2<N>
+    abstract val yz: AbstractVec2<N>
+    abstract val zw: AbstractVec2<N>
+    abstract val xyz: AbstractVec3<N>
 
     val r: N
         get() = x
@@ -40,40 +40,40 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
     val a: N
         get() = w
 
-    abstract val rg: AbstractVec2<N, *>
-    abstract val gb: AbstractVec2<N, *>
-    abstract val ba: AbstractVec2<N, *>
-    abstract val rgb: AbstractVec3<N, *>
+    abstract val rg: AbstractVec2<N>
+    abstract val gb: AbstractVec2<N>
+    abstract val ba: AbstractVec2<N>
+    abstract val rgb: AbstractVec3<N>
 
-    constructor(other: AbstractVec4<N, *>) : this(other.x, other.y, other.z, other.w)
+    constructor(other: AbstractVec4<N>) : this(other.x, other.y, other.z, other.w)
 
-    protected abstract fun create(x: N, y: N, z: N, w: N): V4
+    protected abstract fun create(x: N, y: N, z: N, w: N): AbstractVec4<N>
 
-    fun plus(x: Number, y: Number, z: Number, w: Number): V4 {
+    fun plus(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
         return create(opSet.plus(this.x, opSet.convert(x)), opSet.plus(this.y, opSet.convert(y)), opSet.plus(this.z, opSet.convert(z)), opSet.plus(this.w, opSet.convert(w)))
     }
 
-    fun minus(x: Number, y: Number, z: Number, w: Number): V4 {
+    fun minus(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
         return create(opSet.minus(this.x, opSet.convert(x)), opSet.minus(this.y, opSet.convert(y)), opSet.minus(this.z, opSet.convert(z)), opSet.minus(this.w, opSet.convert(w)))
     }
 
-    fun times(x: Number, y: Number, z: Number, w: Number): V4 {
+    fun times(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
         return create(opSet.times(this.x, opSet.convert(x)), opSet.times(this.y, opSet.convert(y)), opSet.times(this.z, opSet.convert(z)), opSet.times(this.w, opSet.convert(w)))
     }
 
-    fun div(x: Number, y: Number, z: Number, w: Number): V4 {
+    fun div(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
         return create(opSet.div(this.x, opSet.convert(x)), opSet.div(this.y, opSet.convert(y)), opSet.div(this.z, opSet.convert(z)), opSet.div(this.w, opSet.convert(w)))
     }
 
-    fun rem(x: Number, y: Number, z: Number, w: Number): V4 {
+    fun rem(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
         return create(opSet.rem(this.x, opSet.convert(x)), opSet.rem(this.y, opSet.convert(y)), opSet.rem(this.z, opSet.convert(z)), opSet.rem(this.w, opSet.convert(w)))
     }
 
-    fun min(x: Number, y: Number, z: Number, w: Number): V4 {
+    fun min(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
         return create(opSet.min(this.x, opSet.convert(x)), opSet.min(this.y, opSet.convert(y)), opSet.min(this.z, opSet.convert(z)), opSet.min(this.w, opSet.convert(w)))
     }
 
-    fun max(x: Number, y: Number, z: Number, w: Number): V4 {
+    fun max(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
         return create(opSet.max(this.x, opSet.convert(x)), opSet.max(this.y, opSet.convert(y)), opSet.max(this.z, opSet.convert(z)), opSet.max(this.w, opSet.convert(w)))
     }
 
@@ -141,75 +141,75 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
         return opSet.lequalThan(this.x, opSet.convert(x)) && opSet.lequalThan(this.y, opSet.convert(y)) && opSet.lequalThan(this.z, opSet.convert(z)) && opSet.lequalThan(this.w, opSet.convert(w))
     }
 
-    operator fun plus(other: AbstractVec4<*, *>) = plus(other.x, other.y, other.z, other.w)
+    operator fun plus(other: AbstractVec4<*>) = plus(other.x, other.y, other.z, other.w)
 
     operator fun plus(x: Number) = plus(x, x, x, x)
 
-    operator fun minus(other: AbstractVec4<*, *>) = minus(other.x, other.y, other.z, other.w)
+    operator fun minus(other: AbstractVec4<*>) = minus(other.x, other.y, other.z, other.w)
 
     operator fun minus(x: Number) = minus(x, x, x, x)
 
-    operator fun times(other: AbstractVec4<*, *>) = times(other.x, other.y, other.z, other.w)
+    operator fun times(other: AbstractVec4<*>) = times(other.x, other.y, other.z, other.w)
 
     operator fun times(x: Number) = times(x, x, x, x)
 
-    operator fun div(other: AbstractVec4<*, *>) = div(other.x, other.y, other.z, other.w)
+    operator fun div(other: AbstractVec4<*>) = div(other.x, other.y, other.z, other.w)
 
     operator fun div(x: Number) = div(x, x, x, x)
 
-    operator fun rem(other: AbstractVec4<*, *>) = rem(other.x, other.y, other.z, other.w)
+    operator fun rem(other: AbstractVec4<*>) = rem(other.x, other.y, other.z, other.w)
 
     operator fun rem(x: Number) = rem(x, x, x, x)
 
-    fun min(other: AbstractVec4<*, *>) = min(other.x, other.y, other.z, other.w)
+    fun min(other: AbstractVec4<*>) = min(other.x, other.y, other.z, other.w)
 
     fun min(x: Number) = min(x, x, x, x)
 
-    fun max(other: AbstractVec4<*, *>) = max(other.x, other.y, other.z, other.w)
+    fun max(other: AbstractVec4<*>) = max(other.x, other.y, other.z, other.w)
 
     fun max(x: Number) = max(x, x, x, x)
 
-    fun distance(other: AbstractVec4<*, *>) = distance(other.x, other.y, other.z, other.w)
+    fun distance(other: AbstractVec4<*>) = distance(other.x, other.y, other.z, other.w)
 
-    fun distanceSquared(other: AbstractVec4<*, *>) = distanceSquared(other.x, other.y, other.z, other.w)
+    fun distanceSquared(other: AbstractVec4<*>) = distanceSquared(other.x, other.y, other.z, other.w)
 
-    fun gridDistance(other: AbstractVec4<*, *>) = gridDistance(other.x, other.y, other.z, other.w)
+    fun gridDistance(other: AbstractVec4<*>) = gridDistance(other.x, other.y, other.z, other.w)
 
-    fun inDistance(other: AbstractVec4<*, *>, dist: N) = inDistance(other.x, other.y, other.z, other.w, dist)
+    fun inDistance(other: AbstractVec4<*>, dist: N) = inDistance(other.x, other.y, other.z, other.w, dist)
 
-    fun inDistanceSquared(other: AbstractVec4<*, *>, dist: N) = inDistanceSquared(other.x, other.y, other.z, other.w, dist)
+    fun inDistanceSquared(other: AbstractVec4<*>, dist: N) = inDistanceSquared(other.x, other.y, other.z, other.w, dist)
 
-    fun inGridDistance(other: AbstractVec4<*, *>, dist: N) = inGridDistance(other.x, other.y, other.z, other.w, dist)
+    fun inGridDistance(other: AbstractVec4<*>, dist: N) = inGridDistance(other.x, other.y, other.z, other.w, dist)
 
-    fun anyGreaterThan(other: AbstractVec4<*, *>) = anyGreaterThan(other.x, other.y, other.z, other.w)
+    fun anyGreaterThan(other: AbstractVec4<*>) = anyGreaterThan(other.x, other.y, other.z, other.w)
 
     fun anyGreaterThan(x: Number) = anyGreaterThan(x, x, x, x)
 
-    fun allGreaterThan(other: AbstractVec4<*, *>) = allGreaterThan(other.x, other.y, other.z, other.w)
+    fun allGreaterThan(other: AbstractVec4<*>) = allGreaterThan(other.x, other.y, other.z, other.w)
 
     fun allGreaterThan(x: Number) = allGreaterThan(x, x, x, x)
 
-    fun anyGequalThan(other: AbstractVec4<*, *>) = anyGequalThan(other.x, other.y, other.z, other.w)
+    fun anyGequalThan(other: AbstractVec4<*>) = anyGequalThan(other.x, other.y, other.z, other.w)
 
     fun anyGequalThan(x: Number) = anyGequalThan(x, x, x, x)
 
-    fun allGequalThan(other: AbstractVec4<*, *>) = allGequalThan(other.x, other.y, other.z, other.w)
+    fun allGequalThan(other: AbstractVec4<*>) = allGequalThan(other.x, other.y, other.z, other.w)
 
     fun allGequalThan(x: Number) = allGequalThan(x, x, x, x)
 
-    fun anyLessThan(other: AbstractVec4<*, *>) = anyLessThan(other.x, other.y, other.z, other.w)
+    fun anyLessThan(other: AbstractVec4<*>) = anyLessThan(other.x, other.y, other.z, other.w)
 
     fun anyLessThan(x: Number) = anyLessThan(x, x, x, x)
 
-    fun allLessThan(other: AbstractVec4<*, *>) = allLessThan(other.x, other.y, other.z, other.w)
+    fun allLessThan(other: AbstractVec4<*>) = allLessThan(other.x, other.y, other.z, other.w)
 
     fun allLessThan(x: Number) = allLessThan(x, x, x, x)
 
-    fun anyLequalThan(other: AbstractVec4<*, *>) = anyLequalThan(other.x, other.y, other.z, other.w)
+    fun anyLequalThan(other: AbstractVec4<*>) = anyLequalThan(other.x, other.y, other.z, other.w)
 
     fun anyLequalThan(x: Number) = anyLequalThan(x, x, x, x)
 
-    fun allLequalThan(other: AbstractVec4<*, *>) = allLequalThan(other.x, other.y, other.z, other.w)
+    fun allLequalThan(other: AbstractVec4<*>) = allLequalThan(other.x, other.y, other.z, other.w)
 
     fun allLequalThan(x: Number) = allLequalThan(x, x, x, x)
 
@@ -235,7 +235,7 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AbstractVec4<*, *>) return false
+        if (other !is AbstractVec4<*>) return false
 
         if (x != other.x) return false
         if (y != other.y) return false
@@ -255,23 +255,23 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
 
     companion object {
         @JvmField
-        val INT_CODEC: Codec<AbstractVec4<Int, *>> = NeoCodecs.createList(4, Codec.INT, { NeoVec4i(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
+        val INT_CODEC: Codec<AbstractVec4<Int>> = NeoCodecs.createList(4, Codec.INT, { NeoVec4i(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
         @JvmField
-        val FLOAT_CODEC: Codec<AbstractVec4<Float, *>> = NeoCodecs.createList(4, Codec.FLOAT, { NeoVec4f(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
+        val FLOAT_CODEC: Codec<AbstractVec4<Float>> = NeoCodecs.createList(4, Codec.FLOAT, { NeoVec4f(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
         @JvmField
-        val DOUBLE_CODEC: Codec<AbstractVec4<Double, *>> = NeoCodecs.createList(4, Codec.DOUBLE, { NeoVec4d(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
+        val DOUBLE_CODEC: Codec<AbstractVec4<Double>> = NeoCodecs.createList(4, Codec.DOUBLE, { NeoVec4d(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
 
         @JvmStatic
-        fun AbstractVec4<Int, *>.toJOML() = Vector4i(x, y, z, w)
+        fun AbstractVec4<Int>.toJOML() = Vector4i(x, y, z, w)
 
         @JvmStatic
-        fun AbstractVec4<Float, *>.toJOML() = Vector4f(x, y, z, w)
+        fun AbstractVec4<Float>.toJOML() = Vector4f(x, y, z, w)
 
         @JvmStatic
-        fun AbstractVec4<Double, *>.toJOML() = Vector4d(x, y, z, w)
+        fun AbstractVec4<Double>.toJOML() = Vector4d(x, y, z, w)
 
         @JvmStatic
-        val AbstractVec4<Int, *>.center: AbstractVec4<Float, *>
+        val AbstractVec4<Int>.center: AbstractVec4<Float>
             get() = NeoVec4f(0.5f, 0.5f, 0.5f, 0.5f) + this
     }
 }

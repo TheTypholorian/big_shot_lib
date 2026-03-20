@@ -26,11 +26,11 @@ interface NeoGlStateManager {
     val depthFunc: GlStateStack<GlAlphaFunction>
     val polygonMode: GlStateStack<GlPolygonMode>
     val polygonOffset: GlStateStack<PolygonOffset>
-    val scissor: GlStateStack<AbstractRect2<Int, *, *>>
+    val scissor: GlStateStack<AbstractRect2<Int>>
     val stencilFunction: GlStateStack<StencilFunction>
     val stencilMask: GlStateStack<Int>
     val stencilOp: GlStateStack<StencilOp>
-    val viewport: GlStateStack<AbstractRect2<Int, *, *>>
+    val viewport: GlStateStack<AbstractRect2<Int>>
 
     val blendEnabled: GlStateStack<Boolean>
     val colorLogicOpEnabled: GlStateStack<Boolean>

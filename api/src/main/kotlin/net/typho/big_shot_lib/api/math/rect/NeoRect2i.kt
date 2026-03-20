@@ -2,15 +2,16 @@ package net.typho.big_shot_lib.api.math.rect
 
 import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
+import net.typho.big_shot_lib.api.math.vec.AbstractVec2
 import net.typho.big_shot_lib.api.math.vec.NeoVec2i
 
-class NeoRect2i : AbstractRect2<Int, NeoRect2i, NeoVec2i> {
-    constructor(min: NeoVec2i, max: NeoVec2i) : super(min, max)
+class NeoRect2i : AbstractRect2<Int> {
+    constructor(min: AbstractVec2<Int>, max: AbstractVec2<Int>) : super(min, max)
 
     constructor(x1: Int, y1: Int, x2: Int, y2: Int) : super(NeoVec2i(x1, y1), NeoVec2i(x2, y2))
 
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet
 
-    override fun create(min: NeoVec2i, max: NeoVec2i) = NeoRect2i(min, max)
+    override fun create(min: AbstractVec2<Int>, max: AbstractVec2<Int>) = NeoRect2i(min, max)
 }

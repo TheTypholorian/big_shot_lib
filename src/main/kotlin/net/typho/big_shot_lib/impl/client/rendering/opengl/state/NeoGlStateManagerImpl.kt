@@ -135,7 +135,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
             )
         }
     )
-    override val scissor: GlStateStack<AbstractRect2<Int, *, *>> = GlStateStack.Impl(
+    override val scissor: GlStateStack<AbstractRect2<Int>> = GlStateStack.Impl(
         { glScissor(it.min.x, it.min.y, it.size.x, it.size.y) },
         {
             MemoryStack.stackPush().use { stack ->
@@ -170,7 +170,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
             GlNamed.getEnum(glGetInteger(GL_STENCIL_PASS_DEPTH_PASS))
         ) }
     )
-    override val viewport: GlStateStack<AbstractRect2<Int, *, *>> = GlStateStack.Impl(
+    override val viewport: GlStateStack<AbstractRect2<Int>> = GlStateStack.Impl(
         { glViewport(it.min.x, it.min.y, it.size.x, it.size.y) },
         {
             MemoryStack.stackPush().use { stack ->

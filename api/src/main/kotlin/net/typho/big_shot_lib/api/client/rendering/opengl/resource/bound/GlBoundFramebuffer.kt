@@ -38,7 +38,7 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
     abstract class Basic(
         override val resource: GlFramebuffer,
         @JvmField
-        val viewport: AbstractRect2<Int, *, *>?,
+        val viewport: AbstractRect2<Int>?,
         override val handle: GlStateStack.Handle<Int>
     ) : GlBoundFramebuffer {
         override var defaultWidth: Int

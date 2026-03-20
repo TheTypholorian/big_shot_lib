@@ -28,7 +28,7 @@ enum class NeoDirection(
     @JvmField
     val axis: Axis,
     @JvmField
-    val inc: AbstractVec3<Int, *>
+    val inc: AbstractVec3<Int>
 ) {
     EAST(Direction.EAST, AxisDirection.POSITIVE, Axis.X, NeoVec3i(1, 0, 0)),
     WEST(Direction.WEST, AxisDirection.NEGATIVE, Axis.X, NeoVec3i(-1, 0, 0)),

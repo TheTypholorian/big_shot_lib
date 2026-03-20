@@ -4,10 +4,10 @@ import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import org.joml.Vector2i
 
-class NeoVec2i : AbstractVec2<Int, NeoVec2i> {
+class NeoVec2i : AbstractVec2<Int> {
     constructor(x: Int, y: Int) : super(x, y)
 
-    constructor(other: AbstractVec2<Int, *>) : super(other)
+    constructor(other: AbstractVec2<Int>) : super(other)
 
     constructor(other: Vector2i) : super(other.x, other.y)
 

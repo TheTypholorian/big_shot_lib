@@ -8,5 +8,5 @@ interface GlFramebuffer : GlResource {
     val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?>
     val depthAttachment: GlFramebufferAttachment?
 
-    fun bind(viewport: AbstractRect2<Int, *, *>? = null): GlBoundFramebuffer
+    fun bind(viewport: AbstractRect2<Int>? = null): GlBoundFramebuffer
 }

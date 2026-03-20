@@ -6,9 +6,9 @@ import org.joml.Quaternionf
 
 data class NeoCamera(
     @JvmField
-    val pos: AbstractVec3<Float, *>,
+    val pos: AbstractVec3<Float>,
     @JvmField
-    val xyRot: AbstractVec2<Float, *>,
+    val xyRot: AbstractVec2<Float>,
     @JvmField
     val qRot: Quaternionf
 )

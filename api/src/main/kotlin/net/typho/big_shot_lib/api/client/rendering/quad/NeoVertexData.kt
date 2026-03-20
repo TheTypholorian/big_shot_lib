@@ -6,23 +6,23 @@ import net.typho.big_shot_lib.api.util.NeoColor
 import java.util.function.UnaryOperator
 
 interface NeoVertexData {
-    val pos: AbstractVec3<Float, *>
+    val pos: AbstractVec3<Float>
     val color: NeoColor?
-    val textureUV: AbstractVec2<Float, *>?
-    val overlayUV: AbstractVec2<Int, *>?
-    val lightUV: AbstractVec2<Int, *>?
-    val normal: AbstractVec3<Float, *>?
+    val textureUV: AbstractVec2<Float>?
+    val overlayUV: AbstractVec2<Int>?
+    val lightUV: AbstractVec2<Int>?
+    val normal: AbstractVec3<Float>?
 
-    fun withPosition(pos: UnaryOperator<AbstractVec3<Float, *>>): NeoVertexData {
+    fun withPosition(pos: UnaryOperator<AbstractVec3<Float>>): NeoVertexData {
         val parent = this
         val pos = pos.apply(parent.pos)
         return object : NeoVertexData {
-            override val pos: AbstractVec3<Float, *> = pos
+            override val pos: AbstractVec3<Float> = pos
             override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float, *>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int, *>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int, *>? = parent.lightUV
-            override val normal: AbstractVec3<Float, *>? = parent.normal
+            override val textureUV: AbstractVec2<Float>? = parent.textureUV
+            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
+            override val lightUV: AbstractVec2<Int>? = parent.lightUV
+            override val normal: AbstractVec3<Float>? = parent.normal
         }
     }
 
@@ -30,64 +30,64 @@ interface NeoVertexData {
         val parent = this
         val color = color.apply(parent.color)
         return object : NeoVertexData {
-            override val pos: AbstractVec3<Float, *> = parent.pos
+            override val pos: AbstractVec3<Float> = parent.pos
             override val color: NeoColor? = color
-            override val textureUV: AbstractVec2<Float, *>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int, *>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int, *>? = parent.lightUV
-            override val normal: AbstractVec3<Float, *>? = parent.normal
+            override val textureUV: AbstractVec2<Float>? = parent.textureUV
+            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
+            override val lightUV: AbstractVec2<Int>? = parent.lightUV
+            override val normal: AbstractVec3<Float>? = parent.normal
         }
     }
 
-    fun withTextureUV(textureUV: UnaryOperator<AbstractVec2<Float, *>?>): NeoVertexData {
+    fun withTextureUV(textureUV: UnaryOperator<AbstractVec2<Float>?>): NeoVertexData {
         val parent = this
         val textureUV = textureUV.apply(parent.textureUV)
         return object : NeoVertexData {
-            override val pos: AbstractVec3<Float, *> = parent.pos
+            override val pos: AbstractVec3<Float> = parent.pos
             override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float, *>? = textureUV
-            override val overlayUV: AbstractVec2<Int, *>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int, *>? = parent.lightUV
-            override val normal: AbstractVec3<Float, *>? = parent.normal
+            override val textureUV: AbstractVec2<Float>? = textureUV
+            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
+            override val lightUV: AbstractVec2<Int>? = parent.lightUV
+            override val normal: AbstractVec3<Float>? = parent.normal
         }
     }
 
-    fun withOverlayUV(overlayUV: UnaryOperator<AbstractVec2<Int, *>?>): NeoVertexData {
+    fun withOverlayUV(overlayUV: UnaryOperator<AbstractVec2<Int>?>): NeoVertexData {
         val parent = this
         val overlayUV = overlayUV.apply(parent.overlayUV)
         return object : NeoVertexData {
-            override val pos: AbstractVec3<Float, *> = parent.pos
+            override val pos: AbstractVec3<Float> = parent.pos
             override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float, *>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int, *>? = overlayUV
-            override val lightUV: AbstractVec2<Int, *>? = parent.lightUV
-            override val normal: AbstractVec3<Float, *>? = parent.normal
+            override val textureUV: AbstractVec2<Float>? = parent.textureUV
+            override val overlayUV: AbstractVec2<Int>? = overlayUV
+            override val lightUV: AbstractVec2<Int>? = parent.lightUV
+            override val normal: AbstractVec3<Float>? = parent.normal
         }
     }
 
-    fun withLightUV(lightUV: UnaryOperator<AbstractVec2<Int, *>?>): NeoVertexData {
+    fun withLightUV(lightUV: UnaryOperator<AbstractVec2<Int>?>): NeoVertexData {
         val parent = this
         val lightUV = lightUV.apply(parent.lightUV)
         return object : NeoVertexData {
-            override val pos: AbstractVec3<Float, *> = parent.pos
+            override val pos: AbstractVec3<Float> = parent.pos
             override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float, *>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int, *>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int, *>? = lightUV
-            override val normal: AbstractVec3<Float, *>? = parent.normal
+            override val textureUV: AbstractVec2<Float>? = parent.textureUV
+            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
+            override val lightUV: AbstractVec2<Int>? = lightUV
+            override val normal: AbstractVec3<Float>? = parent.normal
         }
     }
 
-    fun withNormal(normal: UnaryOperator<AbstractVec3<Float, *>?>): NeoVertexData {
+    fun withNormal(normal: UnaryOperator<AbstractVec3<Float>?>): NeoVertexData {
         val parent = this
         val normal = normal.apply(parent.normal)
         return object : NeoVertexData {
-            override val pos: AbstractVec3<Float, *> = parent.pos
+            override val pos: AbstractVec3<Float> = parent.pos
             override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float, *>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int, *>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int, *>? = parent.lightUV
-            override val normal: AbstractVec3<Float, *>? = normal
+            override val textureUV: AbstractVec2<Float>? = parent.textureUV
+            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
+            override val lightUV: AbstractVec2<Int>? = parent.lightUV
+            override val normal: AbstractVec3<Float>? = normal
         }
     }
 
@@ -101,16 +101,16 @@ interface NeoVertexData {
     }
 
     open class PositionTexture(
-        override val pos: AbstractVec3<Float, *>,
-        override val textureUV: AbstractVec2<Float, *>
+        override val pos: AbstractVec3<Float>,
+        override val textureUV: AbstractVec2<Float>
     ) : NeoVertexData {
         override val color: NeoColor?
             get() = null
-        override val overlayUV: AbstractVec2<Int, *>?
+        override val overlayUV: AbstractVec2<Int>?
             get() = null
-        override val lightUV: AbstractVec2<Int, *>?
+        override val lightUV: AbstractVec2<Int>?
             get() = null
-        override val normal: AbstractVec3<Float, *>?
+        override val normal: AbstractVec3<Float>?
             get() = null
     }
 
@@ -120,25 +120,25 @@ interface NeoVertexData {
         @JvmField
         val offset: Int
     ) : NeoVertexData {
-        override val pos: AbstractVec3<Float, *> by lazy { NeoVec3f(
+        override val pos: AbstractVec3<Float> by lazy { NeoVec3f(
             Float.fromBits(data[offset]),
             Float.fromBits(data[offset + 1]),
             Float.fromBits(data[offset + 2])
         ) }
         override val color: NeoColor by lazy { NeoColor.RGBA(data[offset + 3]) }
-        override val textureUV: AbstractVec2<Float, *> by lazy { NeoVec2f(
+        override val textureUV: AbstractVec2<Float> by lazy { NeoVec2f(
             Float.fromBits(data[offset + 4]),
             Float.fromBits(data[offset + 5])
         ) }
-        override val overlayUV: AbstractVec2<Int, *> by lazy {
+        override val overlayUV: AbstractVec2<Int> by lazy {
             val packed = data[offset + 6]
             NeoVec2i(
                 packed ushr 16,
                 packed and 0xFFFF
             )
         }
-        override val lightUV: AbstractVec2<Int, *>? = null
-        override val normal: AbstractVec3<Float, *> by lazy {
+        override val lightUV: AbstractVec2<Int>? = null
+        override val normal: AbstractVec3<Float> by lazy {
             val packed = data[offset + 7]
             NeoVec3f(
                 (packed ushr 24).toByte() / 127f,

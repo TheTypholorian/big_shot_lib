@@ -45,7 +45,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun vertex(vertex: AbstractVec3<*, *>): NeoVertexConsumer {
+    open fun vertex(vertex: AbstractVec3<*>): NeoVertexConsumer {
         vertex(vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
         return this
     }
@@ -56,7 +56,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun vertex(mat: Matrix4f, vertex: AbstractVec3<*, *>): NeoVertexConsumer {
+    open fun vertex(mat: Matrix4f, vertex: AbstractVec3<*>): NeoVertexConsumer {
         vertex(mat, vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
         return this
     }
@@ -66,7 +66,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun vertex(pose: PoseStack.Pose, vertex: AbstractVec3<*, *>): NeoVertexConsumer {
+    open fun vertex(pose: PoseStack.Pose, vertex: AbstractVec3<*>): NeoVertexConsumer {
         vertex(pose, vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
         return this
     }
@@ -99,7 +99,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun textureUV(uv: AbstractVec2<Float, *>): NeoVertexConsumer {
+    open fun textureUV(uv: AbstractVec2<Float>): NeoVertexConsumer {
         textureUV(uv.x, uv.y)
         return this
     }
@@ -109,7 +109,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun overlayUV(uv: AbstractVec2<Int, *>): NeoVertexConsumer {
+    open fun overlayUV(uv: AbstractVec2<Int>): NeoVertexConsumer {
         overlayUV(uv.x, uv.y)
         return this
     }
@@ -124,7 +124,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun lightUV(uv: AbstractVec2<Int, *>): NeoVertexConsumer {
+    open fun lightUV(uv: AbstractVec2<Int>): NeoVertexConsumer {
         lightUV(uv.x, uv.y)
         return this
     }
@@ -139,7 +139,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun normal(normal: AbstractVec3<*, *>): NeoVertexConsumer {
+    open fun normal(normal: AbstractVec3<*>): NeoVertexConsumer {
         normal(normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
         return this
     }
@@ -153,13 +153,13 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun normal(pose: PoseStack.Pose, normal: AbstractVec3<*, *>): NeoVertexConsumer {
+    open fun normal(pose: PoseStack.Pose, normal: AbstractVec3<*>): NeoVertexConsumer {
         normal(pose, normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
         return this
     }
 
     open fun cube(
-        box: AbstractRect3<*, *, *>,
+        box: AbstractRect3<*>,
     ): NeoVertexConsumer {
         val vertices = arrayOf(
             NeoVec3f(box.max.x.toFloat(), box.max.x.toFloat(), box.max.x.toFloat()),
@@ -183,11 +183,11 @@ abstract class NeoVertexConsumer {
     }
 
     open fun quad(
-        v0: AbstractVec3<*, *>,
-        v1: AbstractVec3<*, *>,
-        v2: AbstractVec3<*, *>,
-        v3: AbstractVec3<*, *>,
-        normal: AbstractVec3<*, *>
+        v0: AbstractVec3<*>,
+        v1: AbstractVec3<*>,
+        v2: AbstractVec3<*>,
+        v3: AbstractVec3<*>,
+        normal: AbstractVec3<*>
     ): NeoVertexConsumer {
         vertex(v0).textureUV(0f, 1f).normal(normal)
         vertex(v1).textureUV(1f, 1f).normal(normal)

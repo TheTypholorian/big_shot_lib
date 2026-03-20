@@ -8,45 +8,45 @@ import net.typho.big_shot_lib.api.math.vec.NeoVec2i
 import net.typho.big_shot_lib.api.math.vec.NeoVec3i
 import net.typho.big_shot_lib.api.math.vec.NeoVec4i
 
-abstract class AbstractRect4<N : Number, R4 : AbstractRect4<N, R4, V4>, V4 : AbstractVec4<N, V4>>(
-    min: V4,
-    max: V4
+abstract class AbstractRect4<N : Number>(
+    min: AbstractVec4<N>,
+    max: AbstractVec4<N>
 ) {
     @JvmField
-    val min: V4 = min.min(max)
+    val min: AbstractVec4<N> = min.min(max)
     @JvmField
-    val max: V4 = min.max(max)
+    val max: AbstractVec4<N> = min.max(max)
     protected abstract val opSet: OperatorSet<N>
-    val size: V4
+    val size: AbstractVec4<N>
         get() = max - min
     val area: N
         get() = opSet.times(size.x, opSet.times(size.y, opSet.times(size.z, size.w)))
 
-    protected abstract fun create(min: V4, max: V4): R4
+    protected abstract fun create(min: AbstractVec4<N>, max: AbstractVec4<N>): AbstractRect4<N>
 
-    fun include(other: AbstractRect4<N, *, *>): R4 {
+    fun include(other: AbstractRect4<N>): AbstractRect4<N> {
         return create(min.min(other.min), max.max(other.max))
     }
 
-    fun include(other: AbstractVec4<N, *>): R4 {
+    fun include(other: AbstractVec4<N>): AbstractRect4<N> {
         return create(min.min(other), max.max(other))
     }
 
-    fun contains(other: AbstractRect4<N, *, *>): Boolean {
+    fun contains(other: AbstractRect4<N>): Boolean {
         return min.allLequalThan(other.min) && max.allGequalThan(other.max)
     }
 
-    fun contains(other: AbstractVec4<N, *>): Boolean {
+    fun contains(other: AbstractVec4<N>): Boolean {
         return min.allLequalThan(other) && max.allGequalThan(other)
     }
 
-    fun intersects(other: AbstractRect4<N, *, *>): Boolean {
+    fun intersects(other: AbstractRect4<N>): Boolean {
         return min.anyLessThan(other.max) && max.anyGreaterThan(other.min)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AbstractRect4<*, *, *>) return false
+        if (other !is AbstractRect4<*>) return false
 
         if (min != other.min) return false
         if (max != other.max) return false
@@ -62,15 +62,15 @@ abstract class AbstractRect4<N : Number, R4 : AbstractRect4<N, R4, V4>, V4 : Abs
 
     companion object {
         @JvmStatic
-        val <V4 : AbstractVec4<Int, V4>> AbstractRect4<Int, *, V4>.sizeInclusive: V4
+        val <N : Number> AbstractRect4<N>.sizeInclusive: AbstractVec4<N>
             get() = size + 1
 
         @JvmStatic
-        val AbstractRect4<Int, *, *>.areaInclusive: Int
+        val AbstractRect4<Int>.areaInclusive: Int
             get() = opSet.times(size.x + 1, opSet.times(size.y + 1, opSet.times(size.z + 1, size.w + 1)))
 
         @JvmStatic
-        operator fun AbstractRect4<Int, *, *>.iterator(): Iterator<AbstractVec4<Int, *>> = (min.x..max.x)
+        operator fun AbstractRect4<Int>.iterator(): Iterator<AbstractVec4<Int>> = (min.x..max.x)
             .flatMap { x ->
                 (min.y..max.y).map { y -> x to y }
             }

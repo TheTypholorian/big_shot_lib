@@ -3,46 +3,47 @@ package net.typho.big_shot_lib.api.math.rect
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.rect.AbstractRect3.Companion.iterator
+import net.typho.big_shot_lib.api.math.vec.AbstractVec2
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3i
 
-abstract class AbstractRect3<N : Number, R3 : AbstractRect3<N, R3, V3>, V3 : AbstractVec3<N, V3>>(
-    min: V3,
-    max: V3
+abstract class AbstractRect3<N : Number>(
+    min: AbstractVec3<N>,
+    max: AbstractVec3<N>
 ) {
     @JvmField
-    val min: V3 = min.min(max)
+    val min: AbstractVec3<N> = min.min(max)
     @JvmField
-    val max: V3 = min.max(max)
+    val max: AbstractVec3<N> = min.max(max)
     protected abstract val opSet: OperatorSet<N>
-    val size: V3
+    val size: AbstractVec3<N>
         get() = max - min
     val area: N
         get() = opSet.times(size.x, opSet.times(size.y, size.z))
 
-    protected abstract fun create(min: V3, max: V3): R3
+    protected abstract fun create(min: AbstractVec3<N>, max: AbstractVec3<N>): AbstractRect3<N>
 
-    fun include(other: AbstractRect3<N, *, *>): R3 {
+    fun include(other: AbstractRect3<N>): AbstractRect3<N> {
         return create(min.min(other.min), max.max(other.max))
     }
 
-    fun include(other: AbstractVec3<N, *>): R3 {
+    fun include(other: AbstractVec3<N>): AbstractRect3<N> {
         return create(min.min(other), max.max(other))
     }
 
-    fun contains(other: AbstractRect3<N, *, *>): Boolean {
+    fun contains(other: AbstractRect3<N>): Boolean {
         return min.allLequalThan(other.min) && max.allGequalThan(other.max)
     }
 
-    fun contains(other: AbstractVec3<N, *>): Boolean {
+    fun contains(other: AbstractVec3<N>): Boolean {
         return min.allLequalThan(other) && max.allGequalThan(other)
     }
 
-    fun intersects(other: AbstractRect3<N, *, *>): Boolean {
+    fun intersects(other: AbstractRect3<N>): Boolean {
         return min.anyLessThan(other.max) && max.anyGreaterThan(other.min)
     }
 
-    fun extend(direction: NeoDirection): R3 {
+    fun extend(direction: NeoDirection): AbstractRect3<N> {
         return if (direction.axisDirection == NeoDirection.AxisDirection.POSITIVE) {
             create(min, max.plus(direction))
         } else {
@@ -50,7 +51,7 @@ abstract class AbstractRect3<N : Number, R3 : AbstractRect3<N, R3, V3>, V3 : Abs
         }
     }
 
-    fun extend(direction: NeoDirection, x: N): R3 {
+    fun extend(direction: NeoDirection, x: N): AbstractRect3<N> {
         return if (direction.axisDirection == NeoDirection.AxisDirection.POSITIVE) {
             create(min, max.plus(direction.inc * x))
         } else {
@@ -64,7 +65,7 @@ abstract class AbstractRect3<N : Number, R3 : AbstractRect3<N, R3, V3>, V3 : Abs
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AbstractRect3<*, *, *>) return false
+        if (other !is AbstractRect3<*>) return false
 
         if (min != other.min) return false
         if (max != other.max) return false
@@ -80,15 +81,15 @@ abstract class AbstractRect3<N : Number, R3 : AbstractRect3<N, R3, V3>, V3 : Abs
 
     companion object {
         @JvmStatic
-        val <V3 : AbstractVec3<Int, V3>> AbstractRect3<Int, *, V3>.sizeInclusive: V3
+        val <N : Number> AbstractRect3<N>.sizeInclusive: AbstractVec3<N>
             get() = size + 1
 
         @JvmStatic
-        val AbstractRect3<Int, *, *>.areaInclusive: Int
+        val AbstractRect3<Int>.areaInclusive: Int
             get() = opSet.times(size.x + 1, opSet.times(size.y + 1, size.z + 1))
 
         @JvmStatic
-        operator fun AbstractRect3<Int, *, *>.iterator(): Iterator<AbstractVec3<Int, *>> = (min.x..max.x)
+        operator fun AbstractRect3<Int>.iterator(): Iterator<AbstractVec3<Int>> = (min.x..max.x)
             .flatMap { x ->
                 (min.y..max.y).map { y -> x to y }
             }

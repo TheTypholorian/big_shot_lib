@@ -20,7 +20,7 @@ class NeoGlFramebuffer(glId: Int) : NeoGlResource(GlResourceType.FRAMEBUFFER, gl
     override var depthAttachment: GlFramebufferAttachment? = null
         private set
 
-    override fun bind(viewport: AbstractRect2<Int, *, *>?): GlBoundFramebuffer {
+    override fun bind(viewport: AbstractRect2<Int>?): GlBoundFramebuffer {
         return object : GlBoundFramebuffer.Basic(this, viewport, NeoGlStateManager.INSTANCE.framebuffer.push(glId)) {
             override val colorAttachments: KeyedDelegate<Int, GlFramebufferAttachment?> = object : KeyedDelegate<Int, GlFramebufferAttachment?> {
                 override fun get(key: Int) = colorAttachmentsBacking[key]
