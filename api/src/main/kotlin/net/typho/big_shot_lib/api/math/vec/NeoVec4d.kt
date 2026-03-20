@@ -2,14 +2,14 @@ package net.typho.big_shot_lib.api.math.vec
 
 import net.typho.big_shot_lib.api.math.op.DoubleOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import org.joml.Vector4d
+import org.joml.Vector4dc
 
 class NeoVec4d : AbstractVec4<Double> {
     constructor(x: Double, y: Double, z: Double, w: Double) : super(x, y, z, w)
 
     constructor(other: AbstractVec4<Double>) : super(other)
 
-    constructor(other: Vector4d) : super(other.x, other.y, other.z, other.w)
+    constructor(other: Vector4dc) : super(other.x(), other.y(), other.z(), other.w())
 
     override val opSet: OperatorSet<Double>
         get() = DoubleOperatorSet

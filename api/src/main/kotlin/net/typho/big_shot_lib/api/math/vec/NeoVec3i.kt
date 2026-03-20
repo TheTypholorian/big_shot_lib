@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.api.math.vec
 import net.minecraft.core.Vec3i
 import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import org.joml.Vector3i
+import org.joml.Vector3ic
 
 class NeoVec3i : AbstractVec3<Int> {
     constructor(x: Int, y: Int, z: Int) : super(x, y, z)
@@ -12,7 +12,7 @@ class NeoVec3i : AbstractVec3<Int> {
 
     constructor(other: Vec3i) : super(other.x, other.y, other.z)
 
-    constructor(other: Vector3i) : super(other.x, other.y, other.z)
+    constructor(other: Vector3ic) : super(other.x(), other.y(), other.z())
 
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet

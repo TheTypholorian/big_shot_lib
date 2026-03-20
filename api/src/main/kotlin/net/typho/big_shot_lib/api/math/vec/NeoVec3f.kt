@@ -9,7 +9,7 @@ class NeoVec3f : AbstractVec3<Float> {
 
     constructor(other: AbstractVec3<Float>) : super(other)
 
-    constructor(other: Vector3fc) : super(other.x(), other.y(), other.z())
+    constructor(other: Vector3fc) : super(other.x()(), other.y()(), other.z()())
 
     override val opSet: OperatorSet<Float>
         get() = FloatOperatorSet
