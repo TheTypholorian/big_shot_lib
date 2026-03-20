@@ -2,7 +2,9 @@ package net.typho.big_shot_lib.api.math.rect
 
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.op.OperatorSet
+import net.typho.big_shot_lib.api.math.rect.AbstractRect3.Companion.iterator
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.math.vec.NeoVec3i
 
 abstract class AbstractRect3<N : Number, R3 : AbstractRect3<N, R3, V3>, V3 : AbstractVec3<N, V3>>(
     min: V3,
@@ -84,5 +86,15 @@ abstract class AbstractRect3<N : Number, R3 : AbstractRect3<N, R3, V3>, V3 : Abs
         @JvmStatic
         val AbstractRect3<Int, *, *>.areaInclusive: Int
             get() = opSet.times(size.x + 1, opSet.times(size.y + 1, size.z + 1))
+
+        @JvmStatic
+        operator fun AbstractRect3<Int, *, *>.iterator(): Iterator<AbstractVec3<Int, *>> = (min.x..max.x)
+            .flatMap { x ->
+                (min.y..max.y).map { y -> x to y }
+            }
+            .flatMap { xy ->
+                (min.z..max.z).map { z -> NeoVec3i(xy.first, xy.second, z) }
+            }
+            .iterator()
     }
 }

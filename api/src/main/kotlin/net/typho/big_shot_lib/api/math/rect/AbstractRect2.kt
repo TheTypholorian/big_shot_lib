@@ -2,6 +2,9 @@ package net.typho.big_shot_lib.api.math.rect
 
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.vec.AbstractVec2
+import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.math.vec.NeoVec2i
+import net.typho.big_shot_lib.api.math.vec.NeoVec3i
 
 abstract class AbstractRect2<N : Number, R2 : AbstractRect2<N, R2, V2>, V2 : AbstractVec2<N, V2>>(
     min: V2,
@@ -53,5 +56,22 @@ abstract class AbstractRect2<N : Number, R2 : AbstractRect2<N, R2, V2>, V2 : Abs
         var result = min.hashCode()
         result = 21 * result + max.hashCode()
         return result
+    }
+
+    companion object {
+        @JvmStatic
+        val <V2 : AbstractVec2<Int, V2>> AbstractRect2<Int, *, V2>.sizeInclusive: V2
+            get() = size + 1
+
+        @JvmStatic
+        val AbstractRect2<Int, *, *>.areaInclusive: Int
+            get() = opSet.times(size.x + 1, size.y + 1)
+
+        @JvmStatic
+        operator fun AbstractRect2<Int, *, *>.iterator(): Iterator<AbstractVec2<Int, *>> = (min.x..max.x)
+            .flatMap { x ->
+                (min.y..max.y).map { y -> NeoVec2i(x, y) }
+            }
+            .iterator()
     }
 }

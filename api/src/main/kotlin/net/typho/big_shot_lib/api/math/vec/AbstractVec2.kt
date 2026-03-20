@@ -241,5 +241,9 @@ abstract class AbstractVec2<N : Number, V2 : AbstractVec2<N, V2>>(
 
         @JvmStatic
         fun AbstractVec2<Double, *>.toJOML() = Vector2d(x, y)
+
+        @JvmStatic
+        val AbstractVec2<Int, *>.center: AbstractVec2<Float, *>
+            get() = NeoVec2f(0.5f, 0.5f) + this
     }
 }

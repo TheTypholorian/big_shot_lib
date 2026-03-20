@@ -261,5 +261,9 @@ abstract class AbstractVec3<N : Number, V3 : AbstractVec3<N, V3>>(
 
         @JvmStatic
         fun AbstractVec3<Double, *>.toJOML() = Vector3d(x, y, z)
+
+        @JvmStatic
+        val AbstractVec3<Int, *>.center: AbstractVec3<Float, *>
+            get() = NeoVec3f(0.5f, 0.5f, 0.5f) + this
     }
 }

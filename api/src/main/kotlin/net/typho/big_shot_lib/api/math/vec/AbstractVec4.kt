@@ -269,5 +269,9 @@ abstract class AbstractVec4<N : Number, V4 : AbstractVec4<N, V4>>(
 
         @JvmStatic
         fun AbstractVec4<Double, *>.toJOML() = Vector4d(x, y, z, w)
+
+        @JvmStatic
+        val AbstractVec4<Int, *>.center: AbstractVec4<Float, *>
+            get() = NeoVec4f(0.5f, 0.5f, 0.5f, 0.5f) + this
     }
 }
