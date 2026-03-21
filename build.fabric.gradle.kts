@@ -78,7 +78,7 @@ dependencies {
             parchment("org.parchmentmc.data:parchment-${property("deps.parchment")}@zip")
     })
     modImplementation("net.fabricmc:fabric-loader:0.17.3")
-    //modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
+    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
     modImplementation(libs.flk)
 }
 

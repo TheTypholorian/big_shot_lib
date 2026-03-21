@@ -1,13 +1,9 @@
 package net.typho.big_shot_lib.api.client.util.event
 
 interface ClientEventFactory {
-    fun onFrameStart(event: Runnable)
-
-    fun onLevelRenderEnd(event: RenderEvent)
-
-    fun onFrameEnd(event: Runnable)
-
-    fun onWindowResized(event: WindowResizeEvent)
-
-    fun onLevelChanged(event: ClientLevelChangedEvent)
+    val frameStart: MutableList<Runnable>
+    val frameEnd: MutableList<Runnable>
+    val levelRenderEnd: MutableList<RenderEvent>
+    val windowResized: MutableList<WindowResizeEvent>
+    val levelChanged: MutableList<ClientLevelChangedEvent>
 }

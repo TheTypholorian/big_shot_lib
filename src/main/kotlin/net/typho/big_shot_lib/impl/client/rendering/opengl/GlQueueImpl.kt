@@ -9,7 +9,7 @@ object GlQueueImpl : GlQueue, BigShotClientEntrypoint {
     private val queue = arrayListOf<() -> Unit>()
 
     override fun registerEvents(factory: ClientEventFactory) {
-        factory.onFrameEnd {
+        factory.frameEnd.add {
             synchronized(queue) {
                 queue.forEach { it() }
                 queue.clear()

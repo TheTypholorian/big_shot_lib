@@ -7,18 +7,9 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        exclusiveContent {
-            forRepository {
-                maven {
-                    name = "Fabric"
-                    url = uri("https://maven.fabricmc.net")
-                }
-            }
-            filter {
-                includeGroup("net.fabricmc")
-                includeGroup("net.fabricmc.unpick")
-                includeGroup("fabric-loom")
-            }
+        maven {
+            name = "Fabric"
+            url = uri("https://maven.fabricmc.net")
         }
         maven("https://maven.kikugie.dev/snapshots") { name = "KikuGie" }
         maven("https://maven.kikugie.dev/releases") { name = "KikuGie Releases" }
