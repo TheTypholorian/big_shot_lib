@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.math.vec
 
+import net.minecraft.world.phys.Vec3
 import net.typho.big_shot_lib.api.math.op.FloatOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import org.joml.Vector3fc
@@ -9,7 +10,9 @@ class NeoVec3f : AbstractVec3<Float> {
 
     constructor(other: AbstractVec3<Float>) : super(other)
 
-    constructor(other: Vector3fc) : super(other.x()(), other.y()(), other.z()())
+    constructor(other: Vector3fc) : super(other.x(), other.y(), other.z())
+
+    constructor(other: Vec3) : super(other.x.toFloat(), other.y.toFloat(), other.z.toFloat())
 
     override val opSet: OperatorSet<Float>
         get() = FloatOperatorSet

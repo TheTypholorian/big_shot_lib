@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.math.vec
 
+import net.minecraft.world.phys.Vec3
 import net.typho.big_shot_lib.api.math.op.DoubleOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import org.joml.Vector3dc
@@ -10,6 +11,8 @@ class NeoVec3d : AbstractVec3<Double> {
     constructor(other: AbstractVec3<Double>) : super(other)
 
     constructor(other: Vector3dc) : super(other.x(), other.y(), other.z())
+
+    constructor(other: Vec3) : super(other.x, other.y, other.z)
 
     override val opSet: OperatorSet<Double>
         get() = DoubleOperatorSet

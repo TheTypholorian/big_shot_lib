@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.impl.client.rendering.opengl.state
 import com.mojang.blaze3d.platform.GlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.math.rect.NeoRect2i
@@ -24,6 +25,8 @@ import org.lwjgl.opengl.GL43.*
 import org.lwjgl.system.MemoryStack
 
 object NeoGlStateManagerImpl : NeoGlStateManager {
+    internal var currentTarget: GlFramebuffer? = null
+
     override val buffers: EnumArrayMap<GlBufferTarget, GlStateStack<Int>> = enumArrayMapOf { target ->
         GlStateStack.Impl(
             { GlStateManager._glBindBuffer(target.glId, it) },

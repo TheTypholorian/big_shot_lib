@@ -6,6 +6,9 @@
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
     "BakedQuadMixin",
+    "FrustumAccessor",
+    "LevelRendererAccessor",
+    "MinecraftMixin",
     "TextureAtlasSpriteMixin",
     "VertexFormatAccessor"
   ],
