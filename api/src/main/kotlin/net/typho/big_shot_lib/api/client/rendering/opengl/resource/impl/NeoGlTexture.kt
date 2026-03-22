@@ -7,8 +7,8 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResour
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 
-class NeoGlTexture(glId: Int) : NeoGlResource(GlResourceType.TEXTURE, glId), GlTexture {
-    constructor() : this(GlResourceType.TEXTURE.create())
+class NeoGlTexture(glId: Int, autoFree: Boolean) : NeoGlResource(GlResourceType.TEXTURE, glId, autoFree), GlTexture {
+    constructor() : this(GlResourceType.TEXTURE.create(), true)
 
     override var format: GlTextureFormat? = null
         private set

@@ -7,11 +7,15 @@ import java.lang.ref.Cleaner
 
 open class NeoGlResource(
     override val type: GlResourceType,
-    override val glId: Int
+    override val glId: Int,
+    val autoFree: Boolean
 ) : GlResource {
     final override var freed = false
         private set
-    private val cleanup = CLEANER.register(this, Cleanup(type, glId))
+    private val cleanup: Cleaner.Cleanable = if (autoFree)
+        CLEANER.register(this, Cleanup(type, glId))
+    else
+        Cleaner.Cleanable { GlQueue.INSTANCE.runOrQueue { type.destroy(glId) } }
 
     override fun free() {
         if (!freed) {

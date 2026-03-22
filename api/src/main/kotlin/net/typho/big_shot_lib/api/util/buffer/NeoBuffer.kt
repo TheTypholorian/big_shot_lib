@@ -55,6 +55,8 @@ interface NeoBuffer {
 
     fun put(index: Long, data: DoubleArray)
 
+    fun asByteBuffer(): ByteBuffer = memByteBuffer(address, size.toInt())
+
     class Impl(
         override val address: Long,
         override val size: Long,

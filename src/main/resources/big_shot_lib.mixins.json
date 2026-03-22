@@ -8,11 +8,14 @@
     "BakedQuadMixin",
     "FrustumAccessor",
     "LevelRendererAccessor",
+    "LevelRendererMixin",
     "MinecraftMixin",
     "TextureAtlasSpriteMixin",
     "VertexFormatAccessor"
   ],
-  "client": [],
+  "client": [
+    "GlBufferAccessor"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

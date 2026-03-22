@@ -31,6 +31,14 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
 
     fun bufferSubData(offset: Long, data: NeoBuffer)
 
+    fun getBufferData(offset: Long, data: NeoBuffer)
+
+    fun getBufferData(offset: Long, size: Long = this.size): NeoBuffer {
+        val buffer = NeoBuffer.Impl(size)
+        getBufferData(offset, buffer)
+        return buffer
+    }
+
     fun mapBuffer(access: GlBufferAccess, size: Long): GlMappedBuffer
 
     fun mapBuffer(access: GlBufferAccess, size: Long, out: (buffer: NeoBuffer) -> Unit) {
@@ -77,6 +85,12 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
         override fun bufferSubData(offset: Long, data: NeoBuffer) {
             assertBound {
                 nglBufferSubData(target.glId, offset, data.size, data.address)
+            }
+        }
+
+        override fun getBufferData(offset: Long, data: NeoBuffer) {
+            assertBound {
+                nglGetBufferSubData(target.glId, offset, data.size, data.address)
             }
         }
 

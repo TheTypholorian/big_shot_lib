@@ -12,8 +12,8 @@ import org.lwjgl.opengl.GL11.GL_NONE
 import org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0
 import org.lwjgl.opengl.GL30.GL_FRAMEBUFFER
 
-class NeoGlFramebuffer(glId: Int) : NeoGlResource(GlResourceType.FRAMEBUFFER, glId), GlFramebuffer {
-    constructor() : this(GlResourceType.FRAMEBUFFER.create())
+class NeoGlFramebuffer(glId: Int, autoFree: Boolean) : NeoGlResource(GlResourceType.FRAMEBUFFER, glId, autoFree), GlFramebuffer {
+    constructor() : this(GlResourceType.FRAMEBUFFER.create(), true)
 
     private val colorAttachmentsBacking = Array<GlFramebufferAttachment?>(8) { null }
     override val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?> = KeyedDelegate.ReadOnly { key -> colorAttachmentsBacking[key] }

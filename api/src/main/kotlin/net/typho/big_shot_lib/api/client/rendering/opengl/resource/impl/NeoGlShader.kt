@@ -10,15 +10,16 @@ import org.lwjgl.opengl.GL20.*
 class NeoGlShader(
     override val location: NeoIdentifier,
     override val shaderType: GlShaderType,
-    glId: Int
-) : NeoGlResource(shaderType.resourceType, glId), GlShader {
+    glId: Int,
+    autoFree: Boolean
+) : NeoGlResource(shaderType.resourceType, glId, autoFree), GlShader {
     override val type: GlResourceType
         get() = shaderType.resourceType
     override var source: String
         get() = glGetShaderSource(glId)
         set(value) = glShaderSource(glId, value)
 
-    constructor(location: NeoIdentifier, shaderType: GlShaderType) : this(location, shaderType, shaderType.resourceType.create())
+    constructor(location: NeoIdentifier, shaderType: GlShaderType) : this(location, shaderType, shaderType.resourceType.create(), true)
 
     override fun compile(onError: (log: String) -> Nothing) {
         glCompileShader(glId)

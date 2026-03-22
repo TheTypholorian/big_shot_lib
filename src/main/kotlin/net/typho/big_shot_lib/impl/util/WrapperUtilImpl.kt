@@ -86,10 +86,10 @@ object WrapperUtilImpl : WrapperUtil {
 
             override fun get(value: NeoIdentifier): T? {
                 //? if <1.21.2 {
-                return registry.get(value.mojang)
-                //? } else {
-                /*return registry.get(value.mojang).getOrNull()?.value()
-                *///? }
+                /*return registry.get(value.mojang)
+                *///? } else {
+                return registry.get(value.mojang).getOrNull()?.value()
+                //? }
             }
 
             override fun getKey(value: T): NeoResourceKey<T> {
@@ -114,29 +114,29 @@ object WrapperUtilImpl : WrapperUtil {
 
             override fun getTag(key: NeoTagKey<T>): Set<T>? {
                 //? if <1.21.2 {
-                return registry.getTag(key.mojang)
+                /*return registry.getTag(key.mojang)
                     .map { set ->
                         set.stream()
                             .map { it.value() }
                             .collect(Collectors.toSet())
                     }
                     .getOrNull()
-                //? } else {
-                /*return if (registry.listTagIds().anyMatch { it.neo == key }) {
+                *///? } else {
+                return if (registry.listTagIds().anyMatch { it.neo == key }) {
                     registry.getTagOrEmpty(key.mojang).toList()
                         .stream()
                         .map { it.value() }
                         .collect(Collectors.toSet())
                 } else null
-                *///? }
+                //? }
             }
 
             override fun tags(): Set<NeoTagKey<T>> {
                 //? if <1.21.2 {
-                return registry.tags.map { it.first.neo }.collect(Collectors.toSet())
-                //? } else {
-                /*return registry.listTagIds().map { it.neo }.collect(Collectors.toSet())
-                *///? }
+                /*return registry.tags.map { it.first.neo }.collect(Collectors.toSet())
+                *///? } else {
+                return registry.listTagIds().map { it.neo }.collect(Collectors.toSet())
+                //? }
             }
         }
     }
@@ -145,10 +145,10 @@ object WrapperUtilImpl : WrapperUtil {
         return object : NeoRegistryAccess {
             override fun <T : Any> registry(key: NeoResourceKey<Registry<T>>): NeoRegistry<T>? {
                 //? if <1.21.2 {
-                return access.registry(key.mojang).map { wrap(it) }.getOrNull()
-                //? } else {
-                /*return access.lookup(key.mojang).map { wrap(it) }.getOrNull()
-                *///? }
+                /*return access.registry(key.mojang).map { wrap(it) }.getOrNull()
+                *///? } else {
+                return access.lookup(key.mojang).map { wrap(it) }.getOrNull()
+                //? }
             }
         }
     }

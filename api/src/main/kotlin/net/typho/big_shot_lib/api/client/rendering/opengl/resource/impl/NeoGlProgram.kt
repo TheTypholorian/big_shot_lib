@@ -14,11 +14,12 @@ import org.lwjgl.opengl.GL33.glBindSampler
 
 class NeoGlProgram(
     override val location: NeoIdentifier,
-    glId: Int
-) : NeoGlResource(GlResourceType.PROGRAM, glId), GlProgram {
+    glId: Int,
+    autoFree: Boolean
+) : NeoGlResource(GlResourceType.PROGRAM, glId, autoFree), GlProgram {
     private val uniforms = hashMapOf<String, GlUniform?>()
 
-    constructor(location: NeoIdentifier) : this(location, GlResourceType.PROGRAM.create())
+    constructor(location: NeoIdentifier) : this(location, GlResourceType.PROGRAM.create(), true)
 
     override fun use(): GlBoundProgram {
         return object : GlBoundProgram {
