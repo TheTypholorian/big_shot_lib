@@ -23,6 +23,10 @@ fletchingTable {
     accessConverter.register(sourceSets.main) {
         add(accessWidener)
     }
+
+    mixins.create("main") {
+        mixin("default", "${project.property("mod.id")}.mixins.json")
+    }
 }
 
 val processResources = tasks.named<ProcessResources>("processResources") {
@@ -44,7 +48,7 @@ val processResources = tasks.named<ProcessResources>("processResources") {
         this["vibrancy_incompat_version"] = project.property("vibrancyIncompatVersion") as String
     }
 
-    filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml")) {
+    filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml", "**/*.mixins.json")) {
         expand(props)
     }
 }

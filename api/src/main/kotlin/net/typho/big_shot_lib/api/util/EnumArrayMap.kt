@@ -13,7 +13,7 @@ open class EnumArrayMap<K : Enum<K>, V>(
     protected val array = ArrayList<V>(enumEntries.size)
 
     init {
-        enumEntries.forEach { array[it.ordinal] = init(it) }
+        enumEntries.forEach { array.add(init(it)) }
     }
 
     constructor(cls: Class<K>, init: (key: K) -> V) : this(listOf(*cls.enumConstants!!), init)

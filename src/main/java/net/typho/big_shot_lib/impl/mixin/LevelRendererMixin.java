@@ -1,9 +1,6 @@
 package net.typho.big_shot_lib.impl.mixin;
 
-import net.minecraft.client.renderer.culling.Frustum;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoCamera;
-import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
-import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.client.renderer.LevelRenderer;
 
@@ -18,6 +15,10 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoCamera;
+import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
+import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
 import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer;
 import net.typho.big_shot_lib.api.client.util.event.RenderEventData;
@@ -33,6 +34,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 *///? }
 
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
     //? if >=1.21.10 {

@@ -4,6 +4,7 @@ package net.typho.big_shot_lib.impl.mixin;
 /*import org.joml.Vector3fc;
 *///? }
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -23,6 +24,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(BakedQuad.class)
 public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad> {
     //? if <1.21.11 {

@@ -4,18 +4,8 @@
   "package": "net.typho.big_shot_lib.impl.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_${java}",
-  "mixins": [
-    "BakedQuadMixin",
-    "FrustumAccessor",
-    "LevelRendererAccessor",
-    "LevelRendererMixin",
-    "MinecraftMixin",
-    "TextureAtlasSpriteMixin",
-    "VertexFormatAccessor"
-  ],
-  "client": [
-    "GlBufferAccessor"
-  ],
+  "mixins": [],
+  "client": [],
   "server": [],
   "injectors": {
     "defaultRequire": 1

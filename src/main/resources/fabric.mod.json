@@ -14,7 +14,6 @@
   "icon": "${mod_id}.png",
   "environment": "client",
   "mixins": [
-    "big_shot_api.mixins.json",
     "${mod_id}.mixins.json"
   ],
   "depends": {

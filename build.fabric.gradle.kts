@@ -12,6 +12,26 @@ plugins {
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
 }
 
+sourceSets {
+    main {
+        java {
+            if (stonecutter.current.version < "1.21.5") {
+                exclude("net/typho/big_shot_lib/impl/mixin/GlBufferAccessor.java")
+            }
+
+            if (stonecutter.current.version < "1.21") {
+                exclude("net/typho/big_shot_lib/impl/mixin/VertexFormatAccessor.java")
+            }
+        }
+    }
+}
+
+fletchingTable {
+    mixins.create("main") {
+        mixin("default", "${project.property("mod.id")}.mixins.json")
+    }
+}
+
 val accessWidener = when {
     stonecutter.eval(stonecutter.current.version, ">=1.21.5") -> "accesswideners/big_shot_lib-1.21.5.accesswidener"
     else -> "accesswideners/big_shot_lib.accesswidener"
@@ -45,7 +65,7 @@ tasks.named<ProcessResources>("processResources") {
         this["vibrancy_incompat_version"] = project.property("vibrancyIncompatVersion") as String
     }
 
-    filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml")) {
+    filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml", "**/*.mixins.json")) {
         expand(props)
     }
 }
