@@ -43,50 +43,6 @@ interface WrapperUtil {
 
     fun <T : Any> unwrap(key: NeoTagKey<T>): TagKey<T>
 
-    fun createVertexFormatBuilder(): NeoVertexFormat.Builder
-
-    fun positionVertexElement(): NeoVertexFormat.Element
-
-    fun colorVertexElement(): NeoVertexFormat.Element
-
-    fun textureUVVertexElement(): NeoVertexFormat.Element
-
-    fun overlayUVVertexElement(): NeoVertexFormat.Element
-
-    fun lightUVVertexElement(): NeoVertexFormat.Element
-
-    fun normalVertexElement(): NeoVertexFormat.Element
-
-    fun blitScreenVertexFormat(): NeoVertexFormat
-
-    fun blockVertexFormat(): NeoVertexFormat
-
-    fun newEntityVertexFormat(): NeoVertexFormat
-
-    fun particleVertexFormat(): NeoVertexFormat
-
-    fun positionVertexFormat(): NeoVertexFormat
-
-    fun positionColorVertexFormat(): NeoVertexFormat
-
-    fun positionColorNormalVertexFormat(): NeoVertexFormat
-
-    fun positionColorLightVertexFormat(): NeoVertexFormat
-
-    fun positionTexVertexFormat(): NeoVertexFormat
-
-    fun positionTexColorVertexFormat(): NeoVertexFormat
-
-    fun positionColorTexLightVertexFormat(): NeoVertexFormat
-
-    fun positionTexLightColorVertexFormat(): NeoVertexFormat
-
-    fun positionTexColorNormalVertexFormat(): NeoVertexFormat
-
-    fun createBufferBuilder(size: Int, mode: GlBeginMode, format: NeoVertexFormat): BufferBuilder
-
-    fun <R> dataResultError(message: () -> String): DataResult<R>
-
     companion object {
         @JvmField
         val INSTANCE = WrapperUtil::class.loadService()

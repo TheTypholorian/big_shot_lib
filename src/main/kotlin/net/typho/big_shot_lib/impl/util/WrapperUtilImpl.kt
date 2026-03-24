@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 //? if >=1.21 {
+import com.ibm.icu.text.PluralRules
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
 //? }
 
@@ -36,6 +37,9 @@ import net.typho.big_shot_lib.api.util.resource.NeoTagKey
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
+import org.joml.Matrix4f
+import org.joml.Matrix4fc
+import org.joml.Vector3f
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -265,12 +269,7 @@ object WrapperUtilImpl : WrapperUtil {
     override fun unwrap(consumer: NeoVertexConsumer): VertexConsumer {
         return object : VertexConsumer {
             //? if >=1.21.11 {
-            /*override fun setColor(i: Int): VertexConsumer {
-                consumer.color(i and 0xFF000000.toInt())
-                return this
-            }
-
-            override fun setLineWidth(f: Float): VertexConsumer {
+            /*override fun setLineWidth(f: Float): VertexConsumer {
                 // TODO implement once all support pre-1.21.11 is dropped
                 return this
             }
@@ -317,6 +316,65 @@ object WrapperUtilImpl : WrapperUtil {
                 h: Float
             ): VertexConsumer {
                 consumer.normal(f, g, h)
+                return this
+            }
+
+            override fun addVertex(
+                pose: PoseStack.Pose,
+                f: Float,
+                g: Float,
+                h: Float
+            ): VertexConsumer {
+                consumer.vertex(pose, f, g, h)
+                return this
+            }
+
+            override fun addVertex(
+                //? if <1.21.11 {
+                matrix4f: Matrix4f,
+                //? } else {
+                /*matrix4f: Matrix4fc,
+                *///? }
+                f: Float,
+                g: Float,
+                h: Float
+            ): VertexConsumer {
+                consumer.vertex(matrix4f, f, g, h)
+                return this
+            }
+
+            override fun setColor(
+                f: Float,
+                g: Float,
+                h: Float,
+                i: Float
+            ): VertexConsumer {
+                consumer.color(f, g, h, i)
+                return this
+            }
+
+            override fun setColor(i: Int): VertexConsumer {
+                consumer.color(i)
+                return this
+            }
+
+            override fun setNormal(
+                pose: PoseStack.Pose,
+                f: Float,
+                g: Float,
+                h: Float
+            ): VertexConsumer {
+                consumer.normal(pose, f, g, h)
+                return this
+            }
+
+            override fun setLight(i: Int): VertexConsumer {
+                consumer.lightUV(i)
+                return this
+            }
+
+            override fun setOverlay(i: Int): VertexConsumer {
+                consumer.overlayUV(i)
                 return this
             }
             //? } else {
@@ -395,141 +453,5 @@ object WrapperUtilImpl : WrapperUtil {
 
     override fun <T : Any> unwrap(key: NeoTagKey<T>): TagKey<T> {
         return key.mojang
-    }
-
-    override fun createVertexFormatBuilder(): NeoVertexFormat.Builder {
-        return NeoVertexFormatImpl.BuilderImpl()
-    }
-
-    override fun positionVertexElement(): NeoVertexFormat.Element {
-        //? if >=1.21 {
-        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.POSITION)
-        //? } else {
-        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_POSITION)
-        *///? }
-    }
-
-    override fun colorVertexElement(): NeoVertexFormat.Element {
-        //? if >=1.21 {
-        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.COLOR)
-        //? } else {
-        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_COLOR)
-        *///? }
-    }
-
-    override fun textureUVVertexElement(): NeoVertexFormat.Element {
-        //? if >=1.21 {
-        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV0)
-        //? } else {
-        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV0)
-        *///? }
-    }
-
-    override fun overlayUVVertexElement(): NeoVertexFormat.Element {
-        //? if >=1.21 {
-        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV1)
-        //? } else {
-        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV1)
-        *///? }
-    }
-
-    override fun lightUVVertexElement(): NeoVertexFormat.Element {
-        //? if >=1.21 {
-        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV2)
-        //? } else {
-        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV2)
-        *///? }
-    }
-
-    override fun normalVertexElement(): NeoVertexFormat.Element {
-        //? if >=1.21 {
-        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.NORMAL)
-        //? } else {
-        /*return NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_NORMAL)
-        *///? }
-    }
-
-    override fun blitScreenVertexFormat(): NeoVertexFormat {
-        //? if <1.21.9 {
-        return NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
-        //? } else {
-        /*return NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
-        *///? }
-    }
-
-    override fun blockVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.BLOCK)
-    }
-
-    override fun newEntityVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.NEW_ENTITY)
-    }
-
-    override fun particleVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.PARTICLE)
-    }
-
-    override fun positionVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
-    }
-
-    override fun positionColorVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR)
-    }
-
-    override fun positionColorNormalVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR_NORMAL)
-    }
-
-    override fun positionColorLightVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR_LIGHTMAP)
-    }
-
-    override fun positionTexVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX)
-    }
-
-    override fun positionTexColorVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_COLOR)
-    }
-
-    override fun positionColorTexLightVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP)
-    }
-
-    override fun positionTexLightColorVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR)
-    }
-
-    override fun positionTexColorNormalVertexFormat(): NeoVertexFormat {
-        return NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL)
-    }
-
-    override fun createBufferBuilder(
-        size: Int,
-        mode: GlBeginMode,
-        format: NeoVertexFormat
-    ): BufferBuilder {
-        //? if >=1.21 {
-        return BufferBuilder(ByteBufferBuilder(size), when (mode) {
-            GlBeginMode.LINES -> VertexFormat.Mode.LINES
-            //GlBeginMode.LINE_STRIP -> VertexFormat.Mode.LINE_STRIP
-            GlBeginMode.TRIANGLES -> VertexFormat.Mode.TRIANGLES
-            GlBeginMode.TRIANGLE_STRIP -> VertexFormat.Mode.TRIANGLE_STRIP
-            GlBeginMode.TRIANGLE_FAN -> VertexFormat.Mode.TRIANGLE_FAN
-            GlBeginMode.QUADS -> VertexFormat.Mode.QUADS
-            else -> throw IllegalArgumentException("Minecraft does not support GlBeginMode $mode")
-        }, (format as NeoVertexFormatImpl).inner)
-        //? } else {
-        /*throw UnsupportedOperationException("TODO buffer builders") // TODO
-        *///? }
-    }
-
-    override fun <R> dataResultError(message: () -> String): DataResult<R> {
-        //? if >=1.19.4 {
-        return DataResult.error(message)
-        //? } else {
-        /*return DataResult.error(message())
-        *///? }
     }
 }

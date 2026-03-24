@@ -1,12 +1,12 @@
 package net.typho.big_shot_lib.impl.mixin;
 
 //? if <1.21.11 {
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.resources.ResourceLocation;
 //? } else {
 /*import net.minecraft.resources.Identifier;
 *///? }
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas;

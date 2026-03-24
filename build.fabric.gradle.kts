@@ -19,7 +19,7 @@ sourceSets {
                 exclude("net/typho/big_shot_lib/impl/mixin/GlBufferAccessor.java")
             }
 
-            if (stonecutter.current.version < "1.21") {
+            if (stonecutter.current.version >= "1.21") {
                 exclude("net/typho/big_shot_lib/impl/mixin/VertexFormatAccessor.java")
             }
         }

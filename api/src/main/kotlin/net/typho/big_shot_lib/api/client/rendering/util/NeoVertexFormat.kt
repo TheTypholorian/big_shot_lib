@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.util
 
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
 import net.typho.big_shot_lib.api.util.*
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
@@ -57,7 +58,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
         /**
          * - Position
          */
-        val BLIT_SCREEN = WrapperUtil.INSTANCE.blitScreenVertexFormat()
+        val BLIT_SCREEN = InternalUtil.INSTANCE.blitScreenVertexFormat
         /**
          * - Position
          * - Color
@@ -66,7 +67,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        val BLOCK = WrapperUtil.INSTANCE.blockVertexFormat()
+        val BLOCK = InternalUtil.INSTANCE.blockVertexFormat
         /**
          * - Position
          * - Color
@@ -76,61 +77,61 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        val NEW_ENTITY = WrapperUtil.INSTANCE.newEntityVertexFormat()
+        val NEW_ENTITY = InternalUtil.INSTANCE.newEntityVertexFormat
         /**
          * - Position
          * - Texture UV
          * - Color
          * - Light UV
          */
-        val PARTICLE = WrapperUtil.INSTANCE.particleVertexFormat()
+        val PARTICLE = InternalUtil.INSTANCE.particleVertexFormat
         /**
          * - Position
          */
-        val POSITION = WrapperUtil.INSTANCE.positionVertexFormat()
+        val POSITION = InternalUtil.INSTANCE.positionVertexFormat
         /**
          * - Position
          * - Color
          */
-        val POSITION_COLOR = WrapperUtil.INSTANCE.positionColorVertexFormat()
+        val POSITION_COLOR = InternalUtil.INSTANCE.positionColorVertexFormat
         /**
          * - Position
          * - Color
          * - Normal
          * - 1 byte padding
          */
-        val POSITION_COLOR_NORMAL = WrapperUtil.INSTANCE.positionColorNormalVertexFormat()
+        val POSITION_COLOR_NORMAL = InternalUtil.INSTANCE.positionColorNormalVertexFormat
         /**
          * - Position
          * - Color
          * - Light UV
          */
-        val POSITION_COLOR_LIGHTMAP = WrapperUtil.INSTANCE.positionColorLightVertexFormat()
+        val POSITION_COLOR_LIGHTMAP = InternalUtil.INSTANCE.positionColorLightVertexFormat
         /**
          * - Position
          * - Texture UV
          */
-        val POSITION_TEX = WrapperUtil.INSTANCE.positionTexVertexFormat()
+        val POSITION_TEX = InternalUtil.INSTANCE.positionTexVertexFormat
         /**
          * - Position
          * - Texture UV
          * - Color
          */
-        val POSITION_TEX_COLOR = WrapperUtil.INSTANCE.positionTexColorVertexFormat()
+        val POSITION_TEX_COLOR = InternalUtil.INSTANCE.positionTexColorVertexFormat
         /**
          * - Position
          * - Color
          * - Texture UV
          * - Light UV
          */
-        val POSITION_COLOR_TEX_LIGHTMAP = WrapperUtil.INSTANCE.positionColorTexLightVertexFormat()
+        val POSITION_COLOR_TEX_LIGHTMAP = InternalUtil.INSTANCE.positionColorTexLightVertexFormat
         /**
          * - Position
          * - Texture UV
          * - Light UV
          * - Color
          */
-        val POSITION_TEX_LIGHTMAP_COLOR = WrapperUtil.INSTANCE.positionTexLightColorVertexFormat()
+        val POSITION_TEX_LIGHTMAP_COLOR = InternalUtil.INSTANCE.positionTexLightColorVertexFormat
         /**
          * - Position
          * - Texture UV
@@ -138,10 +139,10 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        val POSITION_TEX_COLOR_NORMAL = WrapperUtil.INSTANCE.positionTexColorNormalVertexFormat()
+        val POSITION_TEX_COLOR_NORMAL = InternalUtil.INSTANCE.positionTexColorNormalVertexFormat
 
         @JvmStatic
-        fun builder() = WrapperUtil.INSTANCE.createVertexFormatBuilder()
+        fun builder() = InternalUtil.INSTANCE.createVertexFormatBuilder()
     }
 
     interface Element {
@@ -166,7 +167,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
              * ```
              */
             @JvmField
-            val POSITION = WrapperUtil.INSTANCE.positionVertexElement()
+            val POSITION = InternalUtil.INSTANCE.positionVertexElement
             /**
              * ```
              * Id: 1
@@ -179,7 +180,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
              * ```
              */
             @JvmField
-            val COLOR = WrapperUtil.INSTANCE.colorVertexElement()
+            val COLOR = InternalUtil.INSTANCE.colorVertexElement
             /**
              * ```
              * Id: 2
@@ -192,7 +193,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
              * ```
              */
             @JvmField
-            val TEXTURE_UV = WrapperUtil.INSTANCE.textureUVVertexElement()
+            val TEXTURE_UV = InternalUtil.INSTANCE.textureUVVertexElement
             /**
              * ```
              * Id: 3
@@ -205,7 +206,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
              * ```
              */
             @JvmField
-            val OVERLAY_UV = WrapperUtil.INSTANCE.overlayUVVertexElement()
+            val OVERLAY_UV = InternalUtil.INSTANCE.overlayUVVertexElement
             /**
              * ```
              * Id: 4
@@ -218,7 +219,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
              * ```
              */
             @JvmField
-            val LIGHT_UV = WrapperUtil.INSTANCE.lightUVVertexElement()
+            val LIGHT_UV = InternalUtil.INSTANCE.lightUVVertexElement
             /**
              * ```
              * Id: 5
@@ -231,7 +232,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
              * ```
              */
             @JvmField
-            val NORMAL = WrapperUtil.INSTANCE.normalVertexElement()
+            val NORMAL = InternalUtil.INSTANCE.normalVertexElement
         }
     }
 

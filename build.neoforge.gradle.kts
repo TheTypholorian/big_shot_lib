@@ -9,6 +9,20 @@ plugins {
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
 }
 
+sourceSets {
+    main {
+        java {
+            if (stonecutter.current.version < "1.21.5") {
+                exclude("net/typho/big_shot_lib/impl/mixin/GlBufferAccessor.java")
+            }
+
+            if (stonecutter.current.version >= "1.21") {
+                exclude("net/typho/big_shot_lib/impl/mixin/VertexFormatAccessor.java")
+            }
+        }
+    }
+}
+
 val accessTransformer = project.file("build/resources/main/META-INF/accesstransformer.cfg")
 val accessWidener = when {
     stonecutter.eval(stonecutter.current.version, ">=1.21.5") -> "accesswideners/big_shot_lib-1.21.5.accesswidener"

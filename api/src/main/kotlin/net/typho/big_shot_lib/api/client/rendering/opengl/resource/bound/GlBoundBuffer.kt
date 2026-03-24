@@ -34,7 +34,7 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
     fun getBufferData(offset: Long, data: NeoBuffer)
 
     fun getBufferData(offset: Long, size: Long = this.size): NeoBuffer {
-        val buffer = NeoBuffer.Impl(size)
+        val buffer = NeoBuffer.Native(size)
         getBufferData(offset, buffer)
         return buffer
     }
@@ -100,7 +100,7 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
         ): GlMappedBuffer {
             return assertBound {
                 GlMappedBuffer(
-                    NeoBuffer.Impl(
+                    NeoBuffer.Nio(
                         glMapBuffer(target.glId, access.glId, size, null)
                             ?: throw NullPointerException("Failed to map buffer $target")
                     ),

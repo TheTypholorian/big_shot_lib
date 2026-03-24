@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.math.vec.AbstractVec2
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.NeoColor
-import org.joml.Matrix4f
+import org.joml.Matrix4fc
 import org.joml.Vector3f
 
 abstract class NeoVertexConsumer {
@@ -50,13 +50,13 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun vertex(mat: Matrix4f, x: Float, y: Float, z: Float): NeoVertexConsumer {
+    open fun vertex(mat: Matrix4fc, x: Float, y: Float, z: Float): NeoVertexConsumer {
         val transformed = mat.transformPosition(x, y, z, Vector3f())
         vertex(transformed.x, transformed.y, transformed.z)
         return this
     }
 
-    open fun vertex(mat: Matrix4f, vertex: AbstractVec3<*>): NeoVertexConsumer {
+    open fun vertex(mat: Matrix4fc, vertex: AbstractVec3<*>): NeoVertexConsumer {
         vertex(mat, vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
         return this
     }

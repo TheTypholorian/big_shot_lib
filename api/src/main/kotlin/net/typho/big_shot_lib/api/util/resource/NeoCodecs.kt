@@ -8,6 +8,7 @@ import com.mojang.serialization.DataResult
 import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.Lifecycle
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import java.util.function.Consumer
 import java.util.function.Function
@@ -69,11 +70,11 @@ object NeoCodecs {
         val maxSize: Int
     ) : Codec<List<E>> {
         private fun <R> createTooShortError(size: Int): DataResult<R> {
-            return WrapperUtil.INSTANCE.dataResultError { "List is too short: " + size + ", expected range [" + this.minSize + "-" + this.maxSize + "]" }
+            return InternalUtil.INSTANCE.dataResultError { "List is too short: " + size + ", expected range [" + this.minSize + "-" + this.maxSize + "]" }
         }
 
         private fun <R> createTooLongError(size: Int): DataResult<R> {
-            return WrapperUtil.INSTANCE.dataResultError { "List is too long: " + size + ", expected range [" + this.minSize + "-" + this.maxSize + "]" }
+            return InternalUtil.INSTANCE.dataResultError { "List is too long: " + size + ", expected range [" + this.minSize + "-" + this.maxSize + "]" }
         }
 
         override fun <T> encode(
