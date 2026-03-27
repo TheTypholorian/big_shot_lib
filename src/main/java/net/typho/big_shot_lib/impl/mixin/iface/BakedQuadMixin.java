@@ -1,7 +1,9 @@
-package net.typho.big_shot_lib.impl.mixin;
+package net.typho.big_shot_lib.impl.mixin.iface;
 
 //? if >=1.21.11 {
 /*import org.joml.Vector3fc;
+import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
+import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
 *///? }
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
@@ -13,8 +15,6 @@ import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad;
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoVertexData;
 import net.typho.big_shot_lib.api.math.NeoDirection;
 import net.typho.big_shot_lib.api.math.NeoDirectionKt;
-import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
-import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;

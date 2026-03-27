@@ -3,19 +3,16 @@ package net.typho.big_shot_lib.impl.client.util
 //? fabric {
 /*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 //? if <1.21.9 {
-/*import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
-*///? }
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+//? }
 *///? } neoforge {
 import com.mojang.blaze3d.systems.RenderSystem
 import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.neoforged.neoforge.common.NeoForge
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlBuffer
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.impl.mixin.LevelRendererAccessor
-//? if >1.21.5 && <1.21.9 {
-/*import net.typho.big_shot_lib.impl.mixin.GlBufferAccessor
-*///? }
 //? }
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
@@ -26,6 +23,7 @@ import net.typho.big_shot_lib.api.math.vec.NeoVec2f
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl
 import net.typho.big_shot_lib.impl.mixin.FrustumAccessor
+import net.typho.big_shot_lib.impl.util.getExtensionValue
 import org.joml.Matrix4f
 
 object BigShotClientEvents : ClientEventFactory {
@@ -39,7 +37,7 @@ object BigShotClientEvents : ClientEventFactory {
 
         //? fabric {
         /*//? if <1.21.9 {
-        /*WorldRenderEvents.LAST.register { context ->
+        WorldRenderEvents.LAST.register { context ->
             val data = RenderEventData(
                 NeoCamera(
                     NeoVec3f(context.camera().position),
@@ -58,7 +56,7 @@ object BigShotClientEvents : ClientEventFactory {
             )
             levelRenderEnd.forEach { it.invoke(data) }
         }
-        *///? }
+        //? }
         ClientTickEvents.START_CLIENT_TICK.register { clientTickStart.forEach { it.run() } }
         ClientTickEvents.END_CLIENT_TICK.register { clientTickEnd.forEach { it.run() } }
         *///? } neoforge {
@@ -89,10 +87,8 @@ object BigShotClientEvents : ClientEventFactory {
             }
         }
         *///? } else if <1.21.9 {
-        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent.AfterLevel ->
+        NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent.AfterLevel ->
             if (levelRenderEnd.isNotEmpty()) {
-                val projSlice = RenderSystem.getProjectionMatrixBuffer()!!
-                val buffer = NeoGlBuffer((projSlice.buffer as GlBufferAccessor).`big_shot_lib$getHandle`(), false)
                 val data = RenderEventData(
                     NeoCamera(
                         NeoVec3f(event.camera.position),
@@ -101,8 +97,13 @@ object BigShotClientEvents : ClientEventFactory {
                     ),
                     (event.levelRenderer as LevelRendererAccessor).`big_shot_lib$getLevel`(),
                     Matrix4f(
-                        buffer.bind(GlBufferTarget.ARRAY_BUFFER).use { it.getBufferData(0L, 16L * Float.SIZE_BYTES) }
-                            .asByteBuffer().asFloatBuffer()
+                        RenderSystem.getProjectionMatrixBuffer()!!
+                            .buffer
+                            .getExtensionValue<GlBuffer>()
+                            .bind(GlBufferTarget.ARRAY_BUFFER)
+                            .use { it.getBufferData(0L, 16L * Float.SIZE_BYTES) }
+                            .asByteBuffer()
+                            .asFloatBuffer()
                     ),
                     event.modelViewMatrix,
                     (event.frustum as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
@@ -111,7 +112,7 @@ object BigShotClientEvents : ClientEventFactory {
                 levelRenderEnd.forEach { it.invoke(data) }
             }
         }
-        *///? }
+        //? }
         //? }
     }
 

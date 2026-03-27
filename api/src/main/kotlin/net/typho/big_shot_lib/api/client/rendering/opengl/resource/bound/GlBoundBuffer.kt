@@ -14,6 +14,8 @@ import org.lwjgl.opengl.GL32.glGetBufferParameteri64
 import org.lwjgl.opengl.GL44.GL_BUFFER_STORAGE_FLAGS
 
 interface GlBoundBuffer : GlBoundResource<GlBuffer> {
+    val isResizable: Boolean
+
     val target: GlBufferTarget
     val size: Long
     val usage: GlBufferUsage
@@ -39,10 +41,16 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
         return buffer
     }
 
-    fun mapBuffer(access: GlBufferAccess, size: Long): GlMappedBuffer
+    fun mapBuffer(access: GlBufferAccess, length: Long): GlMappedBuffer
 
-    fun mapBuffer(access: GlBufferAccess, size: Long, out: (buffer: NeoBuffer) -> Unit) {
-        mapBuffer(access, size).also { out(it.buffer) }.free()
+    fun mapBuffer(access: GlBufferAccess, length: Long, out: (buffer: NeoBuffer) -> Unit) {
+        mapBuffer(access, length).also { out(it.buffer) }.free()
+    }
+
+    fun mapBufferRange(access: GlBufferAccess, offset: Long, length: Long): GlMappedBuffer
+
+    fun mapBufferRange(access: GlBufferAccess, offset: Long, length: Long, out: (buffer: NeoBuffer) -> Unit) {
+        mapBufferRange(access, offset, length).also { out(it.buffer) }.free()
     }
 
     open class Basic(
@@ -50,6 +58,7 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
         override val target: GlBufferTarget,
         override val handle: GlStateStack.Handle<Int>
     ) : GlBoundBuffer {
+        override val isResizable: Boolean = true
         override val size: Long
             get() = glGetBufferParameteri64(target.glId, GL_BUFFER_SIZE)
         override val usage: GlBufferUsage
@@ -96,17 +105,59 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
 
         override fun mapBuffer(
             access: GlBufferAccess,
-            size: Long
+            length: Long
         ): GlMappedBuffer {
             return assertBound {
                 GlMappedBuffer(
                     NeoBuffer.Nio(
-                        glMapBuffer(target.glId, access.glId, size, null)
+                        glMapBuffer(target.glId, access.glId, length, null)
                             ?: throw NullPointerException("Failed to map buffer $target")
                     ),
                     target
                 )
             }
+        }
+
+        override fun mapBufferRange(
+            access: GlBufferAccess,
+            offset: Long,
+            length: Long
+        ): GlMappedBuffer {
+            return assertBound {
+                GlMappedBuffer(
+                    NeoBuffer.Nio(
+                        glMapBufferRange(target.glId, offset, length, access.glId, null)
+                            ?: throw NullPointerException("Failed to map buffer $target")
+                    ),
+                    target
+                )
+            }
+        }
+    }
+
+    open class NonResizable(
+        resource: GlBuffer,
+        target: GlBufferTarget,
+        handle: GlStateStack.Handle<Int>,
+        override val size: Long,
+        override val usage: GlBufferUsage
+    ) : Basic(resource, target, handle) {
+        override val isResizable: Boolean = false
+
+        override fun bufferData(size: Long, usage: GlBufferUsage) {
+            if (size != this.size || usage != this.usage) {
+                throw UnsupportedOperationException("Buffer cannot be resized")
+            }
+
+            super.bufferData(size, usage)
+        }
+
+        override fun bufferData(data: NeoBuffer, usage: GlBufferUsage) {
+            if (data.size != this.size || usage != this.usage) {
+                throw UnsupportedOperationException("Buffer cannot be resized")
+            }
+
+            super.bufferData(data, usage)
         }
     }
 }

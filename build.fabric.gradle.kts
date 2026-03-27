@@ -16,7 +16,8 @@ sourceSets {
     main {
         java {
             if (stonecutter.current.version < "1.21.5") {
-                exclude("net/typho/big_shot_lib/impl/mixin/GlBufferAccessor.java")
+                exclude("net/typho/big_shot_lib/impl/mixin/iface/GlBufferMixin.java")
+                exclude("net/typho/big_shot_lib/impl/mixin/iface/GlTextureMixin.java")
             }
 
             if (stonecutter.current.version >= "1.21") {

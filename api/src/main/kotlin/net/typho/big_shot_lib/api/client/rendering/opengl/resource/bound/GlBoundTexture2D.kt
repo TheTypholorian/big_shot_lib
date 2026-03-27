@@ -3,20 +3,16 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundResource.Companion.assertBound
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
-import org.lwjgl.opengl.GL11.glTexImage1D
 import org.lwjgl.opengl.GL11.glTexImage2D
-import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL32.glTexImage2DMultisample
-import org.lwjgl.opengl.GL32.glTexImage3DMultisample
 import org.lwjgl.opengl.GL42.*
 import org.lwjgl.opengl.GL43.glTexStorage2DMultisample
-import org.lwjgl.opengl.GL43.glTexStorage3DMultisample
 
-interface GlBoundTexture : GlBoundResource<GlTexture> {
+interface GlBoundTexture2D : GlBoundResource<GlTexture2D> {
     val target: GlTextureTarget
     var borderColor: NeoColor
 
@@ -43,15 +39,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
     var sizzleA: GlTextureSwizzle
     var sizzleRGBA: GlTextureSwizzle
 
-    fun textureDataMutable1D(
-        width: Int,
-        format: GlTextureFormat,
-        level: Int = 0,
-        border: Int = 0,
-        data: NeoBuffer? = null
-    )
-
-    fun textureDataMutable2D(
+    fun textureDataMutable(
         width: Int,
         height: Int,
         format: GlTextureFormat,
@@ -60,7 +48,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
         data: NeoBuffer? = null
     )
 
-    fun textureDataMutable2DMultisample(
+    fun textureDataMutableMultisample(
         width: Int,
         height: Int,
         format: GlTextureFormat,
@@ -68,68 +56,26 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
         fixedSampleLocations: Boolean
     )
 
-    fun textureDataMutable3D(
-        width: Int,
-        height: Int,
-        depth: Int,
-        format: GlTextureFormat,
-        level: Int = 0,
-        border: Int = 0,
-        data: NeoBuffer? = null
-    )
-
-    fun textureDataMutable3DMultisample(
-        width: Int,
-        height: Int,
-        depth: Int,
-        format: GlTextureFormat,
-        samples: Int,
-        fixedSampleLocations: Boolean
-    )
-
-    fun textureDataImmutable1D(
-        width: Int,
-        format: GlTextureFormat,
-        levels: Int = 1
-    )
-
-    fun textureDataImmutable2D(
+    fun textureDataImmutable(
         width: Int,
         height: Int,
         format: GlTextureFormat,
         levels: Int = 1
     )
 
-    fun textureDataImmutable2DMultisample(
+    fun textureDataImmutableMultisample(
         width: Int,
         height: Int,
-        format: GlTextureFormat,
-        samples: Int,
-        fixedSampleLocations: Boolean
-    )
-
-    fun textureDataImmutable3D(
-        width: Int,
-        height: Int,
-        depth: Int,
-        format: GlTextureFormat,
-        levels: Int = 1
-    )
-
-    fun textureDataImmutable3DMultisample(
-        width: Int,
-        height: Int,
-        depth: Int,
         format: GlTextureFormat,
         samples: Int,
         fixedSampleLocations: Boolean
     )
 
     abstract class Basic(
-        override val resource: GlTexture,
+        override val resource: GlTexture2D,
         override val target: GlTextureTarget,
         override val handle: GlStateStack.Handle<Int>
-    ) : GlBoundTexture {
+    ) : GlBoundTexture2D {
         override var borderColor: NeoColor
             get() = assertBound { NeoColor.RGBA(glGetTexParameteri(target.glId, GL_TEXTURE_BORDER_COLOR)) }
             set(value) = assertBound { glTexParameteri(target.glId, GL_TEXTURE_BORDER_COLOR, value.toRGBA()) }
@@ -185,31 +131,9 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
             get() = assertBound { GlNamed.getEnum<GlTextureSwizzle>(glGetTexParameteri(target.glId, GL_TEXTURE_SWIZZLE_RGBA)) }
             set(value) = assertBound { glTexParameteri(target.glId, GL_TEXTURE_SWIZZLE_RGBA, value.glId) }
 
-        protected abstract fun resize(width: Int, height: Int, depth: Int, format: GlTextureFormat)
+        protected abstract fun resize(width: Int, height: Int, format: GlTextureFormat)
 
-        override fun textureDataMutable1D(
-            width: Int,
-            format: GlTextureFormat,
-            level: Int,
-            border: Int,
-            data: NeoBuffer?
-        ) {
-            assertBound {
-                glTexImage1D(
-                    target.glId,
-                    level,
-                    format.internalId,
-                    width,
-                    border,
-                    format.glId,
-                    format.type,
-                    data?.address ?: 0
-                )
-                resize(width, -1, -1, format)
-            }
-        }
-
-        override fun textureDataMutable2D(
+        override fun textureDataMutable(
             width: Int,
             height: Int,
             format: GlTextureFormat,
@@ -218,6 +142,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
             data: NeoBuffer?
         ) {
             assertBound {
+                resize(width, height, format)
                 glTexImage2D(
                     target.glId,
                     level,
@@ -229,11 +154,10 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
                     format.type,
                     data?.address ?: 0
                 )
-                resize(width, height, -1, format)
             }
         }
 
-        override fun textureDataMutable2DMultisample(
+        override fun textureDataMutableMultisample(
             width: Int,
             height: Int,
             format: GlTextureFormat,
@@ -241,6 +165,7 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
             fixedSampleLocations: Boolean
         ) {
             assertBound {
+                resize(width, height, format)
                 glTexImage2DMultisample(
                     target.glId,
                     samples,
@@ -249,82 +174,22 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
                     height,
                     fixedSampleLocations
                 )
-                resize(width, height, -1, format)
             }
         }
 
-        override fun textureDataMutable3D(
-            width: Int,
-            height: Int,
-            depth: Int,
-            format: GlTextureFormat,
-            level: Int,
-            border: Int,
-            data: NeoBuffer?
-        ) {
-            assertBound {
-                glTexImage3D(
-                    target.glId,
-                    level,
-                    format.internalId,
-                    width,
-                    height,
-                    depth,
-                    border,
-                    format.glId,
-                    format.type,
-                    data?.address ?: 0
-                )
-                resize(width, height, depth, format)
-            }
-        }
-
-        override fun textureDataMutable3DMultisample(
-            width: Int,
-            height: Int,
-            depth: Int,
-            format: GlTextureFormat,
-            samples: Int,
-            fixedSampleLocations: Boolean
-        ) {
-            assertBound {
-                glTexImage3DMultisample(
-                    target.glId,
-                    samples,
-                    format.internalId,
-                    width,
-                    height,
-                    depth,
-                    fixedSampleLocations
-                )
-                resize(width, height, depth, format)
-            }
-        }
-
-        override fun textureDataImmutable1D(
-            width: Int,
-            format: GlTextureFormat,
-            levels: Int
-        ) {
-            assertBound {
-                glTexStorage1D(target.glId, levels, format.internalId, width)
-                resize(width, -1, -1, format)
-            }
-        }
-
-        override fun textureDataImmutable2D(
+        override fun textureDataImmutable(
             width: Int,
             height: Int,
             format: GlTextureFormat,
             levels: Int
         ) {
             assertBound {
+                resize(width, height, format)
                 glTexStorage2D(target.glId, levels, format.internalId, width, height)
-                resize(width, height, -1, format)
             }
         }
 
-        override fun textureDataImmutable2DMultisample(
+        override fun textureDataImmutableMultisample(
             width: Int,
             height: Int,
             format: GlTextureFormat,
@@ -332,43 +197,8 @@ interface GlBoundTexture : GlBoundResource<GlTexture> {
             fixedSampleLocations: Boolean
         ) {
             assertBound {
+                resize(width, height, format)
                 glTexStorage2DMultisample(target.glId, samples, format.internalId, width, height, fixedSampleLocations)
-                resize(width, height, -1, format)
-            }
-        }
-
-        override fun textureDataImmutable3D(
-            width: Int,
-            height: Int,
-            depth: Int,
-            format: GlTextureFormat,
-            levels: Int
-        ) {
-            assertBound {
-                glTexStorage3D(target.glId, levels, format.internalId, width, height, depth)
-                resize(width, height, depth, format)
-            }
-        }
-
-        override fun textureDataImmutable3DMultisample(
-            width: Int,
-            height: Int,
-            depth: Int,
-            format: GlTextureFormat,
-            samples: Int,
-            fixedSampleLocations: Boolean
-        ) {
-            assertBound {
-                glTexStorage3DMultisample(
-                    target.glId,
-                    samples,
-                    format.internalId,
-                    width,
-                    height,
-                    depth,
-                    fixedSampleLocations
-                )
-                resize(width, height, depth, format)
             }
         }
     }
