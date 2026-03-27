@@ -82,7 +82,6 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
 
         @Override
         @NotNull
-        @SuppressWarnings("UNCHECKED_CAST")
         public NeoAtlasSprite getSprite() {
             return ImmutableExtensionKt.getExtensionValue(sprite);
         }

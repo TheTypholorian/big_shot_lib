@@ -1,12 +1,12 @@
 package net.typho.big_shot_lib.impl.util.platform
 
 //? fabric {
-/*import net.fabricmc.loader.api.FabricLoader
+import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
-*///? } neoforge {
-import net.neoforged.fml.ModList
+//? } neoforge {
+/*import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLLoader
-//? }
+*///? }
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
 import net.typho.big_shot_lib.api.util.platform.ModLoader
@@ -14,7 +14,7 @@ import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 
 object PlatformUtilImpl : PlatformUtil {
     //? fabric {
-    /*override val loader = ModLoader.FABRIC
+    override val loader = ModLoader.FABRIC
     override val mods: Collection<ModContainer>
         get() = FabricLoader.getInstance().allMods.map { ModContainerImpl(it) }
 
@@ -57,8 +57,8 @@ object PlatformUtilImpl : PlatformUtil {
             }
         }
     }
-    *///? } neoforge {
-    override val loader = ModLoader.NEOFORGE
+    //? } neoforge {
+    /*override val loader = ModLoader.NEOFORGE
     override val mods: Collection<ModContainer>
         get() = ModList.get().sortedMods.map { ModContainerImpl(it) }
 
@@ -86,5 +86,5 @@ object PlatformUtilImpl : PlatformUtil {
         override val customData: Map<String, Any>
             get() = inner.modInfo.modProperties
     }
-    //? }
+    *///? }
 }

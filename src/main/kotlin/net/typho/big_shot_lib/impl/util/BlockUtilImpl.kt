@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.impl.util
 
 //? if >=1.21.6 {
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer
-//? } else {
-/*import net.minecraft.client.renderer.RenderType
-*///? }
+/*import net.minecraft.client.renderer.chunk.ChunkSectionLayer
+*///? } else {
+import net.minecraft.client.renderer.RenderType
+//? }
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes
 import net.minecraft.core.BlockPos
@@ -25,10 +25,10 @@ object BlockUtilImpl : BlockUtil {
         level: Level
     ): Boolean {
         //? if <1.21.2 {
-        /*return state.isSolidRender(level, BlockPos(pos.x, pos.y, pos.z))
-        *///? } else {
-        return state.isSolidRender
-        //? }
+        return state.isSolidRender(level, BlockPos(pos.x, pos.y, pos.z))
+        //? } else {
+        /*return state.isSolidRender
+        *///? }
     }
 
     override fun getOffset(
@@ -37,10 +37,10 @@ object BlockUtilImpl : BlockUtil {
         level: Level
     ): AbstractVec3<Float> {
         //? if <1.21.2 {
-        /*return NeoVec3f(state.getOffset(level, BlockPos(pos.x, pos.y, pos.z)).toVector3f())
-        *///? } else {
-        return NeoVec3f(state.getOffset(BlockPos(pos.x, pos.y, pos.z)).toVector3f())
-        //? }
+        return NeoVec3f(state.getOffset(level, BlockPos(pos.x, pos.y, pos.z)).toVector3f())
+        //? } else {
+        /*return NeoVec3f(state.getOffset(BlockPos(pos.x, pos.y, pos.z)).toVector3f())
+        *///? }
     }
 
     @Suppress("DEPRECATION")
@@ -52,18 +52,18 @@ object BlockUtilImpl : BlockUtil {
             ChunkSectionLayer.TRANSLUCENT -> BlockRenderSettings.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockRenderSettings.TRIPWIRE
             *///? } else if >=1.21.6 {
-            ChunkSectionLayer.SOLID -> BlockRenderSettings.SOLID
+            /*ChunkSectionLayer.SOLID -> BlockRenderSettings.SOLID
             ChunkSectionLayer.CUTOUT -> BlockRenderSettings.CUTOUT
             ChunkSectionLayer.CUTOUT_MIPPED -> BlockRenderSettings.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockRenderSettings.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockRenderSettings.TRIPWIRE
-            //? } else {
-            /*RenderType.solid() -> BlockRenderSettings.SOLID
+            *///? } else {
+            RenderType.solid() -> BlockRenderSettings.SOLID
             RenderType.cutout(), RenderType.cutoutMipped() -> BlockRenderSettings.CUTOUT
             RenderType.translucent() -> BlockRenderSettings.TRANSLUCENT
             RenderType.tripwire() -> BlockRenderSettings.TRIPWIRE
             else -> null
-            *///? }
+            //? }
         }
     }
 
@@ -77,9 +77,9 @@ object BlockUtilImpl : BlockUtil {
         val pos1 = pos + direction
 
         //? if >=1.21.2 {
-        return Block.shouldRenderFace(state, level.getBlockState(BlockPos(pos1.x, pos1.y, pos1.z)), direction.mojang)
-        //? } else {
-        /*return Block.shouldRenderFace(state, level, BlockPos(pos1.x, pos1.y, pos1.z), direction.mojang, BlockPos(pos.x, pos.y, pos.z))
-        *///? }
+        /*return Block.shouldRenderFace(state, level.getBlockState(BlockPos(pos1.x, pos1.y, pos1.z)), direction.mojang)
+        *///? } else {
+        return Block.shouldRenderFace(state, level, BlockPos(pos1.x, pos1.y, pos1.z), direction.mojang, BlockPos(pos.x, pos.y, pos.z))
+        //? }
     }
 }

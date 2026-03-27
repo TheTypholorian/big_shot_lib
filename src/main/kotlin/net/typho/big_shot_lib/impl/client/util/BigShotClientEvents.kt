@@ -1,19 +1,19 @@
 package net.typho.big_shot_lib.impl.client.util
 
 //? fabric {
-/*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 //? if <1.21.9 {
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 //? }
-*///? } neoforge {
-import com.mojang.blaze3d.systems.RenderSystem
+//? } neoforge {
+/*import com.mojang.blaze3d.systems.RenderSystem
 import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.neoforged.neoforge.common.NeoForge
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.impl.mixin.LevelRendererAccessor
-//? }
+*///? }
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoCamera
@@ -36,7 +36,7 @@ object BigShotClientEvents : ClientEventFactory {
         BigShotClientEntrypoint.registerEvents(this)
 
         //? fabric {
-        /*//? if <1.21.9 {
+        //? if <1.21.9 {
         WorldRenderEvents.LAST.register { context ->
             val data = RenderEventData(
                 NeoCamera(
@@ -59,15 +59,15 @@ object BigShotClientEvents : ClientEventFactory {
         //? }
         ClientTickEvents.START_CLIENT_TICK.register { clientTickStart.forEach { it.run() } }
         ClientTickEvents.END_CLIENT_TICK.register { clientTickEnd.forEach { it.run() } }
-        *///? } neoforge {
-        NeoForge.EVENT_BUS.addListener { event: ClientTickEvent.Pre ->
+        //? } neoforge {
+        /*NeoForge.EVENT_BUS.addListener { event: ClientTickEvent.Pre ->
             clientTickStart.forEach { it.run() }
         }
         NeoForge.EVENT_BUS.addListener { event: ClientTickEvent.Post ->
             clientTickEnd.forEach { it.run() }
         }
         //? if <=1.21.5 {
-        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
+        NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
                 if (levelRenderEnd.isNotEmpty()) {
                     val data = RenderEventData(
@@ -86,8 +86,8 @@ object BigShotClientEvents : ClientEventFactory {
                 }
             }
         }
-        *///? } else if <1.21.9 {
-        NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent.AfterLevel ->
+        //? } else if <1.21.9 {
+        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent.AfterLevel ->
             if (levelRenderEnd.isNotEmpty()) {
                 val data = RenderEventData(
                     NeoCamera(
@@ -112,8 +112,8 @@ object BigShotClientEvents : ClientEventFactory {
                 levelRenderEnd.forEach { it.invoke(data) }
             }
         }
-        //? }
-        //? }
+        *///? }
+        *///? }
     }
 
     @JvmStatic
