@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.impl.mixin.iface;
 import com.mojang.blaze3d.opengl.GlTexture;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.TextureFormat;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundTexture2D;
@@ -22,6 +23,7 @@ import dev.kikugie.fletching_table.annotation.MixinIgnore;
 @MixinIgnore
 //? }
 
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(GlTexture.class)
 public abstract class GlTextureMixin extends GpuTexture implements ImmutableExtension<GlTexture2D> {
     //? if <1.21.6 {
@@ -88,7 +90,7 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
 
             @Override
             public @NotNull GlBoundTexture2D bind(@NotNull GlTextureTarget target) {
-                return new Bound(
+                return new BoundTexture(
                         this,
                         target,
                         NeoGlStateManager.INSTANCE.getTextures().get(target).push(glId()),
@@ -101,11 +103,11 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
     }
 }
 
-class Bound extends GlBoundTexture2D.Basic {
+class BoundTexture extends GlBoundTexture2D.Basic {
     private final int width, height;
     private final GlTextureFormat format;
 
-    public Bound(@NotNull GlTexture2D resource, @NotNull GlTextureTarget target, @NotNull GlStateStack.Handle<Integer> handle, int width, int height, GlTextureFormat format) {
+    public BoundTexture(@NotNull GlTexture2D resource, @NotNull GlTextureTarget target, @NotNull GlStateStack.Handle<Integer> handle, int width, int height, GlTextureFormat format) {
         super(resource, target, handle);
         this.width = width;
         this.height = height;

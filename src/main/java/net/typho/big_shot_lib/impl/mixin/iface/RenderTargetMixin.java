@@ -8,6 +8,7 @@ import com.mojang.blaze3d.textures.GpuTexture;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundFramebuffer;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer;
@@ -25,6 +26,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(RenderTarget.class)
 public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuffer> {
     //? if >=1.21.5 {

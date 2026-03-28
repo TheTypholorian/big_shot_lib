@@ -9,6 +9,9 @@
   "net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue": [
     "net.typho.big_shot_lib.impl.client.rendering.opengl.GlQueueImpl"
   ],
+  "net.typho.big_shot_lib.api.InternalUtil": [
+    "net.typho.big_shot_lib.impl.InternalUtilImpl"
+  ],
   "net.typho.big_shot_lib.api.util.BlockUtil": [
     "net.typho.big_shot_lib.impl.util.BlockUtilImpl"
   ],
