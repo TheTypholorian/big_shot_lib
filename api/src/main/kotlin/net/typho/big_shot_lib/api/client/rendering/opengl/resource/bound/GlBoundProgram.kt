@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTextur
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUniform
 
 interface GlBoundProgram : GlBoundResource<GlProgram> {
-    fun setUniform(name: String, value: (uniform: GlUniform) -> Unit)
+    fun setUniform(name: String, value: GlUniform.() -> Unit)
 
     fun setTexture(name: String, unit: Int, target: GlTextureTarget, glId: Int, samplerId: Int = 0)
 

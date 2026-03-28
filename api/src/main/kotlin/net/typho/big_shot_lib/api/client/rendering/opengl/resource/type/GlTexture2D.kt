@@ -19,9 +19,6 @@ interface GlTexture2D : GlResource, GlFramebufferAttachment {
     }
 
     companion object {
-        /**
-         * @param location Must be in the format of `minecraft:block/cobblestone`. Atlases are in the format of `minecraft:atlas/blocks`, and will return a [NeoAtlas].
-         */
         @JvmStatic
         operator fun get(location: NeoIdentifier) = InternalUtil.INSTANCE.getTexture(location)
     }

@@ -26,7 +26,10 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
         val program = program.use()
 
         textures.forEachIndexed { index, binding ->
-            program.setTexture(binding.uniformName ?: "Sampler$index", index, binding.target, binding.texture, binding.sampler)
+            val name = binding.uniformName ?: "Sampler$index"
+            val texture = binding.texture
+            program.setTexture(name, index, binding.target, texture, binding.sampler)
+            program.setUniform("${name}Size") { set(texture.width, texture.height) }
         }
 
         setUniforms(program)

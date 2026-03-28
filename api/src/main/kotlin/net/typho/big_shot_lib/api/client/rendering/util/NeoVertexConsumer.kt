@@ -196,4 +196,242 @@ abstract class NeoVertexConsumer {
 
         return this
     }
+
+    open class Redirect(
+        private val other: NeoVertexConsumer
+    ) : NeoVertexConsumer() {
+        override fun vertex(
+            x: Float,
+            y: Float,
+            z: Float
+        ): NeoVertexConsumer {
+            other.vertex(x, y, z)
+            return this
+        }
+
+        override fun vertex(
+            packed: IntArray,
+            offset: Int
+        ): NeoVertexConsumer {
+            other.vertex(packed, offset)
+            return this
+        }
+
+        override fun vertex(vertex: AbstractVec3<*>): NeoVertexConsumer {
+            other.vertex(vertex)
+            return this
+        }
+
+        override fun vertex(
+            mat: Matrix4fc,
+            x: Float,
+            y: Float,
+            z: Float
+        ): NeoVertexConsumer {
+            other.vertex(mat, x, y, z)
+            return this
+        }
+
+        override fun vertex(
+            mat: Matrix4fc,
+            vertex: AbstractVec3<*>
+        ): NeoVertexConsumer {
+            other.vertex(mat, vertex)
+            return this
+        }
+
+        override fun vertex(
+            pose: PoseStack.Pose,
+            x: Float,
+            y: Float,
+            z: Float
+        ): NeoVertexConsumer {
+            other.vertex(pose, x, y, z)
+            return this
+        }
+
+        override fun vertex(
+            pose: PoseStack.Pose,
+            vertex: AbstractVec3<*>
+        ): NeoVertexConsumer {
+            other.vertex(pose, vertex)
+            return this
+        }
+
+        override fun color(
+            r: Int,
+            g: Int,
+            b: Int,
+            a: Int
+        ): NeoVertexConsumer {
+            other.color(r, g, b, a)
+            return this
+        }
+
+        override fun color(
+            packed: IntArray,
+            offset: Int
+        ): NeoVertexConsumer {
+            other.color(packed, offset)
+            return this
+        }
+
+        override fun color(
+            r: Float,
+            g: Float,
+            b: Float,
+            a: Float
+        ): NeoVertexConsumer {
+            other.color(r, g, b, a)
+            return this
+        }
+
+        override fun color(color: NeoColor): NeoVertexConsumer {
+            other.color(color)
+            return this
+        }
+
+        override fun color(argb: Int): NeoVertexConsumer {
+            other.color(argb)
+            return this
+        }
+
+        override fun textureUV(
+            u: Float,
+            v: Float
+        ): NeoVertexConsumer {
+            other.textureUV(u, v)
+            return this
+        }
+
+        override fun textureUV(
+            packed: IntArray,
+            offset: Int
+        ): NeoVertexConsumer {
+            other.textureUV(packed, offset)
+            return this
+        }
+
+        override fun textureUV(uv: AbstractVec2<Float>): NeoVertexConsumer {
+            other.textureUV(uv)
+            return this
+        }
+
+        override fun overlayUV(
+            u: Int,
+            v: Int
+        ): NeoVertexConsumer {
+            other.overlayUV(u, v)
+            return this
+        }
+
+        override fun overlayUV(
+            packed: IntArray,
+            offset: Int
+        ): NeoVertexConsumer {
+            other.overlayUV(packed, offset)
+            return this
+        }
+
+        override fun overlayUV(uv: AbstractVec2<Int>): NeoVertexConsumer {
+            other.overlayUV(uv)
+            return this
+        }
+
+        override fun overlayUV(packed: Int): NeoVertexConsumer {
+            other.overlayUV(packed)
+            return this
+        }
+
+        override fun lightUV(
+            u: Int,
+            v: Int
+        ): NeoVertexConsumer {
+            other.lightUV(u, v)
+            return this
+        }
+
+        override fun lightUV(
+            packed: IntArray,
+            offset: Int
+        ): NeoVertexConsumer {
+            other.lightUV(packed, offset)
+            return this
+        }
+
+        override fun lightUV(uv: AbstractVec2<Int>): NeoVertexConsumer {
+            other.lightUV(uv)
+            return this
+        }
+
+        override fun lightUV(packed: Int): NeoVertexConsumer {
+            other.lightUV(packed)
+            return this
+        }
+
+        override fun normal(
+            x: Float,
+            y: Float,
+            z: Float
+        ): NeoVertexConsumer {
+            other.normal(x, y, z)
+            return this
+        }
+
+        override fun normal(
+            pose: PoseStack.Pose,
+            x: Float,
+            y: Float,
+            z: Float
+        ): NeoVertexConsumer {
+            other.normal(pose, x, y, z)
+            return this
+        }
+
+        override fun normal(
+            packed: IntArray,
+            offset: Int
+        ): NeoVertexConsumer {
+            other.normal(packed, offset)
+            return this
+        }
+
+        override fun normal(normal: AbstractVec3<*>): NeoVertexConsumer {
+            other.normal(normal)
+            return this
+        }
+
+        override fun normal(packed: Int): NeoVertexConsumer {
+            other.normal(packed)
+            return this
+        }
+
+        override fun normal(
+            pose: PoseStack.Pose,
+            normal: AbstractVec3<*>
+        ): NeoVertexConsumer {
+            other.normal(pose, normal)
+            return this
+        }
+
+        override fun _endVertex() {
+            other._endVertex()
+        }
+
+        override fun cube(box: AbstractRect3<*>): NeoVertexConsumer {
+            other.cube(box)
+            return this
+        }
+
+        override fun quad(
+            v0: AbstractVec3<*>,
+            v1: AbstractVec3<*>,
+            v2: AbstractVec3<*>,
+            v3: AbstractVec3<*>,
+            normal: AbstractVec3<*>
+        ): NeoVertexConsumer {
+            other.quad(v0, v1, v2, v3, normal)
+            return this
+        }
+    }
 }

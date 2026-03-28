@@ -219,6 +219,10 @@ abstract class AbstractVec2<N : Number>(
         return true
     }
 
+    fun equals(x: Number, y: Number): Boolean {
+        return this.x == opSet.convert(x) && this.y == opSet.convert(y)
+    }
+
     override fun hashCode(): Int {
         var result = x.hashCode()
         result = 21 * result + y.hashCode()

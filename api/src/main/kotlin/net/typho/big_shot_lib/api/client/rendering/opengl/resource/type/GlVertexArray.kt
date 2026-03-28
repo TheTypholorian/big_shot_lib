@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
 
-interface GlVertexArray : GlResource {
-    fun enableAttribArray(i: Int)
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundVertexArray
 
-    fun disableAttribArray(i: Int)
+interface GlVertexArray : GlResource {
+    fun bind(): GlBoundVertexArray
 }

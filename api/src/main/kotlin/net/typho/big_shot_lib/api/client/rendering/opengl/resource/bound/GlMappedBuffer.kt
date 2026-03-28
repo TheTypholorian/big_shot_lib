@@ -5,12 +5,12 @@ import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.opengl.GL15.glUnmapBuffer
 import org.lwjgl.system.NativeResource
 
-data class GlMappedBuffer(
-    @JvmField
-    val buffer: NeoBuffer,
+class GlMappedBuffer(
+    pointer: Long,
+    size: Long,
     @JvmField
     val target: GlBufferTarget
-) : NativeResource {
+) : NeoBuffer.Native(pointer, size, false) {
     override fun free() {
         glUnmapBuffer(target.glId)
     }

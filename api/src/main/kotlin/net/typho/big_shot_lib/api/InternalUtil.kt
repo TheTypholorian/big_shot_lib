@@ -7,6 +7,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTextur
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoBufferBuilder
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
+import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface InternalUtil {
@@ -32,7 +33,11 @@ interface InternalUtil {
 
     fun createVertexFormatBuilder(): NeoVertexFormat.Builder
 
-    fun createBufferBuilder(format: NeoVertexFormat, mode: GlBeginMode, numVertices: Int? = null): NeoBufferBuilder
+    fun createBufferBuilder(format: NeoVertexFormat, mode: GlBeginMode, numVertices: Int, vertexBuffer: (size: Long) -> NeoBuffer.Native, indexBuffer: (size: Long?) -> NeoBuffer.Native?): NeoBufferBuilder
+
+    fun createBufferBuilder(format: NeoVertexFormat, mode: GlBeginMode, numVertices: Int): NeoBufferBuilder
+
+    fun createBufferBuilder(format: NeoVertexFormat, mode: GlBeginMode): NeoBufferBuilder
 
     fun <R> dataResultError(message: () -> String): DataResult<R>
 

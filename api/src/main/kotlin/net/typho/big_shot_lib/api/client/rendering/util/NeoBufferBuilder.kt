@@ -1,11 +1,36 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlIndexDataType
 import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.system.NativeResource
 
 abstract class NeoBufferBuilder : NeoVertexConsumer(), NativeResource {
+    companion object {
+        @JvmStatic
+        fun create(
+            format: NeoVertexFormat,
+            mode: GlBeginMode
+        ) = InternalUtil.INSTANCE.createBufferBuilder(format, mode)
+
+        @JvmStatic
+        fun create(
+            format: NeoVertexFormat,
+            mode: GlBeginMode,
+            numVertices: Int
+        ) = InternalUtil.INSTANCE.createBufferBuilder(format, mode, numVertices)
+
+        @JvmStatic
+        fun create(
+            format: NeoVertexFormat,
+            mode: GlBeginMode,
+            numVertices: Int,
+            vertexBuffer: (size: Long) -> NeoBuffer.Native,
+            indexBuffer: (size: Long?) -> NeoBuffer.Native?
+        ) = InternalUtil.INSTANCE.createBufferBuilder(format, mode, numVertices, vertexBuffer, indexBuffer)
+    }
+
     abstract val format: NeoVertexFormat
     abstract val mode: GlBeginMode
 

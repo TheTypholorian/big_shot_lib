@@ -30,7 +30,7 @@ class NeoGlProgram(
 
             override fun setUniform(
                 name: String,
-                value: (uniform: GlUniform) -> Unit
+                value: GlUniform.() -> Unit
             ) {
                 uniforms.computeIfAbsent(name) { key ->
                     val location = glGetUniformLocation(glId, key)
@@ -48,7 +48,7 @@ class NeoGlProgram(
                 glActiveTexture(unit)
                 glBindTexture(target.glId, glId)
                 glBindSampler(unit, samplerId)
-                setUniform(name) { it.set(unit) }
+                setUniform(name) { set(unit) }
             }
 
             override fun unbind() {

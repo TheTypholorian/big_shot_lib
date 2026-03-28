@@ -15,13 +15,15 @@ class KnownSizeNeoBufferBuilderImpl(
     override val format: NeoVertexFormat,
     override val mode: GlBeginMode,
     @JvmField
-    val numVertices: Int
+    val numVertices: Int,
+    vertexBuffer: (size: Long) -> NeoBuffer.Native,
+    indexBuffer: (size: Long?) ->  NeoBuffer.Native?
 ) : NeoBufferBuilder() {
     private var filledVertices: Int = 0
     private var filledElements: Int = 0
     private var currentIndex: Long = 0
 
-    private val vertexBuffer = NeoBuffer.Native(numVertices.toLong() * format.vertexSizeBytes)
+    private val vertexBuffer = vertexBuffer(numVertices.toLong() * format.vertexSizeBytes)
     private val numIndices: Int? = mode.indexData?.let {
         if (numVertices % it.multiplier != 0) {
             throw IllegalArgumentException("Vertex count $numVertices is not a multiple of ${it.multiplier} required for $mode")
@@ -36,7 +38,13 @@ class KnownSizeNeoBufferBuilderImpl(
             else -> GlIndexDataType.INT
         }
     }
-    private val indexBuffer = numIndices?.let { NeoBuffer.Native(it.toLong()) }
+    private val indexBuffer = indexBuffer(numIndices?.toLong())
+
+    constructor(
+        format: NeoVertexFormat,
+        mode: GlBeginMode,
+        numVertices: Int
+    ) : this(format, mode, numVertices, NeoBuffer::Native, { it?.let { NeoBuffer.Native(it) } })
 
     override fun free() {
         vertexBuffer.free()

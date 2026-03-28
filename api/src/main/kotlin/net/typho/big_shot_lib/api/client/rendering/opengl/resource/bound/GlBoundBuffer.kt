@@ -12,6 +12,7 @@ import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL32.glGetBufferParameteri64
 import org.lwjgl.opengl.GL44.GL_BUFFER_STORAGE_FLAGS
+import org.lwjgl.system.MemoryUtil
 
 interface GlBoundBuffer : GlBoundResource<GlBuffer> {
     val isResizable: Boolean
@@ -43,14 +44,14 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
 
     fun mapBuffer(access: GlBufferAccess, length: Long): GlMappedBuffer
 
-    fun mapBuffer(access: GlBufferAccess, length: Long, out: (buffer: NeoBuffer) -> Unit) {
-        mapBuffer(access, length).also { out(it.buffer) }.free()
+    fun mapBuffer(access: GlBufferAccess, length: Long, out: GlMappedBuffer.() -> Unit) {
+        mapBuffer(access, length).also { out(it) }.free()
     }
 
     fun mapBufferRange(access: GlBufferAccess, offset: Long, length: Long): GlMappedBuffer
 
-    fun mapBufferRange(access: GlBufferAccess, offset: Long, length: Long, out: (buffer: NeoBuffer) -> Unit) {
-        mapBufferRange(access, offset, length).also { out(it.buffer) }.free()
+    fun mapBufferRange(access: GlBufferAccess, offset: Long, length: Long, out: GlMappedBuffer.() -> Unit) {
+        mapBufferRange(access, offset, length).also { out(it) }.free()
     }
 
     open class Basic(
@@ -108,11 +109,15 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
             length: Long
         ): GlMappedBuffer {
             return assertBound {
+                val pointer = nglMapBuffer(target.glId, access.glId)
+
+                if (pointer == MemoryUtil.NULL) {
+                    throw NullPointerException("Failed to map buffer $target")
+                }
+
                 GlMappedBuffer(
-                    NeoBuffer.Nio(
-                        glMapBuffer(target.glId, access.glId, length, null)
-                            ?: throw NullPointerException("Failed to map buffer $target")
-                    ),
+                    pointer,
+                    length,
                     target
                 )
             }
@@ -124,11 +129,15 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
             length: Long
         ): GlMappedBuffer {
             return assertBound {
+                val pointer = nglMapBufferRange(target.glId, offset, length, access.glId)
+
+                if (pointer == MemoryUtil.NULL) {
+                    throw NullPointerException("Failed to map buffer $target")
+                }
+
                 GlMappedBuffer(
-                    NeoBuffer.Nio(
-                        glMapBufferRange(target.glId, offset, length, access.glId, null)
-                            ?: throw NullPointerException("Failed to map buffer $target")
-                    ),
+                    pointer,
+                    length,
                     target
                 )
             }

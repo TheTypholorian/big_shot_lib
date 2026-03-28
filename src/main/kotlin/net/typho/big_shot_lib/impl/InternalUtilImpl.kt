@@ -3,13 +3,19 @@ package net.typho.big_shot_lib.impl
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import com.mojang.serialization.DataResult
+import net.minecraft.client.Minecraft
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
+import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoBufferBuilder
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
+import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.impl.client.rendering.util.AutoSizeNeoBufferBuilderImpl
 import net.typho.big_shot_lib.impl.client.rendering.util.KnownSizeNeoBufferBuilderImpl
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
+import net.typho.big_shot_lib.impl.util.getExtensionValue
 
 object InternalUtilImpl : InternalUtil {
     override fun createVertexFormatBuilder(): NeoVertexFormat.Builder {
@@ -73,13 +79,39 @@ object InternalUtilImpl : InternalUtil {
 
     override fun createBufferBuilder(
         format: NeoVertexFormat,
-        mode: GlBeginMode,
-        numVertices: Int?
+        mode: GlBeginMode
     ): NeoBufferBuilder {
-        return if (numVertices == null)
-            AutoSizeNeoBufferBuilderImpl(format, mode)
-        else
-            KnownSizeNeoBufferBuilderImpl(format, mode, numVertices)
+        return AutoSizeNeoBufferBuilderImpl(format, mode)
+    }
+
+    override fun createBufferBuilder(
+        format: NeoVertexFormat,
+        mode: GlBeginMode,
+        numVertices: Int
+    ): NeoBufferBuilder {
+        return KnownSizeNeoBufferBuilderImpl(format, mode, numVertices)
+    }
+
+    override fun createBufferBuilder(
+        format: NeoVertexFormat,
+        mode: GlBeginMode,
+        numVertices: Int,
+        vertexBuffer: (size: Long) -> NeoBuffer.Native,
+        indexBuffer: (size: Long?) -> NeoBuffer.Native?
+    ): NeoBufferBuilder {
+        return KnownSizeNeoBufferBuilderImpl(format, mode, numVertices, vertexBuffer, indexBuffer)
+    }
+
+    override fun getTexture(location: NeoIdentifier): GlTexture2D {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAtlas(location: NeoIdentifier): NeoAtlas {
+        //? if <1.21.9 {
+        return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
+        //? } else {
+        /*return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
+        *///? }
     }
 
     override fun <R> dataResultError(message: () -> String): DataResult<R> {

@@ -64,7 +64,7 @@ interface NeoBuffer {
 
     fun asByteBuffer(): ByteBuffer = memByteBuffer(address, size.toInt())
 
-    class Nio(
+    open class Nio(
         @JvmField
         val buffer: ByteBuffer
     ) : NeoBuffer {
@@ -146,7 +146,7 @@ interface NeoBuffer {
         }
     }
 
-    class Native(
+    open class Native(
         override val address: Long,
         override val size: Long,
         autoFree: Boolean = true

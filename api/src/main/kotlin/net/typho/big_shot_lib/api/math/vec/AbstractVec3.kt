@@ -238,6 +238,10 @@ abstract class AbstractVec3<N : Number>(
         return true
     }
 
+    fun equals(x: Number, y: Number, z: Number): Boolean {
+        return this.x == opSet.convert(x) && this.y == opSet.convert(y) && this.z == opSet.convert(z)
+    }
+
     override fun hashCode(): Int {
         var result = x.hashCode()
         result = 31 * result + y.hashCode()
