@@ -12,9 +12,33 @@ interface NeoAtlas : NamedResource, GlTexture2D {
     val mipLevel: Int
 
     companion object {
-        /**
-         * @param location Must be in the format of `minecraft:blocks`, pre-1.21.9 implementations will add `textures/atlas/` and `.png`
-         */
+        @JvmField
+        val blocks = get(NeoIdentifier("minecraft", "blocks"))!!
+        @JvmField
+        val signs = get(NeoIdentifier("minecraft", "signs"))!!
+        @JvmField
+        val bannerPatterns = get(NeoIdentifier("minecraft", "banner_patterns"))!!
+        @JvmField
+        val shieldPatterns = get(NeoIdentifier("minecraft", "shield_patterns"))!!
+        @JvmField
+        val chest = get(NeoIdentifier("minecraft", "chest"))!!
+        @JvmField
+        val decoratedPot = get(NeoIdentifier("minecraft", "decorated_pot"))
+        @JvmField
+        val shulkerBoxes = get(NeoIdentifier("minecraft", "shulker_boxes"))!!
+        @JvmField
+        val beds = get(NeoIdentifier("minecraft", "beds"))!!
+        @JvmField
+        val particles = get(NeoIdentifier("minecraft", "particles"))!!
+        @JvmField
+        val paintings = get(NeoIdentifier("minecraft", "paintings"))!!
+        @JvmField
+        val mobEffects = get(NeoIdentifier("minecraft", "mob_effects"))!!
+        @JvmField
+        val mapDecorations = get(NeoIdentifier("minecraft", "map_decorations"))!!
+        @JvmField
+        val gui = get(NeoIdentifier("minecraft", "gui"))!!
+
         @JvmStatic
         operator fun get(location: NeoIdentifier) = InternalUtil.INSTANCE.getAtlas(location)
     }

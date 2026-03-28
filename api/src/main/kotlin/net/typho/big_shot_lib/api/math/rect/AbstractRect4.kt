@@ -22,7 +22,7 @@ abstract class AbstractRect4<N : Number>(
     val area: N
         get() = opSet.times(size.x, opSet.times(size.y, opSet.times(size.z, size.w)))
 
-    protected abstract fun create(min: AbstractVec4<N>, max: AbstractVec4<N>): AbstractRect4<N>
+    abstract fun create(min: AbstractVec4<N>, max: AbstractVec4<N>): AbstractRect4<N>
 
     fun include(other: AbstractRect4<N>): AbstractRect4<N> {
         return create(min.min(other.min), max.max(other.max))

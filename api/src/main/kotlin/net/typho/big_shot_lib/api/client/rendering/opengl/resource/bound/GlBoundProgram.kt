@@ -5,13 +5,10 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgra
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlSampler
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUniform
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
 
 interface GlBoundProgram : GlBoundResource<GlProgram> {
     fun setUniform(name: String, value: GlUniform.() -> Unit)
 
-    fun setTexture(name: String, unit: Int, target: GlTextureTarget, glId: Int, samplerId: Int = 0)
-
-    fun setTexture(name: String, unit: Int, target: GlTextureTarget, texture: GlTexture2D, sampler: GlSampler? = null) {
-        setTexture(name, unit, target, texture.glId, sampler?.glId ?: 0)
-    }
+    fun setTexture(unit: Int, binding: GlTextureBinding)
 }

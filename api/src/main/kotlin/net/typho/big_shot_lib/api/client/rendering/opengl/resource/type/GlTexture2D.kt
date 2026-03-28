@@ -9,8 +9,8 @@ import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 import org.lwjgl.opengl.GL30.glFramebufferTexture2D
 
 interface GlTexture2D : GlResource, GlFramebufferAttachment {
-    val width: Int
-    val height: Int
+    override val width: Int
+    override val height: Int
 
     fun bind(target: GlTextureTarget): GlBoundTexture2D
 

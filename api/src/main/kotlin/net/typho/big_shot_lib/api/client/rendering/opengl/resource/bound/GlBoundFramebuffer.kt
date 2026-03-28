@@ -1,9 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferBit
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit.Companion.initAndGetMask
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlFramebufferStatus
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureMinFilter
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundResource.Companion.assertBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebufferAttachment
@@ -34,6 +36,24 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
     fun drawBuffers(vararg buffers: Int)
 
     fun checkStatus(): GlFramebufferStatus
+
+    fun blitFrom(
+        from: GlFramebuffer,
+        src: AbstractRect2<Int>,
+        dst: AbstractRect2<Int>,
+        filter: GlTextureMinFilter,
+        vararg mask: GlBufferBit
+    ) {
+        blitFrom(from.glId, src, dst, filter, *mask)
+    }
+
+    fun blitFrom(
+        from: Int,
+        src: AbstractRect2<Int>,
+        dst: AbstractRect2<Int>,
+        filter: GlTextureMinFilter,
+        vararg mask: GlBufferBit
+    )
 
     abstract class Basic(
         override val resource: GlFramebuffer,
@@ -83,6 +103,17 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
 
         override fun checkStatus(): GlFramebufferStatus {
             return assertBound { GlNamed.getEnum(glCheckFramebufferStatus(GL_FRAMEBUFFER)) }
+        }
+
+        override fun blitFrom(from: Int, src: AbstractRect2<Int>, dst: AbstractRect2<Int>, filter: GlTextureMinFilter, vararg mask: GlBufferBit){
+            NeoGlStateManager.INSTANCE.readFramebuffer.push(from).use {
+                glBlitFramebuffer(
+                    src.min.x, src.min.y, src.max.x, src.max.y,
+                    dst.min.x, dst.min.y, dst.max.x, dst.max.y,
+                    mask.fold(0) { accum, bit -> accum or bit.glId },
+                    filter.glId
+                )
+            }
         }
 
         override fun unbind() {

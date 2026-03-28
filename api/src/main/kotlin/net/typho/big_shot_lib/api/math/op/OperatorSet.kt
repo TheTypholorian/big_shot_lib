@@ -4,7 +4,7 @@ interface OperatorSet<N : Number> {
     val zero: N
     val one: N
 
-    fun convert(x: Number): N
+    fun lerp(a: N, b: N, d: Float): N
 
     fun plus(a: N, b: N): N
 

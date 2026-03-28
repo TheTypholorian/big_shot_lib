@@ -41,9 +41,9 @@ interface InternalUtil {
 
     fun <R> dataResultError(message: () -> String): DataResult<R>
 
-    fun getTexture(location: NeoIdentifier): GlTexture2D
+    fun getTexture(location: NeoIdentifier): GlTexture2D?
 
-    fun getAtlas(location: NeoIdentifier): NeoAtlas
+    fun getAtlas(location: NeoIdentifier): NeoAtlas?
 
     companion object {
         internal val INSTANCE = InternalUtil::class.loadService()

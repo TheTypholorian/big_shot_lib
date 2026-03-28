@@ -19,6 +19,7 @@ interface NeoGlStateManager {
     val textures: EnumArrayMap<GlTextureTarget, GlStateStack<Int>>
     val renderbuffer: GlStateStack<Int>
     val framebuffer: GlStateStack<Int>
+    val readFramebuffer: GlStateStack<Int>
 
     var activeTexture: Int
 

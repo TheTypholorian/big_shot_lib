@@ -6,19 +6,22 @@ import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.util.NeoColor
 
 sealed interface GlBlendShard : GlDrawStateShard {
-    interface Enabled : GlBlendShard {
-        val color: NeoColor?
-        val equation: GlBlendEquation
-        val function: BlendFunction
-
+    data class Enabled @JvmOverloads constructor(
+        @JvmField
+        val function: BlendFunction,
+        @JvmField
+        val equation: GlBlendEquation = GlBlendEquation.ADD,
+        @JvmField
+        val color: NeoColor? = null
+    ) : GlBlendShard {
         override fun bind(): BoundResource {
             val flag = NeoGlStateManager.INSTANCE.blendEnabled.push(true)
 
-            val color = color?.let { NeoGlStateManager.INSTANCE.blendColor.push(it) }
-            val equation = NeoGlStateManager.INSTANCE.blendEquation.push(equation)
             val function = NeoGlStateManager.INSTANCE.blendFunction.push(function)
+            val equation = NeoGlStateManager.INSTANCE.blendEquation.push(equation)
+            val color = color?.let { NeoGlStateManager.INSTANCE.blendColor.push(it) }
 
-            return BoundResource.all(flag, color, equation, function)
+            return BoundResource.all(flag, function, equation, color)
         }
     }
 

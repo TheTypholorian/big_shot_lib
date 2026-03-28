@@ -47,57 +47,67 @@ abstract class AbstractVec4<N : Number>(
 
     constructor(other: AbstractVec4<N>) : this(other.x, other.y, other.z, other.w)
 
-    protected abstract fun create(x: N, y: N, z: N, w: N): AbstractVec4<N>
+    abstract fun create(x: N, y: N, z: N, w: N): AbstractVec4<N>
 
-    fun plus(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
-        return create(opSet.plus(this.x, opSet.convert(x)), opSet.plus(this.y, opSet.convert(y)), opSet.plus(this.z, opSet.convert(z)), opSet.plus(this.w, opSet.convert(w)))
+    fun toInt(): AbstractVec4<Int> = NeoVec4i(x.toInt(), y.toInt(), z.toInt(), w.toInt())
+
+    fun toFloat(): AbstractVec4<Float> = NeoVec4f(x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat())
+
+    fun toDouble(): AbstractVec4<Double> = NeoVec4d(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
+
+    fun lerp(x: N, y: N, z: N, w: N, d: Float): AbstractVec4<N> {
+        return create(opSet.lerp(this.x, x, d), opSet.lerp(this.y, y, d), opSet.lerp(this.z, z, d), opSet.lerp(this.w, w, d))
     }
 
-    fun minus(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
-        return create(opSet.minus(this.x, opSet.convert(x)), opSet.minus(this.y, opSet.convert(y)), opSet.minus(this.z, opSet.convert(z)), opSet.minus(this.w, opSet.convert(w)))
+    fun plus(x: N, y: N, z: N, w: N): AbstractVec4<N> {
+        return create(opSet.plus(this.x, x), opSet.plus(this.y, y), opSet.plus(this.z, z), opSet.plus(this.w, w))
     }
 
-    fun times(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
-        return create(opSet.times(this.x, opSet.convert(x)), opSet.times(this.y, opSet.convert(y)), opSet.times(this.z, opSet.convert(z)), opSet.times(this.w, opSet.convert(w)))
+    fun minus(x: N, y: N, z: N, w: N): AbstractVec4<N> {
+        return create(opSet.minus(this.x, x), opSet.minus(this.y, y), opSet.minus(this.z, z), opSet.minus(this.w, w))
     }
 
-    fun div(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
-        return create(opSet.div(this.x, opSet.convert(x)), opSet.div(this.y, opSet.convert(y)), opSet.div(this.z, opSet.convert(z)), opSet.div(this.w, opSet.convert(w)))
+    fun times(x: N, y: N, z: N, w: N): AbstractVec4<N> {
+        return create(opSet.times(this.x, x), opSet.times(this.y, y), opSet.times(this.z, z), opSet.times(this.w, w))
     }
 
-    fun rem(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
-        return create(opSet.rem(this.x, opSet.convert(x)), opSet.rem(this.y, opSet.convert(y)), opSet.rem(this.z, opSet.convert(z)), opSet.rem(this.w, opSet.convert(w)))
+    fun div(x: N, y: N, z: N, w: N): AbstractVec4<N> {
+        return create(opSet.div(this.x, x), opSet.div(this.y, y), opSet.div(this.z, z), opSet.div(this.w, w))
     }
 
-    fun min(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
-        return create(opSet.min(this.x, opSet.convert(x)), opSet.min(this.y, opSet.convert(y)), opSet.min(this.z, opSet.convert(z)), opSet.min(this.w, opSet.convert(w)))
+    fun rem(x: N, y: N, z: N, w: N): AbstractVec4<N> {
+        return create(opSet.rem(this.x, x), opSet.rem(this.y, y), opSet.rem(this.z, z), opSet.rem(this.w, w))
     }
 
-    fun max(x: Number, y: Number, z: Number, w: Number): AbstractVec4<N> {
-        return create(opSet.max(this.x, opSet.convert(x)), opSet.max(this.y, opSet.convert(y)), opSet.max(this.z, opSet.convert(z)), opSet.max(this.w, opSet.convert(w)))
+    fun min(x: N, y: N, z: N, w: N): AbstractVec4<N> {
+        return create(opSet.min(this.x, x), opSet.min(this.y, y), opSet.min(this.z, z), opSet.min(this.w, w))
     }
 
-    fun distance(x: Number, y: Number, z: Number, w: Number): Float {
+    fun max(x: N, y: N, z: N, w: N): AbstractVec4<N> {
+        return create(opSet.max(this.x, x), opSet.max(this.y, y), opSet.max(this.z, z), opSet.max(this.w, w))
+    }
+
+    fun distance(x: N, y: N, z: N, w: N): Float {
         return minus(x, y, z, w).length
     }
 
-    fun distanceSquared(x: Number, y: Number, z: Number, w: Number): N {
+    fun distanceSquared(x: N, y: N, z: N, w: N): N {
         return minus(x, y, z, w).lengthSquared
     }
 
-    fun gridDistance(x: Number, y: Number, z: Number, w: Number): N {
+    fun gridDistance(x: N, y: N, z: N, w: N): N {
         return minus(x, y, z, w).gridLength
     }
 
-    fun inDistance(x: Number, y: Number, z: Number, w: Number, dist: N): Boolean {
+    fun inDistance(x: N, y: N, z: N, w: N, dist: N): Boolean {
         return inDistanceSquared(x, y, z, w, opSet.times(dist, dist))
     }
 
-    fun inDistanceSquared(x: Number, y: Number, z: Number, w: Number, dist: N): Boolean {
+    fun inDistanceSquared(x: N, y: N, z: N, w: N, dist: N): Boolean {
         return opSet.lessThan(distanceSquared(x, y, z, w), dist)
     }
 
-    fun inGridDistance(x: Number, y: Number, z: Number, w: Number, dist: N): Boolean {
+    fun inGridDistance(x: N, y: N, z: N, w: N, dist: N): Boolean {
         return opSet.lessThan(gridDistance(x, y, z, w), dist)
     }
 
@@ -109,109 +119,113 @@ abstract class AbstractVec4<N : Number>(
         return opSet.max(x, opSet.max(y, opSet.max(z, w)))
     }
 
-    fun anyGreaterThan(x: Number, y: Number, z: Number, w: Number): Boolean {
-        return opSet.greaterThan(this.x, opSet.convert(x)) || opSet.greaterThan(this.y, opSet.convert(y)) || opSet.greaterThan(this.z, opSet.convert(z)) || opSet.greaterThan(this.w, opSet.convert(w))
+    fun anyGreaterThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.greaterThan(this.x, x) || opSet.greaterThan(this.y, y) || opSet.greaterThan(this.z, z) || opSet.greaterThan(this.w, w)
     }
 
-    fun allGreaterThan(x: Number, y: Number, z: Number, w: Number): Boolean {
-        return opSet.greaterThan(this.x, opSet.convert(x)) && opSet.greaterThan(this.y, opSet.convert(y)) && opSet.greaterThan(this.z, opSet.convert(z)) && opSet.greaterThan(this.w, opSet.convert(w))
+    fun allGreaterThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.greaterThan(this.x, x) && opSet.greaterThan(this.y, y) && opSet.greaterThan(this.z, z) && opSet.greaterThan(this.w, w)
     }
 
-    fun anyGequalThan(x: Number, y: Number, z: Number, w: Number): Boolean {
-        return opSet.gequalThan(this.x, opSet.convert(x)) || opSet.gequalThan(this.y, opSet.convert(y)) || opSet.gequalThan(this.z, opSet.convert(z)) || opSet.gequalThan(this.w, opSet.convert(w))
+    fun anyGequalThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.gequalThan(this.x, x) || opSet.gequalThan(this.y, y) || opSet.gequalThan(this.z, z) || opSet.gequalThan(this.w, w)
     }
 
-    fun allGequalThan(x: Number, y: Number, z: Number, w: Number): Boolean {
-        return opSet.gequalThan(this.x, opSet.convert(x)) && opSet.gequalThan(this.y, opSet.convert(y)) && opSet.gequalThan(this.z, opSet.convert(z)) && opSet.gequalThan(this.w, opSet.convert(w))
+    fun allGequalThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.gequalThan(this.x, x) && opSet.gequalThan(this.y, y) && opSet.gequalThan(this.z, z) && opSet.gequalThan(this.w, w)
     }
 
-    fun anyLessThan(x: Number, y: Number, z: Number, w: Number): Boolean {
-        return opSet.lessThan(this.x, opSet.convert(x)) || opSet.lessThan(this.y, opSet.convert(y)) || opSet.lessThan(this.z, opSet.convert(z)) || opSet.lessThan(this.w, opSet.convert(w))
+    fun anyLessThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.lessThan(this.x, x) || opSet.lessThan(this.y, y) || opSet.lessThan(this.z, z) || opSet.lessThan(this.w, w)
     }
 
-    fun allLessThan(x: Number, y: Number, z: Number, w: Number): Boolean {
-        return opSet.lessThan(this.x, opSet.convert(x)) && opSet.lessThan(this.y, opSet.convert(y)) && opSet.lessThan(this.z, opSet.convert(z)) && opSet.lessThan(this.w, opSet.convert(w))
+    fun allLessThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.lessThan(this.x, x) && opSet.lessThan(this.y, y) && opSet.lessThan(this.z, z) && opSet.lessThan(this.w, w)
     }
 
-    fun anyLequalThan(x: Number, y: Number, z: Number, w: Number): Boolean {
-        return opSet.lequalThan(this.x, opSet.convert(x)) || opSet.lequalThan(this.y, opSet.convert(y)) || opSet.lequalThan(this.z, opSet.convert(z)) || opSet.lequalThan(this.w, opSet.convert(w))
+    fun anyLequalThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.lequalThan(this.x, x) || opSet.lequalThan(this.y, y) || opSet.lequalThan(this.z, z) || opSet.lequalThan(this.w, w)
     }
 
-    fun allLequalThan(x: Number, y: Number, z: Number, w: Number): Boolean {
-        return opSet.lequalThan(this.x, opSet.convert(x)) && opSet.lequalThan(this.y, opSet.convert(y)) && opSet.lequalThan(this.z, opSet.convert(z)) && opSet.lequalThan(this.w, opSet.convert(w))
+    fun allLequalThan(x: N, y: N, z: N, w: N): Boolean {
+        return opSet.lequalThan(this.x, x) && opSet.lequalThan(this.y, y) && opSet.lequalThan(this.z, z) && opSet.lequalThan(this.w, w)
     }
 
-    operator fun plus(other: AbstractVec4<*>) = plus(other.x, other.y, other.z, other.w)
+    fun lerp(other: AbstractVec4<N>, d: Float) = lerp(other.x, other.y, other.z, other.w, d)
 
-    operator fun plus(x: Number) = plus(x, x, x, x)
+    fun lerp(x: N, d: Float) = lerp(x, x, x, x, d)
 
-    operator fun minus(other: AbstractVec4<*>) = minus(other.x, other.y, other.z, other.w)
+    operator fun plus(other: AbstractVec4<N>) = plus(other.x, other.y, other.z, other.w)
 
-    operator fun minus(x: Number) = minus(x, x, x, x)
+    operator fun plus(x: N) = plus(x, x, x, x)
 
-    operator fun times(other: AbstractVec4<*>) = times(other.x, other.y, other.z, other.w)
+    operator fun minus(other: AbstractVec4<N>) = minus(other.x, other.y, other.z, other.w)
 
-    operator fun times(x: Number) = times(x, x, x, x)
+    operator fun minus(x: N) = minus(x, x, x, x)
 
-    operator fun div(other: AbstractVec4<*>) = div(other.x, other.y, other.z, other.w)
+    operator fun times(other: AbstractVec4<N>) = times(other.x, other.y, other.z, other.w)
 
-    operator fun div(x: Number) = div(x, x, x, x)
+    operator fun times(x: N) = times(x, x, x, x)
 
-    operator fun rem(other: AbstractVec4<*>) = rem(other.x, other.y, other.z, other.w)
+    operator fun div(other: AbstractVec4<N>) = div(other.x, other.y, other.z, other.w)
 
-    operator fun rem(x: Number) = rem(x, x, x, x)
+    operator fun div(x: N) = div(x, x, x, x)
 
-    fun min(other: AbstractVec4<*>) = min(other.x, other.y, other.z, other.w)
+    operator fun rem(other: AbstractVec4<N>) = rem(other.x, other.y, other.z, other.w)
 
-    fun min(x: Number) = min(x, x, x, x)
+    operator fun rem(x: N) = rem(x, x, x, x)
 
-    fun max(other: AbstractVec4<*>) = max(other.x, other.y, other.z, other.w)
+    fun min(other: AbstractVec4<N>) = min(other.x, other.y, other.z, other.w)
 
-    fun max(x: Number) = max(x, x, x, x)
+    fun min(x: N) = min(x, x, x, x)
 
-    fun distance(other: AbstractVec4<*>) = distance(other.x, other.y, other.z, other.w)
+    fun max(other: AbstractVec4<N>) = max(other.x, other.y, other.z, other.w)
 
-    fun distanceSquared(other: AbstractVec4<*>) = distanceSquared(other.x, other.y, other.z, other.w)
+    fun max(x: N) = max(x, x, x, x)
 
-    fun gridDistance(other: AbstractVec4<*>) = gridDistance(other.x, other.y, other.z, other.w)
+    fun distance(other: AbstractVec4<N>) = distance(other.x, other.y, other.z, other.w)
 
-    fun inDistance(other: AbstractVec4<*>, dist: N) = inDistance(other.x, other.y, other.z, other.w, dist)
+    fun distanceSquared(other: AbstractVec4<N>) = distanceSquared(other.x, other.y, other.z, other.w)
 
-    fun inDistanceSquared(other: AbstractVec4<*>, dist: N) = inDistanceSquared(other.x, other.y, other.z, other.w, dist)
+    fun gridDistance(other: AbstractVec4<N>) = gridDistance(other.x, other.y, other.z, other.w)
 
-    fun inGridDistance(other: AbstractVec4<*>, dist: N) = inGridDistance(other.x, other.y, other.z, other.w, dist)
+    fun inDistance(other: AbstractVec4<N>, dist: N) = inDistance(other.x, other.y, other.z, other.w, dist)
 
-    fun anyGreaterThan(other: AbstractVec4<*>) = anyGreaterThan(other.x, other.y, other.z, other.w)
+    fun inDistanceSquared(other: AbstractVec4<N>, dist: N) = inDistanceSquared(other.x, other.y, other.z, other.w, dist)
 
-    fun anyGreaterThan(x: Number) = anyGreaterThan(x, x, x, x)
+    fun inGridDistance(other: AbstractVec4<N>, dist: N) = inGridDistance(other.x, other.y, other.z, other.w, dist)
 
-    fun allGreaterThan(other: AbstractVec4<*>) = allGreaterThan(other.x, other.y, other.z, other.w)
+    fun anyGreaterThan(other: AbstractVec4<N>) = anyGreaterThan(other.x, other.y, other.z, other.w)
 
-    fun allGreaterThan(x: Number) = allGreaterThan(x, x, x, x)
+    fun anyGreaterThan(x: N) = anyGreaterThan(x, x, x, x)
 
-    fun anyGequalThan(other: AbstractVec4<*>) = anyGequalThan(other.x, other.y, other.z, other.w)
+    fun allGreaterThan(other: AbstractVec4<N>) = allGreaterThan(other.x, other.y, other.z, other.w)
 
-    fun anyGequalThan(x: Number) = anyGequalThan(x, x, x, x)
+    fun allGreaterThan(x: N) = allGreaterThan(x, x, x, x)
 
-    fun allGequalThan(other: AbstractVec4<*>) = allGequalThan(other.x, other.y, other.z, other.w)
+    fun anyGequalThan(other: AbstractVec4<N>) = anyGequalThan(other.x, other.y, other.z, other.w)
 
-    fun allGequalThan(x: Number) = allGequalThan(x, x, x, x)
+    fun anyGequalThan(x: N) = anyGequalThan(x, x, x, x)
 
-    fun anyLessThan(other: AbstractVec4<*>) = anyLessThan(other.x, other.y, other.z, other.w)
+    fun allGequalThan(other: AbstractVec4<N>) = allGequalThan(other.x, other.y, other.z, other.w)
 
-    fun anyLessThan(x: Number) = anyLessThan(x, x, x, x)
+    fun allGequalThan(x: N) = allGequalThan(x, x, x, x)
 
-    fun allLessThan(other: AbstractVec4<*>) = allLessThan(other.x, other.y, other.z, other.w)
+    fun anyLessThan(other: AbstractVec4<N>) = anyLessThan(other.x, other.y, other.z, other.w)
 
-    fun allLessThan(x: Number) = allLessThan(x, x, x, x)
+    fun anyLessThan(x: N) = anyLessThan(x, x, x, x)
 
-    fun anyLequalThan(other: AbstractVec4<*>) = anyLequalThan(other.x, other.y, other.z, other.w)
+    fun allLessThan(other: AbstractVec4<N>) = allLessThan(other.x, other.y, other.z, other.w)
 
-    fun anyLequalThan(x: Number) = anyLequalThan(x, x, x, x)
+    fun allLessThan(x: N) = allLessThan(x, x, x, x)
 
-    fun allLequalThan(other: AbstractVec4<*>) = allLequalThan(other.x, other.y, other.z, other.w)
+    fun anyLequalThan(other: AbstractVec4<N>) = anyLequalThan(other.x, other.y, other.z, other.w)
 
-    fun allLequalThan(x: Number) = allLequalThan(x, x, x, x)
+    fun anyLequalThan(x: N) = anyLequalThan(x, x, x, x)
+
+    fun allLequalThan(other: AbstractVec4<N>) = allLequalThan(other.x, other.y, other.z, other.w)
+
+    fun allLequalThan(x: N) = allLequalThan(x, x, x, x)
 
     operator fun unaryPlus() = this
 
@@ -235,7 +249,7 @@ abstract class AbstractVec4<N : Number>(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is AbstractVec4<*>) return false
+        if (other !is AbstractVec4<N>) return false
 
         if (x != other.x) return false
         if (y != other.y) return false
@@ -245,8 +259,8 @@ abstract class AbstractVec4<N : Number>(
         return true
     }
 
-    fun equals(x: Number, y: Number, z: Number, w: Number): Boolean {
-        return this.x == opSet.convert(x) && this.y == opSet.convert(y) && this.z == opSet.convert(z) && this.w == opSet.convert(w)
+    fun equals(x: N, y: N, z: N, w: N): Boolean {
+        return this.x == x && this.y == y && this.z == z && this.w == w
     }
 
     override fun hashCode(): Int {
@@ -276,6 +290,6 @@ abstract class AbstractVec4<N : Number>(
 
         @JvmStatic
         val AbstractVec4<Int>.center: AbstractVec4<Float>
-            get() = NeoVec4f(0.5f, 0.5f, 0.5f, 0.5f) + this
+            get() = toFloat() + NeoVec4f(0.5f, 0.5f, 0.5f, 0.5f)
     }
 }

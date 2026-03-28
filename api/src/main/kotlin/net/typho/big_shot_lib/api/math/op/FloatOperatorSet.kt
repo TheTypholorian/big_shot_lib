@@ -4,8 +4,8 @@ object FloatOperatorSet : OperatorSet<Float> {
     override val zero: Float = 0f
     override val one: Float = 1f
 
-    override fun convert(x: Number): Float {
-        return x.toFloat()
+    override fun lerp(a: Float, b: Float, d: Float): Float {
+        return a + d * (b - a)
     }
 
     override fun plus(a: Float, b: Float): Float {

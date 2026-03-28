@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11.*
 import kotlin.collections.iterator
 
 sealed interface GlClearBit {
-    fun mask(): Int
+    val bufferBit: GlBufferBit
 
     fun run()
 
@@ -16,7 +16,7 @@ sealed interface GlClearBit {
 
             for (bit in this) {
                 bit.run()
-                mask = mask or bit.mask()
+                mask = mask or bit.bufferBit.glId
             }
 
             return mask
@@ -37,7 +37,7 @@ sealed interface GlClearBit {
         @JvmField
         val color: NeoColor
     ) : GlClearBit {
-        override fun mask() = GL_COLOR_BUFFER_BIT
+        override val bufferBit = GlBufferBit.COLOR
 
         override fun run() {
             glClearColor(color.redF, color.greenF, color.blueF, color.alphaF ?: 1f)
@@ -48,7 +48,7 @@ sealed interface GlClearBit {
         @JvmField
         val depth: Float
     ) : GlClearBit {
-        override fun mask() = GL_DEPTH_BUFFER_BIT
+        override val bufferBit = GlBufferBit.DEPTH
 
         override fun run() {
             glClearDepth(depth.toDouble())
@@ -59,7 +59,7 @@ sealed interface GlClearBit {
         @JvmField
         val stencil: Int
     ) : GlClearBit {
-        override fun mask() = GL_STENCIL_BUFFER_BIT
+        override val bufferBit = GlBufferBit.STENCIL
 
         override fun run() {
             glClearStencil(stencil)

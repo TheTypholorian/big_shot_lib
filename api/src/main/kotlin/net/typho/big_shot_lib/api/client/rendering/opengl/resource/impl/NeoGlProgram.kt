@@ -7,6 +7,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResour
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUniform
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.lwjgl.opengl.GL20.*
@@ -39,16 +40,17 @@ class NeoGlProgram(
             }
 
             override fun setTexture(
-                name: String,
                 unit: Int,
-                target: GlTextureTarget,
-                glId: Int,
-                samplerId: Int
+                binding: GlTextureBinding
             ) {
+                val name = binding.uniformName ?: "Sampler$unit"
+                val texture = binding.texture
+
                 glActiveTexture(unit)
-                glBindTexture(target.glId, glId)
-                glBindSampler(unit, samplerId)
+                glBindTexture(binding.target.glId, texture.glId)
+                glBindSampler(unit, binding.sampler?.glId ?: 0)
                 setUniform(name) { set(unit) }
+                setUniform("${name}Size") { set(texture.width, texture.height) }
             }
 
             override fun unbind() {

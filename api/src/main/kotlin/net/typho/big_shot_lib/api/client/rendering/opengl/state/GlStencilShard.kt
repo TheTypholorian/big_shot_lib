@@ -3,14 +3,16 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.state
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
-import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 
 sealed interface GlStencilShard : GlDrawStateShard {
-    interface Enabled : GlStencilShard {
-        val function: StencilFunction
-        val mask: Int
+    data class Enabled(
+        @JvmField
+        val function: StencilFunction,
+        @JvmField
+        val mask: Int,
+        @JvmField
         val op: StencilOp
-
+    ) : GlStencilShard {
         override fun bind(): BoundResource {
             val flag = NeoGlStateManager.INSTANCE.stencilEnabled.push(true)
             val function = NeoGlStateManager.INSTANCE.stencilFunction.push(function)

@@ -4,9 +4,10 @@ import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 
 sealed interface GlScissorShard : GlDrawStateShard {
-    interface Enabled : GlScissorShard {
+    data class Enabled(
+        @JvmField
         val scissor: AbstractRect2<Int>
-
+    ) : GlScissorShard {
         override fun bind(): BoundResource {
             val flag = NeoGlStateManager.INSTANCE.scissorEnabled.push(true)
             val scissor = NeoGlStateManager.INSTANCE.scissor.push(scissor)

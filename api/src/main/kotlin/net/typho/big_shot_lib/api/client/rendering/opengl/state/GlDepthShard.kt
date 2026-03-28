@@ -4,16 +4,18 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFuncti
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 
 sealed interface GlDepthShard : GlDrawStateShard {
-    interface Enabled : GlDepthShard {
-        val mask: Boolean
-        val func: GlAlphaFunction
-
+    data class Enabled @JvmOverloads constructor(
+        @JvmField
+        val func: GlAlphaFunction,
+        @JvmField
+        val mask: Boolean = true
+    ) : GlDepthShard {
         override fun bind(): BoundResource {
             val flag = NeoGlStateManager.INSTANCE.depthEnabled.push(true)
-            val mask = NeoGlStateManager.INSTANCE.depthMask.push(mask)
             val func = NeoGlStateManager.INSTANCE.depthFunc.push(func)
-            
-            return BoundResource.all(flag, mask, func)
+            val mask = NeoGlStateManager.INSTANCE.depthMask.push(mask)
+
+            return BoundResource.all(flag, func, mask)
         }
     }
 

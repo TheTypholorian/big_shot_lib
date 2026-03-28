@@ -4,6 +4,8 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureForm
 
 interface GlFramebufferAttachment {
     val format: GlTextureFormat?
+    val width: Int
+    val height: Int
 
     fun attach(target: Int, attachment: Int)
 }

@@ -4,8 +4,8 @@ object DoubleOperatorSet : OperatorSet<Double> {
     override val zero: Double = 0.0
     override val one: Double = 1.0
 
-    override fun convert(x: Number): Double {
-        return x.toDouble()
+    override fun lerp(a: Double, b: Double, d: Float): Double {
+        return a + d * (b - a)
     }
 
     override fun plus(a: Double, b: Double): Double {

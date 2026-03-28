@@ -4,9 +4,10 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlCullFace
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 
 sealed interface GlCullShard : GlDrawStateShard {
-    interface Enabled : GlCullShard {
+    data class Enabled(
+        @JvmField
         val face: GlCullFace
-
+    ) : GlCullShard {
         override fun bind(): BoundResource {
             val flag = NeoGlStateManager.INSTANCE.cullFaceEnabled.push(true)
             val face = NeoGlStateManager.INSTANCE.cullFace.push(face)
