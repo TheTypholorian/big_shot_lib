@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering.util
 import net.minecraft.client.renderer.RenderType
 import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
 import net.typho.big_shot_lib.api.util.resource.NamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
@@ -17,12 +18,9 @@ interface NeoRenderSettings : NamedResource {
     val sortOnUpload: Boolean
     val outlineSettings: NeoRenderSettings?
     val isOutline: Boolean
+    val drawState: GlDrawState
 
-    fun bind(): Bound
-
-    interface Bound : BoundResource {
-        val settings: NeoRenderSettings
-    }
+    fun bind(): BoundResource = drawState.bind()
 
     data class Basic(
         override val location: NeoIdentifier,
@@ -32,11 +30,9 @@ interface NeoRenderSettings : NamedResource {
         override val affectsCrumbling: Boolean = true,
         override val sortOnUpload: Boolean = false,
         override val outlineSettings: NeoRenderSettings? = null,
-        override val isOutline: Boolean = false
-    ) : NeoRenderSettings {
-        override fun bind(): Bound {
-        }
-    }
+        override val isOutline: Boolean = false,
+        override val drawState: GlDrawState
+    ) : NeoRenderSettings
 
     companion object {
         @JvmStatic

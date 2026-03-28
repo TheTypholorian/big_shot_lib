@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
@@ -16,7 +17,7 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import java.io.BufferedReader
 
-object NeoShaderLoader : ResourceRegistry<GlShader>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
+object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
     @JvmField
     val PREPROCESSORS_REGISTRY_KEY = NeoResourceKey.registry<ShaderPreprocessor>(BigShotApi.id("shader_preprocessors"))
     var PREPROCESSORS_REGISTRY: NeoRegistry<ShaderPreprocessor>? = null
@@ -80,7 +81,7 @@ object NeoShaderLoader : ResourceRegistry<GlShader>(BigShotApi.id("shaders"), Ne
         location: NeoIdentifier,
         reader: BufferedReader,
         manager: NeoResourceManager
-    ): GlShader {
+    ): GlProgram {
         TODO("Not yet implemented")
     }
 }

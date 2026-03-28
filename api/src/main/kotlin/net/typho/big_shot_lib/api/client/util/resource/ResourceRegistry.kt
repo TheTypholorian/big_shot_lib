@@ -33,7 +33,7 @@ abstract class ResourceRegistry<T>(
 
     fun getKey(t: T) = map.inverse()[t]
 
-    fun get(location: NeoIdentifier) = map[location]
+    operator fun get(location: NeoIdentifier) = map[location]
 
     abstract fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): T
 

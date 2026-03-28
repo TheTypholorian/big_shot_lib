@@ -3,8 +3,11 @@ package net.typho.big_shot_lib.api
 import com.mojang.serialization.DataResult
 import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
+import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoBufferBuilder
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface InternalUtil {
     val positionVertexElement: NeoVertexFormat.Element
@@ -32,6 +35,10 @@ interface InternalUtil {
     fun createBufferBuilder(format: NeoVertexFormat, mode: GlBeginMode, numVertices: Int? = null): NeoBufferBuilder
 
     fun <R> dataResultError(message: () -> String): DataResult<R>
+
+    fun getTexture(location: NeoIdentifier): GlTexture2D
+
+    fun getAtlas(location: NeoIdentifier): NeoAtlas
 
     companion object {
         internal val INSTANCE = InternalUtil::class.loadService()
