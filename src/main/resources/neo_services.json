@@ -4,7 +4,8 @@
     "net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader"
   ],
   "net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint": [
-    "net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat$Companion"
+    "net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat$Companion",
+    "net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader"
   ],
   "net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue": [
     "net.typho.big_shot_lib.impl.client.rendering.opengl.GlQueueImpl"
@@ -23,5 +24,8 @@
   ],
   "net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager": [
     "net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManagerImpl"
+  ],
+  "net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings$Builtins": [
+    "net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsBuiltinsImpl"
   ]
 }

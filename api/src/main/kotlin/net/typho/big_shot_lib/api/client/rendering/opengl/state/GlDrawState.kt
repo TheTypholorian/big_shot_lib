@@ -29,28 +29,15 @@ interface GlDrawState {
         )
     }
 
-    companion object {
-        @JvmStatic
-        fun of(
-            blend: GlBlendShard = GlBlendShard.Disabled,
-            colorMask: GlColorMaskShard = GlColorMaskShard.of(ColorMask.DEFAULT),
-            cull: GlCullShard = GlCullShard.Disabled,
-            depth: GlDepthShard = GlDepthShard.Disabled,
-            polygonMode: GlPolygonModeShard = GlPolygonModeShard.of(GlPolygonMode.FILL),
-            polygonOffset: GlPolygonOffsetShard = GlPolygonOffsetShard.Disabled,
-            scissor: GlScissorShard = GlScissorShard.Disabled,
-            shader: GlShaderShard,
-            stencil: GlStencilShard = GlStencilShard.Disabled,
-        ) = object : GlDrawState {
-            override val blend: GlBlendShard = blend
-            override val colorMask: GlColorMaskShard = colorMask
-            override val cull: GlCullShard = cull
-            override val depth: GlDepthShard = depth
-            override val polygonMode: GlPolygonModeShard = polygonMode
-            override val polygonOffset: GlPolygonOffsetShard = polygonOffset
-            override val scissor: GlScissorShard = scissor
-            override val shader: GlShaderShard = shader
-            override val stencil: GlStencilShard = stencil
-        }
-    }
+    open class Basic(
+        override val blend: GlBlendShard = GlBlendShard.Disabled,
+        override val colorMask: GlColorMaskShard = GlColorMaskShard.of(ColorMask.DEFAULT),
+        override val cull: GlCullShard = GlCullShard.Disabled,
+        override val depth: GlDepthShard = GlDepthShard.Disabled,
+        override val polygonMode: GlPolygonModeShard = GlPolygonModeShard.of(GlPolygonMode.FILL),
+        override val polygonOffset: GlPolygonOffsetShard = GlPolygonOffsetShard.Disabled,
+        override val scissor: GlScissorShard = GlScissorShard.Disabled,
+        override val shader: GlShaderShard,
+        override val stencil: GlStencilShard = GlStencilShard.Disabled
+    ) : GlDrawState
 }

@@ -42,12 +42,12 @@ data class NeoVertexFormatImpl(
 
     override fun initVertexArrayState() {
         //? if <1.21.5 {
-        inner.setupBufferState()
-        //? } else {
-        /*elements.forEachIndexed { index, element ->
+        /*inner.setupBufferState()
+        *///? } else {
+        elements.forEachIndexed { index, element ->
             element.vertexAttribPointer(index, getElementOffset(element).toLong(), vertexSizeBytes)
         }
-        *///? }
+        //? }
     }
 
     data class ElementImpl(

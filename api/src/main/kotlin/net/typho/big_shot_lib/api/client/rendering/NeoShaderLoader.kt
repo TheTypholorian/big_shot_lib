@@ -1,7 +1,9 @@
 package net.typho.big_shot_lib.api.client.rendering
 
+import com.google.gson.JsonElement
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
@@ -17,7 +19,7 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import java.io.BufferedReader
 
-object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
+object NeoShaderLoader : ResourceRegistry.Json<GlProgram>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
     @JvmField
     val PREPROCESSORS_REGISTRY_KEY = NeoResourceKey.registry<ShaderPreprocessor>(BigShotApi.id("shader_preprocessors"))
     var PREPROCESSORS_REGISTRY: NeoRegistry<ShaderPreprocessor>? = null
@@ -77,11 +79,17 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
         registrar.register(ShaderIncludePreprocessor)
     }
 
-    override fun decode(
-        location: NeoIdentifier,
-        reader: BufferedReader,
-        manager: NeoResourceManager
-    ): GlProgram {
-        TODO("Not yet implemented")
+    override fun decode(location: NeoIdentifier, json: JsonElement, manager: NeoResourceManager): GlProgram {
+        val json = json.asJsonObject
+        val program = NeoGlProgram(location)
+        val sources = json.getAsJsonObject("sources")
+
+        for (entry in sources.asMap()) {
+            program.attach(shaderRegistries[GlShaderType.valueOf(entry.key.uppercase())][NeoIdentifier(entry.value.asString)]!!)
+        }
+
+        program.link()
+
+        return program
     }
 }

@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.impl.util
 
 //? if >=1.21.6 {
-/*import net.minecraft.client.renderer.chunk.ChunkSectionLayer
-*///? } else {
-import net.minecraft.client.renderer.RenderType
-//? }
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer
+//? } else {
+/*import net.minecraft.client.renderer.RenderType
+*///? }
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes
 import net.minecraft.core.BlockPos
@@ -30,10 +30,10 @@ object BlockUtilImpl : BlockUtil {
         level: Level
     ): Boolean {
         //? if <1.21.2 {
-        return state.isSolidRender(level, BlockPos(pos.x, pos.y, pos.z))
-        //? } else {
-        /*return state.isSolidRender
-        *///? }
+        /*return state.isSolidRender(level, BlockPos(pos.x, pos.y, pos.z))
+        *///? } else {
+        return state.isSolidRender
+        //? }
     }
 
     override fun getOffset(
@@ -42,33 +42,33 @@ object BlockUtilImpl : BlockUtil {
         level: Level
     ): AbstractVec3<Float> {
         //? if <1.21.2 {
-        return NeoVec3f(state.getOffset(level, BlockPos(pos.x, pos.y, pos.z)).toVector3f())
-        //? } else {
-        /*return NeoVec3f(state.getOffset(BlockPos(pos.x, pos.y, pos.z)).toVector3f())
-        *///? }
+        /*return NeoVec3f(state.getOffset(level, BlockPos(pos.x, pos.y, pos.z)).toVector3f())
+        *///? } else {
+        return NeoVec3f(state.getOffset(BlockPos(pos.x, pos.y, pos.z)).toVector3f())
+        //? }
     }
 
     @Suppress("DEPRECATION")
     override fun getBlockChunkLayer(state: BlockState): BlockChunkLayer? {
         return when (ItemBlockRenderTypes.getChunkRenderType(state)) {
             //? if >=1.21.11 {
-            /*ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
+            ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
             ChunkSectionLayer.CUTOUT -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockChunkLayer.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockChunkLayer.TRIPWIRE
-            *///? } else if >=1.21.6 {
+            //? } else if >=1.21.6 {
             /*ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
             ChunkSectionLayer.CUTOUT -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.CUTOUT_MIPPED -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockChunkLayer.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockChunkLayer.TRIPWIRE
             *///? } else {
-            RenderType.solid() -> BlockChunkLayer.SOLID
+            /*RenderType.solid() -> BlockChunkLayer.SOLID
             RenderType.cutout(), RenderType.cutoutMipped() -> BlockChunkLayer.CUTOUT
             RenderType.translucent() -> BlockChunkLayer.TRANSLUCENT
             RenderType.tripwire() -> BlockChunkLayer.TRIPWIRE
             else -> null
-            //? }
+            *///? }
         }
     }
 
@@ -82,10 +82,10 @@ object BlockUtilImpl : BlockUtil {
         val pos1 = pos + direction
 
         //? if >=1.21.2 {
-        /*return Block.shouldRenderFace(state, level.getBlockState(BlockPos(pos1.x, pos1.y, pos1.z)), direction.mojang)
-        *///? } else {
-        return Block.shouldRenderFace(state, level, BlockPos(pos1.x, pos1.y, pos1.z), direction.mojang, BlockPos(pos.x, pos.y, pos.z))
-        //? }
+        return Block.shouldRenderFace(state, level.getBlockState(BlockPos(pos1.x, pos1.y, pos1.z)), direction.mojang)
+        //? } else {
+        /*return Block.shouldRenderFace(state, level, BlockPos(pos1.x, pos1.y, pos1.z), direction.mojang, BlockPos(pos.x, pos.y, pos.z))
+        *///? }
     }
 
     override fun getBlockQuads(
@@ -95,7 +95,7 @@ object BlockUtilImpl : BlockUtil {
         out: (direction: NeoDirection?, quads: List<NeoBakedQuad>) -> Unit
     ) {
         //? if <1.21.5 {
-        val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
+        /*val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
         val seed = state.getSeed(BlockPos(pos.x, pos.y, pos.z))
 
@@ -140,52 +140,48 @@ object BlockUtilImpl : BlockUtil {
             faceWithOffset(NeoDirection.EAST, random.also { it.setSeed(seed) })
             faceWithOffset(null, random.also { it.setSeed(seed) })
         }
-        //? } else {
-        /*val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
+        *///? } else {
+        val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
-        val seed = state.getSeed(pos)
+        val parts = model.collectParts(RandomSource.create(state.getSeed(BlockPos(pos.x, pos.y, pos.z))))
 
-        fun face(face: Direction?, random: RandomSource) {
-            random.setSeed(seed)
-            val quads = model.getQuads(state, face, random)
-            out.accept(
+        fun face(face: NeoDirection?) {
+            val quads = parts.flatMap { it.getQuads(face?.mojang) }
+            out(
                 face,
                 quads.mapTo(ArrayList(quads.size)) { WrapperUtil.INSTANCE.wrap(it) }
             )
         }
 
-        fun faceWithOffset(face: Direction?, random: RandomSource) {
-            random.setSeed(seed)
-            val quads = model.getQuads(state, face, random)
-            out.accept(
+        fun faceWithOffset(face: NeoDirection?) {
+            val quads = parts.flatMap { it.getQuads(face?.mojang) }
+            out(
                 face,
                 quads.mapTo(ArrayList(quads.size)) {
                     WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
-                        vertex.withPosition { pos -> pos.add(offset, Vector3f()) }
+                        vertex.withPosition { pos -> pos + offset }
                     }
                 }
             )
         }
 
-        val random = RandomSource.create(seed)
-
         if (offset.equals(0f, 0f, 0f)) {
-            face(Direction.DOWN, random)
-            face(Direction.UP, random.also { it.setSeed(seed) })
-            face(Direction.NORTH, random.also { it.setSeed(seed) })
-            face(Direction.SOUTH, random.also { it.setSeed(seed) })
-            face(Direction.WEST, random.also { it.setSeed(seed) })
-            face(Direction.EAST, random.also { it.setSeed(seed) })
-            face(null, random.also { it.setSeed(seed) })
+            face(NeoDirection.DOWN)
+            face(NeoDirection.UP)
+            face(NeoDirection.NORTH)
+            face(NeoDirection.SOUTH)
+            face(NeoDirection.WEST)
+            face(NeoDirection.EAST)
+            face(null)
         } else {
-            faceWithOffset(Direction.DOWN, random)
-            faceWithOffset(Direction.UP, random.also { it.setSeed(seed) })
-            faceWithOffset(Direction.NORTH, random.also { it.setSeed(seed) })
-            faceWithOffset(Direction.SOUTH, random.also { it.setSeed(seed) })
-            faceWithOffset(Direction.WEST, random.also { it.setSeed(seed) })
-            faceWithOffset(Direction.EAST, random.also { it.setSeed(seed) })
-            faceWithOffset(null, random.also { it.setSeed(seed) })
+            faceWithOffset(NeoDirection.DOWN)
+            faceWithOffset(NeoDirection.UP)
+            faceWithOffset(NeoDirection.NORTH)
+            faceWithOffset(NeoDirection.SOUTH)
+            faceWithOffset(NeoDirection.WEST)
+            faceWithOffset(NeoDirection.EAST)
+            faceWithOffset(null)
         }
-        *///? }
+        //? }
     }
 }

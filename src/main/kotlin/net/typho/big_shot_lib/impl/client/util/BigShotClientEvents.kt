@@ -3,8 +3,8 @@ package net.typho.big_shot_lib.impl.client.util
 //? fabric {
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 //? if <1.21.9 {
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
-//? }
+/*import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+*///? }
 //? } neoforge {
 /*import com.mojang.blaze3d.systems.RenderSystem
 import net.neoforged.neoforge.client.event.ClientTickEvent
@@ -37,7 +37,7 @@ object BigShotClientEvents : ClientEventFactory {
 
         //? fabric {
         //? if <1.21.9 {
-        WorldRenderEvents.LAST.register { context ->
+        /*WorldRenderEvents.LAST.register { context ->
             val data = RenderEventData(
                 NeoCamera(
                     NeoVec3f(context.camera().position),
@@ -56,7 +56,7 @@ object BigShotClientEvents : ClientEventFactory {
             )
             levelRenderEnd.forEach { it.invoke(data) }
         }
-        //? }
+        *///? }
         ClientTickEvents.START_CLIENT_TICK.register { clientTickStart.forEach { it.run() } }
         ClientTickEvents.END_CLIENT_TICK.register { clientTickEnd.forEach { it.run() } }
         //? } neoforge {

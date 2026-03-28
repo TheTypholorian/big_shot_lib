@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.impl.client.rendering.opengl.state
 
-import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.opengl.GlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
@@ -64,26 +64,26 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     }
     override val renderbuffer: GlStateStack<Int> = GlStateStack.Impl(
         //? if <1.21.5 {
-        { GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, it) },
-        //? } else {
-        /*{ glBindRenderbuffer(GL_RENDERBUFFER, it) },
-        *///? }
+        /*{ GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, it) },
+        *///? } else {
+        { glBindRenderbuffer(GL_RENDERBUFFER, it) },
+        //? }
         { glGetInteger(GL_RENDERBUFFER_BINDING) }
     )
     override val framebuffer: GlStateStack<Int> = GlStateStack.Impl(
         { GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, it) },
         //? if <1.21.5 {
-        { GlStateManager.getBoundFramebuffer() }
-        //? } else {
-        /*{ glGetInteger(GL_FRAMEBUFFER_BINDING) }
-        *///? }
+        /*{ GlStateManager.getBoundFramebuffer() }
+        *///? } else {
+        { glGetInteger(GL_FRAMEBUFFER_BINDING) }
+        //? }
     )
     override var activeTexture: Int
         //? if <1.21.5 {
-        get() = GlStateManager._getActiveTexture()
-        //? } else {
-        /*get() = GlStateManager.activeTexture
-        *///? }
+        /*get() = GlStateManager._getActiveTexture()
+        *///? } else {
+        get() = GlStateManager.activeTexture
+        //? }
         set(value) = GlStateManager._activeTexture(value)
 
     override val blendColor: GlStateStack<NeoColor> = GlStateStack.Impl(

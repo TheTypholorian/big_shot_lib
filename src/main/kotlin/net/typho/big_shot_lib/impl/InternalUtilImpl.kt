@@ -60,10 +60,10 @@ object InternalUtilImpl : InternalUtil {
         *///? }
 
     //? if <1.21.9 {
-    override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
-    //? } else {
-    /*override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
-    *///? }
+    /*override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
+    *///? } else {
+    override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
+    //? }
     override val blockVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLOCK)
     override val newEntityVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.NEW_ENTITY)
     override val particleVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.PARTICLE)
@@ -108,10 +108,10 @@ object InternalUtilImpl : InternalUtil {
 
     override fun getAtlas(location: NeoIdentifier): NeoAtlas {
         //? if <1.21.9 {
-        return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
-        //? } else {
-        /*return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
-        *///? }
+        /*return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
+        *///? } else {
+        return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
+        //? }
     }
 
     override fun <R> dataResultError(message: () -> String): DataResult<R> {

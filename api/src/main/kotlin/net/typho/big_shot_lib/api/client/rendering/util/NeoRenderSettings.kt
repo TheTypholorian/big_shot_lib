@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
-import net.minecraft.client.renderer.RenderType
 import net.typho.big_shot_lib.api.BigShotApi.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
@@ -26,7 +25,7 @@ interface NeoRenderSettings : NamedResource {
         override val location: NeoIdentifier,
         override val format: NeoVertexFormat,
         override val mode: GlBeginMode = GlBeginMode.QUADS,
-        override val defaultBufferSize: Int = RenderType.SMALL_BUFFER_SIZE,
+        override val defaultBufferSize: Int = 786432,
         override val affectsCrumbling: Boolean = true,
         override val sortOnUpload: Boolean = false,
         override val outlineSettings: NeoRenderSettings? = null,

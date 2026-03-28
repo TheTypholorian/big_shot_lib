@@ -1,16 +1,17 @@
 package net.typho.big_shot_lib.impl.mixin;
 
 //? if <1.21.11 {
-import net.minecraft.resources.ResourceLocation;
-//? } else {
-/*import net.minecraft.resources.Identifier;
-*///? }
+/*import net.minecraft.resources.ResourceLocation;
+*///? } else {
+import net.minecraft.resources.Identifier;
+//? }
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas;
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlasSprite;
+import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -45,15 +46,15 @@ public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprit
     @Shadow
     @Final
     //? if <1.21.11 {
-    private ResourceLocation atlasLocation;
-    //? } else {
-    /*private Identifier atlasLocation;
-    *///? }
+    /*private ResourceLocation atlasLocation;
+    *///? } else {
+    private Identifier atlasLocation;
+    //? }
     @Unique
     private final NeoAtlasSprite big_shot_lib$extension_value = new NeoAtlasSprite() {
         @Override
         public @NotNull NeoAtlas getAtlas() {
-            throw new UnsupportedOperationException("TODO atlases"); // TODO
+            return NeoAtlas.get(IdentifierUtilKt.getNeo(atlasLocation));
         }
 
         @Override
