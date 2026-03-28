@@ -11,25 +11,12 @@ fun interface BoundResource : NativeResource {
 
     companion object {
         @JvmStatic
-        fun all(vararg resources: BoundResource) = BoundResource {
-            resources.forEach { it.unbind() }
-        }
-
-        @JvmStatic
         fun all(vararg resources: BoundResource?) = BoundResource {
             resources.forEach { it?.unbind() }
         }
 
         @JvmStatic
-        fun all(vararg resources: () -> BoundResource): BoundResource {
-            val bound = resources.map { it() }
-            return BoundResource {
-                bound.forEach { it.unbind() }
-            }
-        }
-
-        @JvmStatic
-        fun all(vararg resources: () -> BoundResource?): BoundResource {
+        fun allGet(vararg resources: () -> BoundResource?): BoundResource {
             val bound = resources.map { it() }
             return BoundResource {
                 bound.forEach { it?.unbind() }

@@ -1,8 +1,14 @@
 package net.typho.big_shot_lib.impl.client.rendering.util
 
+//? if <1.21 {
+/*import net.typho.big_shot_lib.impl.mixin.RenderTypeAccessor
+*///? }
+
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.client.renderer.RenderType
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
+import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
@@ -24,20 +30,22 @@ class NeoRenderSettingsImpl(
     }
     override val defaultBufferSize: Int = renderType.bufferSize()
     override val affectsCrumbling: Boolean = renderType.affectsCrumbling()
+    //? if <1.21 {
+    /*override val sortOnUpload: Boolean = (renderType as RenderTypeAccessor).`big_shot_lib$getSortOnUpload`()
+    *///? } else {
     override val sortOnUpload: Boolean = renderType.sortOnUpload()
+    //? }
     override val outlineSettings: NeoRenderSettings? = renderType.outline().map { NeoRenderSettingsImpl(it) }.getOrNull()
     override val isOutline: Boolean = renderType.isOutline
     override val location: NeoIdentifier = NeoIdentifier((renderType as RenderStateShardAccessor).`big_shot_lib$getName`())
+    override val drawState: GlDrawState
+        get() = TODO("Not yet implemented")
 
-    override fun bind(): NeoRenderSettings.Bound {
+    override fun bind(): BoundResource {
         renderType.setupRenderState()
 
-        return object : NeoRenderSettings.Bound {
-            override val settings: NeoRenderSettings = this@NeoRenderSettingsImpl
-
-            override fun free() {
-                renderType.clearRenderState()
-            }
+        return BoundResource {
+            renderType.clearRenderState()
         }
     }
 }

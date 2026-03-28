@@ -5,6 +5,11 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import net.typho.big_shot_lib.api.util.EnumArrayMap
@@ -155,11 +160,13 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     )
     override val stencilFunction: GlStateStack<StencilFunction> = GlStateStack.Impl(
         { glStencilFunc(it.func.glId, it.ref, it.mask) },
-        { StencilFunction(
-            GlNamed.getEnum(glGetInteger(GL_STENCIL_FUNC)),
-            glGetInteger(GL_STENCIL_REF),
-            glGetInteger(GL_STENCIL_VALUE_MASK)
-        ) }
+        {
+            StencilFunction(
+                GlNamed.getEnum(glGetInteger(GL_STENCIL_FUNC)),
+                glGetInteger(GL_STENCIL_REF),
+                glGetInteger(GL_STENCIL_VALUE_MASK)
+            )
+        }
     )
     override val stencilMask: GlStateStack<Int> = GlStateStack.Impl(
         { glStencilMask(it) },
@@ -167,11 +174,13 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     )
     override val stencilOp: GlStateStack<StencilOp> = GlStateStack.Impl(
         { glStencilOp(it.stencilFail.glId, it.depthFail.glId, it.depthPass.glId) },
-        { StencilOp(
-            GlNamed.getEnum(glGetInteger(GL_STENCIL_FAIL)),
-            GlNamed.getEnum(glGetInteger(GL_STENCIL_PASS_DEPTH_FAIL)),
-            GlNamed.getEnum(glGetInteger(GL_STENCIL_PASS_DEPTH_PASS))
-        ) }
+        {
+            StencilOp(
+                GlNamed.getEnum(glGetInteger(GL_STENCIL_FAIL)),
+                GlNamed.getEnum(glGetInteger(GL_STENCIL_PASS_DEPTH_FAIL)),
+                GlNamed.getEnum(glGetInteger(GL_STENCIL_PASS_DEPTH_PASS))
+            )
+        }
     )
     override val viewport: GlStateStack<AbstractRect2<Int>> = GlStateStack.Impl(
         { glViewport(it.min.x, it.min.y, it.size.x, it.size.y) },

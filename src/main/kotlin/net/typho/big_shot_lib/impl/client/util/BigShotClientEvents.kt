@@ -16,7 +16,7 @@ import net.typho.big_shot_lib.impl.mixin.LevelRendererAccessor
 *///? }
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoCamera
+import net.typho.big_shot_lib.api.client.util.NeoCamera
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.event.*
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f

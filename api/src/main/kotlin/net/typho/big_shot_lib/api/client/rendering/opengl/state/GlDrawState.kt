@@ -16,7 +16,7 @@ interface GlDrawState {
     val stencil: GlStencilShard
 
     fun bind(): BoundResource {
-        return BoundResource.all(
+        return BoundResource.allGet(
             blend::bind,
             colorMask::bind,
             cull::bind,

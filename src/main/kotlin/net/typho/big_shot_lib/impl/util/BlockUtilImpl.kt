@@ -3,13 +3,13 @@ package net.typho.big_shot_lib.impl.util
 //? if >=1.21.6 {
 /*import net.minecraft.client.renderer.chunk.ChunkSectionLayer
 *///? } else {
-import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.RenderType
 //? }
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes
 import net.minecraft.core.BlockPos
 import net.minecraft.util.RandomSource
+import net.minecraft.client.Minecraft
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -21,6 +21,7 @@ import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.BlockUtil
 import net.typho.big_shot_lib.api.util.WrapperUtil
+import org.joml.Vector3f
 
 object BlockUtilImpl : BlockUtil {
     override fun isSolidRender(
@@ -93,6 +94,7 @@ object BlockUtilImpl : BlockUtil {
         pos: AbstractVec3<Int>,
         out: (direction: NeoDirection?, quads: List<NeoBakedQuad>) -> Unit
     ) {
+        //? if <1.21.5 {
         val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
         val seed = state.getSeed(BlockPos(pos.x, pos.y, pos.z))
@@ -138,5 +140,52 @@ object BlockUtilImpl : BlockUtil {
             faceWithOffset(NeoDirection.EAST, random.also { it.setSeed(seed) })
             faceWithOffset(null, random.also { it.setSeed(seed) })
         }
+        //? } else {
+        /*val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
+        val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
+        val seed = state.getSeed(pos)
+
+        fun face(face: Direction?, random: RandomSource) {
+            random.setSeed(seed)
+            val quads = model.getQuads(state, face, random)
+            out.accept(
+                face,
+                quads.mapTo(ArrayList(quads.size)) { WrapperUtil.INSTANCE.wrap(it) }
+            )
+        }
+
+        fun faceWithOffset(face: Direction?, random: RandomSource) {
+            random.setSeed(seed)
+            val quads = model.getQuads(state, face, random)
+            out.accept(
+                face,
+                quads.mapTo(ArrayList(quads.size)) {
+                    WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
+                        vertex.withPosition { pos -> pos.add(offset, Vector3f()) }
+                    }
+                }
+            )
+        }
+
+        val random = RandomSource.create(seed)
+
+        if (offset.equals(0f, 0f, 0f)) {
+            face(Direction.DOWN, random)
+            face(Direction.UP, random.also { it.setSeed(seed) })
+            face(Direction.NORTH, random.also { it.setSeed(seed) })
+            face(Direction.SOUTH, random.also { it.setSeed(seed) })
+            face(Direction.WEST, random.also { it.setSeed(seed) })
+            face(Direction.EAST, random.also { it.setSeed(seed) })
+            face(null, random.also { it.setSeed(seed) })
+        } else {
+            faceWithOffset(Direction.DOWN, random)
+            faceWithOffset(Direction.UP, random.also { it.setSeed(seed) })
+            faceWithOffset(Direction.NORTH, random.also { it.setSeed(seed) })
+            faceWithOffset(Direction.SOUTH, random.also { it.setSeed(seed) })
+            faceWithOffset(Direction.WEST, random.also { it.setSeed(seed) })
+            faceWithOffset(Direction.EAST, random.also { it.setSeed(seed) })
+            faceWithOffset(null, random.also { it.setSeed(seed) })
+        }
+        *///? }
     }
 }

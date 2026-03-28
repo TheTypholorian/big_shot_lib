@@ -22,6 +22,7 @@ sourceSets {
 
             if (stonecutter.current.version >= "1.21") {
                 exclude("net/typho/big_shot_lib/impl/mixin/VertexFormatAccessor.java")
+                exclude("net/typho/big_shot_lib/impl/mixin/RenderTypeAccessor.java")
             }
         }
     }
