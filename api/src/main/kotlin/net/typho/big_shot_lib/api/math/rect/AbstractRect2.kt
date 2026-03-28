@@ -63,7 +63,7 @@ abstract class AbstractRect2<N : Number>(
     companion object {
         @JvmStatic
         val <N : Number> AbstractRect2<N>.sizeInclusive: AbstractVec2<N>
-            get() = size + 1
+            get() = size + opSet.one
 
         @JvmStatic
         val AbstractRect2<Int>.areaInclusive: Int
