@@ -5,6 +5,7 @@ import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.rect.AbstractRect3.Companion.iterator
 import net.typho.big_shot_lib.api.math.vec.AbstractVec2
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.math.vec.AbstractVec3.Companion.plus
 import net.typho.big_shot_lib.api.math.vec.NeoVec3i
 
 abstract class AbstractRect3<N : Number>(
@@ -43,26 +44,6 @@ abstract class AbstractRect3<N : Number>(
         return min.anyLessThan(other.max) && max.anyGreaterThan(other.min)
     }
 
-    fun extend(direction: NeoDirection): AbstractRect3<N> {
-        return if (direction.axisDirection == NeoDirection.AxisDirection.POSITIVE) {
-            create(min, max.plus(direction))
-        } else {
-            create(min.plus(direction), max)
-        }
-    }
-
-    fun extend(direction: NeoDirection, x: N): AbstractRect3<N> {
-        return if (direction.axisDirection == NeoDirection.AxisDirection.POSITIVE) {
-            create(min, max.plus(direction.inc * x))
-        } else {
-            create(min.plus(direction.inc * x), max)
-        }
-    }
-
-    fun move(direction: NeoDirection) = create(min.plus(direction), max.plus(direction))
-
-    fun move(direction: NeoDirection, x: N) = create(min.plus(direction.inc * x), max.plus(direction.inc * x))
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is AbstractRect3<*>) return false
@@ -97,5 +78,29 @@ abstract class AbstractRect3<N : Number>(
                 (min.z..max.z).map { z -> NeoVec3i(xy.first, xy.second, z) }
             }
             .iterator()
+
+        @JvmStatic
+        fun AbstractRect3<Int>.extend(direction: NeoDirection): AbstractRect3<Int> {
+            return if (direction.axisDirection == NeoDirection.AxisDirection.POSITIVE) {
+                create(min, max + direction)
+            } else {
+                create(min + direction, max)
+            }
+        }
+
+        @JvmStatic
+        fun AbstractRect3<Int>.extend(direction: NeoDirection, x: Int): AbstractRect3<Int> {
+            return if (direction.axisDirection == NeoDirection.AxisDirection.POSITIVE) {
+                create(min, max.plus(direction.inc * x))
+            } else {
+                create(min.plus(direction.inc * x), max)
+            }
+        }
+
+        @JvmStatic
+        fun AbstractRect3<Int>.move(direction: NeoDirection) = create(min + direction, max + direction)
+
+        @JvmStatic
+        fun AbstractRect3<Int>.move(direction: NeoDirection, x: Int) = create(min.plus(direction.inc * x), max.plus(direction.inc * x))
     }
 }
