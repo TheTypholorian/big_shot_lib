@@ -2,20 +2,18 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResource
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
-import org.lwjgl.system.NativeResource
+import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-interface GlBoundResource<R : GlResource> : NativeResource {
+interface GlBoundResource<R : GlResource> : BoundResource {
     val resource: R
     val handle: GlStateStack.Handle<Int>
 
-    fun unbind() {
+    override fun unbind() {
         handle.pop()
     }
-
-    override fun free() = unbind()
 
     companion object {
         @JvmStatic

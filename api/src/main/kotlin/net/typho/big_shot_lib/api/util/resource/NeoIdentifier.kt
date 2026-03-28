@@ -13,7 +13,7 @@ data class NeoIdentifier(
 
     constructor(key: String, delimiter: Char) : this(splitKey(key, delimiter))
 
-    constructor(key: String) : this(key, DEFAULT_DELIMITER)
+    constructor(key: String) : this(splitKey(key, DEFAULT_DELIMITER))
 
     init {
         ensureStringLegal(namespace) { "Invalid character ${namespace[it]} at index $it in namespace of $this" }

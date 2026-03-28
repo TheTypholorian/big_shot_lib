@@ -8,9 +8,9 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUnifor
 interface GlBoundProgram : GlBoundResource<GlProgram> {
     fun setUniform(name: String, value: (uniform: GlUniform) -> Unit)
 
-    fun setTexture(name: String, target: GlTextureTarget, glId: Int, samplerId: Int = 0)
+    fun setTexture(name: String, unit: Int, target: GlTextureTarget, glId: Int, samplerId: Int = 0)
 
-    fun setTexture(name: String, target: GlTextureTarget, texture: GlTexture2D, samplerId: Int = 0) {
-        setTexture(name, target, texture.glId, samplerId)
+    fun setTexture(name: String, unit: Int, target: GlTextureTarget, texture: GlTexture2D, samplerId: Int = 0) {
+        setTexture(name, unit, target, texture.glId, samplerId)
     }
 }

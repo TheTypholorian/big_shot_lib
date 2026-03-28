@@ -1,10 +1,8 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
-import com.mojang.blaze3d.vertex.PoseStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlIndexDataType
 import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
-import org.joml.Vector3f
 import org.lwjgl.system.NativeResource
 
 abstract class NeoBufferBuilder : NeoVertexConsumer(), NativeResource {

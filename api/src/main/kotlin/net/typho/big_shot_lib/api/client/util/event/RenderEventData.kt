@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.client.util.event
 
 import net.minecraft.world.level.Level
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoCamera
+import net.typho.big_shot_lib.api.client.util.NeoCamera
 import org.joml.FrustumIntersection
 import org.joml.Matrix4f
 

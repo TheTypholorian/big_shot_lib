@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.opengl.state
+package net.typho.big_shot_lib.api.client.rendering.opengl.util
 
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder

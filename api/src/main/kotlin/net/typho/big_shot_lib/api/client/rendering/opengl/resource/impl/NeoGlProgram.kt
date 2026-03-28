@@ -27,7 +27,6 @@ class NeoGlProgram(
             override val handle: GlStateStack.Handle<Int>
                 get() = NeoGlStateManager.INSTANCE.program.push(glId)
             val initialTextureUnit = NeoGlStateManager.INSTANCE.activeTexture
-            var textureUnitCounter = 0
 
             override fun setUniform(
                 name: String,
@@ -41,11 +40,11 @@ class NeoGlProgram(
 
             override fun setTexture(
                 name: String,
+                unit: Int,
                 target: GlTextureTarget,
                 glId: Int,
                 samplerId: Int
             ) {
-                val unit = textureUnitCounter++
                 glActiveTexture(unit)
                 glBindTexture(target.glId, glId)
                 glBindSampler(unit, samplerId)

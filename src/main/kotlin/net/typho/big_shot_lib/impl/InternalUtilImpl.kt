@@ -67,10 +67,8 @@ object InternalUtilImpl : InternalUtil {
     override val positionColorLightVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR_LIGHTMAP)
     override val positionTexVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX)
     override val positionTexColorVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_COLOR)
-    override val positionColorTexLightVertexFormat =
-        NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP)
-    override val positionTexLightColorVertexFormat =
-        NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR)
+    override val positionColorTexLightVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP)
+    override val positionTexLightColorVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR)
     override val positionTexColorNormalVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL)
 
     override fun createBufferBuilder(

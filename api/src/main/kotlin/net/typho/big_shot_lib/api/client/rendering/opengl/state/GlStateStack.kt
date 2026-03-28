@@ -1,15 +1,15 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
+import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.system.NativeResource
 
 interface GlStateStack<V> {
     fun push(value: V): Handle<V>
 
     fun pop(): V
 
-    interface Handle<V> : NativeResource {
+    interface Handle<V> : BoundResource {
         /**
          * If the top of the stack is equal to this
          */
@@ -27,7 +27,7 @@ interface GlStateStack<V> {
 
         fun pop()
 
-        override fun free() = pop()
+        override fun unbind() = pop()
     }
 
     open class Impl<V>(
