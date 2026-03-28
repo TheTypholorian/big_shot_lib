@@ -54,6 +54,10 @@ java {
     withSourcesJar()
 }
 
+tasks.remapSourcesJar {
+    destinationDirectory.set(rootProject.file("build/libs/${project.version}"))
+}
+
 configurations {
     create("commonJava") {
         isCanBeResolved = false
