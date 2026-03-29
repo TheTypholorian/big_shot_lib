@@ -21,17 +21,6 @@ public class MinecraftMixin {
     public ClientLevel level;
 
     @Inject(
-            method = "<init>",
-            at = @At(
-                    value = "NEW",
-                    target = "net/minecraft/client/resources/ClientPackSource"
-            )
-    )
-    private void init(GameConfig p_91084_, CallbackInfo ci) {
-        BigShotClientEvents.init$big_shot_lib();
-    }
-
-    @Inject(
             method = "setLevel",
             at = @At("HEAD")
     )

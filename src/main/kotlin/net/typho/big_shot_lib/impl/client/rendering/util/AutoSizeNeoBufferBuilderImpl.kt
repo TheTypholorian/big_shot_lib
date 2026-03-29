@@ -78,11 +78,11 @@ class AutoSizeNeoBufferBuilderImpl(
         z: Float
     ): NeoVertexConsumer {
         //? if >=1.20.5 {
-        /*val vec = pose.transformNormal(x, y, z, Vector3f())
+        val vec = pose.transformNormal(x, y, z, Vector3f())
         return normal(vec.x, vec.y, vec.z)
-        *///? } else {
-        val vec = pose.normal().transform(Vector3f(x, y, z))
+        //? } else {
+        /*val vec = pose.normal().transform(Vector3f(x, y, z))
         return normal(vec.x, vec.y, vec.z)
-        //? }
+        *///? }
     }
 }

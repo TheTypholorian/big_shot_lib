@@ -16,10 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class RenderSystemMixin {
     @Inject(
             method = "flipFrame",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/vertex/BufferBuilder;clear()V"
-            )
+            at = @At("TAIL")
     )
     private static void flipFrame(long l, CallbackInfo ci) {
         synchronized (GlQueueImpl.queue) {

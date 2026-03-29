@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.impl.util
 
 //? if >=1.21 {
-/*import com.ibm.icu.text.PluralRules
+import com.ibm.icu.text.PluralRules
 import com.mojang.blaze3d.vertex.ByteBufferBuilder
-*///? }
+//? }
 
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.vertex.BufferBuilder
@@ -172,10 +172,10 @@ object WrapperUtilImpl : WrapperUtil {
             ): NeoVertexConsumer {
                 //? if >=1.21 {
                 
-                /*consumer.addVertex(x, y, z)
-                *///? } else {
-                consumer.vertex(x.toDouble(), y.toDouble(), z.toDouble())
-                //? }
+                consumer.addVertex(x, y, z)
+                //? } else {
+                /*consumer.vertex(x.toDouble(), y.toDouble(), z.toDouble())
+                *///? }
                 return this
             }
 
@@ -186,10 +186,10 @@ object WrapperUtilImpl : WrapperUtil {
                 a: Int
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                /*consumer.setColor(r, g, b, a)
-                *///? } else {
-                consumer.color(r, g, b, a)
-                //? }
+                consumer.setColor(r, g, b, a)
+                //? } else {
+                /*consumer.color(r, g, b, a)
+                *///? }
                 return this
             }
 
@@ -198,10 +198,10 @@ object WrapperUtilImpl : WrapperUtil {
                 v: Float
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                /*consumer.setUv(u, v)
-                *///? } else {
-                consumer.uv(u, v)
-                //? }
+                consumer.setUv(u, v)
+                //? } else {
+                /*consumer.uv(u, v)
+                *///? }
                 return this
             }
 
@@ -210,10 +210,10 @@ object WrapperUtilImpl : WrapperUtil {
                 v: Int
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                /*consumer.setUv1(u, v)
-                *///? } else {
-                consumer.overlayCoords(u, v)
-                //? }
+                consumer.setUv1(u, v)
+                //? } else {
+                /*consumer.overlayCoords(u, v)
+                *///? }
                 return this
             }
 
@@ -222,10 +222,10 @@ object WrapperUtilImpl : WrapperUtil {
                 v: Int
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                /*consumer.setUv2(u, v)
-                *///? } else {
-                consumer.uv2(u, v)
-                //? }
+                consumer.setUv2(u, v)
+                //? } else {
+                /*consumer.uv2(u, v)
+                *///? }
                 return this
             }
 
@@ -235,10 +235,10 @@ object WrapperUtilImpl : WrapperUtil {
                 z: Float
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                /*consumer.setNormal(x, y, z)
-                *///? } else {
-                consumer.normal(x, y, z)
-                //? }
+                consumer.setNormal(x, y, z)
+                //? } else {
+                /*consumer.normal(x, y, z)
+                *///? }
                 return this
             }
 
@@ -249,19 +249,19 @@ object WrapperUtilImpl : WrapperUtil {
                 z: Float
             ): NeoVertexConsumer {
                 //? if >=1.21 {
-                /*consumer.setNormal(pose, x, y, z)
-                *///? } else if >=1.20.5 {
+                consumer.setNormal(pose, x, y, z)
+                //? } else if >=1.20.5 {
                 /*consumer.normal(pose, x, y, z)
                 *///? } else {
-                consumer.normal(pose.normal(), x, y, z)
-                //? }
+                /*consumer.normal(pose.normal(), x, y, z)
+                *///? }
                 return this
             }
 
             override fun _endVertex() {
                 //? if <1.21 {
-                consumer.endVertex()
-                //? }
+                /*consumer.endVertex()
+                *///? }
             }
         }
     }
@@ -276,7 +276,7 @@ object WrapperUtilImpl : WrapperUtil {
             *///? }
 
             //? if >=1.21 {
-            /*override fun addVertex(
+            override fun addVertex(
                 f: Float,
                 g: Float,
                 h: Float
@@ -377,8 +377,8 @@ object WrapperUtilImpl : WrapperUtil {
                 consumer.overlayUV(i)
                 return this
             }
-            *///? } else {
-            var defaultColor: NeoColor? = null
+            //? } else {
+            /*var defaultColor: NeoColor? = null
 
             override fun vertex(
                 d: Double,
@@ -435,7 +435,7 @@ object WrapperUtilImpl : WrapperUtil {
             override fun unsetDefaultColor() {
                 defaultColor = null
             }
-            //? }
+            *///? }
         }
     }
 

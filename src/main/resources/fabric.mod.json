@@ -24,5 +24,13 @@
     ],
     "fabric-language-kotlin": "*"
   },
-  "accessWidener": "${access_widener}"
+  "accessWidener": "${access_widener}",
+  "entrypoints": {
+    "client": [
+      "net.typho.big_shot_lib.impl.client.BigShotClientInit"
+    ],
+    "main": [
+      "net.typho.big_shot_lib.impl.BigShotCommonInit"
+    ]
+  }
 }
