@@ -22,7 +22,6 @@ import net.typho.big_shot_lib.impl.neo
 import com.mojang.serialization.Lifecycle
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
-import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.BlockItem
@@ -42,7 +41,6 @@ import net.typho.big_shot_lib.impl.neo
 //? }
 
 import net.minecraft.core.Registry
-import net.neoforged.neoforge.registries.DeferredRegister
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 import net.typho.big_shot_lib.api.util.RegisteredObject
 import net.typho.big_shot_lib.api.util.event.BlockChangedEvent
