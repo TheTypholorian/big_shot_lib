@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.util.platform
 
-import net.typho.big_shot_lib.api.BigShotApi.loadService
+import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 
 interface PlatformUtil {
     val loader: ModLoader
@@ -9,7 +9,6 @@ interface PlatformUtil {
     fun isDevEnv(): Boolean
 
     companion object {
-        @JvmField
-        val INSTANCE = PlatformUtil::class.loadService()
+        val INSTANCE by lazy { PlatformUtil::class.loadService() }
     }
 }

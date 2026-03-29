@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
-import net.typho.big_shot_lib.api.BigShotApi.loadService
+import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
 import net.typho.big_shot_lib.api.math.NeoDirection
@@ -32,7 +32,6 @@ interface BlockUtil {
     )
 
     companion object {
-        @JvmField
-        val INSTANCE = BlockUtil::class.loadService()
+        val INSTANCE by lazy { BlockUtil::class.loadService() }
     }
 }

@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl
 
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
@@ -13,8 +12,6 @@ class NeoGlShader(
     glId: Int,
     autoFree: Boolean
 ) : NeoGlResource(shaderType.resourceType, glId, autoFree), GlShader {
-    override val type: GlResourceType
-        get() = shaderType.resourceType
     override var source: String
         get() = glGetShaderSource(glId)
         set(value) = glShaderSource(glId, value)

@@ -22,9 +22,9 @@ import dev.kikugie.fletching_table.annotation.MixinIgnore;
 public interface DebugScreenEntriesAccessor {
     @Invoker("register")
     //? if <1.21.11 {
-    static ResourceLocation register(ResourceLocation location, DebugScreenEntry debugScreenEntry) {
+    static ResourceLocation big_shot_lib$register(ResourceLocation location, DebugScreenEntry debugScreenEntry) {
     //? } else {
-    /*static Identifier register(Identifier identifier, DebugScreenEntry debugScreenEntry) {
+    /*static Identifier big_shot_lib$register(Identifier identifier, DebugScreenEntry debugScreenEntry) {
     *///? }
         throw new AssertionError();
     }

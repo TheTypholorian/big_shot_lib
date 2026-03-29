@@ -10,7 +10,7 @@ import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.tags.TagKey
-import net.typho.big_shot_lib.api.BigShotApi.loadService
+import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
@@ -44,7 +44,6 @@ interface WrapperUtil {
     fun <T : Any> unwrap(key: NeoTagKey<T>): TagKey<T>
 
     companion object {
-        @JvmField
-        val INSTANCE = WrapperUtil::class.loadService()
+        val INSTANCE by lazy { WrapperUtil::class.loadService() }
     }
 }

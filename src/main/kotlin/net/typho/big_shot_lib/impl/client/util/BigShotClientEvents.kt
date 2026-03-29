@@ -21,10 +21,10 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.impl.mixin.LevelRendererAccessor
 
 //? if <1.21.4 {
-/*import net.neoforged.neoforge.event.AddReloadListenerEvent
-*///? } else {
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
-//? }
+import net.neoforged.neoforge.event.AddReloadListenerEvent
+//? } else {
+/*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
+*///? }
 //? }
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
@@ -105,7 +105,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             clientTickEnd.forEach { it.run() }
         }
         //? if <=1.21.5 {
-        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
+        NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
                 if (levelRenderEnd.isNotEmpty()) {
                     val data = RenderEventData(
@@ -124,8 +124,8 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 }
             }
         }
-        *///? } else if <1.21.9 {
-        NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent.AfterLevel ->
+        //? } else if <1.21.9 {
+        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent.AfterLevel ->
             if (levelRenderEnd.isNotEmpty()) {
                 val data = RenderEventData(
                     NeoCamera(
@@ -150,7 +150,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 levelRenderEnd.forEach { it.invoke(data) }
             }
         }
-        //? }
+        *///? }
         //? }
     }
 
@@ -173,22 +173,22 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         *///? }
         *///? } neoforge {
         //? if <1.21.4 {
-        /*NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
+        NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
             event.addListener(object : ResourceManagerReloadListener {
                 override fun onResourceManagerReload(manager: ResourceManager) {
                     listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
                 }
             })
         }
-        *///? } else {
-        NeoForge.EVENT_BUS.addListener { event: AddClientReloadListenersEvent ->
+        //? } else {
+        /*NeoForge.EVENT_BUS.addListener { event: AddClientReloadListenersEvent ->
             event.addListener(listener.location.mojang, object : ResourceManagerReloadListener {
                 override fun onResourceManagerReload(manager: ResourceManager) {
                     listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
                 }
             })
         }
-        //? }
+        *///? }
         //? }
     }
 
@@ -205,7 +205,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         //? if <1.21.9 {
         debugScreenInfo.add(allowedWithReducedDebugInfo to text)
         //? } else {
-        /*DebugScreenEntriesAccessor.register(location.mojang, object : DebugScreenEntry {
+        /*DebugScreenEntriesAccessor.`big_shot_lib$register`(location.mojang, object : DebugScreenEntry {
             override fun display(
                 displayer: DebugScreenDisplayer,
                 level: Level?,

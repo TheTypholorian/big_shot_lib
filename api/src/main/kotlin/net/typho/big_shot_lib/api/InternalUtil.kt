@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api
 
 import com.mojang.serialization.DataResult
-import net.typho.big_shot_lib.api.BigShotApi.loadService
+import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas
@@ -46,6 +46,6 @@ interface InternalUtil {
     fun getAtlas(location: NeoIdentifier): NeoAtlas?
 
     companion object {
-        internal val INSTANCE = InternalUtil::class.loadService()
+        internal val INSTANCE by lazy { InternalUtil::class.loadService() }
     }
 }

@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
-import net.typho.big_shot_lib.api.BigShotApi.loadService
+import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
@@ -65,7 +65,6 @@ interface NeoGlStateManager {
     val programPointSizeEnabled: GlStateStack<Boolean>
 
     companion object {
-        @JvmField
-        val INSTANCE = NeoGlStateManager::class.loadService()
+        val INSTANCE by lazy { NeoGlStateManager::class.loadService() }
     }
 }

@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.util
 
-import net.typho.big_shot_lib.api.BigShotApi.loadServices
+import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 import net.typho.big_shot_lib.api.client.util.event.ClientEventFactory
 
 interface BigShotClientEntrypoint {
@@ -14,8 +14,7 @@ interface BigShotClientEntrypoint {
     }
 
     companion object : BigShotClientEntrypoint {
-        @JvmField
-        val entrypoints = BigShotClientEntrypoint::class.loadServices()
+        val entrypoints by lazy { BigShotClientEntrypoint::class.loadServices() }
 
         override fun registerReloadListeners(factory: ResourceListenerFactory) {
             entrypoints.forEach { it.registerReloadListeners(factory) }

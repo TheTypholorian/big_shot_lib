@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl
 
-import net.typho.big_shot_lib.api.BigShotApi.loadService
+import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 
 interface GlQueue {
     /**
@@ -14,7 +14,6 @@ interface GlQueue {
     fun runOrQueue(task: () -> Unit)
 
     companion object {
-        @JvmField
-        val INSTANCE = GlQueue::class.loadService()
+        val INSTANCE by lazy { GlQueue::class.loadService() }
     }
 }

@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.util
 
-import net.typho.big_shot_lib.api.BigShotApi.loadServices
+import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 import net.typho.big_shot_lib.api.util.event.CommonEventFactory
 
 interface BigShotCommonEntrypoint {
@@ -14,8 +14,7 @@ interface BigShotCommonEntrypoint {
     }
 
     companion object : BigShotCommonEntrypoint {
-        @JvmField
-        val entrypoints = BigShotCommonEntrypoint::class.loadServices()
+        val entrypoints by lazy { BigShotCommonEntrypoint::class.loadServices() }
 
         override fun registerRegistries(factory: RegistryFactory) {
             entrypoints.forEach { it.registerRegistries(factory) }
