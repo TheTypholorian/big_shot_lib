@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 //? fabric {
-import com.mojang.serialization.Lifecycle
+/*import com.mojang.serialization.Lifecycle
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -18,7 +18,7 @@ import net.typho.big_shot_lib.api.util.RegistryFactory
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
-//? } neoforge {
+*///? } neoforge {
 import com.mojang.serialization.Lifecycle
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
@@ -42,6 +42,7 @@ import net.typho.big_shot_lib.impl.neo
 //? }
 
 import net.minecraft.core.Registry
+import net.neoforged.neoforge.registries.DeferredRegister
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 import net.typho.big_shot_lib.api.util.RegisteredObject
 import net.typho.big_shot_lib.api.util.event.BlockChangedEvent
@@ -67,7 +68,7 @@ object BigShotCommonEvents : CommonEventFactory {
         BigShotCommonEntrypoint.registerEvents(this)
 
         //? fabric {
-        BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
+        /*BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> create(
                 location: NeoIdentifier,
@@ -271,8 +272,8 @@ object BigShotCommonEvents : CommonEventFactory {
                 }
             }
         })
-        //? } neoforge {
-        /*NeoForge.EVENT_BUS.addListener { event: NewRegistryEvent ->
+        *///? } neoforge {
+        NeoForge.EVENT_BUS.addListener { event: NewRegistryEvent ->
             BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : Any> create(
@@ -306,8 +307,10 @@ object BigShotCommonEvents : CommonEventFactory {
         NeoForge.EVENT_BUS.addListener { event: RegisterEvent ->
             BigShotCommonEntrypoint.registerContent(object : RegistrationFactory {
                 @Suppress("UNCHECKED_CAST")
-                override fun <T : Any> begin(key: NeoResourceKey<Registry<T>>): RegistrationConsumer<T, NeoIdentifier> {
-                    val registry = BuiltInRegistries.REGISTRY.get(key.location.mojang) as Registry<T>
+                override fun <T : Any> begin(key: NeoResourceKey<Registry<T>>): RegistrationConsumer<T, NeoIdentifier>? {
+                    if (event.registryKey != key.mojang) {
+                        return null
+                    }
 
                     return object : RegistrationConsumer<T, NeoIdentifier> {
                         override fun <V : T> register(
@@ -317,11 +320,13 @@ object BigShotCommonEvents : CommonEventFactory {
                             return RegisteredObjectImpl(
                                 key as NeoResourceKey<Registry<V>>,
                                 id,
-                                Registry.register(
-                                    registry,
-                                    id.mojang,
-                                    value()
-                                )
+                                value().also {
+                                    event.register(
+                                        key.mojang,
+                                        id.mojang,
+                                        { it }
+                                    )
+                                }
                             )
                         }
                     }
@@ -331,8 +336,10 @@ object BigShotCommonEvents : CommonEventFactory {
                 override fun <T : Any> begin(
                     key: NeoResourceKey<Registry<T>>,
                     namespace: String
-                ): RegistrationConsumer<T, String> {
-                    val registry = BuiltInRegistries.REGISTRY.get(key.location.mojang) as Registry<T>
+                ): RegistrationConsumer<T, String>? {
+                    if (event.registryKey != key.mojang) {
+                        return null
+                    }
 
                     return object : RegistrationConsumer<T, String> {
                         override fun <V : T> register(
@@ -343,19 +350,23 @@ object BigShotCommonEvents : CommonEventFactory {
                             return RegisteredObjectImpl(
                                 key as NeoResourceKey<Registry<V>>,
                                 id,
-                                Registry.register(
-                                    registry,
-                                    id.mojang,
-                                    value()
-                                )
+                                value().also {
+                                    event.register(
+                                        key.mojang,
+                                        id.mojang,
+                                        { it }
+                                    )
+                                }
                             )
                         }
                     }
                 }
 
                 @Suppress("UNCHECKED_CAST")
-                override fun beginBlocks(): RegistrationConsumer.Blocks<NeoIdentifier> {
-                    val registry = BuiltInRegistries.BLOCK
+                override fun beginBlocks(): RegistrationConsumer.Blocks<NeoIdentifier>? {
+                    if (event.registryKey != Registries.BLOCK) {
+                        return null
+                    }
 
                     return object : RegistrationConsumer.Blocks<NeoIdentifier> {
                         override fun <V : Block> register(
@@ -365,23 +376,28 @@ object BigShotCommonEvents : CommonEventFactory {
                             return RegisteredObjectImpl(
                                 Registries.BLOCK.neo as NeoResourceKey<Registry<V>>,
                                 id,
-                                Registry.register(
-                                    registry,
-                                    id.mojang,
-                                    //? if <1.21.2 {
-                                    value(BlockBehaviour.Properties.of())
+                                //? if <1.21.2 {
+                                value(BlockBehaviour.Properties.of())
                                     //? } else {
                                     /*value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
-                                    *///? }
-                                )
+                                *///? }
+                                    .also {
+                                        event.register(
+                                            Registries.BLOCK,
+                                            id.mojang,
+                                            { it }
+                                        )
+                                    }
                             )
                         }
                     }
                 }
 
                 @Suppress("UNCHECKED_CAST")
-                override fun beginBlocks(namespace: String): RegistrationConsumer.Blocks<String> {
-                    val registry = BuiltInRegistries.BLOCK
+                override fun beginBlocks(namespace: String): RegistrationConsumer.Blocks<String>? {
+                    if (event.registryKey != Registries.BLOCK) {
+                        return null
+                    }
 
                     return object : RegistrationConsumer.Blocks<String> {
                         override fun <V : Block> register(
@@ -392,23 +408,28 @@ object BigShotCommonEvents : CommonEventFactory {
                             return RegisteredObjectImpl(
                                 Registries.BLOCK.neo as NeoResourceKey<Registry<V>>,
                                 id,
-                                Registry.register(
-                                    registry,
-                                    id.mojang,
-                                    //? if <1.21.2 {
-                                    value(BlockBehaviour.Properties.of())
+                                //? if <1.21.2 {
+                                value(BlockBehaviour.Properties.of())
                                     //? } else {
                                     /*value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
                                     *///? }
-                                )
+                                    .also {
+                                        event.register(
+                                            Registries.BLOCK,
+                                            id.mojang,
+                                            { it }
+                                        )
+                                    }
                             )
                         }
                     }
                 }
 
                 @Suppress("UNCHECKED_CAST")
-                override fun beginItems(): RegistrationConsumer.Items<NeoIdentifier> {
-                    val registry = BuiltInRegistries.ITEM
+                override fun beginItems(): RegistrationConsumer.Items<NeoIdentifier>? {
+                    if (event.registryKey != Registries.ITEM) {
+                        return null
+                    }
 
                     return object : RegistrationConsumer.Items<NeoIdentifier> {
                         override fun <V : Item> register(
@@ -418,15 +439,18 @@ object BigShotCommonEvents : CommonEventFactory {
                             return RegisteredObjectImpl(
                                 Registries.ITEM.neo as NeoResourceKey<Registry<V>>,
                                 id,
-                                Registry.register(
-                                    registry,
-                                    id.mojang,
-                                    //? if <1.21.2 {
-                                    value(Item.Properties())
+                                //? if <1.21.2 {
+                                value(Item.Properties())
                                     //? } else {
                                     /*value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
                                     *///? }
-                                )
+                                    .also {
+                                        event.register(
+                                            Registries.ITEM,
+                                            id.mojang,
+                                            { it }
+                                        )
+                                    }
                             )
                         }
 
@@ -441,8 +465,10 @@ object BigShotCommonEvents : CommonEventFactory {
                 }
 
                 @Suppress("UNCHECKED_CAST")
-                override fun beginItems(namespace: String): RegistrationConsumer.Items<String> {
-                    val registry = BuiltInRegistries.ITEM
+                override fun beginItems(namespace: String): RegistrationConsumer.Items<String>? {
+                    if (event.registryKey != Registries.ITEM) {
+                        return null
+                    }
 
                     return object : RegistrationConsumer.Items<String> {
                         override fun <V : Item> register(
@@ -453,15 +479,18 @@ object BigShotCommonEvents : CommonEventFactory {
                             return RegisteredObjectImpl(
                                 Registries.ITEM.neo as NeoResourceKey<Registry<V>>,
                                 id,
-                                Registry.register(
-                                    registry,
-                                    id.mojang,
-                                    //? if <1.21.2 {
-                                    value(Item.Properties())
+                                //? if <1.21.2 {
+                                value(Item.Properties())
                                     //? } else {
                                     /*value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
                                     *///? }
-                                )
+                                    .also {
+                                        event.register(
+                                            Registries.ITEM,
+                                            id.mojang,
+                                            { it }
+                                        )
+                                    }
                             )
                         }
 
@@ -476,7 +505,7 @@ object BigShotCommonEvents : CommonEventFactory {
                 }
             })
         }
-        *///? }
+        //? }
     }
 
     @JvmStatic
