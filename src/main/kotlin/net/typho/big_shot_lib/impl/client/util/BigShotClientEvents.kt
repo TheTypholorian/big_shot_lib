@@ -31,8 +31,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFrameb
 import net.typho.big_shot_lib.api.client.util.NeoCamera
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
-import net.typho.big_shot_lib.api.client.util.KeyMappingCategory
-import net.typho.big_shot_lib.api.client.util.KeyMappingFactory
 import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
 import net.typho.big_shot_lib.api.client.util.event.*
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f
@@ -65,6 +63,10 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
     override val levelRenderEnd: MutableList<RenderEvent> = arrayListOf()
     override val levelChanged: MutableList<ClientLevelChangedEvent> = arrayListOf()
     override val chunkChanged: MutableList<ChunkChangedEvent> = arrayListOf()
+    //? if <1.21.9 {
+    @JvmField
+    val debugScreenInfo = arrayListOf<Pair<Boolean, (out: (line: String) -> Unit) -> Unit>>()
+    //? }
 
     init {
         BigShotClientEntrypoint.registerReloadListeners(this)
@@ -191,11 +193,6 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         *///? }
         *///? }
     }
-
-    //? if <1.21.9 {
-    @JvmField
-    val debugScreenInfo = arrayListOf<Pair<Boolean, (out: (line: String) -> Unit) -> Unit>>()
-    //? }
 
     override fun register(
         location: NeoIdentifier,
