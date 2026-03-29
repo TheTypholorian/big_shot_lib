@@ -29,6 +29,7 @@ abstract class AbstractVec3<N : Number>(
         get() = create(opSet.abs(x), opSet.abs(y), opSet.abs(z))
     abstract val xy: AbstractVec2<N>
     abstract val yz: AbstractVec2<N>
+    abstract val xz: AbstractVec2<N>
 
     val r: N
         get() = x
@@ -39,6 +40,7 @@ abstract class AbstractVec3<N : Number>(
 
     abstract val rg: AbstractVec2<N>
     abstract val gb: AbstractVec2<N>
+    abstract val rb: AbstractVec2<N>
 
     constructor(other: AbstractVec3<N>) : this(other.x, other.y, other.z)
 

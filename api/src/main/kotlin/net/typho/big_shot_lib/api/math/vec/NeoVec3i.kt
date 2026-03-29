@@ -20,10 +20,14 @@ class NeoVec3i : AbstractVec3<Int> {
         get() = NeoVec2i(x, y)
     override val yz: AbstractVec2<Int>
         get() = NeoVec2i(y, z)
+    override val xz: AbstractVec2<Int>
+        get() = NeoVec2i(x, z)
     override val rg: AbstractVec2<Int>
         get() = NeoVec2i(r, g)
     override val gb: AbstractVec2<Int>
         get() = NeoVec2i(g, b)
+    override val rb: AbstractVec2<Int>
+        get() = NeoVec2i(r, b)
 
     override fun create(x: Int, y: Int, z: Int) = NeoVec3i(x, y, z)
 }

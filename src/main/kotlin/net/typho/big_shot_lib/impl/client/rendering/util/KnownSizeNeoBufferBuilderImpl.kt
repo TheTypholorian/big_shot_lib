@@ -38,7 +38,7 @@ class KnownSizeNeoBufferBuilderImpl(
             else -> GlIndexDataType.INT
         }
     }
-    private val indexBuffer = indexBuffer(numIndices?.toLong())
+    private val indexBuffer = indexBuffer(numIndices?.let { it.toLong() * indexType!!.sizeBytes })
 
     constructor(
         format: NeoVertexFormat,
@@ -56,6 +56,19 @@ class KnownSizeNeoBufferBuilderImpl(
 
         if (filledVertices != numVertices) {
             return null
+        }
+
+        if (indexBuffer != null) {
+            var putIndex = 0L
+            var vertex = 0
+
+            repeat(numIndices!!) {
+                for (n in mode.indexData!!.offsets) {
+                    putIndex += indexType!!.put(indexBuffer, putIndex, n + vertex)
+                }
+
+                vertex += mode.indexData.multiplier
+            }
         }
 
         return object : Built {
