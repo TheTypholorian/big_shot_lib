@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.impl.client.rendering.util
 
 //? if <1.21 {
-/*import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableMap
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import net.typho.big_shot_lib.impl.mixin.VertexFormatAccessor
-*///? }
+//? }
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
@@ -23,17 +23,17 @@ data class NeoVertexFormatImpl(
         get() = inner.elementAttributeNames.toTypedArray()
     override val elementOffsets: IntArray
         //? if >=1.21 {
-        get() = inner.offsetsByElement
-        //? } else {
-        /*get() = (inner as VertexFormatAccessor).`big_shot_lib$getOffsets`().toIntArray()
-        *///? }
+        /*get() = inner.offsetsByElement
+        *///? } else {
+        get() = (inner as VertexFormatAccessor).`big_shot_lib$getOffsets`().toIntArray()
+        //? }
 
     override fun getElementName(element: NeoVertexFormat.Element): String {
         //? if >=1.21 {
-        return inner.getElementName((element as ElementImpl).inner)
-        //? } else {
-        /*return (inner as VertexFormatAccessor).`big_shot_lib$getElementMapping`().entries.first { entry -> entry.value == (element as ElementImpl).inner }.key
-        *///? }
+        /*return inner.getElementName((element as ElementImpl).inner)
+        *///? } else {
+        return (inner as VertexFormatAccessor).`big_shot_lib$getElementMapping`().entries.first { entry -> entry.value == (element as ElementImpl).inner }.key
+        //? }
     }
 
     override fun getElementOffset(element: NeoVertexFormat.Element): Int {
@@ -74,17 +74,17 @@ data class NeoVertexFormatImpl(
                 VertexFormatElement.Usage.UV -> if (inner.type == VertexFormatElement.Type.FLOAT) false else null
                 VertexFormatElement.Usage.GENERIC -> false
                 //? if <1.21 {
-                /*VertexFormatElement.Usage.PADDING -> null
-                *///? }
+                VertexFormatElement.Usage.PADDING -> null
+                //? }
             }
         override val count: Int
             get() = inner.count
         override val sizeBytes: Int
             //? if >=1.21 {
-            get() = inner.byteSize()
-            //? } else {
-            /*get() = inner.byteSize
-            *///? }
+            /*get() = inner.byteSize()
+            *///? } else {
+            get() = inner.byteSize
+            //? }
 
         override fun vertexAttribPointer(index: Int, offset: Long, stride: Int) {
             type.vertexAttribPointer(index, count, normalized, stride, offset)
@@ -92,7 +92,7 @@ data class NeoVertexFormatImpl(
     }
 
     //? if >=1.21 {
-    data class BuilderImpl(
+    /*data class BuilderImpl(
         @JvmField
         val inner: VertexFormat.Builder = VertexFormat.builder()
     ) : NeoVertexFormat.Builder {
@@ -113,8 +113,8 @@ data class NeoVertexFormatImpl(
             return NeoVertexFormatImpl(inner.build())
         }
     }
-    //? } else {
-    /*class BuilderImpl : NeoVertexFormat.Builder {
+    *///? } else {
+    class BuilderImpl : NeoVertexFormat.Builder {
         private var paddingIndex = 0
         @JvmField
         val builder = ImmutableMap.Builder<String, VertexFormatElement>()
@@ -136,5 +136,5 @@ data class NeoVertexFormatImpl(
             return NeoVertexFormatImpl(VertexFormat(builder.build()))
         }
     }
-    *///? }
+    //? }
 }

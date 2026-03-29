@@ -39,8 +39,6 @@ interface InternalUtil {
 
     fun createBufferBuilder(format: NeoVertexFormat, mode: GlBeginMode): NeoBufferBuilder
 
-    fun <R> dataResultError(message: () -> String): DataResult<R>
-
     fun getTexture(location: NeoIdentifier): GlTexture2D?
 
     fun getAtlas(location: NeoIdentifier): NeoAtlas?

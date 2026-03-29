@@ -52,9 +52,9 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
                     /*case RED8I -> GlTextureFormat.R8I;
                     *///? }
                     //? neoforge {
-                    case DEPTH24_STENCIL8 -> GlTextureFormat.DEPTH24_STENCIL8;
+                    /*case DEPTH24_STENCIL8 -> GlTextureFormat.DEPTH24_STENCIL8;
                     case DEPTH32_STENCIL8 -> GlTextureFormat.DEPTH32F_STENCIL8;
-                    //? }
+                    *///? }
                 };
             }
 
@@ -93,7 +93,7 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
                 return new BoundTexture(
                         this,
                         target,
-                        NeoGlStateManager.INSTANCE.getTextures().get(target).push(glId()),
+                        NeoGlStateManager.Companion.getINSTANCE().getTextures().get(target).push(glId()),
                         getWidth(),
                         getHeight(),
                         getFormat()

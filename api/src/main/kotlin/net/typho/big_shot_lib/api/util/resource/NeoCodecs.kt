@@ -88,7 +88,7 @@ object NeoCodecs {
                         valueCodec.decode(ops, value).map { decoded ->
                             set(holder, decoded.first)
                         }.mapError { error -> "Error decoding $valueKey injected by $injector via big shot lib: $error" }
-                    } ?: InternalUtil.INSTANCE.dataResultError { "Could not find key $valueKey injected by $injector via big shot lib in $input" }
+                    } ?: DataResult.error { "Could not find key $valueKey injected by $injector via big shot lib in $input" }
                 }
             }
 
@@ -155,11 +155,11 @@ object NeoCodecs {
         val maxSize: Int
     ) : Codec<List<E>> {
         private fun <R> createTooShortError(size: Int): DataResult<R> {
-            return InternalUtil.INSTANCE.dataResultError { "List is too short: " + size + ", expected range [" + this.minSize + "-" + this.maxSize + "]" }
+            return DataResult.error { "List is too short: " + size + ", expected range [" + this.minSize + "-" + this.maxSize + "]" }
         }
 
         private fun <R> createTooLongError(size: Int): DataResult<R> {
-            return InternalUtil.INSTANCE.dataResultError { "List is too long: " + size + ", expected range [" + this.minSize + "-" + this.maxSize + "]" }
+            return DataResult.error { "List is too long: " + size + ", expected range [" + this.minSize + "-" + this.maxSize + "]" }
         }
 
         override fun <T> encode(
