@@ -36,20 +36,21 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
         }
 
         override fun registerContent(factory: RegistrationFactory) {
-            val registrar = factory.begin(REGISTRY_KEY, NeoIdentifier.DEFAULT_NAMESPACE)
-            registrar.register("blit_screen") { BLIT_SCREEN }
-            registrar.register("block") { BLOCK }
-            registrar.register("new_entity") { NEW_ENTITY }
-            registrar.register("particle") { PARTICLE }
-            registrar.register("position") { POSITION }
-            registrar.register("position_color") { POSITION_COLOR }
-            registrar.register("position_color_normal") { POSITION_COLOR_NORMAL }
-            registrar.register("position_color_lightmap") { POSITION_COLOR_LIGHTMAP }
-            registrar.register("position_tex") { POSITION_TEX }
-            registrar.register("position_tex_color") { POSITION_TEX_COLOR }
-            registrar.register("position_color_tex_lightmap") { POSITION_COLOR_TEX_LIGHTMAP }
-            registrar.register("position_tex_lightmap_color") { POSITION_TEX_LIGHTMAP_COLOR }
-            registrar.register("position_tex_color_normal") { POSITION_TEX_COLOR_NORMAL }
+            factory.begin(REGISTRY_KEY, NeoIdentifier.DEFAULT_NAMESPACE)?.run {
+                register("blit_screen") { BLIT_SCREEN }
+                register("block") { BLOCK }
+                register("new_entity") { NEW_ENTITY }
+                register("particle") { PARTICLE }
+                register("position") { POSITION }
+                register("position_color") { POSITION_COLOR }
+                register("position_color_normal") { POSITION_COLOR_NORMAL }
+                register("position_color_lightmap") { POSITION_COLOR_LIGHTMAP }
+                register("position_tex") { POSITION_TEX }
+                register("position_tex_color") { POSITION_TEX_COLOR }
+                register("position_color_tex_lightmap") { POSITION_COLOR_TEX_LIGHTMAP }
+                register("position_tex_lightmap_color") { POSITION_TEX_LIGHTMAP_COLOR }
+                register("position_tex_color_normal") { POSITION_TEX_COLOR_NORMAL }
+            }
         }
 
         @JvmStatic

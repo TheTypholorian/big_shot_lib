@@ -75,8 +75,9 @@ object NeoShaderLoader : ResourceRegistry.Json<GlProgram>(BigShotApi.id("shaders
     }
 
     override fun registerContent(factory: RegistrationFactory) {
-        val registrar = factory.begin(PREPROCESSORS_REGISTRY_KEY)
-        registrar.register(ShaderIncludePreprocessor)
+        factory.begin(PREPROCESSORS_REGISTRY_KEY)?.run {
+            register(ShaderIncludePreprocessor)
+        }
     }
 
     override fun decode(location: NeoIdentifier, json: JsonElement, manager: NeoResourceManager): GlProgram {
