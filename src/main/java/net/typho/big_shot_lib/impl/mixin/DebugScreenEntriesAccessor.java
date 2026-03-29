@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 //? if <1.21.9 {
 import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
+@MixinIgnore
 //? }
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(DebugScreenEntries.class)
