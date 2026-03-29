@@ -40,7 +40,7 @@ object ShaderIncludePreprocessor : ShaderPreprocessor {
 
             val line = code.substring(index, endIndex)
                 .trim()
-                .split(Regex.fromLiteral("\\s+"))
+                .split(Regex("\\s+"))
                 .mapNotNull { it.trim().ifEmpty { null } }
 
             if (line.size != 2) {
@@ -56,9 +56,11 @@ object ShaderIncludePreprocessor : ShaderPreprocessor {
                 contents = contents.substring(1, contents.length - 1)
             }
 
+            val includePath = NeoIdentifier(contents).withPrefix("neo/shaders/")
+
             code = code.substring(0, index) +
-                    manager.getResource(NeoIdentifier("neo/shaders/$contents"))
-                        .orElseThrow { FileNotFoundException("Could not find include file 'neo/shaders/$contents' requested by $location") }
+                    manager.getResource(includePath)
+                        .orElseThrow { FileNotFoundException("Could not find include file '$includePath' requested by $location") }
                         .openAsReader().use { it.readText() } +
                     code.substring(endIndex)
         }

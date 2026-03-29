@@ -22,7 +22,7 @@
     "net.typho.big_shot_lib.impl.util.platform.PlatformUtilImpl"
   ],
   "net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager": [
-    "net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManagerImpl"
+    "net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl"
   ],
   "net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings$Builtins": [
     "net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsBuiltinsImpl"

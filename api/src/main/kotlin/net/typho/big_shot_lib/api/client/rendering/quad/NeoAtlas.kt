@@ -12,32 +12,32 @@ interface NeoAtlas : NamedResource, GlTexture2D {
     val mipLevel: Int
 
     companion object {
-        @JvmField
-        val blocks = get(NeoIdentifier("minecraft", "blocks"))!!
-        @JvmField
-        val signs = get(NeoIdentifier("minecraft", "signs"))!!
-        @JvmField
-        val bannerPatterns = get(NeoIdentifier("minecraft", "banner_patterns"))!!
-        @JvmField
-        val shieldPatterns = get(NeoIdentifier("minecraft", "shield_patterns"))!!
-        @JvmField
-        val chest = get(NeoIdentifier("minecraft", "chest"))!!
-        @JvmField
-        val decoratedPot = get(NeoIdentifier("minecraft", "decorated_pot"))
-        @JvmField
-        val shulkerBoxes = get(NeoIdentifier("minecraft", "shulker_boxes"))!!
-        @JvmField
-        val beds = get(NeoIdentifier("minecraft", "beds"))!!
-        @JvmField
-        val particles = get(NeoIdentifier("minecraft", "particles"))!!
-        @JvmField
-        val paintings = get(NeoIdentifier("minecraft", "paintings"))!!
-        @JvmField
-        val mobEffects = get(NeoIdentifier("minecraft", "mob_effects"))!!
-        @JvmField
-        val mapDecorations = get(NeoIdentifier("minecraft", "map_decorations"))!!
-        @JvmField
-        val gui = get(NeoIdentifier("minecraft", "gui"))!!
+        val blocks: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "blocks"))!!
+        val signs: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "signs"))!!
+        val bannerPatterns: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "banner_patterns"))!!
+        val shieldPatterns: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "shield_patterns"))!!
+        val chest: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "chest"))!!
+        val decoratedPot: NeoAtlas?
+            get() = get(NeoIdentifier("minecraft", "decorated_pot"))
+        val shulkerBoxes: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "shulker_boxes"))!!
+        val beds: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "beds"))!!
+        val particles: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "particles"))!!
+        val paintings: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "paintings"))!!
+        val mobEffects: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "mob_effects"))!!
+        val mapDecorations: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "map_decorations"))!!
+        val gui: NeoAtlas
+            get() = get(NeoIdentifier("minecraft", "gui"))!!
 
         @JvmStatic
         operator fun get(location: NeoIdentifier) = InternalUtil.INSTANCE.getAtlas(location)
