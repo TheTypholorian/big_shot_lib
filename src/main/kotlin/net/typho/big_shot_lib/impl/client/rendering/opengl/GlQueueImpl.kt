@@ -5,17 +5,9 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.event.ClientEventFactory
 
-object GlQueueImpl : GlQueue, BigShotClientEntrypoint {
-    private val queue = arrayListOf<() -> Unit>()
-
-    override fun registerEvents(factory: ClientEventFactory) {
-        factory.clientTickEnd.add {
-            synchronized(queue) {
-                queue.forEach { it() }
-                queue.clear()
-            }
-        }
-    }
+object GlQueueImpl : GlQueue {
+    @JvmField
+    val queue = arrayListOf<() -> Unit>()
 
     override fun queue(task: () -> Unit) {
         synchronized(queue) {
