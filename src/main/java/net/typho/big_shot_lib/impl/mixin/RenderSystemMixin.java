@@ -23,7 +23,7 @@ public class RenderSystemMixin {
     )
     private static void flipFrame(long l, CallbackInfo ci) {
         synchronized (GlQueueImpl.queue) {
-            for (Function0<@NotNull Unit> task : GlQueueImpl.queue) {
+            for (Function0<Unit> task : GlQueueImpl.queue) {
                 task.invoke();
             }
 
