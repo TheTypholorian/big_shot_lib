@@ -78,6 +78,10 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         { glGetInteger(GL_FRAMEBUFFER_BINDING) }
         //? }
     )
+    override val readFramebuffer: GlStateStack<Int> = GlStateStack.Impl(
+        { GlStateManager._glBindFramebuffer(GL_READ_FRAMEBUFFER, it) },
+        { glGetInteger(GL_READ_FRAMEBUFFER_BINDING) }
+    )
     override var activeTexture: Int
         //? if <1.21.5 {
         /*get() = GlStateManager._getActiveTexture()

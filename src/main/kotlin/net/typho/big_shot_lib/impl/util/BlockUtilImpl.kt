@@ -18,10 +18,10 @@ import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.math.vec.AbstractVec3.Companion.plus
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.BlockUtil
 import net.typho.big_shot_lib.api.util.WrapperUtil
-import org.joml.Vector3f
 
 object BlockUtilImpl : BlockUtil {
     override fun isSolidRender(
@@ -52,17 +52,17 @@ object BlockUtilImpl : BlockUtil {
     override fun getBlockChunkLayer(state: BlockState): BlockChunkLayer? {
         return when (ItemBlockRenderTypes.getChunkRenderType(state)) {
             //? if >=1.21.11 {
-            ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
+            /*ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
             ChunkSectionLayer.CUTOUT -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockChunkLayer.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockChunkLayer.TRIPWIRE
-            //? } else if >=1.21.6 {
-            /*ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
+            *///? } else if >=1.21.6 {
+            ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
             ChunkSectionLayer.CUTOUT -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.CUTOUT_MIPPED -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockChunkLayer.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockChunkLayer.TRIPWIRE
-            *///? } else {
+            //? } else {
             /*RenderType.solid() -> BlockChunkLayer.SOLID
             RenderType.cutout(), RenderType.cutoutMipped() -> BlockChunkLayer.CUTOUT
             RenderType.translucent() -> BlockChunkLayer.TRANSLUCENT

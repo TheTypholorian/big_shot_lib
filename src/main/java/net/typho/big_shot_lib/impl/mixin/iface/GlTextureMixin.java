@@ -52,9 +52,9 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
                     case RED8I -> GlTextureFormat.R8I;
                     //? }
                     //? neoforge {
-                    case DEPTH24_STENCIL8 -> GlTextureFormat.DEPTH24_STENCIL8;
+                    /*case DEPTH24_STENCIL8 -> GlTextureFormat.DEPTH24_STENCIL8;
                     case DEPTH32_STENCIL8 -> GlTextureFormat.DEPTH32F_STENCIL8;
-                    //? }
+                    *///? }
                 };
             }
 

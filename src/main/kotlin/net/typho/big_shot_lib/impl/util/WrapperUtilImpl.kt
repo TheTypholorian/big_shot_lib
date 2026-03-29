@@ -269,11 +269,11 @@ object WrapperUtilImpl : WrapperUtil {
     override fun unwrap(consumer: NeoVertexConsumer): VertexConsumer {
         return object : VertexConsumer {
             //? if >=1.21.11 {
-            override fun setLineWidth(f: Float): VertexConsumer {
+            /*override fun setLineWidth(f: Float): VertexConsumer {
                 // TODO implement once all support pre-1.21.11 is dropped
                 return this
             }
-            //? }
+            *///? }
 
             //? if >=1.21 {
             override fun addVertex(
@@ -331,10 +331,10 @@ object WrapperUtilImpl : WrapperUtil {
 
             override fun addVertex(
                 //? if <1.21.11 {
-                /*matrix4f: Matrix4f,
-                *///? } else {
-                matrix4f: Matrix4fc,
-                //? }
+                matrix4f: Matrix4f,
+                //? } else {
+                /*matrix4f: Matrix4fc,
+                *///? }
                 f: Float,
                 g: Float,
                 h: Float

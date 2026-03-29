@@ -16,7 +16,7 @@ abstract class ResourceRegistry<T>(
     override val location: NeoIdentifier,
     @JvmField
     val idConverter: NeoFileToIdConverter,
-) : NeoResourceManagerReloadListener, NamedResource {
+) : NeoResourceManagerReloadListener {
     companion object {
         @JvmField
         val registries = LinkedList<ResourceRegistry<*>>()

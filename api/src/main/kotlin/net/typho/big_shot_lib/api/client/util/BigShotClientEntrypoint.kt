@@ -7,16 +7,10 @@ interface BigShotClientEntrypoint {
     fun registerReloadListeners(factory: ResourceListenerFactory) {
     }
 
-    fun registerKeyMappings(factory: KeyMappingFactory) {
-    }
-
     fun registerEvents(factory: ClientEventFactory) {
     }
 
     fun registerDebugScreenInfo(factory: DebugScreenFactory) {
-    }
-
-    fun registerPanoramas(factory: PanoramaFactory) {
     }
 
     companion object : BigShotClientEntrypoint {
@@ -27,20 +21,12 @@ interface BigShotClientEntrypoint {
             entrypoints.forEach { it.registerReloadListeners(factory) }
         }
 
-        override fun registerKeyMappings(factory: KeyMappingFactory) {
-            entrypoints.forEach { it.registerKeyMappings(factory) }
-        }
-
         override fun registerEvents(factory: ClientEventFactory) {
             entrypoints.forEach { it.registerEvents(factory) }
         }
 
         override fun registerDebugScreenInfo(factory: DebugScreenFactory) {
             entrypoints.forEach { it.registerDebugScreenInfo(factory) }
-        }
-
-        override fun registerPanoramas(factory: PanoramaFactory) {
-            entrypoints.forEach { it.registerPanoramas(factory) }
         }
     }
 }

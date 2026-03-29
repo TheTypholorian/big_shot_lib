@@ -31,10 +31,10 @@ public class LevelChunkMixin {
             BlockPos pos,
             BlockState state,
             //? if <1.21.11 {
-            /*boolean isMoving,
-            *///? } else {
-            int updateFlags,
-            //? }
+            boolean isMoving,
+            //? } else {
+            /*int updateFlags,
+            *///? }
             CallbackInfoReturnable<BlockState> cir,
             @Local(ordinal = 1) BlockState oldState
     ) {
