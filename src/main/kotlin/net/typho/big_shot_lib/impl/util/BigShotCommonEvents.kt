@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 //? fabric {
-/*import com.mojang.serialization.Lifecycle
+import com.mojang.serialization.Lifecycle
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -18,51 +18,36 @@ import net.typho.big_shot_lib.api.util.RegistryFactory
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
-*///? } neoforge {
-
-//? }
-
-import com.mojang.blaze3d.platform.InputConstants
+//? } neoforge {
 import com.mojang.serialization.Lifecycle
-import net.minecraft.client.KeyMapping
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
-import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
-import net.minecraft.server.packs.resources.PreparableReloadListener
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent
 import net.neoforged.neoforge.common.NeoForge
-import net.neoforged.neoforge.registries.DeferredRegister
 import net.neoforged.neoforge.registries.NewRegistryEvent
 import net.neoforged.neoforge.registries.RegisterEvent
-import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
-import net.typho.big_shot_lib.api.client.util.KeyMappingCategory
-import net.typho.big_shot_lib.api.client.util.KeyMappingFactory
-import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
-import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
-import net.typho.big_shot_lib.api.client.util.resource.ResourceRegistry
-import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 import net.typho.big_shot_lib.api.util.NeoRegistry
-import net.typho.big_shot_lib.api.util.RegisteredObject
 import net.typho.big_shot_lib.api.util.RegistrationConsumer
 import net.typho.big_shot_lib.api.util.RegistrationFactory
 import net.typho.big_shot_lib.api.util.RegistryFactory
 import net.typho.big_shot_lib.api.util.WrapperUtil
+import net.typho.big_shot_lib.impl.mojang
+import net.typho.big_shot_lib.impl.neo
+//? }
+
+import net.minecraft.core.Registry
+import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
+import net.typho.big_shot_lib.api.util.RegisteredObject
 import net.typho.big_shot_lib.api.util.event.BlockChangedEvent
 import net.typho.big_shot_lib.api.util.event.CommonEventFactory
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
-import net.typho.big_shot_lib.impl.mojang
-import net.typho.big_shot_lib.impl.neo
-import java.util.function.UnaryOperator
 
 object BigShotCommonEvents : CommonEventFactory {
     override val blockChanged: MutableList<BlockChangedEvent> = arrayListOf()
@@ -82,7 +67,7 @@ object BigShotCommonEvents : CommonEventFactory {
         BigShotCommonEntrypoint.registerEvents(this)
 
         //? fabric {
-        /*BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
+        BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> create(
                 location: NeoIdentifier,
@@ -286,8 +271,8 @@ object BigShotCommonEvents : CommonEventFactory {
                 }
             }
         })
-        *///? } neoforge {
-        NeoForge.EVENT_BUS.addListener { event: NewRegistryEvent ->
+        //? } neoforge {
+        /*NeoForge.EVENT_BUS.addListener { event: NewRegistryEvent ->
             BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : Any> create(
@@ -491,7 +476,7 @@ object BigShotCommonEvents : CommonEventFactory {
                 }
             })
         }
-        //? }
+        *///? }
     }
 
     @JvmStatic
