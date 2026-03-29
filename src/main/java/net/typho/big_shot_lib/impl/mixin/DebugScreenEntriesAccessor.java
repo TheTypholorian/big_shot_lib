@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.impl.mixin;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,10 +13,10 @@ import net.minecraft.resources.ResourceLocation;
 *///? }
 
 //? if <1.21.9 {
-/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
-@MixinIgnore
-*///? }
+//? }
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(DebugScreenEntries.class)
 public interface DebugScreenEntriesAccessor {
     @Invoker("register")

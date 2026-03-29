@@ -1,5 +1,3 @@
-import java.nio.file.Files
-
 plugins {
     kotlin("jvm")
     id("net.neoforged.moddev")
@@ -12,21 +10,21 @@ plugins {
 sourceSets {
     main {
         java {
-            if (stonecutter.current.version < "1.21.5") {
+            if (sc.current.parsed < "1.21.5") {
                 exclude("net/typho/big_shot_lib/impl/mixin/iface/GlBufferMixin.java")
                 exclude("net/typho/big_shot_lib/impl/mixin/iface/GlTextureMixin.java")
             }
 
-            if (stonecutter.current.version >= "1.21") {
+            if (sc.current.parsed >= "1.21") {
                 exclude("net/typho/big_shot_lib/impl/mixin/VertexFormatAccessor.java")
                 exclude("net/typho/big_shot_lib/impl/mixin/RenderTypeAccessor.java")
             }
 
-            if (stonecutter.current.version < "1.21.9") {
+            if (sc.current.parsed < "1.21.9") {
                 exclude("net/typho/big_shot_lib/impl/mixin/DebugScreenEntriesAccessor.java")
             }
 
-            if (stonecutter.current.version >= "1.21.9") {
+            if (sc.current.parsed >= "1.21.9") {
                 exclude("net/typho/big_shot_lib/impl/mixin/DebugScreenOverlayMixin.java")
             }
         }

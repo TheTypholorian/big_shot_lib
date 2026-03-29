@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.impl.util
 
 //? if >=1.21.6 {
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer
-//? } else {
-/*import net.minecraft.client.renderer.RenderType
-*///? }
+/*import net.minecraft.client.renderer.chunk.ChunkSectionLayer
+*///? } else {
+import net.minecraft.client.renderer.RenderType
+//? }
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes
 import net.minecraft.core.BlockPos
@@ -57,18 +57,18 @@ object BlockUtilImpl : BlockUtil {
             ChunkSectionLayer.TRANSLUCENT -> BlockChunkLayer.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockChunkLayer.TRIPWIRE
             *///? } else if >=1.21.6 {
-            ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
+            /*ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
             ChunkSectionLayer.CUTOUT -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.CUTOUT_MIPPED -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockChunkLayer.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockChunkLayer.TRIPWIRE
-            //? } else {
-            /*RenderType.solid() -> BlockChunkLayer.SOLID
+            *///? } else {
+            RenderType.solid() -> BlockChunkLayer.SOLID
             RenderType.cutout(), RenderType.cutoutMipped() -> BlockChunkLayer.CUTOUT
             RenderType.translucent() -> BlockChunkLayer.TRANSLUCENT
             RenderType.tripwire() -> BlockChunkLayer.TRIPWIRE
             else -> null
-            *///? }
+            //? }
         }
     }
 

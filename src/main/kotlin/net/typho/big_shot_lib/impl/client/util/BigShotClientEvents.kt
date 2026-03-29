@@ -7,12 +7,12 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 import net.minecraft.server.packs.PackType
 //? if <1.21.9 {
-/*import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
-*///? }
-
-//? if >=1.21.5 {
-import net.fabricmc.fabric.api.resource.v1.ResourceLoader
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 //? }
+
+//? if >=1.21.6 {
+/*import net.fabricmc.fabric.api.resource.v1.ResourceLoader
+*///? }
 //? } neoforge {
 /*import com.mojang.blaze3d.systems.RenderSystem
 import net.neoforged.neoforge.client.event.ClientTickEvent
@@ -22,7 +22,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarge
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.impl.mixin.LevelRendererAccessor
 
-//? if <1.21.5 {
+//? if <1.21.4 {
 import net.neoforged.neoforge.event.AddReloadListenerEvent
 //? } else {
 /*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
@@ -54,10 +54,10 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
 
 //? if >=1.21.9 {
-import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
+/*import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
 import net.minecraft.client.gui.components.debug.DebugScreenEntry
 import net.typho.big_shot_lib.impl.mixin.DebugScreenEntriesAccessor
-//? }
+*///? }
 
 object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugScreenFactory {
     override val clientTickStart: MutableList<Runnable> = arrayListOf()
@@ -73,7 +73,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
 
         //? fabric {
         //? if <1.21.9 {
-        /*WorldRenderEvents.LAST.register { context ->
+        WorldRenderEvents.LAST.register { context ->
             val data = RenderEventData(
                 NeoCamera(
                     NeoVec3f(context.camera().position),
@@ -92,7 +92,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             )
             levelRenderEnd.forEach { it.invoke(data) }
         }
-        *///? }
+        //? }
         ClientTickEvents.START_CLIENT_TICK.register { clientTickStart.forEach { it.run() } }
         ClientTickEvents.END_CLIENT_TICK.register { clientTickEnd.forEach { it.run() } }
         ClientChunkEvents.CHUNK_LOAD.register { level, chunk -> chunkChanged.forEach { it.invoke(level, null, chunk) } }
@@ -156,23 +156,23 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
 
     override fun register(listener: NeoResourceManagerReloadListener) {
         //? fabric {
-        //? if <1.21.5 {
-        /*ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
+        //? if <1.21.6 {
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
             override fun getFabricId() = listener.location.mojang
 
             override fun onResourceManagerReload(manager: ResourceManager) {
                 listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
             }
         })
-        *///? } else {
-        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(listener.location.mojang, object : ResourceManagerReloadListener {
+        //? } else {
+        /*ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(listener.location.mojang, object : ResourceManagerReloadListener {
             override fun onResourceManagerReload(manager: ResourceManager) {
                 listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
             }
         })
-        //? }
+        *///? }
         //? } neoforge {
-        /*//? if <1.21.5 {
+        /*//? if <1.21.4 {
         NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
             event.addListener(object : ResourceManagerReloadListener {
                 override fun onResourceManagerReload(manager: ResourceManager) {
@@ -193,9 +193,9 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
     }
 
     //? if <1.21.9 {
-    /*@JvmField
+    @JvmField
     val debugScreenInfo = arrayListOf<Pair<Boolean, (out: (line: String) -> Unit) -> Unit>>()
-    *///? }
+    //? }
 
     override fun register(
         location: NeoIdentifier,
@@ -203,9 +203,9 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         text: (out: (line: String) -> Unit) -> Unit
     ) {
         //? if <1.21.9 {
-        /*debugScreenInfo.add(allowedWithReducedDebugInfo to text)
-        *///? } else {
-        DebugScreenEntriesAccessor.register(location.mojang, object : DebugScreenEntry {
+        debugScreenInfo.add(allowedWithReducedDebugInfo to text)
+        //? } else {
+        /*DebugScreenEntriesAccessor.register(location.mojang, object : DebugScreenEntry {
             override fun display(
                 displayer: DebugScreenDisplayer,
                 level: Level?,
@@ -219,7 +219,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 return allowedWithReducedDebugInfo || !reducedDebugInfo
             }
         })
-        //? }
+        *///? }
     }
 
     @JvmStatic

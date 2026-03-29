@@ -54,13 +54,13 @@ class NeoRenderSettingsImpl(
 
     override fun bind(): BoundResource {
         //? if <1.21.10 {
-        /*renderType.setupRenderState()
+        renderType.setupRenderState()
 
         return BoundResource {
             renderType.clearRenderState()
         }
-        *///? } else {
-        TODO("Not yet implemented")
-        //? }
+        //? } else {
+        /*TODO("Not yet implemented")
+        *///? }
     }
 }
