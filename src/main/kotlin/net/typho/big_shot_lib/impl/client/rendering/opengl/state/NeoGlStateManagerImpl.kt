@@ -84,11 +84,11 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     )
     override var activeTexture: Int
         //? if <1.21.5 {
-        get() = GlStateManager._getActiveTexture()
+        get() = GlStateManager._getActiveTexture() - GL_TEXTURE0
         //? } else {
         /*get() = GlStateManager.activeTexture
         *///? }
-        set(value) = GlStateManager._activeTexture(value)
+        set(value) = GlStateManager._activeTexture(value + GL_TEXTURE0)
 
     override val blendColor: GlStateStack<NeoColor> = GlStateStack.Impl(
         { glBlendColor(it.redF, it.greenF, it.blueF, it.alphaF ?: 1f) },

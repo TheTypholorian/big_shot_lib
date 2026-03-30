@@ -25,11 +25,11 @@ class KnownSizeNeoBufferBuilderImpl(
 
     private val vertexBuffer = vertexBuffer(numVertices.toLong() * format.vertexSizeBytes)
     private val numIndices: Int? = mode.indexData?.let {
-        if (numVertices % it.multiplier != 0) {
-            throw IllegalArgumentException("Vertex count $numVertices is not a multiple of ${it.multiplier} required for $mode")
+        if (numVertices % it.stride != 0) {
+            throw IllegalArgumentException("Vertex count $numVertices is not a multiple of ${it.stride} required for $mode")
         }
 
-        numVertices / it.multiplier * it.offsets.size
+        numVertices / it.stride * it.offsets.size
     }
     private val indexType: GlIndexDataType? = numIndices?.let {
         when (it) {
@@ -46,11 +46,6 @@ class KnownSizeNeoBufferBuilderImpl(
         numVertices: Int
     ) : this(format, mode, numVertices, NeoBuffer::Native, { it?.let { NeoBuffer.Native(it) } })
 
-    override fun free() {
-        vertexBuffer.free()
-        indexBuffer?.free()
-    }
-
     override fun build(): Built? {
         end()
 
@@ -62,12 +57,13 @@ class KnownSizeNeoBufferBuilderImpl(
             var putIndex = 0L
             var vertex = 0
 
-            repeat(numIndices!!) {
-                for (n in mode.indexData!!.offsets) {
-                    putIndex += indexType!!.put(indexBuffer, putIndex, n + vertex)
+            repeat(numVertices / mode.indexData!!.stride) {
+                for (n in mode.indexData.offsets) {
+                    indexType!!.put(indexBuffer, putIndex, n + vertex)
+                    putIndex += indexType.sizeBytes
                 }
 
-                vertex += mode.indexData.multiplier
+                vertex += mode.indexData.stride
             }
         }
 
@@ -79,10 +75,21 @@ class KnownSizeNeoBufferBuilderImpl(
             override val indexCount: Int? = numIndices
             override val mode: GlBeginMode = this@KnownSizeNeoBufferBuilderImpl.mode
             override val indexType: GlIndexDataType? = this@KnownSizeNeoBufferBuilderImpl.indexType
+
+            override fun free() {
+                this@KnownSizeNeoBufferBuilderImpl.vertexBuffer.free()
+                this@KnownSizeNeoBufferBuilderImpl.indexBuffer?.free()
+            }
         }
     }
 
     override fun put(element: NeoVertexFormat.Element, data: NeoBuffer.(index: Long) -> Unit) {
+        val offset = format.getElementOffset(element)
+
+        if (offset == -1) {
+            return
+        }
+
         val mask = 1 shl format.elements.indexOf(element)
 
         if (filledElements and mask != 0) {
@@ -90,12 +97,24 @@ class KnownSizeNeoBufferBuilderImpl(
         }
 
         filledElements = filledElements or mask
-        data(vertexBuffer, currentIndex + format.getElementOffset(element))
+        data(vertexBuffer, currentIndex + offset)
     }
 
     override fun end() {
-        if (filledElements != (1 shl format.elements.size - 1)) {
-            throw IllegalStateException("Missing vertex elements for $format")
+        if (filledElements == 0 && filledVertices == 0) {
+            return
+        }
+
+        if (filledElements != (1 shl format.elements.size) - 1) {
+            val missing = arrayListOf<NeoVertexFormat.Element>()
+
+            format.elements.forEachIndexed { index, element ->
+                if (filledElements and (1 shl index) == 0) {
+                    missing.add(element)
+                }
+            }
+
+            throw IllegalStateException("Missing vertex elements $missing for $format")
         }
 
         filledVertices++

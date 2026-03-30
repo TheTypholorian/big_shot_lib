@@ -23,11 +23,6 @@ class AutoSizeNeoBufferBuilderImpl(
     private var vertexBuffer: NeoBuffer.Native? = null
     private var indexBuffer: NeoBuffer.Native? = null
 
-    override fun free() {
-        vertexBuffer?.free()
-        indexBuffer?.free()
-    }
-
     override fun build(): Built {
         end()
 
@@ -36,7 +31,7 @@ class AutoSizeNeoBufferBuilderImpl(
             override val indexBuffer: NeoBuffer? = this@AutoSizeNeoBufferBuilderImpl.indexBuffer
             override val format: NeoVertexFormat = this@AutoSizeNeoBufferBuilderImpl.format
             override val vertexCount: Int = filledVertices
-            override val indexCount: Int? = this@AutoSizeNeoBufferBuilderImpl.mode.indexData?.let { vertexCount / it.multiplier * it.offsets.size }
+            override val indexCount: Int? = this@AutoSizeNeoBufferBuilderImpl.mode.indexData?.let { vertexCount / it.stride * it.offsets.size }
             override val mode: GlBeginMode = this@AutoSizeNeoBufferBuilderImpl.mode
             override val indexType: GlIndexDataType? = indexCount?.let {
                 when (it) {
@@ -45,10 +40,21 @@ class AutoSizeNeoBufferBuilderImpl(
                     else -> GlIndexDataType.INT
                 }
             }
+
+            override fun free() {
+                this@AutoSizeNeoBufferBuilderImpl.vertexBuffer?.free()
+                this@AutoSizeNeoBufferBuilderImpl.indexBuffer?.free()
+            }
         }
     }
 
     override fun put(element: NeoVertexFormat.Element, data: NeoBuffer.(index: Long) -> Unit) {
+        val offset = format.getElementOffset(element)
+
+        if (offset == -1) {
+            return
+        }
+
         val mask = 1 shl format.elements.indexOf(element)
 
         if (filledElements and mask != 0) {
@@ -58,12 +64,24 @@ class AutoSizeNeoBufferBuilderImpl(
         filledElements = filledElements or mask
         val buffer = vertexBuffer.realloc((filledVertices + 1).toLong() * format.vertexSizeBytes)
         vertexBuffer = buffer
-        data(buffer, currentIndex + format.getElementOffset(element))
+        data(buffer, currentIndex + offset)
     }
 
     override fun end() {
-        if (filledElements != (1 shl format.elements.size - 1)) {
-            throw IllegalStateException("Missing vertex elements for $format")
+        if (filledElements == 0 && filledVertices == 0) {
+            return
+        }
+
+        if (filledElements != (1 shl format.elements.size) - 1) {
+            val missing = arrayListOf<NeoVertexFormat.Element>()
+
+            format.elements.forEachIndexed { index, element ->
+                if (filledElements and (1 shl index) == 0) {
+                    missing.add(element)
+                }
+            }
+
+            throw IllegalStateException("Missing vertex elements $missing for $format")
         }
 
         filledVertices++

@@ -56,6 +56,10 @@ interface GlBoundRenderbuffer : GlBoundResource<GlRenderbuffer> {
         override val samples: Int
             get() = assertBound { glGetRenderbufferParameteri(GL_RENDERBUFFER, GL_RENDERBUFFER_SAMPLES) }
 
+        override fun toString(): String {
+            return "Bound($resource)"
+        }
+
         override fun renderbufferStorage(
             format: GlTextureFormat,
             width: Int,

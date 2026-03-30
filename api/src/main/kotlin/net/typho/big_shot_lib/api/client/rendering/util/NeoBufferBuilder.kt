@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlIndexDataTy
 import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.system.NativeResource
 
-abstract class NeoBufferBuilder : NeoVertexConsumer(), NativeResource {
+abstract class NeoBufferBuilder : NeoVertexConsumer() {
     companion object {
         @JvmStatic
         fun create(
@@ -208,7 +208,7 @@ abstract class NeoBufferBuilder : NeoVertexConsumer(), NativeResource {
         return this
     }
 
-    interface Built {
+    interface Built : NativeResource {
         val vertexBuffer: NeoBuffer
         val indexBuffer: NeoBuffer?
         val format: NeoVertexFormat

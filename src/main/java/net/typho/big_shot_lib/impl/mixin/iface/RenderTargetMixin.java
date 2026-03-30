@@ -9,6 +9,7 @@ import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundFramebuffer;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer;
@@ -18,6 +19,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2;
 import net.typho.big_shot_lib.api.util.KeyedDelegate;
+import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftRenderTarget;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +55,12 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
     @Shadow
     public abstract void destroyBuffers();
 
+    @Shadow
+    public int width;
+
+    @Shadow
+    public int height;
+
     @Override
     public GlFramebuffer getBig_shot_lib$extension_value() {
         return new GlFramebuffer() {
@@ -68,7 +76,7 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
             @Override
             public boolean getFreed() {
                 //? if >=1.21.5 {
-                /*return false;
+                /*return colorTexture == null;
                 *///? } else {
                 return frameBufferId == -1;
                 //? }
@@ -94,7 +102,7 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
                     //? if >=1.21.5 {
                     /*return colorTexture == null ? null : ImmutableExtensionKt.getExtensionValue(colorTexture);
                     *///? } else {
-                    return colorTextureId == -1 ? null : new NeoGlTexture2D(colorTextureId, false);
+                    return colorTextureId == -1 ? null : new NeoGlTexture2D(colorTextureId, false, GlTextureFormat.RGBA8, width, height);
                     //? }
                 });
             }
@@ -104,43 +112,18 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
                 //? if >=1.21.5 {
                 /*return depthTexture == null ? null : ImmutableExtensionKt.getExtensionValue(depthTexture);
                  *///? } else {
-                return useDepth && depthBufferId != -1 ? new NeoGlTexture2D(depthBufferId, false) : null;
+                return useDepth && depthBufferId != -1 ? new NeoGlTexture2D(depthBufferId, false, GlTextureFormat.DEPTH_COMPONENT, width, height) : null;
                 //? }
             }
 
             @Override
             public @NotNull GlBoundFramebuffer bind(@Nullable AbstractRect2<Integer> viewport) {
-                return new BoundRenderTarget(
+                return new BoundMinecraftRenderTarget(
                         this,
                         viewport,
                         NeoGlStateManager.Companion.getINSTANCE().getFramebuffer().push(getGlId())
                 );
             }
         };
-    }
-}
-
-class BoundRenderTarget extends GlBoundFramebuffer.Basic {
-    public BoundRenderTarget(@NotNull GlFramebuffer resource, @Nullable AbstractRect2<Integer> viewport, @NotNull GlStateStack.Handle<Integer> handle) {
-        super(resource, viewport, handle);
-    }
-
-    @Override
-    @NotNull
-    public KeyedDelegate<Integer, GlFramebufferAttachment> getColorAttachments() {
-        return getResource().getColorAttachments().withSet((key, attachment) -> {
-            throw new UnsupportedOperationException("Cannot modify a Minecraft RenderTarget's attachments");
-        });
-    }
-
-    @Override
-    @Nullable
-    public GlFramebufferAttachment getDepthAttachment() {
-        return getResource().getDepthAttachment();
-    }
-
-    @Override
-    public void setDepthAttachment(@Nullable GlFramebufferAttachment glFramebufferAttachment) {
-        throw new UnsupportedOperationException("Cannot modify a Minecraft RenderTarget's attachments");
     }
 }

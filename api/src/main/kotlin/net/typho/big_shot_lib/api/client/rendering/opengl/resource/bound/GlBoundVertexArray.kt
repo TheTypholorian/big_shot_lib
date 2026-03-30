@@ -49,6 +49,10 @@ interface GlBoundVertexArray : GlBoundResource<GlVertexArray> {
         override val resource: GlVertexArray,
         override val handle: GlStateStack.Handle<Int>
     ) : GlBoundVertexArray {
+        override fun toString(): String {
+            return "Bound($resource)"
+        }
+
         override fun drawArrays(
             mode: GlBeginMode,
             firstVertex: Int,

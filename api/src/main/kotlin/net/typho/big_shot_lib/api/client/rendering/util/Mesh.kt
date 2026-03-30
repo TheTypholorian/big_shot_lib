@@ -55,16 +55,6 @@ open class Mesh(
         ebo?.free()
     }
 
-    fun upload(built: NeoBufferBuilder.Built) {
-        if (ebo == null) {
-            size = built.vertexCount
-            indexType = null
-        } else {
-            size = built.indexCount!!
-            indexType = built.indexType
-        }
-    }
-
     /**
      * Only use this method when you have no way of knowing the buffer size (ex. when invoking entity rendering). Otherwise, always use upload method and specify vertex count, as it's much faster.
      */
@@ -78,6 +68,11 @@ open class Mesh(
     }
 
     fun upload(vertexCount: Int, out: Builder.() -> Unit) {
+        if (vertexCount == 0) {
+            size = 0
+            return
+        }
+
         vbo.bind(GlBufferTarget.ARRAY_BUFFER).use { vbo ->
             ebo?.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER)?.use { ebo ->
                 Builder(
@@ -90,7 +85,7 @@ open class Mesh(
                             vbo.mapBuffer(GlBufferAccess.WRITE_ONLY, it)
                         },
                         {
-                            vbo.bufferData(it!!, usage)
+                            ebo.bufferData(it!!, usage)
                             ebo.mapBuffer(GlBufferAccess.WRITE_ONLY, it)
                         }
                     ),
@@ -114,12 +109,14 @@ open class Mesh(
     }
 
     override fun draw() {
-        vao.bind().use { vao ->
-            if (ebo == null) {
-                vao.drawArrays(mode, 0, size)
-            } else {
-                ebo.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER).use {
-                    vao.drawElements(mode, size, indexType!!, 0L)
+        if (size > 0) {
+            vao.bind().use { vao ->
+                if (ebo == null) {
+                    vao.drawArrays(mode, 0, size)
+                } else {
+                    ebo.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER).use {
+                        vao.drawElements(mode, size, indexType!!, 0L)
+                    }
                 }
             }
         }
@@ -132,21 +129,26 @@ open class Mesh(
         val upload: Boolean
     ) : NeoVertexConsumer.Redirect(bufferBuilder), NativeResource {
         override fun free() {
-            val built = bufferBuilder.build() ?: throw IllegalStateException("Error with neo buffer builder")
-            upload(built)
+            (bufferBuilder.build() ?: throw IllegalStateException("Error with neo buffer builder")).use { built ->
+                if (ebo == null) {
+                    size = built.vertexCount
+                    indexType = null
+                } else {
+                    size = built.indexCount!!
+                    indexType = built.indexType
+                }
 
-            if (upload) {
-                vbo.bind(GlBufferTarget.ARRAY_BUFFER).use { it.bufferData(built.vertexBuffer, usage) }
-                ebo?.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER)?.use { it.bufferData(built.indexBuffer!!, usage) }
+                if (upload) {
+                    vbo.bind(GlBufferTarget.ARRAY_BUFFER).use { it.bufferData(built.vertexBuffer, usage) }
+                    ebo?.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER)?.use { it.bufferData(built.indexBuffer!!, usage) }
+                }
             }
 
             vao.bind().use {
                 vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
-                    TODO("vao state")
+                    format.initVertexArrayState()
                 }
             }
-
-            bufferBuilder.free()
         }
     }
 }

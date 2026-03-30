@@ -11,6 +11,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResour
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
+import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -90,7 +91,7 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
 
             @Override
             public @NotNull GlBoundTexture2D bind(@NotNull GlTextureTarget target) {
-                return new BoundTexture(
+                return new BoundMinecraftTexture(
                         this,
                         target,
                         NeoGlStateManager.Companion.getINSTANCE().getTextures().get(target).push(glId()),
@@ -100,28 +101,5 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
                 );
             }
         };
-    }
-}
-
-class BoundTexture extends GlBoundTexture2D.Basic {
-    private final int width, height;
-    private final GlTextureFormat format;
-
-    public BoundTexture(@NotNull GlTexture2D resource, @NotNull GlTextureTarget target, @NotNull GlStateStack.Handle<Integer> handle, int width, int height, GlTextureFormat format) {
-        super(resource, target, handle);
-        this.width = width;
-        this.height = height;
-        this.format = format;
-    }
-
-    @Override
-    protected void resize(int width, int height, @NotNull GlTextureFormat format) {
-        if (width != this.width || height != this.height) {
-            throw new UnsupportedOperationException("Cannot resize a Minecraft GlTexture from " + this.width + "x" + this.height + " to " + width + "x" + height);
-        }
-
-        if (format != this.format) {
-            throw new UnsupportedOperationException("Cannot change a Minecraft GlTexture's format from " + this.format + " to " + format);
-        }
     }
 }

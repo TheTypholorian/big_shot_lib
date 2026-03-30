@@ -131,6 +131,10 @@ interface GlBoundTexture2D : GlBoundResource<GlTexture2D> {
             get() = assertBound { GlNamed.getEnum<GlTextureSwizzle>(glGetTexParameteri(target.glId, GL_TEXTURE_SWIZZLE_RGBA)) }
             set(value) = assertBound { glTexParameteri(target.glId, GL_TEXTURE_SWIZZLE_RGBA, value.glId) }
 
+        override fun toString(): String {
+            return "Bound($resource to $target)"
+        }
+
         protected abstract fun resize(width: Int, height: Int, format: GlTextureFormat)
 
         override fun textureDataMutable(

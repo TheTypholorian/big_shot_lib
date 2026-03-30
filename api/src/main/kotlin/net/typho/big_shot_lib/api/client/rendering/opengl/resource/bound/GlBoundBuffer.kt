@@ -77,6 +77,10 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
         override val mapLength: Long
             get() = glGetBufferParameteri64(target.glId, GL_BUFFER_MAP_LENGTH)
 
+        override fun toString(): String {
+            return "Bound($resource to $target)"
+        }
+
         override fun bufferData(
             size: Long,
             usage: GlBufferUsage
@@ -118,7 +122,7 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
                 GlMappedBuffer(
                     pointer,
                     length,
-                    target
+                    this
                 )
             }
         }
@@ -138,7 +142,7 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
                 GlMappedBuffer(
                     pointer,
                     length,
-                    target
+                    this
                 )
             }
         }

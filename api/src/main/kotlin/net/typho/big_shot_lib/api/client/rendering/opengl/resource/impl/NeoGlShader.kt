@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL20.*
 
-class NeoGlShader(
+open class NeoGlShader(
     override val location: NeoIdentifier,
     override val shaderType: GlShaderType,
     glId: Int,

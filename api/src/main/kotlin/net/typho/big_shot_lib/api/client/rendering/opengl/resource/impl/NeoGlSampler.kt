@@ -10,7 +10,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResour
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlSampler
 import org.lwjgl.opengl.GL42.*
 
-class NeoGlSampler(glId: Int, autoFree: Boolean) : NeoGlResource(GlResourceType.SAMPLER, glId, autoFree), GlSampler {
+open class NeoGlSampler(glId: Int, autoFree: Boolean) : NeoGlResource(GlResourceType.SAMPLER, glId, autoFree), GlSampler {
     override var compareMode: GlTextureCompareMode
         get() = GlNamed.getEnum<GlTextureCompareMode>(glGetSamplerParameteri(glId, GL_TEXTURE_COMPARE_MODE))
         set(value) = glSamplerParameteri(glId, GL_TEXTURE_COMPARE_MODE, value.glId)

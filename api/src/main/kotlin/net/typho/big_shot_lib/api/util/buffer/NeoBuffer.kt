@@ -22,7 +22,7 @@ interface NeoBuffer {
     val size: Long
 
     fun check(index: Long, size: Long) {
-        if (index < 0 || index + size > address + this.size) {
+        if (index < 0 || index + size > this.size) {
             throw IndexOutOfBoundsException("Invalid range $index + $size in buffer of size ${this.size}")
         }
     }
@@ -154,9 +154,9 @@ interface NeoBuffer {
         var freed = false
             private set
         private val cleanup: Cleaner.Cleanable = if (autoFree)
-            CLEANER.register(this, Cleanup(address))
+            CLEANER.register(this, createCleanup())
         else
-            Cleaner.Cleanable { nmemFree(address) }
+            Cleaner.Cleanable { createCleanup().run() }
 
         constructor(size: Long) : this(nmemAlloc(size), size)
 
@@ -175,9 +175,21 @@ interface NeoBuffer {
             }
         }
 
+        protected open fun createCleanup(): Runnable {
+            return Cleanup(address)
+        }
+
         companion object {
             @JvmStatic
             private val CLEANER = Cleaner.create()
+        }
+
+        override fun check(index: Long, size: Long) {
+            super.check(index, size)
+
+            if (freed) {
+                throw IllegalStateException("Native NeoBuffer has already been freed")
+            }
         }
 
         fun realloc(newSize: Long): Native {
@@ -190,91 +202,76 @@ interface NeoBuffer {
         }
 
         override fun put(index: Long, data: NeoBuffer) {
-            assert(!freed)
             check(index, data.size)
             memCopy(data.address, address, data.size)
         }
 
         override fun put(index: Long, data: Byte) {
-            assert(!freed)
             check(index, Byte.SIZE_BYTES.toLong())
             memPutByte(address + index, data)
         }
 
         override fun put(index: Long, data: ByteArray) {
-            assert(!freed)
             check(index, data.size.toLong())
             data.forEachIndexed { i, b -> memPutByte(address + index + i, b) }
         }
 
         override fun put(index: Long, data: Short) {
-            assert(!freed)
             check(index, Short.SIZE_BYTES.toLong())
             memPutShort(address + index, data)
         }
 
         override fun put(index: Long, data: ShortArray) {
-            assert(!freed)
             check(index, data.size.toLong() * Short.SIZE_BYTES)
             data.forEachIndexed { i, b -> memPutShort(address + index + (i shl 1), b) }
         }
 
         override fun put(index: Long, data: Char) {
-            assert(!freed)
             check(index, Char.SIZE_BYTES.toLong())
             memPutShort(address + index, data.code.toShort())
         }
 
         override fun put(index: Long, data: CharArray) {
-            assert(!freed)
             check(index, data.size.toLong() * Char.SIZE_BYTES)
             data.forEachIndexed { i, b -> memPutShort(address + index + (i shl 1), b.code.toShort()) }
         }
 
         override fun put(index: Long, data: Int) {
-            assert(!freed)
             check(index, Int.SIZE_BYTES.toLong())
             memPutInt(address + index, data)
         }
 
         override fun put(index: Long, data: IntArray) {
-            assert(!freed)
             check(index, data.size.toLong() * Int.SIZE_BYTES)
             data.forEachIndexed { i, b -> memPutInt(address + index + (i shl 2), b) }
         }
 
         override fun put(index: Long, data: Long) {
-            assert(!freed)
             check(index, Long.SIZE_BYTES.toLong())
             memPutLong(address + index, data)
         }
 
         override fun put(index: Long, data: LongArray) {
-            assert(!freed)
             check(index, data.size.toLong() * Long.SIZE_BYTES)
             data.forEachIndexed { i, b -> memPutLong(address + index + (i shl 3), b) }
         }
 
         override fun put(index: Long, data: Float) {
-            assert(!freed)
             check(index, Float.SIZE_BYTES.toLong())
             memPutFloat(address + index, data)
         }
 
         override fun put(index: Long, data: FloatArray) {
-            assert(!freed)
             check(index, data.size.toLong() * Float.SIZE_BYTES)
             data.forEachIndexed { i, b -> memPutFloat(address + index + (i shl 2), b) }
         }
 
         override fun put(index: Long, data: Double) {
-            assert(!freed)
             check(index, Double.SIZE_BYTES.toLong())
             memPutDouble(address + index, data)
         }
 
         override fun put(index: Long, data: DoubleArray) {
-            assert(!freed)
             check(index, data.size.toLong() * Double.SIZE_BYTES)
             data.forEachIndexed { i, b -> memPutDouble(address + index + (i shl 3), b) }
         }

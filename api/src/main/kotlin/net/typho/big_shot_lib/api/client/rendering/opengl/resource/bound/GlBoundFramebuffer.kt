@@ -83,6 +83,10 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
             }
         }
 
+        override fun toString(): String {
+            return "Bound($resource)"
+        }
+
         override fun clear(vararg bits: GlClearBit) {
             assertBound {
                 glClear(bits.initAndGetMask())

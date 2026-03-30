@@ -23,6 +23,7 @@ import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas;
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlasSprite;
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier;
 import net.typho.big_shot_lib.impl.IdentifierUtilKt;
+import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
@@ -100,7 +101,7 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
 
             @Override
             public @NotNull GlBoundTexture2D bind(@NotNull GlTextureTarget target) {
-                return new BoundTextureAtlas(
+                return new BoundMinecraftTexture(
                         this,
                         target,
                         NeoGlStateManager.Companion.getINSTANCE().getTextures().get(target).push(getGlId()),
@@ -136,28 +137,5 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
                 return mipLevel;
             }
         };
-    }
-}
-
-class BoundTextureAtlas extends GlBoundTexture2D.Basic {
-    private final int width, height;
-    private final GlTextureFormat format;
-
-    public BoundTextureAtlas(@NotNull GlTexture2D resource, @NotNull GlTextureTarget target, @NotNull GlStateStack.Handle<Integer> handle, int width, int height, GlTextureFormat format) {
-        super(resource, target, handle);
-        this.width = width;
-        this.height = height;
-        this.format = format;
-    }
-
-    @Override
-    protected void resize(int width, int height, @NotNull GlTextureFormat format) {
-        if (width != this.width || height != this.height) {
-            throw new UnsupportedOperationException("Cannot resize a Minecraft texture atlas from " + this.width + "x" + this.height + " to " + width + "x" + height);
-        }
-
-        if (format != this.format) {
-            throw new UnsupportedOperationException("Cannot change a Minecraft texture atlas's format from " + this.format + " to " + format);
-        }
     }
 }

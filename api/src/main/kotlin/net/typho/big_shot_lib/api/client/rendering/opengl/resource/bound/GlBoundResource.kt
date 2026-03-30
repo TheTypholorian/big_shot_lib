@@ -23,7 +23,9 @@ interface GlBoundResource<R : GlResource> : BoundResource {
                 callsInPlace(action, InvocationKind.EXACTLY_ONCE)
             }
 
-            assert(handle.isBound) { "Resource $resource was not on top of its gl state stack" }
+            if (!handle.isBound) {
+                throw IllegalStateException("Resource $resource was not on top of its gl state stack")
+            }
 
             return action()
         }

@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResource
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import java.lang.ref.Cleaner
+import kotlin.reflect.jvm.jvmName
 
 open class NeoGlResource(
     override val type: GlResourceType,
@@ -22,6 +23,10 @@ open class NeoGlResource(
             freed = true
             cleanup.clean()
         }
+    }
+
+    override fun toString(): String {
+        return "${this::class.simpleName}($glId, autoFree=$autoFree)"
     }
 
     private class Cleanup(

@@ -21,12 +21,6 @@ data class NeoVertexFormatImpl(
         get() = inner.elements.map { ElementImpl(it) }.toTypedArray()
     override val elementNames: Array<String>
         get() = inner.elementAttributeNames.toTypedArray()
-    override val elementOffsets: IntArray
-        //? if >=1.21 {
-        get() = inner.offsetsByElement
-        //? } else {
-        /*get() = (inner as VertexFormatAccessor).`big_shot_lib$getOffsets`().toIntArray()
-        *///? }
 
     override fun getElementName(element: NeoVertexFormat.Element): String {
         //? if >=1.21 {
@@ -37,7 +31,11 @@ data class NeoVertexFormatImpl(
     }
 
     override fun getElementOffset(element: NeoVertexFormat.Element): Int {
-        return elementOffsets[elements.indexOf(element)]
+        //? if >=1.21 {
+        return inner.getOffset((element as ElementImpl).inner)
+        //? } else {
+        /*return (inner as VertexFormatAccessor).`big_shot_lib$getOffsets`().toIntArray()[elements.indexOf(element)]
+        *///? }
     }
 
     override fun initVertexArrayState() {
@@ -45,10 +43,13 @@ data class NeoVertexFormatImpl(
         inner.setupBufferState()
         //? } else {
         /*elements.forEachIndexed { index, element ->
+            glEnableVertexAttribArray(index);
             element.vertexAttribPointer(index, getElementOffset(element).toLong(), vertexSizeBytes)
         }
         *///? }
     }
+
+    override fun toString() = inner.toString()
 
     data class ElementImpl(
         @JvmField
@@ -89,6 +90,8 @@ data class NeoVertexFormatImpl(
         override fun vertexAttribPointer(index: Int, offset: Long, stride: Int) {
             type.vertexAttribPointer(index, count, normalized, stride, offset)
         }
+
+        override fun toString() = inner.toString()
     }
 
     //? if >=1.21 {
@@ -112,6 +115,8 @@ data class NeoVertexFormatImpl(
         override fun build(): NeoVertexFormat {
             return NeoVertexFormatImpl(inner.build())
         }
+
+        override fun toString() = inner.toString()
     }
     //? } else {
     /*class BuilderImpl : NeoVertexFormat.Builder {

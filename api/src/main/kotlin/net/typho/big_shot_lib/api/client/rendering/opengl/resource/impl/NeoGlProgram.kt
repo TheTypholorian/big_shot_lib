@@ -1,11 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl
 
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUniform
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundResource.Companion.assertBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
@@ -13,7 +13,7 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL33.glBindSampler
 
-class NeoGlProgram(
+open class NeoGlProgram(
     override val location: NeoIdentifier,
     glId: Int,
     autoFree: Boolean
@@ -23,34 +23,38 @@ class NeoGlProgram(
     constructor(location: NeoIdentifier) : this(location, GlResourceType.PROGRAM.create(), true)
 
     override fun use(): GlBoundProgram {
+        val handle = NeoGlStateManager.INSTANCE.program.push(glId)
         return object : GlBoundProgram {
             override val resource: GlProgram = this@NeoGlProgram
-            override val handle: GlStateStack.Handle<Int>
-                get() = NeoGlStateManager.INSTANCE.program.push(glId)
+            override val handle: GlStateStack.Handle<Int> = handle
             val initialTextureUnit = NeoGlStateManager.INSTANCE.activeTexture
 
             override fun setUniform(
                 name: String,
                 value: GlUniform.() -> Unit
             ) {
-                uniforms.computeIfAbsent(name) { key ->
-                    val location = glGetUniformLocation(glId, key)
-                    return@computeIfAbsent if (location == -1) null else GlUniform.Basic(location)
-                }?.let(value)
+                assertBound {
+                    uniforms.computeIfAbsent(name) { key ->
+                        val location = glGetUniformLocation(glId, key)
+                        return@computeIfAbsent if (location == -1) null else GlUniform.Basic(location)
+                    }?.let(value)
+                }
             }
 
             override fun setTexture(
                 unit: Int,
                 binding: GlTextureBinding
             ) {
-                val name = binding.uniformName ?: "Sampler$unit"
-                val texture = binding.texture
+                assertBound {
+                    val name = binding.uniformName ?: "Sampler$unit"
+                    val texture = binding.texture
 
-                glActiveTexture(unit)
-                glBindTexture(binding.target.glId, texture.glId)
-                glBindSampler(unit, binding.sampler?.glId ?: 0)
-                setUniform(name) { set(unit) }
-                setUniform("${name}Size") { set(texture.width, texture.height) }
+                    NeoGlStateManager.INSTANCE.activeTexture = unit
+                    glBindTexture(binding.target.glId, texture.glId)
+                    glBindSampler(unit, binding.sampler?.glId ?: 0)
+                    setUniform(name) { set(unit) }
+                    setUniform("${name}Size") { set(texture.width, texture.height) }
+                }
             }
 
             override fun unbind() {

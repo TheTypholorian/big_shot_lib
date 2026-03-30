@@ -12,7 +12,6 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     val vertexSizeBytes: Int
     val elements: Array<Element>
     val elementNames: Array<String>
-    val elementOffsets: IntArray
 
     fun getElementName(element: Element): String
 

@@ -48,6 +48,7 @@ interface GlStateStack<V> {
             val handle = HandleImpl(value, index)
 
             list.add(handle)
+            bind(value)
 
             return handle
         }
@@ -55,7 +56,7 @@ interface GlStateStack<V> {
         override fun pop(): V {
             val handle = list.removeLastOrNull() ?: throw IllegalStateException("Popped empty gl state stack")
             handle.index = -1
-            bind()
+            bindLast()
 
             if (list.isEmpty()) {
                 restoreTo = null
@@ -64,7 +65,7 @@ interface GlStateStack<V> {
             return handle.value
         }
 
-        private fun bind() {
+        private fun bindLast() {
             (list.lastOrNull()?.value ?: restoreTo)?.let(bind)
         }
 

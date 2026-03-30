@@ -18,7 +18,7 @@ enum class GlBeginMode(
 
     data class IndexData(
         @JvmField
-        val multiplier: Int,
+        val stride: Int,
         @JvmField
         val offsets: IntArray
     ) {
@@ -26,14 +26,14 @@ enum class GlBeginMode(
             if (this === other) return true
             if (other !is IndexData) return false
 
-            if (multiplier != other.multiplier) return false
+            if (stride != other.stride) return false
             if (!offsets.contentEquals(other.offsets)) return false
 
             return true
         }
 
         override fun hashCode(): Int {
-            var result = multiplier
+            var result = stride
             result = 31 * result + offsets.contentHashCode()
             return result
         }
