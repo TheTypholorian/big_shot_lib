@@ -1,26 +1,28 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundResource.Companion.assertBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUniform
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundResource.Companion.assertBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL33.glBindSampler
 
 open class NeoGlProgram(
     override val location: NeoIdentifier,
+    override val format: NeoVertexFormat,
     glId: Int,
     autoFree: Boolean
 ) : NeoGlResource(GlResourceType.PROGRAM, glId, autoFree), GlProgram {
     private val uniforms = hashMapOf<String, GlUniform?>()
 
-    constructor(location: NeoIdentifier) : this(location, GlResourceType.PROGRAM.create(), true)
+    constructor(location: NeoIdentifier, format: NeoVertexFormat) : this(location, format, GlResourceType.PROGRAM.create(), true)
 
     override fun use(): GlBoundProgram {
         val handle = NeoGlStateManager.INSTANCE.program.push(glId)
@@ -73,6 +75,10 @@ open class NeoGlProgram(
     }
 
     override fun link(onError: (log: String) -> Nothing) {
+        format.elements.forEachIndexed { index, element ->
+            glBindAttribLocation(glId, index, format.getElementName(element))
+        }
+
         glLinkProgram(glId)
 
         if (glGetProgrami(glId, GL_LINK_STATUS) == GL_FALSE) {

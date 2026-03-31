@@ -3,13 +3,13 @@ package net.typho.big_shot_lib.impl.util
 //? if >=1.21.6 {
 /*import net.minecraft.client.renderer.chunk.ChunkSectionLayer
 *///? } else {
-import net.minecraft.client.renderer.RenderType
 //? }
 
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.ItemBlockRenderTypes
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.core.BlockPos
 import net.minecraft.util.RandomSource
-import net.minecraft.client.Minecraft
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
@@ -84,7 +84,7 @@ object BlockUtilImpl : BlockUtil {
         //? if >=1.21.2 {
         /*return Block.shouldRenderFace(state, level.getBlockState(BlockPos(pos1.x, pos1.y, pos1.z)), direction.mojang)
         *///? } else {
-        return Block.shouldRenderFace(state, level, BlockPos(pos1.x, pos1.y, pos1.z), direction.mojang, BlockPos(pos.x, pos.y, pos.z))
+        return Block.shouldRenderFace(state, level, BlockPos(pos.x, pos.y, pos.z), direction.mojang, BlockPos(pos1.x, pos1.y, pos1.z))
         //? }
     }
 

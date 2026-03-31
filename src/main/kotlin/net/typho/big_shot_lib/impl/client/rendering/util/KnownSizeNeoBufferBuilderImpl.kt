@@ -17,7 +17,7 @@ class KnownSizeNeoBufferBuilderImpl(
     @JvmField
     val numVertices: Int,
     vertexBuffer: (size: Long) -> NeoBuffer.Native,
-    indexBuffer: (size: Long?) ->  NeoBuffer.Native?
+    indexBuffer: (size: Long?) -> NeoBuffer.Native?
 ) : NeoBufferBuilder() {
     private var filledVertices: Int = 0
     private var filledElements: Int = 0

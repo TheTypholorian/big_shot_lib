@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.util.shortByteIndex
 import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.system.NativeResource
 import java.lang.ref.Cleaner
-import java.nio.*
+import java.nio.ByteBuffer
 
 fun NeoBuffer.Native?.realloc(newSize: Long): NeoBuffer.Native {
     return this?.realloc(newSize) ?: NeoBuffer.Native(newSize)
@@ -29,7 +29,7 @@ interface NeoBuffer {
 
     fun range(index: Long, size: Long): NeoBuffer {
         check(index, size)
-        return Native(address + index, size)
+        return Native(address + index, size, false)
     }
 
     fun put(index: Long, data: NeoBuffer)
