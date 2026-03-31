@@ -5,6 +5,8 @@ import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import org.lwjgl.opengl.GL11.*
 
 interface GlStateStack<V> {
+    val size: Int
+
     fun push(value: V): Handle<V>
 
     fun pop(): V
@@ -32,12 +34,14 @@ interface GlStateStack<V> {
 
     open class Impl<V>(
         @JvmField
-        val bind: (value: V) -> Unit,
+        val bind: (value: V?) -> Unit,
         @JvmField
         val query: () -> V
     ) : GlStateStack<V> {
         private val list = arrayListOf<HandleImpl>()
         private var restoreTo: V? = null
+        override val size: Int
+            get() = list.size
 
         override fun push(value: V): Handle<V> {
             if (list.isEmpty()) {
@@ -66,7 +70,7 @@ interface GlStateStack<V> {
         }
 
         private fun bindLast() {
-            (list.lastOrNull()?.value ?: restoreTo)?.let(bind)
+            bind(list.lastOrNull()?.value ?: restoreTo)
         }
 
         private inner class HandleImpl(
@@ -88,11 +92,13 @@ interface GlStateStack<V> {
                 }
 
                 if (index == list.size) {
-                    pop()
+                    this@Impl.pop()
                 } else {
                     list.removeAt(index)
                     list.forEachIndexed { i, handle -> handle.index = i }
                 }
+
+                index = -1
             }
         }
     }
@@ -100,7 +106,7 @@ interface GlStateStack<V> {
     open class Flag(
         override val glId: Int
     ) : Impl<Boolean>(
-        { if (it) glEnable(glId) else glDisable(glId) },
+        { if (it == true) glEnable(glId) else glDisable(glId) },
         { glIsEnabled(glId) }
     ), GlNamed
 }

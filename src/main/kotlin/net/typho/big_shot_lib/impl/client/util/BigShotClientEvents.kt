@@ -12,44 +12,35 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 /*import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 *///? }
 *///? } neoforge {
-import com.mojang.blaze3d.systems.RenderSystem
-import net.neoforged.neoforge.client.event.ClientTickEvent
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent
-import net.neoforged.neoforge.common.NeoForge
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
-import net.typho.big_shot_lib.impl.mixin.LevelRendererAccessor
 
 //? if <1.21.4 {
-import net.neoforged.neoforge.event.AddReloadListenerEvent
 //? } else {
 /*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 *///? }
 //? }
 
+import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener
+import net.neoforged.neoforge.client.event.ClientTickEvent
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent
+import net.neoforged.neoforge.common.NeoForge
+import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
-import net.typho.big_shot_lib.api.client.util.NeoCamera
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
+import net.typho.big_shot_lib.api.client.util.NeoCamera
 import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
 import net.typho.big_shot_lib.api.client.util.event.*
+import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
-import net.typho.big_shot_lib.api.client.util.event.ChunkChangedEvent
-import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl
 import net.typho.big_shot_lib.impl.mixin.FrustumAccessor
-import net.typho.big_shot_lib.impl.mojang
-import net.minecraft.client.KeyMapping
-import net.minecraft.network.chat.Component
-import net.minecraft.world.level.Level
-import net.minecraft.world.level.chunk.LevelChunk
-import net.minecraft.server.packs.resources.ResourceManager
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener
-import net.typho.big_shot_lib.impl.util.getExtensionValue
-import org.joml.Matrix4f
+import net.typho.big_shot_lib.impl.mixin.LevelRendererAccessor
 
 //? if >=1.21.9 {
 /*import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
@@ -72,6 +63,49 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         BigShotClientEntrypoint.registerReloadListeners(this)
         BigShotClientEntrypoint.registerEvents(this)
         BigShotClientEntrypoint.registerDebugScreenInfo(this)
+
+        levelRenderEnd.add {
+            fun check(stack: GlStateStack<*>) {
+                if (stack.size > 0) {
+                    throw IllegalStateException("Didn't pop gl state stack")
+                }
+            }
+
+            NeoGlStateManager.INSTANCE.buffers.values.forEach { check(it) }
+            NeoGlStateManager.INSTANCE.textures.values.forEach { check(it) }
+
+            check(NeoGlStateManager.INSTANCE.program)
+            check(NeoGlStateManager.INSTANCE.vertexArray)
+            check(NeoGlStateManager.INSTANCE.renderbuffer)
+            check(NeoGlStateManager.INSTANCE.framebuffer)
+            check(NeoGlStateManager.INSTANCE.readFramebuffer)
+
+            check(NeoGlStateManager.INSTANCE.blendEnabled)
+            check(NeoGlStateManager.INSTANCE.colorLogicOpEnabled)
+            check(NeoGlStateManager.INSTANCE.cullFaceEnabled)
+            //check(NeoGlStateManager.INSTANCE.debugOutputEnabled)
+            //check(NeoGlStateManager.INSTANCE.debugOutputSynchronousEnabled)
+            check(NeoGlStateManager.INSTANCE.depthClampEnabled)
+            check(NeoGlStateManager.INSTANCE.depthEnabled)
+            check(NeoGlStateManager.INSTANCE.ditherEnabled)
+            check(NeoGlStateManager.INSTANCE.framebufferSRGBEnabled)
+            check(NeoGlStateManager.INSTANCE.lineSmoothEnabled)
+            check(NeoGlStateManager.INSTANCE.multisampleEnabled)
+            check(NeoGlStateManager.INSTANCE.polygonOffsetEnabled)
+            check(NeoGlStateManager.INSTANCE.polygonSmoothEnabled)
+            check(NeoGlStateManager.INSTANCE.primitiveRestartEnabled)
+            check(NeoGlStateManager.INSTANCE.primitiveRestartFixedIndexEnabled)
+            check(NeoGlStateManager.INSTANCE.rasterizerDiscardEnabled)
+            check(NeoGlStateManager.INSTANCE.sampleAlphaToCoverageEnabled)
+            check(NeoGlStateManager.INSTANCE.sampleAlphaToOneEnabled)
+            check(NeoGlStateManager.INSTANCE.sampleCoverageEnabled)
+            check(NeoGlStateManager.INSTANCE.sampleShadingEnabled)
+            check(NeoGlStateManager.INSTANCE.sampleMaskEnabled)
+            check(NeoGlStateManager.INSTANCE.scissorEnabled)
+            check(NeoGlStateManager.INSTANCE.stencilEnabled)
+            check(NeoGlStateManager.INSTANCE.textureCubeMapSeamlessEnabled)
+            check(NeoGlStateManager.INSTANCE.programPointSizeEnabled)
+        }
 
         //? fabric {
         /*//? if <1.21.9 {

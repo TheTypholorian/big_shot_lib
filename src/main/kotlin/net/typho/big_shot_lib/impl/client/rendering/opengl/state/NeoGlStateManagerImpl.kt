@@ -4,12 +4,9 @@ import com.mojang.blaze3d.platform.GlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.*
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.*
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import net.typho.big_shot_lib.api.util.EnumArrayMap
@@ -34,44 +31,44 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
 
     override val buffers: EnumArrayMap<GlBufferTarget, GlStateStack<Int>> = enumArrayMapOf { target ->
         GlStateStack.Impl(
-            { GlStateManager._glBindBuffer(target.glId, it) },
+            { GlStateManager._glBindBuffer(target.glId, it ?: 0) },
             { glGetInteger(target.bindingId) }
         )
     }
     override val program: GlStateStack<Int> = GlStateStack.Impl(
-        { GlStateManager._glUseProgram(it) },
+        { GlStateManager._glUseProgram(it ?: 0) },
         { glGetInteger(GL_CURRENT_PROGRAM) }
     )
     override val programPipeline: GlStateStack<Int> = GlStateStack.Impl(
-        { glBindProgramPipeline(it) },
+        { glBindProgramPipeline(it ?: 0) },
         { glGetInteger(GL_PROGRAM_PIPELINE_BINDING) }
     )
     override val vertexArray: GlStateStack<Int> = GlStateStack.Impl(
-        { GlStateManager._glBindVertexArray(it) },
+        { GlStateManager._glBindVertexArray(it ?: 0) },
         { glGetInteger(GL_VERTEX_ARRAY_BINDING) }
     )
     override val textures: EnumArrayMap<GlTextureTarget, GlStateStack<Int>> = enumArrayMapOf { target ->
         if (target == GlTextureTarget.TEXTURE_2D)
             GlStateStack.Impl(
-                { GlStateManager._bindTexture(it) },
+                { GlStateManager._bindTexture(it ?: 0) },
                 { GlStateManager.TEXTURES[activeTexture].binding }
             )
         else
             GlStateStack.Impl(
-                { glBindTexture(target.glId, it) },
+                { glBindTexture(target.glId, it ?: 0) },
                 { glGetInteger(target.bindingId) }
             )
     }
     override val renderbuffer: GlStateStack<Int> = GlStateStack.Impl(
         //? if <1.21.5 {
-        { GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, it) },
+        { GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, it ?: 0) },
         //? } else {
-        /*{ glBindRenderbuffer(GL_RENDERBUFFER, it) },
+        /*{ glBindRenderbuffer(GL_RENDERBUFFER, it ?: 0) },
         *///? }
         { glGetInteger(GL_RENDERBUFFER_BINDING) }
     )
     override val framebuffer: GlStateStack<Int> = GlStateStack.Impl(
-        { GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, it) },
+        { GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, it ?: 0) },
         //? if <1.21.5 {
         { GlStateManager.getBoundFramebuffer() }
         //? } else {
@@ -79,7 +76,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         *///? }
     )
     override val readFramebuffer: GlStateStack<Int> = GlStateStack.Impl(
-        { GlStateManager._glBindFramebuffer(GL_READ_FRAMEBUFFER, it) },
+        { GlStateManager._glBindFramebuffer(GL_READ_FRAMEBUFFER, it ?: 0) },
         { glGetInteger(GL_READ_FRAMEBUFFER_BINDING) }
     )
     override var activeTexture: Int
@@ -91,15 +88,15 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         set(value) = GlStateManager._activeTexture(value + GL_TEXTURE0)
 
     override val blendColor: GlStateStack<NeoColor> = GlStateStack.Impl(
-        { glBlendColor(it.redF, it.greenF, it.blueF, it.alphaF ?: 1f) },
+        { if (it != null) glBlendColor(it.redF, it.greenF, it.blueF, it.alphaF ?: 1f) },
         { NeoColor.RGBA(glGetInteger(GL_BLEND_COLOR)) }
     )
     override val blendEquation: GlStateStack<GlBlendEquation> = GlStateStack.Impl(
-        { glBlendEquation(it.glId) },
+        { if (it != null) glBlendEquation(it.glId) },
         { GlNamed.getEnum(glGetInteger(GL_BLEND_EQUATION)) }
     )
     override val blendFunction: GlStateStack<BlendFunction> = GlStateStack.Impl(
-        { it.bind() },
+        { it?.bind() },
         { BlendFunction.Separate(
             GlNamed.getEnum(glGetInteger(GL_BLEND_SRC_RGB)),
             GlNamed.getEnum(glGetInteger(GL_BLEND_DST_RGB)),
@@ -108,7 +105,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         ) }
     )
     override val colorMask: GlStateStack<ColorMask> = GlStateStack.Impl(
-        { glColorMask(it.red, it.green, it.blue, it.alpha) },
+        { glColorMask(it?.red ?: true, it?.green ?: true, it?.blue ?: true, it?.alpha ?: true) },
         {
             MemoryStack.stackPush().use { stack ->
                 val mask = stack.malloc(4)
@@ -123,23 +120,23 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         }
     )
     override val cullFace: GlStateStack<GlCullFace> = GlStateStack.Impl(
-        { glCullFace(it.glId) },
+        { glCullFace((it ?: GlCullFace.BACK).glId) },
         { GlNamed.getEnum(glGetInteger(GL_CULL_FACE_MODE)) }
     )
     override val depthMask: GlStateStack<Boolean> = GlStateStack.Impl(
-        { glDepthMask(it) },
+        { glDepthMask(it ?: true) },
         { glGetBoolean(GL_DEPTH_WRITEMASK) }
     )
     override val depthFunc: GlStateStack<GlAlphaFunction> = GlStateStack.Impl(
-        { glDepthFunc(it.glId) },
+        { glDepthFunc((it ?: GlAlphaFunction.LEQUAL).glId) },
         { GlNamed.getEnum(glGetInteger(GL_DEPTH_FUNC)) }
     )
     override val polygonMode: GlStateStack<GlPolygonMode> = GlStateStack.Impl(
-        { glPolygonMode(GL_FRONT_AND_BACK, it.glId) },
+        { glPolygonMode(GL_FRONT_AND_BACK, (it ?: GlPolygonMode.FILL).glId) },
         { GlNamed.getEnum(glGetInteger(GL_POLYGON_MODE)) }
     )
     override val polygonOffset: GlStateStack<PolygonOffset> = GlStateStack.Impl(
-        { glPolygonOffset(it.factor, it.units) },
+        { glPolygonOffset(it?.factor ?: 0f, it?.units ?: 0f) },
         {
             PolygonOffset(
                 glGetFloat(GL_POLYGON_OFFSET_FACTOR),
@@ -148,7 +145,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         }
     )
     override val scissor: GlStateStack<AbstractRect2<Int>> = GlStateStack.Impl(
-        { glScissor(it.min.x, it.min.y, it.size.x, it.size.y) },
+        { if (it != null) glScissor(it.min.x, it.min.y, it.size.x, it.size.y) },
         {
             MemoryStack.stackPush().use { stack ->
                 val box = stack.mallocInt(4)
@@ -163,7 +160,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         }
     )
     override val stencilFunction: GlStateStack<StencilFunction> = GlStateStack.Impl(
-        { glStencilFunc(it.func.glId, it.ref, it.mask) },
+        { if (it != null) glStencilFunc(it.func.glId, it.ref, it.mask) },
         {
             StencilFunction(
                 GlNamed.getEnum(glGetInteger(GL_STENCIL_FUNC)),
@@ -173,11 +170,11 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         }
     )
     override val stencilMask: GlStateStack<Int> = GlStateStack.Impl(
-        { glStencilMask(it) },
+        { glStencilMask(it ?: 0xFFFFFFFF.toInt()) },
         { glGetInteger(GL_STENCIL_WRITEMASK) }
     )
     override val stencilOp: GlStateStack<StencilOp> = GlStateStack.Impl(
-        { glStencilOp(it.stencilFail.glId, it.depthFail.glId, it.depthPass.glId) },
+        { if (it != null) glStencilOp(it.stencilFail.glId, it.depthFail.glId, it.depthPass.glId) },
         {
             StencilOp(
                 GlNamed.getEnum(glGetInteger(GL_STENCIL_FAIL)),
@@ -187,7 +184,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         }
     )
     override val viewport: GlStateStack<AbstractRect2<Int>> = GlStateStack.Impl(
-        { glViewport(it.min.x, it.min.y, it.size.x, it.size.y) },
+        { if (it != null) glViewport(it.min.x, it.min.y, it.size.x, it.size.y) },
         {
             MemoryStack.stackPush().use { stack ->
                 val box = stack.mallocInt(4)
