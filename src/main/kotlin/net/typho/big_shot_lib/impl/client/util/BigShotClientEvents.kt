@@ -12,8 +12,11 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 /*import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 *///? }
 *///? } neoforge {
-
+import net.neoforged.neoforge.client.event.ClientTickEvent
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent
+import net.neoforged.neoforge.common.NeoForge
 //? if <1.21.4 {
+import net.neoforged.neoforge.event.AddReloadListenerEvent
 //? } else {
 /*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 *///? }
@@ -21,10 +24,6 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
-import net.neoforged.neoforge.client.event.ClientTickEvent
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent
-import net.neoforged.neoforge.common.NeoForge
-import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
