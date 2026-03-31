@@ -4,6 +4,7 @@ package net.typho.big_shot_lib.impl.client.util
 /*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.server.packs.PackType
+import net.typho.big_shot_lib.impl.mojang
 //? if <1.21.9 {
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper

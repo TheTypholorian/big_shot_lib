@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.GlDebug;
 /*import com.mojang.blaze3d.opengl.GlDebug;
 *///? }
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag;
 import net.typho.big_shot_lib.api.error.GlException;
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil;
@@ -17,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class GlDebugMixin {
     static {
         if (PlatformUtil.Companion.getINSTANCE().isDevEnv()) {
-            GlFlag.DEBUG_OUTPUT_SYNCHRONOUS.raw.push(true);
+            NeoGlStateManager.Companion.getINSTANCE().getDebugOutputSynchronousEnabled().push(true);
         }
     }
 

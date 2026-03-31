@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import org.lwjgl.opengl.GL11.*
 
@@ -34,6 +35,8 @@ interface GlStateStack<V> {
 
     open class Impl<V>(
         @JvmField
+        val name: String,
+        @JvmField
         val bind: (value: V?) -> Unit,
         @JvmField
         val query: () -> V
@@ -46,6 +49,10 @@ interface GlStateStack<V> {
         override fun push(value: V): Handle<V> {
             if (list.isEmpty()) {
                 restoreTo = query()
+
+                //println("push $name with $value, restore to $restoreTo")
+            } else {
+                //println("push $name with $value")
             }
 
             val index = list.size
@@ -60,17 +67,17 @@ interface GlStateStack<V> {
         override fun pop(): V {
             val handle = list.removeLastOrNull() ?: throw IllegalStateException("Popped empty gl state stack")
             handle.index = -1
-            bindLast()
 
             if (list.isEmpty()) {
-                restoreTo = null
+                bind(restoreTo)
+                //println("full popped $name to $restoreTo")
+            } else {
+                val value = list.lastOrNull()?.value
+                bind(value)
+                //println("popped $name to $value")
             }
 
             return handle.value
-        }
-
-        private fun bindLast() {
-            bind(list.lastOrNull()?.value ?: restoreTo)
         }
 
         private inner class HandleImpl(
@@ -91,9 +98,10 @@ interface GlStateStack<V> {
                     throw IllegalStateException("Popped an already popped gl state stack handle")
                 }
 
-                if (index == list.size) {
+                if (index == list.size - 1) {
                     this@Impl.pop()
                 } else {
+                    //println("popped $name at $index with $list")
                     list.removeAt(index)
                     list.forEachIndexed { i, handle -> handle.index = i }
                 }
@@ -104,9 +112,12 @@ interface GlStateStack<V> {
     }
 
     open class Flag(
-        override val glId: Int
+        flag: GlFlag
     ) : Impl<Boolean>(
-        { if (it == true) glEnable(glId) else glDisable(glId) },
-        { glIsEnabled(glId) }
-    ), GlNamed
+        flag.name,
+        { if (it == true) glEnable(flag.glId) else glDisable(flag.glId) },
+        { glIsEnabled(flag.glId) }
+    ), GlNamed {
+        override val glId: Int = flag.glId
+    }
 }

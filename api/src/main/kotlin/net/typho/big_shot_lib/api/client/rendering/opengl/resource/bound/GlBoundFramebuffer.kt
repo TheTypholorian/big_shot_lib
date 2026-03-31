@@ -57,10 +57,10 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
 
     abstract class Basic(
         override val resource: GlFramebuffer,
-        @JvmField
-        val viewport: AbstractRect2<Int>?,
+        viewport: AbstractRect2<Int>?,
         override val handle: GlStateStack.Handle<Int>
     ) : GlBoundFramebuffer {
+        val viewportHandle: GlStateStack.Handle<AbstractRect2<Int>>? = viewport?.let { NeoGlStateManager.INSTANCE.viewport.push(it) }
         override var defaultWidth: Int
             get() = assertBound { glGetFramebufferParameteri(GL_FRAMEBUFFER, GL_FRAMEBUFFER_DEFAULT_WIDTH) }
             set(value) = assertBound { glFramebufferParameteri(GL_FRAMEBUFFER, GL_FRAMEBUFFER_DEFAULT_WIDTH, value) }
@@ -76,12 +76,6 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
         override var defaultFixedSampleLocations: Boolean
             get() = assertBound { glGetFramebufferParameteri(GL_FRAMEBUFFER, GL_FRAMEBUFFER_DEFAULT_FIXED_SAMPLE_LOCATIONS) == GL_TRUE }
             set(value) = assertBound { glFramebufferParameteri(GL_FRAMEBUFFER, GL_FRAMEBUFFER_DEFAULT_WIDTH, if (value) GL_TRUE else GL_FALSE) }
-
-        init {
-            viewport?.let {
-                NeoGlStateManager.INSTANCE.viewport.push(it)
-            }
-        }
 
         override fun toString(): String {
             return "Bound($resource)"
@@ -121,9 +115,7 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
         }
 
         override fun unbind() {
-            if (viewport != null) {
-                NeoGlStateManager.INSTANCE.viewport.pop()
-            }
+            viewportHandle?.pop()
 
             super.unbind()
         }

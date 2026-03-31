@@ -30,15 +30,15 @@ open class Mesh(
         @JvmStatic
         val SCREEN_MESH by lazy {
             Mesh(
-                NeoVertexFormat.BLIT_SCREEN,
+                NeoVertexFormat.POSITION_TEX,
                 GlBeginMode.QUADS,
                 GlBufferUsage.STATIC_DRAW
             ).also { mesh ->
                 mesh.upload(4) {
-                    vertex(1f, 1f, 0f)
-                    vertex(-1f, 1f, 0f)
-                    vertex(-1f, -1f, 0f)
-                    vertex(1f, -1f, 0f)
+                    vertex(1f, 1f, 0f).textureUV(1f, 1f)
+                    vertex(-1f, 1f, 0f).textureUV(0f, 1f)
+                    vertex(-1f, -1f, 0f).textureUV(0f, 0f)
+                    vertex(1f, -1f, 0f).textureUV(1f, 0f)
                 }
             }
         }
