@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.impl.mixin;
+package net.typho.big_shot_lib.mixin.impl;
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixin;

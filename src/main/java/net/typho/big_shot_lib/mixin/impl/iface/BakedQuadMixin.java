@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.impl.mixin.iface;
+package net.typho.big_shot_lib.mixin.impl.iface;
 
 //? if >=1.21.11 {
 /*import org.joml.Vector3fc;

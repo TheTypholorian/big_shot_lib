@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.impl.mixin.iface;
+package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.opengl.GlTexture;
 import com.mojang.blaze3d.textures.GpuTexture;

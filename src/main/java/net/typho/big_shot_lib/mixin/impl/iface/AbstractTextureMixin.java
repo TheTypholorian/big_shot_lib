@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.impl.mixin.iface;
+package net.typho.big_shot_lib.mixin.impl.iface;
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.texture.AbstractTexture;
