@@ -14,7 +14,7 @@ abstract class AbstractRect2<N : Number>(
     val min: AbstractVec2<N> = min.min(max)
     @JvmField
     val max: AbstractVec2<N> = min.max(max)
-    protected abstract val opSet: OperatorSet<N>
+    abstract val opSet: OperatorSet<N>
     val size: AbstractVec2<N>
         get() = max - min
     val area: N

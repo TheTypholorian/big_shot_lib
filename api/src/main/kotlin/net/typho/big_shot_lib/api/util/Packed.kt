@@ -27,6 +27,16 @@ val Int.longByteIndex: Int
 val Int.longBitIndex: Int
     get() = this shr 6
 
+val Int.floatByteIndex: Int
+    get() = this shr 2
+val Int.floatBitIndex: Int
+    get() = this shr 5
+
+val Int.doubleByteIndex: Int
+    get() = this shr 3
+val Int.doubleBitIndex: Int
+    get() = this shr 6
+
 fun Long.intAt(index: Int): Int {
     return ((this ushr index.intBitIndex) and LINT_MASK).toInt()
 }

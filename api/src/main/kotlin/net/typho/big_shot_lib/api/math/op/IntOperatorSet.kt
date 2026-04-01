@@ -1,8 +1,15 @@
 package net.typho.big_shot_lib.api.math.op
 
+import org.lwjgl.system.MemoryUtil.memPutInt
+
 object IntOperatorSet : OperatorSet<Int> {
     override val zero: Int = 0
     override val one: Int = 1
+    override val byteSize: Int = 4
+
+    override fun put(pointer: Long, a: Int) {
+        memPutInt(pointer, a)
+    }
 
     override fun lerp(a: Int, b: Int, d: Float): Int {
         return (a + d * (b - a)).toInt()

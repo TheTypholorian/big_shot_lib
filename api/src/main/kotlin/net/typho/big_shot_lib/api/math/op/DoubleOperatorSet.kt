@@ -1,8 +1,15 @@
 package net.typho.big_shot_lib.api.math.op
 
+import org.lwjgl.system.MemoryUtil.memPutDouble
+
 object DoubleOperatorSet : OperatorSet<Double> {
     override val zero: Double = 0.0
     override val one: Double = 1.0
+    override val byteSize: Int = 8
+
+    override fun put(pointer: Long, a: Double) {
+        memPutDouble(pointer, a)
+    }
 
     override fun lerp(a: Double, b: Double, d: Float): Double {
         return a + d * (b - a)

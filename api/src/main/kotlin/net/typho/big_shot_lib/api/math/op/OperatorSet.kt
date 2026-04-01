@@ -3,6 +3,9 @@ package net.typho.big_shot_lib.api.math.op
 interface OperatorSet<N : Number> {
     val zero: N
     val one: N
+    val byteSize: Int
+
+    fun put(pointer: Long, a: N)
 
     fun lerp(a: N, b: N, d: Float): N
 

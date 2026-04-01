@@ -13,7 +13,7 @@ abstract class AbstractVec2<N : Number>(
     @JvmField
     val y: N
 ) {
-    protected abstract val opSet: OperatorSet<N>
+    abstract val opSet: OperatorSet<N>
     val gridLength: N
         get() = opSet.plus(opSet.abs(x), opSet.abs(y))
     val lengthSquared: N
