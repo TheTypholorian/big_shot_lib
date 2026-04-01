@@ -33,6 +33,7 @@ open class Mesh(
             Mesh(
                 NeoVertexFormat.POSITION_TEX,
                 GlBeginMode.QUADS,
+                GlBufferWriter.Mode.REGULAR,
                 GlBufferUsage.STATIC_DRAW
             ).also { mesh ->
                 mesh.upload(4) {

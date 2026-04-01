@@ -16,21 +16,21 @@ sourceSets {
     main {
         java {
             if (sc.current.parsed < "1.21.5") {
-                exclude("net/typho/big_shot_lib/impl/mixin/iface/GlBufferMixin.java")
-                exclude("net/typho/big_shot_lib/impl/mixin/iface/GlTextureMixin.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlBufferMixin.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlTextureMixin.java")
             }
 
             if (sc.current.parsed >= "1.21") {
-                exclude("net/typho/big_shot_lib/impl/mixin/VertexFormatAccessor.java")
-                exclude("net/typho/big_shot_lib/impl/mixin/RenderTypeAccessor.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/VertexFormatAccessor.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/RenderTypeAccessor.java")
             }
 
             if (sc.current.parsed < "1.21.9") {
-                exclude("net/typho/big_shot_lib/impl/mixin/DebugScreenEntriesAccessor.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenEntriesAccessor.java")
             }
 
             if (sc.current.parsed >= "1.21.9") {
-                exclude("net/typho/big_shot_lib/impl/mixin/DebugScreenOverlayMixin.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
             }
         }
     }
