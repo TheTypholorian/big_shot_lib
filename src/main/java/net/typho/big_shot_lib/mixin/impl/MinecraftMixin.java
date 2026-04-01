@@ -1,8 +1,9 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.impl.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.main.GameConfig;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.typho.big_shot_lib.impl.client.util.BigShotClientEvents;
 import org.jetbrains.annotations.Nullable;

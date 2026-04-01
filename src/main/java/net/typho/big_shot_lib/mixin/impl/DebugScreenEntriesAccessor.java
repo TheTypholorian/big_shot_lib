@@ -1,12 +1,19 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.impl.mixin;
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
-import dev.kikugie.fletching_table.annotation.MixinIgnore;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
-import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
+
+//? if <1.21.11 {
+import net.minecraft.resources.ResourceLocation;
+//? } else {
+/*import net.minecraft.resources.Identifier;
+*///? }
+
+//? if <1.21.9 {
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }

@@ -1,13 +1,15 @@
-package net.typho.big_shot_lib.mixin.impl.iface;
+package net.typho.big_shot_lib.impl.mixin.iface;
 
 //? if <1.21.6 {
-
 import com.mojang.blaze3d.buffers.BufferType;
 import com.mojang.blaze3d.buffers.BufferUsage;
+//? } else {
+/*import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed;
+*///? }
+
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.opengl.GlBuffer;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
-import dev.kikugie.fletching_table.annotation.MixinIgnore;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundBuffer;
@@ -18,6 +20,9 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+
+//? if <1.21.5 {
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }

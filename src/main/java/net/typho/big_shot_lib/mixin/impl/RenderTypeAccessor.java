@@ -1,10 +1,12 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.impl.mixin;
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
-import dev.kikugie.fletching_table.annotation.MixinIgnore;
 import net.minecraft.client.renderer.RenderType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+
+//? if >=1.21 {
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }

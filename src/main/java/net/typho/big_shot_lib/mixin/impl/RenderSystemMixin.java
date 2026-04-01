@@ -1,10 +1,11 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.impl.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.GlQueueImpl;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

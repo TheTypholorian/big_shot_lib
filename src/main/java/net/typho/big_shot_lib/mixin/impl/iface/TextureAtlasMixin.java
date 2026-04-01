@@ -1,17 +1,23 @@
-package net.typho.big_shot_lib.mixin.impl.iface;
+package net.typho.big_shot_lib.impl.mixin.iface;
 
 //? if <1.21.11 {
+import net.minecraft.resources.ResourceLocation;
+//? } else {
+/*import net.minecraft.resources.Identifier;
+*///? }
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.collections.MapsKt;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundTexture2D;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D;
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas;
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlasSprite;

@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl.iface;
+package net.typho.big_shot_lib.impl.mixin.iface;
 
 //? if >=1.21.5 {
 /*import com.mojang.blaze3d.opengl.GlDevice;
@@ -7,6 +7,7 @@ import com.mojang.blaze3d.textures.GpuTexture;
 *///? }
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.RenderSystem;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundFramebuffer;
@@ -14,11 +15,13 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlTex
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebufferAttachment;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2;
 import net.typho.big_shot_lib.api.util.KeyedDelegate;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftRenderTarget;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
+import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;

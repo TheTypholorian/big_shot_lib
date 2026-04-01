@@ -1,9 +1,14 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.impl.mixin;
 
 //? if <1.21.10 {
+import net.minecraft.client.renderer.RenderStateShard;
+//? } else if <1.21.11 {
+/*import net.minecraft.client.renderer.RenderType;
+*///? } else {
+/*import net.minecraft.client.renderer.rendertype.RenderType;
+*///? }
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
-import net.minecraft.client.renderer.RenderStateShard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 

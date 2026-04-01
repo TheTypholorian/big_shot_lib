@@ -1,8 +1,8 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.impl.mixin;
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
-import net.minecraft.client.renderer.LevelRenderer;
 import org.spongepowered.asm.mixin.Mixin;
+import net.minecraft.client.renderer.LevelRenderer;
 
 //? if >=1.21.9 {
 /*import com.llamalad7.mixinextras.sugar.Local;

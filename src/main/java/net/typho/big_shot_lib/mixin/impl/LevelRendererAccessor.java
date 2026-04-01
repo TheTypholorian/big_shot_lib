@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.impl.mixin;
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.multiplayer.ClientLevel;
