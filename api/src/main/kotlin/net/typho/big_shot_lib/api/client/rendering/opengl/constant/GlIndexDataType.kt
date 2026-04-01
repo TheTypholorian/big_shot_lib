@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
-import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.opengl.GL11.*
+import java.io.DataOutput
 
 enum class GlIndexDataType(
     override val glId: Int,
@@ -9,20 +9,20 @@ enum class GlIndexDataType(
     val sizeBytes: Int
 ) : GlConstant {
     BYTE(GL_UNSIGNED_BYTE, UByte.SIZE_BYTES) {
-        override fun put(buffer: NeoBuffer, index: Long, value: Int) {
-            buffer.put(index, value.toByte())
+        override fun write(output: DataOutput, value: Int) {
+            output.writeByte(value)
         }
     },
     SHORT(GL_UNSIGNED_SHORT, UShort.SIZE_BYTES) {
-        override fun put(buffer: NeoBuffer, index: Long, value: Int) {
-            buffer.put(index, value.toShort())
+        override fun write(output: DataOutput, value: Int) {
+            output.writeShort(value)
         }
     },
     INT(GL_UNSIGNED_INT, UInt.SIZE_BYTES) {
-        override fun put(buffer: NeoBuffer, index: Long, value: Int) {
-            buffer.put(index, value)
+        override fun write(output: DataOutput, value: Int) {
+            output.writeInt(value)
         }
     };
 
-    abstract fun put(buffer: NeoBuffer, index: Long, value: Int)
+    abstract fun write(output: DataOutput, value: Int)
 }

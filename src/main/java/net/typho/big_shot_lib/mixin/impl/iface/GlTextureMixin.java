@@ -1,15 +1,15 @@
-package net.typho.big_shot_lib.impl.mixin.iface;
+package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.opengl.GlTexture;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.TextureFormat;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
@@ -17,9 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-
-//? if <1.21.5 {
-import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }

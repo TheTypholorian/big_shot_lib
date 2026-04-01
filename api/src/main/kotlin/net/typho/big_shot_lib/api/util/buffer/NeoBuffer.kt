@@ -1,279 +1,265 @@
 package net.typho.big_shot_lib.api.util.buffer
 
-import net.typho.big_shot_lib.api.util.intByteIndex
-import net.typho.big_shot_lib.api.util.longByteIndex
-import net.typho.big_shot_lib.api.util.shortByteIndex
+import net.typho.big_shot_lib.api.math.vec.*
+import net.typho.big_shot_lib.api.util.*
 import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.system.NativeResource
+import java.io.InputStream
+import java.io.OutputStream
 import java.lang.ref.Cleaner
-import java.nio.ByteBuffer
+import java.nio.Buffer
 
-fun NeoBuffer.Native?.realloc(newSize: Long): NeoBuffer.Native {
-    return this?.realloc(newSize) ?: NeoBuffer.Native(newSize)
-}
+abstract class NeoBuffer : Iterable<Byte> {
+    abstract val address: Long
+    abstract val size: Long
 
-interface NeoBuffer {
-    companion object {
-        @JvmStatic
-        val NULL = Native(0, 0, false)
+    protected fun checkIndex(index: Long, size: Long): Long {
+        if (index < 0 || index + size > this.size) {
+            throw IndexOutOfBoundsException(index)
+        }
+
+        return address + index
     }
 
-    val address: Long
-    val size: Long
+    override fun iterator() = object : Iterator<Byte> {
+        var index = 0L
 
-    fun check(index: Long, size: Long) {
-        if (index < 0 || index + size > this.size) {
-            throw IndexOutOfBoundsException("Invalid range $index + $size in buffer of size ${this.size}")
+        override fun hasNext() = index < size
+
+        override fun next(): Byte {
+            if (!hasNext()) {
+                throw NoSuchElementException()
+            }
+
+            return memGetByte(address + index++)
         }
     }
 
-    fun range(index: Long, size: Long): NeoBuffer {
-        check(index, size)
-        return Native(address + index, size, false)
+    operator fun get(index: Long) = getByte(index)
+
+    fun getByte(index: Long) = memGetByte(checkIndex(index, 1))
+
+    fun getShort(index: Long) = memGetShort(checkIndex(index, 2))
+
+    fun getInt(index: Long) = memGetInt(checkIndex(index, 4))
+
+    fun getLong(index: Long) = memGetLong(checkIndex(index, 8))
+
+    fun getFloat(index: Long) = memGetFloat(checkIndex(index, 4))
+
+    fun getDouble(index: Long) = memGetDouble(checkIndex(index, 8))
+
+    fun getByteArray(index: Long, length: Int): ByteArray {
+        val ptr = checkIndex(index, length.toLong())
+        return ByteArray(length) { memGetByte(ptr + it) }
     }
 
-    fun put(index: Long, data: NeoBuffer)
+    fun getShortArray(index: Long, length: Int): ShortArray {
+        val ptr = checkIndex(index, length.shortByteIndex.toLong())
+        return ShortArray(length) { memGetShort(ptr + it.shortByteIndex) }
+    }
 
-    fun put(index: Long, data: Byte)
+    fun getIntArray(index: Long, length: Int): IntArray {
+        val ptr = checkIndex(index, length.intByteIndex.toLong())
+        return IntArray(length) { memGetInt(ptr + it.intByteIndex) }
+    }
 
-    fun put(index: Long, data: ByteArray)
+    fun getLongArray(index: Long, length: Int): LongArray {
+        val ptr = checkIndex(index, length.longByteIndex.toLong())
+        return LongArray(length) { memGetLong(ptr + it.longByteIndex) }
+    }
 
-    fun put(index: Long, data: Short)
+    fun getFloatArray(index: Long, length: Int): FloatArray {
+        val ptr = checkIndex(index, length.floatByteIndex.toLong())
+        return FloatArray(length) { memGetFloat(ptr + it.floatByteIndex) }
+    }
 
-    fun put(index: Long, data: ShortArray)
+    fun getDoubleArray(index: Long, length: Int): DoubleArray {
+        val ptr = checkIndex(index, length.doubleByteIndex.toLong())
+        return DoubleArray(length) { memGetDouble(ptr + it.doubleByteIndex) }
+    }
 
-    fun put(index: Long, data: Char)
+    fun getVec2d(index: Long): AbstractVec2<Double> = NeoVec2d(getDouble(index), getDouble(index + 8))
 
-    fun put(index: Long, data: CharArray)
+    fun getVec2f(index: Long): AbstractVec2<Float> = NeoVec2f(getFloat(index), getFloat(index + 4))
 
-    fun put(index: Long, data: Int)
+    fun getVec2i(index: Long): AbstractVec2<Int> = NeoVec2i(getInt(index), getInt(index + 4))
 
-    fun put(index: Long, data: IntArray)
+    fun getVec3d(index: Long): AbstractVec3<Double> = NeoVec3d(getDouble(index), getDouble(index + 8), getDouble(index + 16))
 
-    fun put(index: Long, data: Long)
+    fun getVec3f(index: Long): AbstractVec3<Float> = NeoVec3f(getFloat(index), getFloat(index + 4), getFloat(index + 8))
 
-    fun put(index: Long, data: LongArray)
+    fun getVec3i(index: Long): AbstractVec3<Int> = NeoVec3i(getInt(index), getInt(index + 4), getInt(index + 8))
 
-    fun put(index: Long, data: Float)
+    fun getVec4d(index: Long): AbstractVec4<Double> = NeoVec4d(getDouble(index), getDouble(index + 8), getDouble(index + 16), getDouble(index + 24))
 
-    fun put(index: Long, data: FloatArray)
+    fun getVec4f(index: Long): AbstractVec4<Float> = NeoVec4f(getFloat(index), getFloat(index + 4), getFloat(index + 8), getFloat(index + 12))
 
-    fun put(index: Long, data: Double)
+    fun getVec4i(index: Long): AbstractVec4<Int> = NeoVec4i(getInt(index), getInt(index + 4), getInt(index + 8), getInt(index + 12))
 
-    fun put(index: Long, data: DoubleArray)
+    operator fun set(index: Long, value: Byte) = memPutByte(checkIndex(index, 1), value)
 
-    fun asByteBuffer(): ByteBuffer = memByteBuffer(address, size.toInt())
+    operator fun set(index: Long, value: Short) = memPutShort(checkIndex(index, 2), value)
+
+    operator fun set(index: Long, value: Int) = memPutInt(checkIndex(index, 4), value)
+
+    operator fun set(index: Long, value: Long) = memPutLong(checkIndex(index, 8), value)
+
+    operator fun set(index: Long, value: Float) = memPutFloat(checkIndex(index, 4), value)
+
+    operator fun set(index: Long, value: Double) = memPutDouble(checkIndex(index, 8), value)
+
+    operator fun set(index: Long, value: ByteArray) {
+        val ptr = checkIndex(index, value.size.toLong())
+        value.forEachIndexed { index, b -> memPutByte(ptr + index, b) }
+    }
+
+    operator fun set(index: Long, value: ShortArray) {
+        val ptr = checkIndex(index, value.size.shortByteIndex.toLong())
+        value.forEachIndexed { index, b -> memPutShort(ptr + index.shortByteIndex, b) }
+    }
+
+    operator fun set(index: Long, value: IntArray) {
+        val ptr = checkIndex(index, value.size.intByteIndex.toLong())
+        value.forEachIndexed { index, b -> memPutInt(ptr + index.intByteIndex, b) }
+    }
+
+    operator fun set(index: Long, value: LongArray) {
+        val ptr = checkIndex(index, value.size.longByteIndex.toLong())
+        value.forEachIndexed { index, b -> memPutLong(ptr + index.longByteIndex, b) }
+    }
+
+    operator fun set(index: Long, value: FloatArray) {
+        val ptr = checkIndex(index, value.size.floatByteIndex.toLong())
+        value.forEachIndexed { index, b -> memPutFloat(ptr + index.floatByteIndex, b) }
+    }
+
+    operator fun set(index: Long, value: DoubleArray) {
+        val ptr = checkIndex(index, value.size.doubleByteIndex.toLong())
+        value.forEachIndexed { index, b -> memPutDouble(ptr + index.doubleByteIndex, b) }
+    }
+
+    fun set(index: Long, value: ByteArray, offset: Int, length: Int) {
+        val ptr = checkIndex(index, length.toLong())
+        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutByte(ptr + relativeIndex, b) }
+    }
+
+    fun set(index: Long, value: ShortArray, offset: Int, length: Int) {
+        val ptr = checkIndex(index, length.shortByteIndex.toLong())
+        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutShort(ptr + relativeIndex.shortByteIndex, b) }
+    }
+
+    fun set(index: Long, value: IntArray, offset: Int, length: Int) {
+        val ptr = checkIndex(index, length.intByteIndex.toLong())
+        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutInt(ptr + relativeIndex.intByteIndex, b) }
+    }
+
+    fun set(index: Long, value: LongArray, offset: Int, length: Int) {
+        val ptr = checkIndex(index, length.longByteIndex.toLong())
+        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutLong(ptr + relativeIndex.longByteIndex, b) }
+    }
+
+    fun set(index: Long, value: FloatArray, offset: Int, length: Int) {
+        val ptr = checkIndex(index, length.floatByteIndex.toLong())
+        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutFloat(ptr + relativeIndex.floatByteIndex, b) }
+    }
+
+    fun set(index: Long, value: DoubleArray, offset: Int, length: Int) {
+        val ptr = checkIndex(index, length.doubleByteIndex.toLong())
+        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutDouble(ptr + relativeIndex.doubleByteIndex, b) }
+    }
+
+    operator fun <N : Number> set(index: Long, value: AbstractVec2<N>) {
+        val ptr = checkIndex(index, 2L * value.opSet.byteSize)
+        value.opSet.put(ptr, value.x)
+        value.opSet.put(ptr + value.opSet.byteSize, value.y)
+    }
+
+    operator fun <N : Number> set(index: Long, value: AbstractVec3<N>) {
+        val ptr = checkIndex(index, 3L * value.opSet.byteSize)
+        value.opSet.put(ptr, value.x)
+        value.opSet.put(ptr + value.opSet.byteSize, value.y)
+        value.opSet.put(ptr + 2L * value.opSet.byteSize, value.z)
+    }
+
+    operator fun <N : Number> set(index: Long, value: AbstractVec4<N>) {
+        val ptr = checkIndex(index, 4L * value.opSet.byteSize)
+        value.opSet.put(ptr, value.x)
+        value.opSet.put(ptr + value.opSet.byteSize, value.y)
+        value.opSet.put(ptr + 2L * value.opSet.byteSize, value.z)
+        value.opSet.put(ptr + 3L * value.opSet.byteSize, value.w)
+    }
+
+    @JvmOverloads
+    fun read(offset: Long = 0L): InputStream {
+        return object : InputStream() {
+            var index = offset
+
+            override fun read(): Int {
+                return get(index++).toInt()
+            }
+        }
+    }
+
+    @JvmOverloads
+    fun write(offset: Long = 0L): OutputStream {
+        return object : OutputStream() {
+            var index = offset
+
+            override fun write(b: Int) {
+                set(index++, b)
+            }
+        }
+    }
 
     open class Nio(
         @JvmField
-        val buffer: ByteBuffer
-    ) : NeoBuffer {
-        override val address: Long
-            get() = memAddress(buffer)
-        override val size: Long
-            get() = buffer.capacity().toLong()
-
-        override fun put(index: Long, data: NeoBuffer) {
-            buffer.put(index.toInt(), data.asByteBuffer(), 0, data.size.toInt())
-        }
-
-        override fun put(index: Long, data: Byte) {
-            buffer.put(index.toInt(), data)
-        }
-
-        override fun put(index: Long, data: ByteArray) {
-            buffer.put(index.toInt(), data)
-        }
-
-        override fun put(index: Long, data: Short) {
-            buffer.putShort(index.toInt(), data)
-        }
-
-        override fun put(index: Long, data: ShortArray) {
-            data.forEachIndexed { i, s ->
-                buffer.putShort(index.toInt() + i.shortByteIndex, s)
-            }
-        }
-
-        override fun put(index: Long, data: Char) {
-            buffer.putShort(index.toInt(), data.code.toShort())
-        }
-
-        override fun put(index: Long, data: CharArray) {
-            data.forEachIndexed { i, s ->
-                buffer.putShort(index.toInt() + i.shortByteIndex, s.code.toShort())
-            }
-        }
-
-        override fun put(index: Long, data: Int) {
-            buffer.putInt(index.toInt(), data)
-        }
-
-        override fun put(index: Long, data: IntArray) {
-            data.forEachIndexed { i, s ->
-                buffer.putInt(index.toInt() + i.intByteIndex, s)
-            }
-        }
-
-        override fun put(index: Long, data: Long) {
-            buffer.putLong(index.toInt(), data)
-        }
-
-        override fun put(index: Long, data: LongArray) {
-            data.forEachIndexed { i, s ->
-                buffer.putLong(index.toInt() + i.longByteIndex, s)
-            }
-        }
-
-        override fun put(index: Long, data: Float) {
-            buffer.putFloat(index.toInt(), data)
-        }
-
-        override fun put(index: Long, data: FloatArray) {
-            data.forEachIndexed { i, s ->
-                buffer.putFloat(index.toInt() + i.intByteIndex, s)
-            }
-        }
-
-        override fun put(index: Long, data: Double) {
-            buffer.putDouble(index.toInt(), data)
-        }
-
-        override fun put(index: Long, data: DoubleArray) {
-            data.forEachIndexed { i, s ->
-                buffer.putDouble(index.toInt() + i.longByteIndex, s)
-            }
-        }
+        val buffer: Buffer
+    ) : NeoBuffer() {
+        override val address: Long = memAddress(buffer)
+        override val size: Long = (buffer.limit() - buffer.position()).toLong()
     }
 
     open class Native(
         override val address: Long,
-        override val size: Long,
-        autoFree: Boolean = true
-    ) : NeoBuffer, NativeResource {
-        var freed = false
-            private set
-        private val cleanup: Cleaner.Cleanable = if (autoFree)
-            CLEANER.register(this, createCleanup())
-        else
-            Cleaner.Cleanable { createCleanup().run() }
+        override val size: Long
+    ) : NeoBuffer(), NativeResource {
+        var isFreed: Boolean = false
+            protected set
 
-        constructor(size: Long) : this(nmemAlloc(size), size)
+        constructor(size: Long) : this(nmemAllocChecked(size), size)
 
         override fun free() {
-            if (!freed) {
-                freed = true
-                cleanup.clean()
+            if (!isFreed) {
+                isFreed = true
+                nmemFree(address)
             }
         }
+    }
 
-        private class Cleanup(
-            val ptr: Long
-        ) : Runnable {
-            override fun run() {
-                nmemFree(ptr)
-            }
-        }
-
-        protected open fun createCleanup(): Runnable {
-            return Cleanup(address)
-        }
-
+    open class GCNative(
+        address: Long,
+        size: Long
+    ) : Native(address, size) {
         companion object {
             @JvmStatic
             private val CLEANER = Cleaner.create()
         }
 
-        override fun check(index: Long, size: Long) {
-            super.check(index, size)
+        protected val cleanup: Cleaner.Cleanable = CLEANER.register(this, createCleanup())
 
-            if (freed) {
-                throw IllegalStateException("Native NeoBuffer has already been freed")
+        override fun free() {
+            if (!isFreed) {
+                isFreed = true
+                cleanup.clean()
             }
         }
 
-        fun realloc(newSize: Long): Native {
-            if (size == newSize) {
-                return this
+        protected open fun createCleanup(): Runnable {
+            val ptr = address
+            return Runnable {
+                nmemFree(ptr)
             }
-
-            freed = true
-            return Native(nmemRealloc(address, newSize), newSize)
-        }
-
-        override fun put(index: Long, data: NeoBuffer) {
-            check(index, data.size)
-            memCopy(data.address, address, data.size)
-        }
-
-        override fun put(index: Long, data: Byte) {
-            check(index, Byte.SIZE_BYTES.toLong())
-            memPutByte(address + index, data)
-        }
-
-        override fun put(index: Long, data: ByteArray) {
-            check(index, data.size.toLong())
-            data.forEachIndexed { i, b -> memPutByte(address + index + i, b) }
-        }
-
-        override fun put(index: Long, data: Short) {
-            check(index, Short.SIZE_BYTES.toLong())
-            memPutShort(address + index, data)
-        }
-
-        override fun put(index: Long, data: ShortArray) {
-            check(index, data.size.toLong() * Short.SIZE_BYTES)
-            data.forEachIndexed { i, b -> memPutShort(address + index + (i shl 1), b) }
-        }
-
-        override fun put(index: Long, data: Char) {
-            check(index, Char.SIZE_BYTES.toLong())
-            memPutShort(address + index, data.code.toShort())
-        }
-
-        override fun put(index: Long, data: CharArray) {
-            check(index, data.size.toLong() * Char.SIZE_BYTES)
-            data.forEachIndexed { i, b -> memPutShort(address + index + (i shl 1), b.code.toShort()) }
-        }
-
-        override fun put(index: Long, data: Int) {
-            check(index, Int.SIZE_BYTES.toLong())
-            memPutInt(address + index, data)
-        }
-
-        override fun put(index: Long, data: IntArray) {
-            check(index, data.size.toLong() * Int.SIZE_BYTES)
-            data.forEachIndexed { i, b -> memPutInt(address + index + (i shl 2), b) }
-        }
-
-        override fun put(index: Long, data: Long) {
-            check(index, Long.SIZE_BYTES.toLong())
-            memPutLong(address + index, data)
-        }
-
-        override fun put(index: Long, data: LongArray) {
-            check(index, data.size.toLong() * Long.SIZE_BYTES)
-            data.forEachIndexed { i, b -> memPutLong(address + index + (i shl 3), b) }
-        }
-
-        override fun put(index: Long, data: Float) {
-            check(index, Float.SIZE_BYTES.toLong())
-            memPutFloat(address + index, data)
-        }
-
-        override fun put(index: Long, data: FloatArray) {
-            check(index, data.size.toLong() * Float.SIZE_BYTES)
-            data.forEachIndexed { i, b -> memPutFloat(address + index + (i shl 2), b) }
-        }
-
-        override fun put(index: Long, data: Double) {
-            check(index, Double.SIZE_BYTES.toLong())
-            memPutDouble(address + index, data)
-        }
-
-        override fun put(index: Long, data: DoubleArray) {
-            check(index, data.size.toLong() * Double.SIZE_BYTES)
-            data.forEachIndexed { i, b -> memPutDouble(address + index + (i shl 3), b) }
         }
     }
 }

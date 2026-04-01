@@ -13,11 +13,7 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 /*import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 *///? }
 *///? } neoforge {
-import net.neoforged.neoforge.client.event.ClientTickEvent
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent
-import net.neoforged.neoforge.common.NeoForge
 //? if <1.21.4 {
-import net.neoforged.neoforge.event.AddReloadListenerEvent
 //? } else {
 /*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 *///? }
@@ -25,6 +21,10 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent
 
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
+import net.neoforged.neoforge.client.event.ClientTickEvent
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent
+import net.neoforged.neoforge.common.NeoForge
+import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
@@ -39,13 +39,13 @@ import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl
-import net.typho.big_shot_lib.impl.mixin.FrustumAccessor
-import net.typho.big_shot_lib.impl.mixin.LevelRendererAccessor
+import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
+import net.typho.big_shot_lib.mixin.impl.LevelRendererAccessor
 
 //? if >=1.21.9 {
 /*import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
 import net.minecraft.client.gui.components.debug.DebugScreenEntry
-import net.typho.big_shot_lib.impl.mixin.DebugScreenEntriesAccessor
+import net.typho.big_shot_lib.mixin.impl.DebugScreenEntriesAccessor
 *///? }
 
 object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugScreenFactory {

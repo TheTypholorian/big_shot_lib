@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
 import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.blaze3d.vertex.VertexConsumer
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.math.rect.AbstractRect3
 import net.typho.big_shot_lib.api.math.vec.AbstractVec2
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
@@ -22,8 +22,6 @@ abstract class NeoVertexConsumer {
     abstract fun lightUV(u: Int, v: Int): NeoVertexConsumer
 
     abstract fun normal(x: Float, y: Float, z: Float): NeoVertexConsumer
-
-    abstract fun normal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): NeoVertexConsumer
 
     /**
      * This method only exists for pre-1.21 compat, and will be removed once 1.20.x support is dropped.
@@ -150,6 +148,11 @@ abstract class NeoVertexConsumer {
             ((packed ushr 16) and 0xFF) / 127f,
             ((packed ushr 8) and 0xFF) / 127f
         )
+        return this
+    }
+
+    open fun normal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): NeoVertexConsumer {
+        normal(InternalUtil.INSTANCE.transformNormal(pose, x, y, z))
         return this
     }
 

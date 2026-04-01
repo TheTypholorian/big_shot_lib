@@ -42,17 +42,11 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
         return buffer
     }
 
-    fun mapBuffer(access: GlBufferAccess, length: Long): GlMappedBuffer
+    fun mapBuffer(access: GlBufferAccess, length: Long): Long
 
-    fun mapBuffer(access: GlBufferAccess, length: Long, out: GlMappedBuffer.() -> Unit) {
-        mapBuffer(access, length).also { out(it) }.free()
-    }
+    fun mapBufferRange(access: GlBufferAccess, offset: Long, length: Long): Long
 
-    fun mapBufferRange(access: GlBufferAccess, offset: Long, length: Long): GlMappedBuffer
-
-    fun mapBufferRange(access: GlBufferAccess, offset: Long, length: Long, out: GlMappedBuffer.() -> Unit) {
-        mapBufferRange(access, offset, length).also { out(it) }.free()
-    }
+    fun unmapBuffer()
 
     open class Basic(
         override val resource: GlBuffer,
@@ -111,19 +105,15 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
         override fun mapBuffer(
             access: GlBufferAccess,
             length: Long
-        ): GlMappedBuffer {
-            return assertBound {
+        ): Long {
+            assertBound {
                 val pointer = nglMapBuffer(target.glId, access.glId)
 
                 if (pointer == MemoryUtil.NULL) {
                     throw NullPointerException("Failed to map buffer $target")
                 }
 
-                GlMappedBuffer(
-                    pointer,
-                    length,
-                    this
-                )
+                return pointer
             }
         }
 
@@ -131,19 +121,21 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
             access: GlBufferAccess,
             offset: Long,
             length: Long
-        ): GlMappedBuffer {
-            return assertBound {
+        ): Long {
+            assertBound {
                 val pointer = nglMapBufferRange(target.glId, offset, length, access.glId)
 
                 if (pointer == MemoryUtil.NULL) {
                     throw NullPointerException("Failed to map buffer $target")
                 }
 
-                GlMappedBuffer(
-                    pointer,
-                    length,
-                    this
-                )
+                return pointer
+            }
+        }
+
+        override fun unmapBuffer() {
+            assertBound {
+                glUnmapBuffer(target.glId)
             }
         }
     }

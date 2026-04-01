@@ -1,21 +1,19 @@
 package net.typho.big_shot_lib.impl
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
+import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormatElement
-import com.mojang.serialization.DataResult
 import net.minecraft.client.Minecraft
 import net.typho.big_shot_lib.api.InternalUtil
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas
-import net.typho.big_shot_lib.api.client.rendering.util.NeoBufferBuilder
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
-import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
+import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.impl.client.rendering.util.AutoSizeNeoBufferBuilderImpl
-import net.typho.big_shot_lib.impl.client.rendering.util.KnownSizeNeoBufferBuilderImpl
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.util.getExtensionValue
+import org.joml.Vector3f
 
 object InternalUtilImpl : InternalUtil {
     override fun createVertexFormatBuilder(): NeoVertexFormat.Builder {
@@ -77,31 +75,6 @@ object InternalUtilImpl : InternalUtil {
     override val positionTexLightColorVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR)
     override val positionTexColorNormalVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL)
 
-    override fun createBufferBuilder(
-        format: NeoVertexFormat,
-        mode: GlBeginMode
-    ): NeoBufferBuilder {
-        return AutoSizeNeoBufferBuilderImpl(format, mode)
-    }
-
-    override fun createBufferBuilder(
-        format: NeoVertexFormat,
-        mode: GlBeginMode,
-        numVertices: Int
-    ): NeoBufferBuilder {
-        return KnownSizeNeoBufferBuilderImpl(format, mode, numVertices)
-    }
-
-    override fun createBufferBuilder(
-        format: NeoVertexFormat,
-        mode: GlBeginMode,
-        numVertices: Int,
-        vertexBuffer: (size: Long) -> NeoBuffer.Native,
-        indexBuffer: (size: Long?) -> NeoBuffer.Native?
-    ): NeoBufferBuilder {
-        return KnownSizeNeoBufferBuilderImpl(format, mode, numVertices, vertexBuffer, indexBuffer)
-    }
-
     override fun getTexture(location: NeoIdentifier): GlTexture2D {
         TODO("Not yet implemented")
     }
@@ -111,6 +84,19 @@ object InternalUtilImpl : InternalUtil {
         return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
         //? } else {
         /*return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
+        *///? }
+    }
+
+    override fun transformNormal(
+        pose: PoseStack.Pose,
+        x: Float,
+        y: Float,
+        z: Float
+    ): AbstractVec3<Float> {
+        //? if >=1.20.5 {
+        return NeoVec3f(pose.transformNormal(x, y, z, Vector3f()))
+        //? } else {
+        /*return NeoVec3f(pose.normal().transform(Vector3f(x, y, z)))
         *///? }
     }
 }

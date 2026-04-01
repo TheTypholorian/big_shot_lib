@@ -1,13 +1,11 @@
 package net.typho.big_shot_lib.api
 
-import com.mojang.serialization.DataResult
-import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
+import com.mojang.blaze3d.vertex.PoseStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas
-import net.typho.big_shot_lib.api.client.rendering.util.NeoBufferBuilder
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
-import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
+import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface InternalUtil {
@@ -33,15 +31,11 @@ interface InternalUtil {
 
     fun createVertexFormatBuilder(): NeoVertexFormat.Builder
 
-    fun createBufferBuilder(format: NeoVertexFormat, mode: GlBeginMode, numVertices: Int, vertexBuffer: (size: Long) -> NeoBuffer.Native, indexBuffer: (size: Long?) -> NeoBuffer.Native?): NeoBufferBuilder
-
-    fun createBufferBuilder(format: NeoVertexFormat, mode: GlBeginMode, numVertices: Int): NeoBufferBuilder
-
-    fun createBufferBuilder(format: NeoVertexFormat, mode: GlBeginMode): NeoBufferBuilder
-
     fun getTexture(location: NeoIdentifier): GlTexture2D?
 
     fun getAtlas(location: NeoIdentifier): NeoAtlas?
+
+    fun transformNormal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): AbstractVec3<Float>
 
     companion object {
         internal val INSTANCE by lazy { InternalUtil::class.loadService() }

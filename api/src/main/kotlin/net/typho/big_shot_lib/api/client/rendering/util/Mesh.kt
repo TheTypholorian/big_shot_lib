@@ -1,11 +1,10 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferAccess
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlIndexDataType
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlMappedBuffer
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBufferWriter
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlVertexArray
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
@@ -17,6 +16,8 @@ open class Mesh(
     val format: NeoVertexFormat,
     @JvmField
     val mode: GlBeginMode,
+    @JvmField
+    val writeMode: GlBufferWriter.Mode,
     @JvmField
     val usage: GlBufferUsage,
     @JvmField
@@ -55,18 +56,6 @@ open class Mesh(
         ebo?.free()
     }
 
-    /**
-     * Only use this method when you have no way of knowing the buffer size (ex. when invoking entity rendering). Otherwise, always use upload method and specify vertex count, as it's much faster.
-     */
-    fun builder() = Builder(NeoBufferBuilder.create(format, mode), true)
-
-    /**
-     * Only use this method when you have no way of knowing the buffer size (ex. when invoking entity rendering). Otherwise, always use the other method (that takes a vertex count), as it's much faster.
-     */
-    fun upload(out: Builder.() -> Unit) {
-        builder().also { out(it) }.free()
-    }
-
     fun upload(vertexCount: Int, out: Builder.() -> Unit) {
         if (vertexCount == 0) {
             size = 0
@@ -76,31 +65,22 @@ open class Mesh(
         vbo.bind(GlBufferTarget.ARRAY_BUFFER).use { vbo ->
             ebo?.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER)?.use { ebo ->
                 Builder(
-                    NeoBufferBuilder.create(
+                    NeoBufferBuilder(
                         format,
                         mode,
                         vertexCount,
-                        {
-                            vbo.bufferData(it, usage)
-                            vbo.mapBuffer(GlBufferAccess.WRITE_ONLY, it)
-                        },
-                        {
-                            ebo.bufferData(it!!, usage)
-                            ebo.mapBuffer(GlBufferAccess.WRITE_ONLY, it)
-                        }
+                        { writeMode.create(vbo, it, usage) },
+                        { writeMode.create(ebo, it!!, usage) }
                     ),
                     false
                 ).also { out(it) }.free()
             }
                 ?: Builder(
-                    NeoBufferBuilder.create(
+                    NeoBufferBuilder(
                         format,
                         mode,
                         vertexCount,
-                        {
-                            vbo.bufferData(it, usage)
-                            vbo.mapBuffer(GlBufferAccess.WRITE_ONLY, it)
-                        },
+                        { writeMode.create(vbo, it, usage) },
                         { null }
                     ),
                     false
@@ -129,19 +109,14 @@ open class Mesh(
         val upload: Boolean
     ) : NeoVertexConsumer.Redirect(bufferBuilder), NativeResource {
         override fun free() {
-            (bufferBuilder.build() ?: throw IllegalStateException("Error with neo buffer builder")).use { built ->
-                if (ebo == null) {
-                    size = built.vertexCount
-                    indexType = null
-                } else {
-                    size = built.indexCount!!
-                    indexType = built.indexType
-                }
+            val built = bufferBuilder.build() ?: throw IllegalStateException("Error with neo buffer builder")
 
-                if (upload) {
-                    vbo.bind(GlBufferTarget.ARRAY_BUFFER).use { it.bufferData(built.vertexBuffer, usage) }
-                    ebo?.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER)?.use { it.bufferData(built.indexBuffer!!, usage) }
-                }
+            if (ebo == null) {
+                size = built.vertexCount
+                indexType = null
+            } else {
+                size = built.indexCount!!
+                indexType = built.indexType
             }
 
             vao.bind().use {

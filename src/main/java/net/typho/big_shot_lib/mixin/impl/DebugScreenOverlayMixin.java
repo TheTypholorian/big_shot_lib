@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.impl.mixin;
+package net.typho.big_shot_lib.mixin.impl;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import kotlin.Pair;

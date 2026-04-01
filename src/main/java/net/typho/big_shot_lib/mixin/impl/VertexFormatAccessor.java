@@ -1,15 +1,13 @@
-package net.typho.big_shot_lib.impl.mixin;
+package net.typho.big_shot_lib.mixin.impl;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
-import it.unimi.dsi.fastutil.ints.IntList;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
-import org.spongepowered.asm.mixin.Mixin;
-
-//? if >=1.21 {
 import dev.kikugie.fletching_table.annotation.MixinIgnore;
+import it.unimi.dsi.fastutil.ints.IntList;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
 @MixinIgnore
 //? }

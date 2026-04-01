@@ -1,13 +1,9 @@
-package net.typho.big_shot_lib.impl.mixin;
+package net.typho.big_shot_lib.mixin.impl;
 
 //? if <1.21.5 {
-import com.mojang.blaze3d.platform.GlDebug;
-//? } else {
-/*import com.mojang.blaze3d.opengl.GlDebug;
-*///? }
 
+import com.mojang.blaze3d.platform.GlDebug;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag;
 import net.typho.big_shot_lib.api.error.GlException;
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil;
 import org.spongepowered.asm.mixin.Mixin;

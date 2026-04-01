@@ -1,44 +1,115 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
-import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlIndexDataType
-import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
-import org.lwjgl.system.NativeResource
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBufferWriter
+import net.typho.big_shot_lib.api.util.BYTE_MASK
+import net.typho.big_shot_lib.api.util.SHORT_MASK
+import java.io.DataOutput
+import java.io.DataOutputStream
 
-abstract class NeoBufferBuilder : NeoVertexConsumer() {
-    companion object {
-        @JvmStatic
-        fun create(
-            format: NeoVertexFormat,
-            mode: GlBeginMode
-        ) = InternalUtil.INSTANCE.createBufferBuilder(format, mode)
+open class NeoBufferBuilder(
+    @JvmField
+    val format: NeoVertexFormat,
+    @JvmField
+    val mode: GlBeginMode,
+    @JvmField
+    val numVertices: Int,
+    vertexBuffer: (size: Long) -> GlBufferWriter,
+    indexBuffer: (size: Long?) -> GlBufferWriter?
+) : NeoVertexConsumer() {
+    protected var filledVertices: Int = 0
+    protected var filledElements: Int = 0
+    protected var currentIndex: Long = 0
 
-        @JvmStatic
-        fun create(
-            format: NeoVertexFormat,
-            mode: GlBeginMode,
-            numVertices: Int
-        ) = InternalUtil.INSTANCE.createBufferBuilder(format, mode, numVertices)
+    protected val vertexBuffer = vertexBuffer(numVertices.toLong() * format.vertexSizeBytes)
+    protected val numIndices: Int? = mode.indexData?.let {
+        if (numVertices % it.stride != 0) {
+            throw IllegalArgumentException("Vertex count $numVertices is not a multiple of ${it.stride} required for $mode")
+        }
 
-        @JvmStatic
-        fun create(
-            format: NeoVertexFormat,
-            mode: GlBeginMode,
-            numVertices: Int,
-            vertexBuffer: (size: Long) -> NeoBuffer.Native,
-            indexBuffer: (size: Long?) -> NeoBuffer.Native?
-        ) = InternalUtil.INSTANCE.createBufferBuilder(format, mode, numVertices, vertexBuffer, indexBuffer)
+        numVertices / it.stride * it.offsets.size
+    }
+    protected val indexType: GlIndexDataType? = numIndices?.let {
+        when (it) {
+            it and BYTE_MASK -> GlIndexDataType.BYTE
+            it and SHORT_MASK -> GlIndexDataType.SHORT
+            else -> GlIndexDataType.INT
+        }
+    }
+    protected val indexBuffer = indexBuffer(numIndices?.let { it.toLong() * indexType!!.sizeBytes })
+
+    fun put(element: NeoVertexFormat.Element, data: DataOutput.() -> Unit) {
+        val offset = format.getElementOffset(element)
+
+        if (offset == -1) {
+            return
+        }
+
+        val mask = 1 shl format.elements.indexOf(element)
+
+        if (filledElements and mask != 0) {
+            throw IllegalStateException("Already filled element $element")
+        }
+
+        filledElements = filledElements or mask
+        data(DataOutputStream(vertexBuffer.write(currentIndex + offset)))
     }
 
-    abstract val format: NeoVertexFormat
-    abstract val mode: GlBeginMode
+    protected fun end() {
+        if (filledElements == 0 && filledVertices == 0) {
+            return
+        }
 
-    abstract fun put(element: NeoVertexFormat.Element, data: NeoBuffer.(index: Long) -> Unit)
+        if (filledElements != (1 shl format.elements.size) - 1) {
+            val missing = arrayListOf<NeoVertexFormat.Element>()
 
-    protected abstract fun end()
+            format.elements.forEachIndexed { index, element ->
+                if (filledElements and (1 shl index) == 0) {
+                    missing.add(element)
+                }
+            }
 
-    abstract fun build(): Built?
+            throw IllegalStateException("Missing vertex elements $missing for $format")
+        }
+
+        filledVertices++
+        currentIndex += format.vertexSizeBytes
+        filledElements = 0
+
+        if (filledVertices > numVertices) {
+            throw IllegalStateException("Overflowed known size neo buffer builder, expected $numVertices vertices")
+        }
+    }
+
+    fun build(): Built? {
+        end()
+
+        if (filledVertices != numVertices) {
+            return null
+        }
+
+        if (indexBuffer != null) {
+            val indexOut = DataOutputStream(indexBuffer.write())
+            var vertex = 0
+
+            repeat(numVertices / mode.indexData!!.stride) {
+                for (n in mode.indexData.offsets) {
+                    indexType!!.write(indexOut, n + vertex)
+                }
+
+                vertex += mode.indexData.stride
+            }
+        }
+
+        return Built(
+            format,
+            numVertices,
+            numIndices,
+            mode,
+            indexType
+        )
+    }
 
     override fun vertex(
         x: Float,
@@ -46,10 +117,10 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         z: Float
     ): NeoVertexConsumer {
         end()
-        put(NeoVertexFormat.Element.POSITION) { index ->
-            put(index, x)
-            put(index + 4, y)
-            put(index + 8, z)
+        put(NeoVertexFormat.Element.POSITION) {
+            writeFloat(x)
+            writeFloat(y)
+            writeFloat(z)
         }
         return this
     }
@@ -60,11 +131,11 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         b: Int,
         a: Int
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.COLOR) { index ->
-            put(index, r.toByte())
-            put(index + 1, g.toByte())
-            put(index + 2, b.toByte())
-            put(index + 3, a.toByte())
+        put(NeoVertexFormat.Element.COLOR) {
+            write(r)
+            write(g)
+            write(b)
+            write(a)
         }
         return this
     }
@@ -73,9 +144,9 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         u: Float,
         v: Float
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.TEXTURE_UV) { index ->
-            put(index, u)
-            put(index + 4, v)
+        put(NeoVertexFormat.Element.TEXTURE_UV) {
+            writeFloat(u)
+            writeFloat(v)
         }
         return this
     }
@@ -84,9 +155,9 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         u: Int,
         v: Int
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.OVERLAY_UV) { index ->
-            put(index, u.toShort())
-            put(index + 2, v.toShort())
+        put(NeoVertexFormat.Element.OVERLAY_UV) {
+            writeShort(u)
+            writeShort(v)
         }
         return this
     }
@@ -95,9 +166,9 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         u: Int,
         v: Int
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.LIGHT_UV) { index ->
-            put(index, u.toShort())
-            put(index + 2, v.toShort())
+        put(NeoVertexFormat.Element.LIGHT_UV) {
+            writeShort(u)
+            writeShort(v)
         }
         return this
     }
@@ -107,10 +178,10 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         y: Float,
         z: Float
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.NORMAL) { index ->
-            put(index, (x * 127).toInt().toByte())
-            put(index + 1, (y * 127).toInt().toByte())
-            put(index + 2, (z * 127).toInt().toByte())
+        put(NeoVertexFormat.Element.NORMAL) {
+            write((x * 127).toInt())
+            write((y * 127).toInt())
+            write((z * 127).toInt())
         }
         return this
     }
@@ -120,10 +191,10 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         offset: Int
     ): NeoVertexConsumer {
         end()
-        put(NeoVertexFormat.Element.POSITION) { index ->
-            put(index, packed[offset])
-            put(index + 4, packed[offset + 1])
-            put(index + 8, packed[offset + 2])
+        put(NeoVertexFormat.Element.POSITION) {
+            writeInt(packed[offset])
+            writeInt(packed[offset + 1])
+            writeInt(packed[offset + 2])
         }
         return this
     }
@@ -132,16 +203,16 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         packed: IntArray,
         offset: Int
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.COLOR) { index ->
-            put(index, packed[offset])
+        put(NeoVertexFormat.Element.COLOR) {
+            writeInt(packed[offset])
         }
         return this
     }
 
     override fun color(argb: Int): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.COLOR) { index ->
-            put(index, argb and 0xFFFFFF)
-            put(index + 3, (argb ushr 24).toByte())
+        put(NeoVertexFormat.Element.COLOR) {
+            writeInt(argb and 0xFFFFFF)
+            write(argb ushr 24)
         }
         return this
     }
@@ -150,9 +221,9 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         packed: IntArray,
         offset: Int
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.TEXTURE_UV) { index ->
-            put(index, packed[offset])
-            put(index + 4, packed[offset + 1])
+        put(NeoVertexFormat.Element.TEXTURE_UV) {
+            writeInt(packed[offset])
+            writeInt(packed[offset + 1])
         }
         return this
     }
@@ -161,15 +232,15 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         packed: IntArray,
         offset: Int
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.OVERLAY_UV) { index ->
-            put(index, packed[offset])
+        put(NeoVertexFormat.Element.OVERLAY_UV) {
+            writeInt(packed[offset])
         }
         return this
     }
 
     override fun overlayUV(packed: Int): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.OVERLAY_UV) { index ->
-            put(index, packed)
+        put(NeoVertexFormat.Element.OVERLAY_UV) {
+            writeInt(packed)
         }
         return this
     }
@@ -178,15 +249,15 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         packed: IntArray,
         offset: Int
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.LIGHT_UV) { index ->
-            put(index, packed[offset])
+        put(NeoVertexFormat.Element.LIGHT_UV) {
+            writeInt(packed[offset])
         }
         return this
     }
 
     override fun lightUV(packed: Int): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.LIGHT_UV) { index ->
-            put(index, packed)
+        put(NeoVertexFormat.Element.LIGHT_UV) {
+            writeInt(packed)
         }
         return this
     }
@@ -195,26 +266,29 @@ abstract class NeoBufferBuilder : NeoVertexConsumer() {
         packed: IntArray,
         offset: Int
     ): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.NORMAL) { index ->
-            put(index, packed[offset])
+        put(NeoVertexFormat.Element.NORMAL) {
+            writeInt(packed[offset])
         }
         return this
     }
 
     override fun normal(packed: Int): NeoVertexConsumer {
-        put(NeoVertexFormat.Element.NORMAL) { index ->
-            put(index, packed)
+        put(NeoVertexFormat.Element.NORMAL) {
+            writeInt(packed)
         }
         return this
     }
 
-    interface Built : NativeResource {
-        val vertexBuffer: NeoBuffer
-        val indexBuffer: NeoBuffer?
-        val format: NeoVertexFormat
-        val vertexCount: Int
-        val indexCount: Int?
-        val mode: GlBeginMode
+    data class Built(
+        @JvmField
+        val format: NeoVertexFormat,
+        @JvmField
+        val vertexCount: Int,
+        @JvmField
+        val indexCount: Int?,
+        @JvmField
+        val mode: GlBeginMode,
+        @JvmField
         val indexType: GlIndexDataType?
-    }
+    )
 }

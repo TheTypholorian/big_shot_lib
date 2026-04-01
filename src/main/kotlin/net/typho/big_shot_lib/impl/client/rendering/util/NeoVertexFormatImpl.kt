@@ -3,13 +3,13 @@ package net.typho.big_shot_lib.impl.client.rendering.util
 //? if <1.21 {
 /*import com.google.common.collect.ImmutableMap
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
-import net.typho.big_shot_lib.impl.mixin.VertexFormatAccessor
+import net.typho.big_shot_lib.mixin.impl.VertexFormatAccessor
 *///? }
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
-import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 
 data class NeoVertexFormatImpl(
     @JvmField
