@@ -2,12 +2,14 @@ package net.typho.big_shot_lib.api.util.buffer
 
 import net.typho.big_shot_lib.api.math.vec.*
 import net.typho.big_shot_lib.api.util.*
+import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.system.NativeResource
 import java.io.InputStream
 import java.io.OutputStream
 import java.lang.ref.Cleaner
 import java.nio.Buffer
+import java.nio.ByteBuffer
 
 abstract class NeoBuffer : Iterable<Byte> {
     abstract val address: Long
@@ -211,6 +213,8 @@ abstract class NeoBuffer : Iterable<Byte> {
             }
         }
     }
+
+    fun asByteBuffer(): ByteBuffer = memByteBuffer(address, size.toInt())
 
     open class Nio(
         @JvmField

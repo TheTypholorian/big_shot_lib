@@ -6,6 +6,10 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import net.typho.big_shot_lib.mixin.impl.VertexFormatAccessor
 *///? }
 
+//? if >=1.21.5 {
+/*import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
+*///? }
+
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType

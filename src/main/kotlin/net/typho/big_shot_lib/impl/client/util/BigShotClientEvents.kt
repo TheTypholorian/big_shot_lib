@@ -15,8 +15,16 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 *///? } neoforge {
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.client.event.ClientTickEvent
-//? if <=1.21.5 {
+//? if <1.21.9 {
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
+
+//? if >1.21.5 {
+/*import org.joml.Matrix4f
+import com.mojang.blaze3d.systems.RenderSystem
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
+import net.typho.big_shot_lib.impl.util.getExtensionValue
+*///? }
 //? }
 //? if <1.21.4 {
 import net.neoforged.neoforge.event.AddReloadListenerEvent
@@ -41,11 +49,14 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl
 import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
 import net.typho.big_shot_lib.mixin.impl.LevelRendererAccessor
+import net.typho.big_shot_lib.impl.mojang
 
 //? if >=1.21.9 {
 /*import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
 import net.minecraft.client.gui.components.debug.DebugScreenEntry
 import net.typho.big_shot_lib.mixin.impl.DebugScreenEntriesAccessor
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 *///? }
 
 object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugScreenFactory {

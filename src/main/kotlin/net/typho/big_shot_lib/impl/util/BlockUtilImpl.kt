@@ -3,11 +3,11 @@ package net.typho.big_shot_lib.impl.util
 //? if >=1.21.6 {
 /*import net.minecraft.client.renderer.chunk.ChunkSectionLayer
 *///? } else {
+import net.minecraft.client.renderer.RenderType
 //? }
 
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.ItemBlockRenderTypes
-import net.minecraft.client.renderer.RenderType
 import net.minecraft.core.BlockPos
 import net.minecraft.util.RandomSource
 import net.minecraft.world.level.BlockGetter
