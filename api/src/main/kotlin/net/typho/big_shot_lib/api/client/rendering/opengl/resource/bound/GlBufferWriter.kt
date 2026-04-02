@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferAcces
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
 import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.system.NativeResource
+import java.io.DataOutput
 
 sealed class GlBufferWriter(
     @JvmField
@@ -11,7 +12,7 @@ sealed class GlBufferWriter(
     @JvmField
     val buffer: NeoBuffer
 ) : NativeResource {
-    fun write(index: Long = 0L) = buffer.write(index)
+    fun write(index: Long = 0L): DataOutput = buffer.write(index)
 
     class Regular(
         glBuffer: GlBoundBuffer,

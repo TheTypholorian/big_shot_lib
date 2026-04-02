@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL32.glGetBufferParameteri64
 import org.lwjgl.opengl.GL44.GL_BUFFER_STORAGE_FLAGS
 import org.lwjgl.system.MemoryUtil
+import java.io.DataOutput
 
 interface GlBoundBuffer : GlBoundResource<GlBuffer> {
     val isResizable: Boolean
@@ -47,6 +48,12 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
     fun mapBufferRange(access: GlBufferAccess, offset: Long, length: Long): Long
 
     fun unmapBuffer()
+
+    fun upload(length: Long, usage: GlBufferUsage, mode: GlBufferWriter.Mode = GlBufferWriter.Mode.REGULAR, out: DataOutput.() -> Unit) {
+        mode.create(this, length, usage).use {
+            out(it.write())
+        }
+    }
 
     open class Basic(
         override val resource: GlBuffer,

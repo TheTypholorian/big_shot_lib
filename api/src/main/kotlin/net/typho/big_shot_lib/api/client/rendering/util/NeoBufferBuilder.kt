@@ -53,7 +53,7 @@ open class NeoBufferBuilder(
         }
 
         filledElements = filledElements or mask
-        data(DataOutputStream(vertexBuffer.write(currentIndex + offset)))
+        data(vertexBuffer.write(currentIndex + offset))
     }
 
     protected fun end() {
@@ -90,7 +90,7 @@ open class NeoBufferBuilder(
         }
 
         if (indexBuffer != null) {
-            val indexOut = DataOutputStream(indexBuffer.write())
+            val indexOut = indexBuffer.write()
             var vertex = 0
 
             repeat(numVertices / mode.indexData!!.stride) {
