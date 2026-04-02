@@ -17,7 +17,7 @@ abstract class NeoBuffer : Iterable<Byte> {
 
     protected fun checkIndex(index: Long, size: Long): Long {
         if (index < 0 || index + size > this.size) {
-            throw IndexOutOfBoundsException(index)
+            throw IndexOutOfBoundsException("Invalid $index + $size for size $size")
         }
 
         return address + index
