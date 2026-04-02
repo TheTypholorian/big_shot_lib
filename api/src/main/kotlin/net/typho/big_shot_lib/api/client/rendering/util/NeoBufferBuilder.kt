@@ -100,7 +100,11 @@ open class NeoBufferBuilder(
 
                 vertex += mode.indexData.stride
             }
+
+            indexBuffer.free()
         }
+
+        vertexBuffer.free()
 
         return Built(
             format,
