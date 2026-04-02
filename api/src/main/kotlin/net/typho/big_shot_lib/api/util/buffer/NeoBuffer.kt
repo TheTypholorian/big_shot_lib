@@ -1,15 +1,10 @@
 package net.typho.big_shot_lib.api.util.buffer
 
 import net.typho.big_shot_lib.api.math.vec.*
-import net.typho.big_shot_lib.api.util.*
-import net.typho.big_shot_lib.mixin.api.DataOutputStreamAccessor
 import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.system.NativeResource
-import java.io.DataInput
-import java.io.DataInputStream
-import java.io.DataOutput
+import java.io.*
 import java.lang.ref.Cleaner
-import java.nio.Buffer
 import java.nio.ByteBuffer
 
 abstract class NeoBuffer : Iterable<Byte> {
@@ -347,8 +342,8 @@ abstract class NeoBuffer : Iterable<Byte> {
                 s.toCharArray().forEach { set(index(2), it.code.toShort()) }
             }
 
-            override fun writeUTF(s: String) {
-                DataOutputStreamAccessor.writeUTF(s, this)
+            override fun writeUTF(str: String) {
+                throw UnsupportedOperationException()
             }
         }
     }
