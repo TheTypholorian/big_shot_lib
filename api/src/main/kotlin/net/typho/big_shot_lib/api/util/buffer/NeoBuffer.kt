@@ -2,11 +2,12 @@ package net.typho.big_shot_lib.api.util.buffer
 
 import net.typho.big_shot_lib.api.math.vec.*
 import net.typho.big_shot_lib.api.util.*
-import org.lwjgl.system.MemoryUtil
+import net.typho.big_shot_lib.mixin.api.DataOutputStreamAccessor
 import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.system.NativeResource
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.DataInput
+import java.io.DataInputStream
+import java.io.DataOutput
 import java.lang.ref.Cleaner
 import java.nio.Buffer
 import java.nio.ByteBuffer
@@ -14,10 +15,11 @@ import java.nio.ByteBuffer
 abstract class NeoBuffer : Iterable<Byte> {
     abstract val address: Long
     abstract val size: Long
+    protected abstract val nio: ByteBuffer
 
     protected fun checkIndex(index: Long, size: Long): Long {
         if (index < 0 || index + size > this.size) {
-            throw IndexOutOfBoundsException("Invalid $index + $size for size $size")
+            throw IndexOutOfBoundsException("Invalid index $index + $size for size $size")
         }
 
         return address + index
@@ -52,33 +54,39 @@ abstract class NeoBuffer : Iterable<Byte> {
     fun getDouble(index: Long) = memGetDouble(checkIndex(index, 8))
 
     fun getByteArray(index: Long, length: Int): ByteArray {
-        val ptr = checkIndex(index, length.toLong())
-        return ByteArray(length) { memGetByte(ptr + it) }
+        val array = ByteArray(length)
+        nio.get(index.toInt(), array)
+        return array
     }
 
     fun getShortArray(index: Long, length: Int): ShortArray {
-        val ptr = checkIndex(index, length.shortByteIndex.toLong())
-        return ShortArray(length) { memGetShort(ptr + it.shortByteIndex) }
+        val array = ShortArray(length)
+        nio.asShortBuffer().get(index.toInt(), array)
+        return array
     }
 
     fun getIntArray(index: Long, length: Int): IntArray {
-        val ptr = checkIndex(index, length.intByteIndex.toLong())
-        return IntArray(length) { memGetInt(ptr + it.intByteIndex) }
+        val array = IntArray(length)
+        nio.asIntBuffer().get(index.toInt(), array)
+        return array
     }
 
     fun getLongArray(index: Long, length: Int): LongArray {
-        val ptr = checkIndex(index, length.longByteIndex.toLong())
-        return LongArray(length) { memGetLong(ptr + it.longByteIndex) }
+        val array = LongArray(length)
+        nio.asLongBuffer().get(index.toInt(), array)
+        return array
     }
 
     fun getFloatArray(index: Long, length: Int): FloatArray {
-        val ptr = checkIndex(index, length.floatByteIndex.toLong())
-        return FloatArray(length) { memGetFloat(ptr + it.floatByteIndex) }
+        val array = FloatArray(length)
+        nio.asFloatBuffer().get(index.toInt(), array)
+        return array
     }
 
     fun getDoubleArray(index: Long, length: Int): DoubleArray {
-        val ptr = checkIndex(index, length.doubleByteIndex.toLong())
-        return DoubleArray(length) { memGetDouble(ptr + it.doubleByteIndex) }
+        val array = DoubleArray(length)
+        nio.asDoubleBuffer().get(index.toInt(), array)
+        return array
     }
 
     fun getVec2d(index: Long): AbstractVec2<Double> = NeoVec2d(getDouble(index), getDouble(index + 8))
@@ -112,63 +120,51 @@ abstract class NeoBuffer : Iterable<Byte> {
     operator fun set(index: Long, value: Double) = memPutDouble(checkIndex(index, 8), value)
 
     operator fun set(index: Long, value: ByteArray) {
-        val ptr = checkIndex(index, value.size.toLong())
-        value.forEachIndexed { index, b -> memPutByte(ptr + index, b) }
+        nio.put(index.toInt(), value)
     }
 
     operator fun set(index: Long, value: ShortArray) {
-        val ptr = checkIndex(index, value.size.shortByteIndex.toLong())
-        value.forEachIndexed { index, b -> memPutShort(ptr + index.shortByteIndex, b) }
+        nio.asShortBuffer().put(index.toInt(), value)
     }
 
     operator fun set(index: Long, value: IntArray) {
-        val ptr = checkIndex(index, value.size.intByteIndex.toLong())
-        value.forEachIndexed { index, b -> memPutInt(ptr + index.intByteIndex, b) }
+        nio.asIntBuffer().put(index.toInt(), value)
     }
 
     operator fun set(index: Long, value: LongArray) {
-        val ptr = checkIndex(index, value.size.longByteIndex.toLong())
-        value.forEachIndexed { index, b -> memPutLong(ptr + index.longByteIndex, b) }
+        nio.asLongBuffer().put(index.toInt(), value)
     }
 
     operator fun set(index: Long, value: FloatArray) {
-        val ptr = checkIndex(index, value.size.floatByteIndex.toLong())
-        value.forEachIndexed { index, b -> memPutFloat(ptr + index.floatByteIndex, b) }
+        nio.asFloatBuffer().put(index.toInt(), value)
     }
 
     operator fun set(index: Long, value: DoubleArray) {
-        val ptr = checkIndex(index, value.size.doubleByteIndex.toLong())
-        value.forEachIndexed { index, b -> memPutDouble(ptr + index.doubleByteIndex, b) }
+        nio.asDoubleBuffer().put(index.toInt(), value)
     }
 
-    fun set(index: Long, value: ByteArray, offset: Int, length: Int) {
-        val ptr = checkIndex(index, length.toLong())
-        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutByte(ptr + relativeIndex, b) }
+    operator fun set(index: Long, value: ByteArray, offset: Int, length: Int) {
+        nio.put(index.toInt(), value, offset, length)
     }
 
-    fun set(index: Long, value: ShortArray, offset: Int, length: Int) {
-        val ptr = checkIndex(index, length.shortByteIndex.toLong())
-        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutShort(ptr + relativeIndex.shortByteIndex, b) }
+    operator fun set(index: Long, value: ShortArray, offset: Int, length: Int) {
+        nio.asShortBuffer().put(index.toInt(), value, offset, length)
     }
 
-    fun set(index: Long, value: IntArray, offset: Int, length: Int) {
-        val ptr = checkIndex(index, length.intByteIndex.toLong())
-        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutInt(ptr + relativeIndex.intByteIndex, b) }
+    operator fun set(index: Long, value: IntArray, offset: Int, length: Int) {
+        nio.asIntBuffer().put(index.toInt(), value, offset, length)
     }
 
-    fun set(index: Long, value: LongArray, offset: Int, length: Int) {
-        val ptr = checkIndex(index, length.longByteIndex.toLong())
-        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutLong(ptr + relativeIndex.longByteIndex, b) }
+    operator fun set(index: Long, value: LongArray, offset: Int, length: Int) {
+        nio.asLongBuffer().put(index.toInt(), value, offset, length)
     }
 
-    fun set(index: Long, value: FloatArray, offset: Int, length: Int) {
-        val ptr = checkIndex(index, length.floatByteIndex.toLong())
-        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutFloat(ptr + relativeIndex.floatByteIndex, b) }
+    operator fun set(index: Long, value: FloatArray, offset: Int, length: Int) {
+        nio.asFloatBuffer().put(index.toInt(), value, offset, length)
     }
 
-    fun set(index: Long, value: DoubleArray, offset: Int, length: Int) {
-        val ptr = checkIndex(index, length.doubleByteIndex.toLong())
-        value.forEachRangeIndexed(offset, length) { relativeIndex, absoluteIndex, b -> memPutDouble(ptr + relativeIndex.doubleByteIndex, b) }
+    operator fun set(index: Long, value: DoubleArray, offset: Int, length: Int) {
+        nio.asDoubleBuffer().put(index.toInt(), value, offset, length)
     }
 
     operator fun <N : Number> set(index: Long, value: AbstractVec2<N>) {
@@ -193,35 +189,177 @@ abstract class NeoBuffer : Iterable<Byte> {
     }
 
     @JvmOverloads
-    fun read(offset: Long = 0L): InputStream {
-        return object : InputStream() {
+    fun read(offset: Long = 0L): DataInput {
+        return object : DataInput {
             var index = offset
 
-            override fun read(): Int {
-                return get(index++).toInt()
+            fun index(increment: Long): Long {
+                val i = index
+                index += increment
+                return i
             }
+
+            override fun readFully(b: ByteArray) {
+                readFully(b, 0, b.size)
+            }
+
+            override fun readFully(b: ByteArray, off: Int, len: Int) {
+                nio.put(index(len.toLong()).toInt(), b, off, len)
+            }
+
+            override fun skipBytes(n: Int): Int {
+                index += n
+                return n
+            }
+
+            override fun readBoolean(): Boolean {
+                return get(index(1)) == 1.toByte()
+            }
+
+            override fun readByte(): Byte {
+                return get(index(1))
+            }
+
+            override fun readUnsignedByte(): Int {
+                return get(index(1)).toUByte().toInt()
+            }
+
+            override fun readShort(): Short {
+                return getShort(index(2))
+            }
+
+            override fun readUnsignedShort(): Int {
+                return getShort(index(2)).toUShort().toInt()
+            }
+
+            override fun readChar(): Char {
+                return getShort(index(2)).toInt().toChar()
+            }
+
+            override fun readInt(): Int {
+                return getInt(index(4))
+            }
+
+            override fun readLong(): Long {
+                return getLong(index(8))
+            }
+
+            override fun readFloat(): Float {
+                return getFloat(index(4))
+            }
+
+            override fun readDouble(): Double {
+                return getDouble(index(8))
+            }
+
+            override fun readLine(): String {
+                val builder = StringBuilder()
+                var available = size - index
+
+                loop@ do {
+                    val c = readUnsignedByte().toChar()
+                    --available
+
+                    when (c) {
+                        '\n' -> break@loop
+
+                        '\r' -> {
+                            if (available > 0 && get(index).toInt().toChar() == '\n') {
+                                index++
+                                --available
+                            }
+                            break@loop
+                        }
+
+                        else -> {
+                            builder.append(c)
+                        }
+                    }
+                } while (available > 0)
+
+                return builder.toString()
+            }
+
+            override fun readUTF() = DataInputStream.readUTF(this)
         }
     }
 
     @JvmOverloads
-    fun write(offset: Long = 0L): OutputStream {
-        return object : OutputStream() {
+    fun write(offset: Long = 0L): DataOutput {
+        return object : DataOutput {
             var index = offset
 
+            fun index(increment: Long): Long {
+                val i = index
+                index += increment
+                return i
+            }
+
             override fun write(b: Int) {
-                set(index++, b)
+                set(index(1), b.toByte())
+            }
+
+            override fun write(b: ByteArray) {
+                write(b, 0, b.size)
+            }
+
+            override fun write(b: ByteArray, off: Int, len: Int) {
+                set(index(len.toLong()), b, off, len)
+            }
+
+            override fun writeBoolean(v: Boolean) {
+                set(index(1), if (v) 1 else 0)
+            }
+
+            override fun writeByte(v: Int) {
+                set(index(1), v.toByte())
+            }
+
+            override fun writeShort(v: Int) {
+                set(index(2), v.toShort())
+            }
+
+            override fun writeChar(v: Int) {
+                set(index(2), v.toShort())
+            }
+
+            override fun writeInt(v: Int) {
+                set(index(4), v)
+            }
+
+            override fun writeLong(v: Long) {
+                set(index(8), v)
+            }
+
+            override fun writeFloat(v: Float) {
+                set(index(4), v)
+            }
+
+            override fun writeDouble(v: Double) {
+                set(index(8), v)
+            }
+
+            override fun writeBytes(s: String) {
+                write(s.toByteArray())
+            }
+
+            override fun writeChars(s: String) {
+                s.toCharArray().forEach { set(index(2), it.code.toShort()) }
+            }
+
+            override fun writeUTF(s: String) {
+                DataOutputStreamAccessor.writeUTF(s, this)
             }
         }
     }
 
-    fun asByteBuffer(): ByteBuffer = memByteBuffer(address, size.toInt())
+    fun asByteBuffer(): ByteBuffer = nio.duplicate()
 
     open class Nio(
-        @JvmField
-        val buffer: Buffer
+        override val nio: ByteBuffer
     ) : NeoBuffer() {
-        override val address: Long = memAddress(buffer)
-        override val size: Long = (buffer.limit() - buffer.position()).toLong()
+        override val address: Long = memAddress(nio)
+        override val size: Long = (nio.limit() - nio.position()).toLong()
     }
 
     open class Native(
@@ -230,6 +368,7 @@ abstract class NeoBuffer : Iterable<Byte> {
     ) : NeoBuffer(), NativeResource {
         var isFreed: Boolean = false
             protected set
+        override val nio: ByteBuffer = memByteBuffer(address, size.toInt())
 
         constructor(size: Long) : this(nmemAllocChecked(size), size)
 
