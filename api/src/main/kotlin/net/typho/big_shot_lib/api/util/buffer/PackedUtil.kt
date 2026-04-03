@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.util
+package net.typho.big_shot_lib.api.util.buffer
 
 const val BYTE_MASK = 0xFF
 const val LBYTE_MASK = 0xFFL

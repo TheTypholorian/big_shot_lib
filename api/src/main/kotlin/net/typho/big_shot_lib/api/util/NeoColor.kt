@@ -2,9 +2,8 @@ package net.typho.big_shot_lib.api.util
 
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.math.vec.*
-import net.typho.big_shot_lib.api.util.NeoColor.RGB
-import net.typho.big_shot_lib.api.util.NeoColor.RGBA
-import net.typho.big_shot_lib.api.util.NeoColor.RGBF
+import net.typho.big_shot_lib.api.util.buffer.byteAt
+import net.typho.big_shot_lib.api.util.buffer.packInt
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import java.awt.Color
 

@@ -19,12 +19,9 @@ data class NeoVertexFormatImpl(
     @JvmField
     val inner: VertexFormat
 ) : NeoVertexFormat {
-    override val vertexSizeBytes: Int
-        get() = inner.vertexSize
-    override val elements: Array<NeoVertexFormat.Element>
-        get() = inner.elements.map { ElementImpl(it) }.toTypedArray()
-    override val elementNames: Array<String>
-        get() = inner.elementAttributeNames.toTypedArray()
+    override val vertexSizeBytes: Int = inner.vertexSize
+    override val elements: Array<NeoVertexFormat.Element> = inner.elements.map { ElementImpl(it) }.toTypedArray()
+    override val elementNames: Array<String> = inner.elementAttributeNames.toTypedArray()
 
     override fun getElementName(element: NeoVertexFormat.Element): String {
         //? if >=1.21 {

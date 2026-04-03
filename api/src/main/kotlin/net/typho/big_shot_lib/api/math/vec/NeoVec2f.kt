@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.math.vec
 
 import net.typho.big_shot_lib.api.math.op.FloatOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.util.floatAt
+import net.typho.big_shot_lib.api.util.buffer.floatAt
 import org.joml.Vector2fc
 
 class NeoVec2f : AbstractVec2<Float> {
