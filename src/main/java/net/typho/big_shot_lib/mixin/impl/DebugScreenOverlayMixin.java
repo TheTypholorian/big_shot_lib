@@ -15,10 +15,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import java.util.List;
 
 //? if >=1.21.9 {
-/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-*///? }
+//? }
 @Mixin(DebugScreenOverlay.class)
 public class DebugScreenOverlayMixin {
     @Shadow

@@ -12,13 +12,15 @@ class BigShotClientInit : ClientModInitializer {
 }
 *///? } neoforge {
 import net.neoforged.api.distmarker.Dist
+import net.neoforged.bus.api.IEventBus
+import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
 import net.typho.big_shot_lib.api.BigShotApi
 
 @Mod(value = BigShotApi.MOD_ID, dist = [Dist.CLIENT])
-class BigShotClientInit {
+class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
-        BigShotClientEvents.init()
+        BigShotClientEvents.init(eventBus)
     }
 }
 //? }

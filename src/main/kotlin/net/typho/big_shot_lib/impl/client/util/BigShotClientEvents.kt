@@ -16,21 +16,21 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.client.event.ClientTickEvent
 //? if <1.21.9 {
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent
+/*import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 
 //? if >1.21.5 {
-/*import org.joml.Matrix4f
+import org.joml.Matrix4f
 import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.impl.util.getExtensionValue
-*///? }
 //? }
-//? if <1.21.4 {
-import net.neoforged.neoforge.event.AddReloadListenerEvent
-//? } else {
-/*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 *///? }
+//? if <1.21.4 {
+/*import net.neoforged.neoforge.event.AddReloadListenerEvent
+*///? } else {
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
+//? }
 //? }
 
 import net.minecraft.server.packs.resources.ResourceManager
@@ -52,12 +52,14 @@ import net.typho.big_shot_lib.mixin.impl.LevelRendererAccessor
 import net.typho.big_shot_lib.impl.mojang
 
 //? if >=1.21.9 {
-/*import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
+import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
 import net.minecraft.client.gui.components.debug.DebugScreenEntry
 import net.typho.big_shot_lib.mixin.impl.DebugScreenEntriesAccessor
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-*///? }
+import net.neoforged.bus.api.IEventBus
+
+//? }
 
 object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugScreenFactory {
     override val clientTickStart: MutableList<Runnable> = arrayListOf()
@@ -66,11 +68,20 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
     override val levelChanged: MutableList<ClientLevelChangedEvent> = arrayListOf()
     override val chunkChanged: MutableList<ChunkChangedEvent> = arrayListOf()
     //? if <1.21.9 {
-    @JvmField
+    /*@JvmField
     val debugScreenInfo = arrayListOf<Pair<Boolean, (out: (line: String) -> Unit) -> Unit>>()
-    //? }
+    *///? }
 
-    init {
+    @JvmStatic
+    //? fabric {
+    /*internal fun init() {
+    *///? } neoforge {
+    var eventBus: IEventBus? = null
+        private set
+
+    internal fun init(eventBus: IEventBus) {
+        this.eventBus = eventBus
+    //? }
         BigShotClientEntrypoint.registerReloadListeners(this)
         BigShotClientEntrypoint.registerEvents(this)
         BigShotClientEntrypoint.registerDebugScreenInfo(this)
@@ -102,14 +113,14 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         ClientChunkEvents.CHUNK_LOAD.register { level, chunk -> chunkChanged.forEach { it.invoke(level, null, chunk) } }
         ClientChunkEvents.CHUNK_UNLOAD.register { level, chunk -> chunkChanged.forEach { it.invoke(level, chunk, null) } }
         *///? } neoforge {
-        NeoForge.EVENT_BUS.addListener { event: ClientTickEvent.Pre ->
+        eventBus.addListener { event: ClientTickEvent.Pre ->
             clientTickStart.forEach { it.run() }
         }
-        NeoForge.EVENT_BUS.addListener { event: ClientTickEvent.Post ->
+        eventBus.addListener { event: ClientTickEvent.Post ->
             clientTickEnd.forEach { it.run() }
         }
         //? if <=1.21.5 {
-        NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
+        /*eventBus.addListener { event: RenderLevelStageEvent ->
             if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
                 if (levelRenderEnd.isNotEmpty()) {
                     val data = RenderEventData(
@@ -128,8 +139,8 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 }
             }
         }
-        //? } else if <1.21.9 {
-        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent.AfterLevel ->
+        *///? } else if <1.21.9 {
+        /*eventBus.addListener { event: RenderLevelStageEvent.AfterLevel ->
             if (levelRenderEnd.isNotEmpty()) {
                 val data = RenderEventData(
                     NeoCamera(
@@ -177,22 +188,22 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         *///? }
         *///? } neoforge {
         //? if <1.21.4 {
-        NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
+        /*eventBus!!.addListener { event: AddReloadListenerEvent ->
             event.addListener(object : ResourceManagerReloadListener {
                 override fun onResourceManagerReload(manager: ResourceManager) {
                     listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
                 }
             })
         }
-        //? } else {
-        /*NeoForge.EVENT_BUS.addListener { event: AddClientReloadListenersEvent ->
+        *///? } else {
+        eventBus!!.addListener { event: AddClientReloadListenersEvent ->
             event.addListener(listener.location.mojang, object : ResourceManagerReloadListener {
                 override fun onResourceManagerReload(manager: ResourceManager) {
                     listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
                 }
             })
         }
-        *///? }
+        //? }
         //? }
     }
 
@@ -202,9 +213,9 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         text: (out: (line: String) -> Unit) -> Unit
     ) {
         //? if <1.21.9 {
-        debugScreenInfo.add(allowedWithReducedDebugInfo to text)
-        //? } else {
-        /*DebugScreenEntriesAccessor.`big_shot_lib$register`(location.mojang, object : DebugScreenEntry {
+        /*debugScreenInfo.add(allowedWithReducedDebugInfo to text)
+        *///? } else {
+        DebugScreenEntriesAccessor.`big_shot_lib$register`(location.mojang, object : DebugScreenEntry {
             override fun display(
                 displayer: DebugScreenDisplayer,
                 level: Level?,
@@ -218,9 +229,6 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 return allowedWithReducedDebugInfo || !reducedDebugInfo
             }
         })
-        *///? }
+        //? }
     }
-
-    @JvmStatic
-    internal fun init() = Unit
 }

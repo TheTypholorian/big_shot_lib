@@ -5,10 +5,10 @@ package net.typho.big_shot_lib.impl.client.rendering.util
 *///? }
 
 //? if <1.21.11 {
-import net.minecraft.client.renderer.RenderType
-//? } else {
-/*import net.minecraft.client.renderer.rendertype.RenderType
-*///? }
+/*import net.minecraft.client.renderer.RenderType
+*///? } else {
+import net.minecraft.client.renderer.rendertype.RenderType
+//? }
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
@@ -28,16 +28,16 @@ class NeoRenderSettingsImpl(
     override val mode: GlBeginMode = when (renderType.mode()) {
         VertexFormat.Mode.LINES, VertexFormat.Mode.DEBUG_LINES -> GlBeginMode.LINES
         //? if <1.21.11 {
-        VertexFormat.Mode.LINE_STRIP -> GlBeginMode.LINE_STRIP
-        //? }
+        /*VertexFormat.Mode.LINE_STRIP -> GlBeginMode.LINE_STRIP
+        *///? }
         VertexFormat.Mode.DEBUG_LINE_STRIP -> GlBeginMode.LINE_STRIP
         VertexFormat.Mode.TRIANGLES -> GlBeginMode.TRIANGLES
         VertexFormat.Mode.TRIANGLE_STRIP -> GlBeginMode.TRIANGLE_STRIP
         VertexFormat.Mode.TRIANGLE_FAN -> GlBeginMode.TRIANGLE_FAN
         VertexFormat.Mode.QUADS -> GlBeginMode.QUADS
         //? if >=1.21.11 {
-        /*VertexFormat.Mode.POINTS -> GlBeginMode.POINTS
-        *///? }
+        VertexFormat.Mode.POINTS -> GlBeginMode.POINTS
+        //? }
     }
     override val defaultBufferSize: Int = renderType.bufferSize()
     override val affectsCrumbling: Boolean = renderType.affectsCrumbling()
@@ -54,13 +54,13 @@ class NeoRenderSettingsImpl(
 
     override fun bind(): BoundResource {
         //? if <1.21.10 {
-        renderType.setupRenderState()
+        /*renderType.setupRenderState()
 
         return BoundResource {
             renderType.clearRenderState()
         }
-        //? } else {
-        /*TODO("Not yet implemented")
-        *///? }
+        *///? } else {
+        TODO("Not yet implemented")
+        //? }
     }
 }

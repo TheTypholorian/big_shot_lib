@@ -28,14 +28,9 @@ public class LevelChunkMixin {
             )
     )
     public void setBlockState(
-            BlockPos pos,
-            BlockState state,
-            //? if <1.21.11 {
-            boolean isMoving,
-            //? } else {
-            /*int updateFlags,
-            *///? }
             CallbackInfoReturnable<BlockState> cir,
+            @Local(argsOnly = true) BlockState state,
+            @Local(argsOnly = true) BlockPos pos,
             @Local(ordinal = 1) BlockState oldState
     ) {
         BigShotCommonEvents.INSTANCE.getBlockChanged().forEach(event -> event.invoke(level, new NeoVec3i(pos), oldState, state));

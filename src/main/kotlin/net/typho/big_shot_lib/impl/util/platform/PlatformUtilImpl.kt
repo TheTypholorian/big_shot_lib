@@ -64,10 +64,10 @@ object PlatformUtilImpl : PlatformUtil {
 
     override fun isDevEnv(): Boolean {
         //? if <1.21.9 {
-        return !FMLLoader.isProduction()
-        //? } else {
-        /*return !FMLLoader.getCurrent().isProduction
-        *///? }
+        /*return !FMLLoader.isProduction()
+        *///? } else {
+        return !FMLLoader.getCurrent().isProduction
+        //? }
     }
 
     @JvmRecord
