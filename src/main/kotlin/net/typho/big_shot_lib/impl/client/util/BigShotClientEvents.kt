@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 *///? } neoforge {
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.client.event.ClientTickEvent
+import net.neoforged.bus.api.IEventBus
 //? if <1.21.9 {
 /*import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 
@@ -55,10 +56,8 @@ import net.typho.big_shot_lib.impl.mojang
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
 import net.minecraft.client.gui.components.debug.DebugScreenEntry
 import net.typho.big_shot_lib.mixin.impl.DebugScreenEntriesAccessor
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.neoforged.bus.api.IEventBus
-
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.chunk.LevelChunk
 //? }
 
 object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugScreenFactory {

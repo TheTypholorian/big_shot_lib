@@ -38,10 +38,10 @@ import net.typho.big_shot_lib.api.util.RegistryFactory
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
+import net.neoforged.bus.api.IEventBus
 //? }
 
 import net.minecraft.core.Registry
-import net.neoforged.bus.api.IEventBus
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 import net.typho.big_shot_lib.api.util.RegisteredObject
 import net.typho.big_shot_lib.api.util.event.BlockChangedEvent

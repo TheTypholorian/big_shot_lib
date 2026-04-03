@@ -1,7 +1,5 @@
 package net.typho.big_shot_lib.impl
 
-import net.neoforged.bus.api.IEventBus
-import net.neoforged.fml.ModContainer
 import net.typho.big_shot_lib.impl.util.BigShotCommonEvents
 
 //? fabric {
@@ -14,6 +12,8 @@ class BigShotCommonInit : ModInitializer {
 }
 *///? } neoforge {
 import net.neoforged.fml.common.Mod
+import net.neoforged.bus.api.IEventBus
+import net.neoforged.fml.ModContainer
 import net.typho.big_shot_lib.api.BigShotApi
 
 @Mod(value = BigShotApi.MOD_ID)
