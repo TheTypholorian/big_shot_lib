@@ -14,14 +14,17 @@ import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.material.FluidState
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3.Companion.plus
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.BlockUtil
 import net.typho.big_shot_lib.api.util.WrapperUtil
+import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl
 
 object BlockUtilImpl : BlockUtil {
     override fun isSolidRender(
@@ -70,6 +73,27 @@ object BlockUtilImpl : BlockUtil {
             else -> null
             //? }
         }
+    }
+
+    override fun getFluidRenderSettings(state: FluidState): NeoRenderSettings {
+        //? if >=1.21.11 {
+        /*return when (ItemBlockRenderTypes.getRenderLayer(state)) {
+            ChunkSectionLayer.SOLID -> NeoRenderSettings.BUILTINS.solid
+            ChunkSectionLayer.CUTOUT -> NeoRenderSettings.BUILTINS.cutout
+            ChunkSectionLayer.TRANSLUCENT -> NeoRenderSettings.BUILTINS.translucent
+            ChunkSectionLayer.TRIPWIRE -> NeoRenderSettings.BUILTINS.tripwire
+        }
+        *///? } else if >=1.21.6 {
+        /*return when (ItemBlockRenderTypes.getRenderLayer(state)) {
+            ChunkSectionLayer.SOLID -> NeoRenderSettings.BUILTINS.solid
+            ChunkSectionLayer.CUTOUT -> NeoRenderSettings.BUILTINS.cutout
+            ChunkSectionLayer.CUTOUT_MIPPED -> NeoRenderSettings.BUILTINS.cutout
+            ChunkSectionLayer.TRANSLUCENT -> NeoRenderSettings.BUILTINS.translucent
+            ChunkSectionLayer.TRIPWIRE -> NeoRenderSettings.BUILTINS.tripwire
+        }
+        *///? } else {
+        return NeoRenderSettingsImpl(ItemBlockRenderTypes.getRenderLayer(state))
+        //? }
     }
 
     @Suppress("DEPRECATION")

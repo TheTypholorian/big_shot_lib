@@ -8,7 +8,7 @@ interface NeoBakedQuad {
     val vertices: Array<NeoVertexData>
     val tintIndex: Int?
     val direction: NeoDirection?
-    val sprite: NeoAtlasSprite
+    val sprite: NeoAtlasSprite?
     val shade: Boolean
 
     val v0: NeoVertexData
@@ -36,7 +36,7 @@ interface NeoBakedQuad {
                 get() = parent.tintIndex
             override val direction: NeoDirection?
                 get() = parent.direction
-            override val sprite: NeoAtlasSprite
+            override val sprite: NeoAtlasSprite?
                 get() = parent.sprite
             override val shade: Boolean
                 get() = parent.shade
@@ -52,7 +52,7 @@ interface NeoBakedQuad {
             override val tintIndex: Int? = tintIndex
             override val direction: NeoDirection?
                 get() = parent.direction
-            override val sprite: NeoAtlasSprite
+            override val sprite: NeoAtlasSprite?
                 get() = parent.sprite
             override val shade: Boolean
                 get() = parent.shade
@@ -68,14 +68,14 @@ interface NeoBakedQuad {
             override val tintIndex: Int?
                 get() = parent.tintIndex
             override val direction: NeoDirection? = direction
-            override val sprite: NeoAtlasSprite
+            override val sprite: NeoAtlasSprite?
                 get() = parent.sprite
             override val shade: Boolean
                 get() = parent.shade
         }
     }
 
-    fun withSprite(sprite: UnaryOperator<NeoAtlasSprite>): NeoBakedQuad {
+    fun withSprite(sprite: UnaryOperator<NeoAtlasSprite?>): NeoBakedQuad {
         val parent = this
         val sprite = sprite.apply(parent.sprite)
         return object : NeoBakedQuad {
@@ -85,7 +85,7 @@ interface NeoBakedQuad {
                 get() = parent.tintIndex
             override val direction: NeoDirection?
                 get() = parent.direction
-            override val sprite: NeoAtlasSprite = sprite
+            override val sprite: NeoAtlasSprite? = sprite
             override val shade: Boolean
                 get() = parent.shade
         }
@@ -101,9 +101,25 @@ interface NeoBakedQuad {
                 get() = parent.tintIndex
             override val direction: NeoDirection?
                 get() = parent.direction
-            override val sprite: NeoAtlasSprite
+            override val sprite: NeoAtlasSprite?
                 get() = parent.sprite
             override val shade: Boolean = shade
         }
+    }
+
+    abstract class Consumer : NeoVertexData.Consumer() {
+        private var vertices = arrayOfNulls<NeoVertexData>(4)
+        private var index = 0
+
+        final override fun take(vertex: NeoVertexData) {
+            vertices[index++] = vertex
+
+            if (index == 4) {
+                index = 0
+                take(BasicBakedQuad(vertices.map { it!! }.toTypedArray(), null, null, null, false))
+            }
+        }
+
+        abstract fun take(quad: NeoBakedQuad)
     }
 }

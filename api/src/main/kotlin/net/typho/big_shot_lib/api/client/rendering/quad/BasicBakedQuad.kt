@@ -7,7 +7,7 @@ data class BasicBakedQuad(
     override val vertices: Array<NeoVertexData>,
     override val tintIndex: Int?,
     override val direction: NeoDirection?,
-    override val sprite: NeoAtlasSprite,
+    override val sprite: NeoAtlasSprite?,
     override val shade: Boolean
 ) : NeoBakedQuad {
     override fun equals(other: Any?): Boolean {

@@ -4,9 +4,11 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.material.FluidState
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 
@@ -16,6 +18,8 @@ interface BlockUtil {
     fun getOffset(state: BlockState, pos: AbstractVec3<Int>, level: Level): AbstractVec3<Float>
 
     fun getBlockChunkLayer(state: BlockState): BlockChunkLayer?
+
+    fun getFluidRenderSettings(state: FluidState): NeoRenderSettings
 
     fun shouldRenderFace(
         level: BlockGetter,

@@ -100,6 +100,15 @@ interface NeoVertexData {
         normal?.let(consumer::normal)
     }
 
+    open class Mutable(
+        override var pos: AbstractVec3<Float>,
+        override var color: NeoColor? = null,
+        override var textureUV: AbstractVec2<Float>? = null,
+        override var overlayUV: AbstractVec2<Int>? = null,
+        override var lightUV: AbstractVec2<Int>? = null,
+        override var normal: AbstractVec3<Float>? = null
+    ) : NeoVertexData
+
     open class PositionTexture(
         override val pos: AbstractVec3<Float>,
         override val textureUV: AbstractVec2<Float>
@@ -154,6 +163,70 @@ interface NeoVertexData {
             consumer.overlayUV(data, offset + 6)
             consumer.normal(data, offset + 7)
             consumer.endVertex()
+        }
+    }
+
+    abstract class Consumer : NeoVertexConsumer() {
+        var vertex: Mutable? = null
+
+        abstract fun take(vertex: NeoVertexData)
+
+        fun flush() {
+            vertex?.let { take(it) }
+            vertex = null
+        }
+
+        override fun vertex(
+            x: Float,
+            y: Float,
+            z: Float
+        ): NeoVertexConsumer {
+            flush()
+            vertex = Mutable(NeoVec3f(x, y, z))
+            return this
+        }
+
+        override fun color(
+            r: Int,
+            g: Int,
+            b: Int,
+            a: Int
+        ): NeoVertexConsumer {
+            vertex!!.color = NeoColor.RGBA(r, g, b, a)
+            return this
+        }
+
+        override fun textureUV(
+            u: Float,
+            v: Float
+        ): NeoVertexConsumer {
+            vertex!!.textureUV = NeoVec2f(u, v)
+            return this
+        }
+
+        override fun overlayUV(
+            u: Int,
+            v: Int
+        ): NeoVertexConsumer {
+            vertex!!.overlayUV = NeoVec2i(u, v)
+            return this
+        }
+
+        override fun lightUV(
+            u: Int,
+            v: Int
+        ): NeoVertexConsumer {
+            vertex!!.lightUV = NeoVec2i(u, v)
+            return this
+        }
+
+        override fun normal(
+            x: Float,
+            y: Float,
+            z: Float
+        ): NeoVertexConsumer {
+            vertex!!.normal = NeoVec3f(x, y, z)
+            return this
         }
     }
 }
