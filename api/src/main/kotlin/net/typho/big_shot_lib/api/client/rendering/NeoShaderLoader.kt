@@ -13,15 +13,18 @@ import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.client.util.resource.ResourceRegistry
-import net.typho.big_shot_lib.api.error.ShaderLinkException
 import net.typho.big_shot_lib.api.util.*
 import net.typho.big_shot_lib.api.util.RegistrationConsumer.Companion.register
 import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 
 object NeoShaderLoader : ResourceRegistry.Json<GlProgram?>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
+    @JvmField
+    val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Shader Loader")
     @JvmField
     val PREPROCESSORS_REGISTRY_KEY = NeoResourceKey.registry<ShaderPreprocessor>(BigShotApi.id("shader_preprocessors"))
     var PREPROCESSORS_REGISTRY: NeoRegistry<ShaderPreprocessor>? = null
@@ -42,8 +45,8 @@ object NeoShaderLoader : ResourceRegistry.Json<GlProgram?>(BigShotApi.id("shader
     }
 
     @JvmField
-    val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> { shaderType ->
-        object : ResourceRegistry<GlShader>(
+    val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader?>> { shaderType ->
+        object : ResourceRegistry<GlShader?>(
             BigShotApi.id("shaders/${shaderType.name.lowercase()}"),
             NeoFileToIdConverter.shader("neo/shaders", shaderType)
         ) {
@@ -57,11 +60,17 @@ object NeoShaderLoader : ResourceRegistry.Json<GlProgram?>(BigShotApi.id("shader
                 location: NeoIdentifier,
                 reader: BufferedReader,
                 manager: NeoResourceManager
-            ): GlShader {
+            ): GlShader? {
                 val shader = NeoGlShader(location, shaderType)
                 shader.source = PREPROCESSORS_REGISTRY!!.values().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
-                shader.compile()
-                return shader
+
+                if (shader.compile()) {
+                    return shader
+                } else {
+                    LOGGER.error("Error compiling shader $location:\n${shader.getInfoLog()}")
+                    shader.free()
+                    return null
+                }
             }
         }
     }
@@ -89,13 +98,23 @@ object NeoShaderLoader : ResourceRegistry.Json<GlProgram?>(BigShotApi.id("shader
         val sources = json.getAsJsonObject("sources")
 
         for (entry in sources.asMap()) {
-            program.attach(shaderRegistries[GlShaderType.valueOf(entry.key.uppercase())][NeoIdentifier(entry.value.asString)]!!)
+            val shaderKey = NeoIdentifier(entry.value.asString)
+            val shader = shaderRegistries[GlShaderType.valueOf(entry.key.uppercase())][shaderKey]
+
+            if (shader == null) {
+                LOGGER.error("Unknown shader $shaderKey requested by $location")
+                program.free()
+                return null
+            }
+
+            program.attach(shader)
         }
 
         if (program.link()) {
             return program
         } else {
-            ShaderLinkException("Error linking program $location:\n${program.getInfoLog()}").printStackTrace()
+            LOGGER.error("Error linking program $location:\n${program.getInfoLog()}")
+            program.free()
             return null
         }
     }

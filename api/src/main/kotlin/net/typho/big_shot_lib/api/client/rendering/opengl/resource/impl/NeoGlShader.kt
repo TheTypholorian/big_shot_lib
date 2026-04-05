@@ -18,11 +18,13 @@ open class NeoGlShader(
 
     constructor(location: NeoIdentifier, shaderType: GlShaderType) : this(location, shaderType, shaderType.resourceType.create(), true)
 
-    override fun compile(onError: (log: String) -> Nothing) {
+    override fun getInfoLog(): String {
+        return glGetShaderInfoLog(glId, 4096).trim()
+    }
+
+    override fun compile(): Boolean {
         glCompileShader(glId)
 
-        if (glGetShaderi(glId, GL_COMPILE_STATUS) == GL_FALSE) {
-            onError(glGetShaderInfoLog(glId, 4096).trim())
-        }
+        return glGetShaderi(glId, GL_COMPILE_STATUS) == GL_TRUE
     }
 }

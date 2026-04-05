@@ -7,5 +7,13 @@ interface GlShader : NamedResource, GlResource {
     val shaderType: GlShaderType
     var source: String
 
-    fun compile(onError: (log: String) -> Nothing = { throw ShaderCompileException("Error compiling shader $location:\n$it") })
+    fun getInfoLog(): String
+
+    fun compile(): Boolean
+
+    fun compileOrThrow(onError: (log: String) -> Unit = { throw ShaderCompileException("Error compiling shader $location:\n$it") }) {
+        if (!compile()) {
+            onError(getInfoLog())
+        }
+    }
 }
