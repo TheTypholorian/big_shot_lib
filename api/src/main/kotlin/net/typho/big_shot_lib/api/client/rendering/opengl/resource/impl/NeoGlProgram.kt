@@ -74,23 +74,23 @@ open class NeoGlProgram(
         glDetachShader(glId, shader.glId)
     }
 
-    override fun link(onError: (log: String) -> Nothing) {
+    override fun getInfoLog(): String {
+        return glGetProgramInfoLog(glId, 4096).trim()
+    }
+
+    override fun link(): Boolean {
         format.elements.forEachIndexed { index, element ->
             glBindAttribLocation(glId, index, format.getElementName(element))
         }
 
         glLinkProgram(glId)
 
-        if (glGetProgrami(glId, GL_LINK_STATUS) == GL_FALSE) {
-            onError(glGetProgramInfoLog(glId, 4096).trim())
-        }
+        return glGetProgrami(glId, GL_LINK_STATUS) == GL_TRUE
     }
 
-    override fun validate(onError: (log: String) -> Nothing) {
+    override fun validate(): Boolean {
         glValidateProgram(glId)
 
-        if (glGetProgrami(glId, GL_VALIDATE_STATUS) == GL_FALSE) {
-            onError(glGetProgramInfoLog(glId, 4096).trim())
-        }
+        return glGetProgrami(glId, GL_VALIDATE_STATUS) == GL_TRUE
     }
 }

@@ -13,6 +13,9 @@ interface BigShotClientEntrypoint {
     fun registerDebugScreenInfo(factory: DebugScreenFactory) {
     }
 
+    fun displayInitialScreens(factory: InitialScreenFactory) {
+    }
+
     companion object : BigShotClientEntrypoint {
         val entrypoints by lazy { BigShotClientEntrypoint::class.loadServices() }
 
@@ -26,6 +29,10 @@ interface BigShotClientEntrypoint {
 
         override fun registerDebugScreenInfo(factory: DebugScreenFactory) {
             entrypoints.forEach { it.registerDebugScreenInfo(factory) }
+        }
+
+        override fun displayInitialScreens(factory: InitialScreenFactory) {
+            entrypoints.forEach { it.displayInitialScreens(factory) }
         }
     }
 }

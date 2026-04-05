@@ -13,6 +13,7 @@ import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.client.util.resource.ResourceRegistry
+import net.typho.big_shot_lib.api.error.ShaderLinkException
 import net.typho.big_shot_lib.api.util.*
 import net.typho.big_shot_lib.api.util.RegistrationConsumer.Companion.register
 import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
@@ -20,7 +21,7 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import java.io.BufferedReader
 
-object NeoShaderLoader : ResourceRegistry.Json<GlProgram>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
+object NeoShaderLoader : ResourceRegistry.Json<GlProgram?>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
     @JvmField
     val PREPROCESSORS_REGISTRY_KEY = NeoResourceKey.registry<ShaderPreprocessor>(BigShotApi.id("shader_preprocessors"))
     var PREPROCESSORS_REGISTRY: NeoRegistry<ShaderPreprocessor>? = null
@@ -81,7 +82,7 @@ object NeoShaderLoader : ResourceRegistry.Json<GlProgram>(BigShotApi.id("shaders
         }
     }
 
-    override fun decode(location: NeoIdentifier, json: JsonElement, manager: NeoResourceManager): GlProgram {
+    override fun decode(location: NeoIdentifier, json: JsonElement, manager: NeoResourceManager): GlProgram? {
         val json = json.asJsonObject
         val formatKey = NeoIdentifier(json.getAsJsonPrimitive("format").asString)
         val program = NeoGlProgram(location, NeoVertexFormat.REGISTRY!!.get(formatKey) ?: throw NullPointerException("Nonexistent vertex format $formatKey, requested by shader $location"))
@@ -91,8 +92,11 @@ object NeoShaderLoader : ResourceRegistry.Json<GlProgram>(BigShotApi.id("shaders
             program.attach(shaderRegistries[GlShaderType.valueOf(entry.key.uppercase())][NeoIdentifier(entry.value.asString)]!!)
         }
 
-        program.link()
-
-        return program
+        if (program.link()) {
+            return program
+        } else {
+            ShaderLinkException("Error linking program $location:\n${program.getInfoLog()}").printStackTrace()
+            return null
+        }
     }
 }
