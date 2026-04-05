@@ -87,10 +87,14 @@ open class Mesh(
     }
 
     fun upload(vertexCount: Int, out: Builder.() -> Unit) {
-        builder(vertexCount)?.let { out(it) }
+        builder(vertexCount)?.use { out(it) }
     }
 
     fun lazyUpload(vertexCount: Int, out: Builder.() -> Unit): () -> Unit {
+        if (!writeMode.canLazyUpload) {
+            throw UnsupportedOperationException("Buffer write mode $writeMode does not support lazy uploading")
+        }
+
         val builder = builder(vertexCount) ?: return {}
         out(builder)
         return builder::free

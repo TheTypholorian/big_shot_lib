@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
+import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
@@ -47,6 +48,8 @@ interface GlStateStack<V> {
             get() = list.size
 
         override fun push(value: V): Handle<V> {
+            RenderSystem.assertOnRenderThread()
+
             if (list.isEmpty()) {
                 restoreTo = query()
 

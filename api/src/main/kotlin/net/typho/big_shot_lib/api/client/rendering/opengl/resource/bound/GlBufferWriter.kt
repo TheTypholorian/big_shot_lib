@@ -14,7 +14,6 @@ sealed class GlBufferWriter(
     @JvmField
     val target: GlBufferTarget
 ) : NativeResource {
-    val boundBuffer by lazy { glBuffer.bind(target) }
     abstract val buffer: NeoBuffer
 
     fun write(index: Long = 0L): DataOutput = buffer.write(index)
@@ -29,9 +28,10 @@ sealed class GlBufferWriter(
         override val buffer: NeoBuffer = NeoBuffer.Native(length)
 
         override fun free() {
-            boundBuffer.bufferData(buffer, usage)
-            (buffer as NeoBuffer.Native).free()
-            boundBuffer.unbind()
+            glBuffer.bind(target).use {
+                it.bufferData(buffer, usage)
+                (buffer as NeoBuffer.Native).free()
+            }
         }
     }
 
@@ -45,9 +45,10 @@ sealed class GlBufferWriter(
         override val buffer: NeoBuffer = NeoBuffer.Native(length)
 
         override fun free() {
-            boundBuffer.bufferSubData(offset, buffer)
-            (buffer as NeoBuffer.Native).free()
-            boundBuffer.unbind()
+            glBuffer.bind(target).use {
+                it.bufferSubData(offset, buffer)
+                (buffer as NeoBuffer.Native).free()
+            }
         }
     }
 
@@ -56,11 +57,13 @@ sealed class GlBufferWriter(
         target: GlBufferTarget,
         length: Long
     ) : GlBufferWriter(glBuffer, target) {
-        override val buffer: NeoBuffer = NeoBuffer.Native(boundBuffer.mapBuffer(GlBufferAccess.WRITE_ONLY, length), length)
+        @JvmField
+        val bound = glBuffer.bind(target)
+        override val buffer: NeoBuffer = NeoBuffer.Native(bound.mapBuffer(GlBufferAccess.WRITE_ONLY, length), length)
 
         override fun free() {
-            boundBuffer.unmapBuffer()
-            boundBuffer.unbind()
+            bound.unmapBuffer()
+            bound.unbind()
         }
     }
 
@@ -70,21 +73,26 @@ sealed class GlBufferWriter(
         offset: Long,
         length: Long
     ) : GlBufferWriter(glBuffer, target) {
-        override val buffer: NeoBuffer = NeoBuffer.Native(boundBuffer.mapBufferRange(GlBufferAccess.WRITE_ONLY, offset, length), length)
+        @JvmField
+        val bound = glBuffer.bind(target)
+        override val buffer: NeoBuffer = NeoBuffer.Native(bound.mapBufferRange(GlBufferAccess.WRITE_ONLY, offset, length), length)
 
         override fun free() {
-            boundBuffer.unmapBuffer()
-            boundBuffer.unbind()
+            bound.unmapBuffer()
+            bound.unbind()
         }
     }
 
-    enum class Mode {
-        REGULAR {
+    enum class Mode(
+        @JvmField
+        val canLazyUpload: Boolean
+    ) {
+        REGULAR(true) {
             override fun create(glBuffer: GlBuffer, target: GlBufferTarget, length: Long, usage: GlBufferUsage): GlBufferWriter {
                 return Regular(glBuffer, target, length, usage)
             }
         },
-        MAPPED {
+        MAPPED(false) {
             override fun create(
                 glBuffer: GlBuffer,
                 target: GlBufferTarget,
