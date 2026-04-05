@@ -20,7 +20,8 @@ import net.typho.big_shot_lib.api.BigShotApi
 @Mod(value = BigShotApi.MOD_ID, dist = [Dist.CLIENT])
 class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
-        BigShotClientEvents.init(eventBus)
+        eventBus.register(BigShotClientEvents::class.java)
+        BigShotClientEvents.init()
     }
 }
 //? }

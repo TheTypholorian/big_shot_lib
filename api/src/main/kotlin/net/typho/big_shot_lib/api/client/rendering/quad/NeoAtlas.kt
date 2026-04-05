@@ -9,7 +9,6 @@ interface NeoAtlas : NamedResource, GlTexture2D {
     val sprites: Map<NeoIdentifier, NeoAtlasSprite>
     override val width: Int
     override val height: Int
-    val mipLevel: Int
 
     companion object {
         val blocks: NeoAtlas

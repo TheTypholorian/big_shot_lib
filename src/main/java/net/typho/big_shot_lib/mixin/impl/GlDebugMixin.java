@@ -7,7 +7,6 @@ import com.mojang.blaze3d.opengl.GlDebug;
 //? }
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag;
 import net.typho.big_shot_lib.api.error.GlException;
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil;
 import org.spongepowered.asm.mixin.Mixin;

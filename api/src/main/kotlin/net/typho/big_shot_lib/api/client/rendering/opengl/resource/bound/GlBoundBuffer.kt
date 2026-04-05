@@ -49,12 +49,6 @@ interface GlBoundBuffer : GlBoundResource<GlBuffer> {
 
     fun unmapBuffer()
 
-    fun upload(length: Long, usage: GlBufferUsage, mode: GlBufferWriter.Mode = GlBufferWriter.Mode.REGULAR, out: DataOutput.() -> Unit) {
-        mode.create(this, length, usage).use {
-            out(it.write())
-        }
-    }
-
     open class Basic(
         override val resource: GlBuffer,
         override val target: GlBufferTarget,

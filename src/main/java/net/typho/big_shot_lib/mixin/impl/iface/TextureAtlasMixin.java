@@ -39,8 +39,6 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
     private int width;
     @Shadow
     private int height;
-    @Shadow
-    private int mipLevel;
 
     //? if <1.21.11 {
     /*@Shadow
@@ -54,7 +52,7 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
     private Map<Identifier, TextureAtlasSprite> texturesByName;
 
     @Shadow
-    public abstract Identifier identifier();
+    public abstract Identifier location();
     //? }
 
     @Override
@@ -62,11 +60,7 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
         return new NeoAtlas() {
             @Override
             public @NotNull NeoIdentifier getLocation() {
-                //? if <1.21.11 {
-                /*return IdentifierUtilKt.getNeo(location());
-                *///? } else {
-                return IdentifierUtilKt.getNeo(identifier());
-                //? }
+                return IdentifierUtilKt.getNeo(location());
             }
 
             @Override
@@ -130,11 +124,6 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
             @Override
             public int getHeight() {
                 return height;
-            }
-
-            @Override
-            public int getMipLevel() {
-                return mipLevel;
             }
         };
     }

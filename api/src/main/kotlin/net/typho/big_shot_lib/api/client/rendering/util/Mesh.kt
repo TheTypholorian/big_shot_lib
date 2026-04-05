@@ -57,36 +57,43 @@ open class Mesh(
         ebo?.free()
     }
 
-    fun upload(vertexCount: Int, out: Builder.() -> Unit) {
+    fun builder(vertexCount: Int): Builder? {
         if (vertexCount == 0) {
             size = 0
-            return
+            return null
         }
 
-        vbo.bind(GlBufferTarget.ARRAY_BUFFER).use { vbo ->
-            ebo?.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER)?.use { ebo ->
-                Builder(
-                    NeoBufferBuilder(
-                        format,
-                        mode,
-                        vertexCount,
-                        { writeMode.create(vbo, it, usage) },
-                        { writeMode.create(ebo, it!!, usage) }
-                    ),
-                    false
-                ).also { out(it) }.free()
-            }
-                ?: Builder(
-                    NeoBufferBuilder(
-                        format,
-                        mode,
-                        vertexCount,
-                        { writeMode.create(vbo, it, usage) },
-                        { null }
-                    ),
-                    false
-                ).also { out(it) }.free()
+        return if (ebo == null) {
+            Builder(
+                NeoBufferBuilder(
+                    format,
+                    mode,
+                    vertexCount,
+                    { writeMode.create(vbo, GlBufferTarget.ARRAY_BUFFER, it, usage) },
+                    { null }
+                )
+            )
+        } else {
+            Builder(
+                NeoBufferBuilder(
+                    format,
+                    mode,
+                    vertexCount,
+                    { writeMode.create(vbo, GlBufferTarget.ARRAY_BUFFER, it, usage) },
+                    { writeMode.create(ebo, GlBufferTarget.ELEMENT_ARRAY_BUFFER, it!!, usage) }
+                )
+            )
         }
+    }
+
+    fun upload(vertexCount: Int, out: Builder.() -> Unit) {
+        builder(vertexCount)?.let { out(it) }
+    }
+
+    fun lazyUpload(vertexCount: Int, out: Builder.() -> Unit): () -> Unit {
+        val builder = builder(vertexCount) ?: return {}
+        out(builder)
+        return builder::free
     }
 
     override fun draw() {
@@ -105,9 +112,7 @@ open class Mesh(
 
     inner class Builder(
         @JvmField
-        val bufferBuilder: NeoBufferBuilder,
-        @JvmField
-        val upload: Boolean
+        val bufferBuilder: NeoBufferBuilder
     ) : NeoVertexConsumer.Redirect(bufferBuilder), NativeResource {
         override fun free() {
             val built = bufferBuilder.build() ?: throw IllegalStateException("Error with neo buffer builder")
