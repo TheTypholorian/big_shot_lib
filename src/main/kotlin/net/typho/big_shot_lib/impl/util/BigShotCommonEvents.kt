@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 //? fabric {
-/*import com.mojang.serialization.Lifecycle
+import com.mojang.serialization.Lifecycle
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -18,8 +18,8 @@ import net.typho.big_shot_lib.api.util.RegistryFactory
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
-*///? } neoforge {
-import com.mojang.serialization.Lifecycle
+//? } neoforge {
+/*import com.mojang.serialization.Lifecycle
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
 import net.minecraft.core.registries.Registries
@@ -39,9 +39,10 @@ import net.typho.big_shot_lib.api.util.RegistryFactory
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
-//? }
+*///? }
 
 import net.minecraft.core.Registry
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 import net.typho.big_shot_lib.api.util.RegisteredObject
 import net.typho.big_shot_lib.api.util.event.BlockChangedEvent
@@ -50,8 +51,8 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 
 //? neoforge {
-@EventBusSubscriber
-//? }
+/*@EventBusSubscriber
+*///? }
 object BigShotCommonEvents : CommonEventFactory {
     override val blockChanged: MutableList<BlockChangedEvent> = arrayListOf()
 
@@ -70,7 +71,7 @@ object BigShotCommonEvents : CommonEventFactory {
         BigShotCommonEntrypoint.registerEvents(this)
 
         //? fabric {
-        /*BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
+        BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> create(
                 location: NeoIdentifier,
@@ -106,7 +107,7 @@ object BigShotCommonEvents : CommonEventFactory {
         BigShotCommonEntrypoint.registerContent(object : RegistrationFactory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> begin(key: NeoResourceKey<Registry<T>>): RegistrationConsumer<T, NeoIdentifier> {
-                val registry = BuiltInRegistries.REGISTRY.get(key.location.mojang) as Registry<T>
+                val registry = InternalUtil.INSTANCE.getRegistry(key)!!
 
                 return object : RegistrationConsumer<T, NeoIdentifier> {
                     override fun <V : T> register(
@@ -131,7 +132,7 @@ object BigShotCommonEvents : CommonEventFactory {
                 key: NeoResourceKey<Registry<T>>,
                 namespace: String
             ): RegistrationConsumer<T, String> {
-                val registry = BuiltInRegistries.REGISTRY.get(key.location.mojang) as Registry<T>
+                val registry = InternalUtil.INSTANCE.getRegistry(key)!!
 
                 return object : RegistrationConsumer<T, String> {
                     override fun <V : T> register(
@@ -274,11 +275,11 @@ object BigShotCommonEvents : CommonEventFactory {
                 }
             }
         })
-        *///? }
+        //? }
     }
 
     //? neoforge {
-    @SubscribeEvent
+    /*@SubscribeEvent
     @JvmStatic
     fun newRegistries(event: NewRegistryEvent) {
         BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
@@ -387,10 +388,10 @@ object BigShotCommonEvents : CommonEventFactory {
                             Registries.BLOCK.neo as NeoResourceKey<Registry<V>>,
                             id,
                             //? if <1.21.2 {
-                            /*value(BlockBehaviour.Properties.of())
-                                *///? } else {
-                            value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
-                                //? }
+                            value(BlockBehaviour.Properties.of())
+                                //? } else {
+                            /*value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
+                                *///? }
                                 .also {
                                     event.register(
                                         Registries.BLOCK,
@@ -419,10 +420,10 @@ object BigShotCommonEvents : CommonEventFactory {
                             Registries.BLOCK.neo as NeoResourceKey<Registry<V>>,
                             id,
                             //? if <1.21.2 {
-                            /*value(BlockBehaviour.Properties.of())
-                                *///? } else {
-                            value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
-                                //? }
+                            value(BlockBehaviour.Properties.of())
+                                //? } else {
+                            /*value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
+                                *///? }
                                 .also {
                                     event.register(
                                         Registries.BLOCK,
@@ -450,10 +451,10 @@ object BigShotCommonEvents : CommonEventFactory {
                             Registries.ITEM.neo as NeoResourceKey<Registry<V>>,
                             id,
                             //? if <1.21.2 {
-                            /*value(Item.Properties())
-                                *///? } else {
-                            value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
-                                //? }
+                            value(Item.Properties())
+                                //? } else {
+                            /*value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
+                                *///? }
                                 .also {
                                     event.register(
                                         Registries.ITEM,
@@ -490,10 +491,10 @@ object BigShotCommonEvents : CommonEventFactory {
                             Registries.ITEM.neo as NeoResourceKey<Registry<V>>,
                             id,
                             //? if <1.21.2 {
-                            /*value(Item.Properties())
-                                *///? } else {
-                            value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
-                                //? }
+                            value(Item.Properties())
+                                //? } else {
+                            /*value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
+                                *///? }
                                 .also {
                                     event.register(
                                         Registries.ITEM,
@@ -515,5 +516,5 @@ object BigShotCommonEvents : CommonEventFactory {
             }
         })
     }
-    //? }
+    *///? }
 }

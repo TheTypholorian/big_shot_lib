@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.util
 
 import net.minecraft.core.Registry
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resource.NeoTagKey

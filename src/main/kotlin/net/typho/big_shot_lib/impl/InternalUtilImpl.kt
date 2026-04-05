@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
+import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas
@@ -11,9 +13,11 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
+import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.util.getExtensionValue
 import org.joml.Vector3f
+import java.util.Optional
 
 object InternalUtilImpl : InternalUtil {
     override fun createVertexFormatBuilder(): NeoVertexFormat.Builder {
@@ -58,10 +62,10 @@ object InternalUtilImpl : InternalUtil {
         *///? }
 
     //? if <1.21.9 {
-    /*override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
-    *///? } else {
-    override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
-    //? }
+    override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
+    //? } else {
+    /*override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
+    *///? }
     override val blockVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLOCK)
     override val newEntityVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.NEW_ENTITY)
     override val particleVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.PARTICLE)
@@ -81,10 +85,10 @@ object InternalUtilImpl : InternalUtil {
 
     override fun getAtlas(location: NeoIdentifier): NeoAtlas {
         //? if <1.21.9 {
-        /*return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
-        *///? } else {
-        return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
-        //? }
+        return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
+        //? } else {
+        /*return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
+        *///? }
     }
 
     override fun transformNormal(
@@ -97,6 +101,15 @@ object InternalUtilImpl : InternalUtil {
         return NeoVec3f(pose.transformNormal(x, y, z, Vector3f()))
         //? } else {
         /*return NeoVec3f(pose.normal().transform(Vector3f(x, y, z)))
+        *///? }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> getRegistry(key: NeoResourceKey<Registry<T>>): Registry<T>? {
+        //? if <1.21.2 {
+        return BuiltInRegistries.REGISTRY.get(key.location.mojang) as? Registry<T>
+        //? } else {
+        /*return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
         *///? }
     }
 }
