@@ -92,10 +92,10 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 context.world(),
                 context.projectionMatrix(),
                 //? if >=1.21 {
-                context.positionMatrix(),
-                //? } else {
-                /*context.matrixStack()!!.last().pose(),
-                *///? }
+                /*context.positionMatrix(),
+                *///? } else {
+                context.matrixStack()!!.last().pose(),
+                //? }
                 (context.frustum() as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
                 NeoGlStateManagerImpl.currentTarget ?: GlFramebuffer.MAIN
             )
