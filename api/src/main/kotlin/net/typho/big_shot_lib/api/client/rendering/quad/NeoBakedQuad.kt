@@ -28,7 +28,8 @@ interface NeoBakedQuad {
     }
 
     fun withCalculatedNormals(): NeoBakedQuad {
-        val normal = (v1.pos - v0.pos) cross (v3.pos - v0.pos)
+        var normal = (v1.pos - v0.pos) cross (v3.pos - v0.pos)
+        normal /= normal.length
         return withVertices { index, vertex -> vertex.withNormal { normal } }
     }
 
