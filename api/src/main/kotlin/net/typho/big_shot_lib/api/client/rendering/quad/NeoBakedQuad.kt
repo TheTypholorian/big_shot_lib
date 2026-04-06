@@ -27,6 +27,11 @@ interface NeoBakedQuad {
         v3.put(consumer)
     }
 
+    fun withCalculatedNormals(): NeoBakedQuad {
+        val normal = (v1.pos - v0.pos) cross (v3.pos - v0.pos)
+        return withVertices { index, vertex -> vertex.withNormal { normal } }
+    }
+
     fun withVertices(function: (index: Int, vertex: NeoVertexData) -> NeoVertexData): NeoBakedQuad {
         val parent = this
         val vertices = parent.vertices.mapIndexed(function).toTypedArray()

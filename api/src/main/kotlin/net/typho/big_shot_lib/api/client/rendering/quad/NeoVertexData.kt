@@ -171,7 +171,7 @@ interface NeoVertexData {
 
         abstract fun take(vertex: NeoVertexData)
 
-        fun flush() {
+        open fun flush() {
             vertex?.let { take(it) }
             vertex = null
         }

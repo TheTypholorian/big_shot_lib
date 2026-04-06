@@ -76,6 +76,14 @@ abstract class AbstractVec3<N : Number>(
         return create(opSet.rem(this.x, x), opSet.rem(this.y, y), opSet.rem(this.z, z))
     }
 
+    fun cross(x: N, y: N, z: N): AbstractVec3<N> {
+        return create(
+            opSet.plus(opSet.times(this.y, z), opSet.times(opSet.negate(this.z), y)),
+            opSet.plus(opSet.times(this.z, x), opSet.times(opSet.negate(this.x), z)),
+            opSet.plus(opSet.times(this.x, y), opSet.times(opSet.negate(this.y), x))
+        )
+    }
+
     fun min(x: N, y: N, z: N): AbstractVec3<N> {
         return create(opSet.min(this.x, x), opSet.min(this.y, y), opSet.min(this.z, z))
     }
@@ -171,6 +179,10 @@ abstract class AbstractVec3<N : Number>(
     operator fun rem(other: AbstractVec3<N>) = rem(other.x, other.y, other.z)
 
     operator fun rem(x: N) = rem(x, x, x)
+
+    infix fun cross(other: AbstractVec3<N>) = cross(other.x, other.y, other.z)
+
+    infix fun cross(x: N) = cross(x, x, x)
 
     fun min(other: AbstractVec3<N>) = min(other.x, other.y, other.z)
 

@@ -20,11 +20,13 @@ import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.math.vec.AbstractVec3.Companion.blockPos
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3.Companion.plus
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.BlockUtil
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl
+import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
 
 object BlockUtilImpl : BlockUtil {
     override fun isSolidRender(
@@ -207,5 +209,28 @@ object BlockUtilImpl : BlockUtil {
             faceWithOffset(null)
         }
         *///? }
+    }
+
+    override fun getFluidQuads(
+        state: BlockState,
+        fluid: FluidState,
+        level: Level,
+        pos: AbstractVec3<Int>,
+        occlusionCheck: (level: BlockGetter, from: BlockPos, direction: NeoDirection, otherState: BlockState) -> Boolean,
+        out: (quad: NeoBakedQuad) -> Unit
+    ) {
+        if (!fluid.isEmpty) {
+            val consumer = FluidQuadConsumer(occlusionCheck, out)
+
+            Minecraft.getInstance().blockRenderer.renderLiquid(
+                pos.blockPos,
+                level,
+                VertexConsumerWrapper(consumer),
+                state,
+                fluid
+            )
+
+            consumer.flush()
+        }
     }
 }

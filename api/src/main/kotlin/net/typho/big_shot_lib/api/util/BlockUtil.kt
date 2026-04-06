@@ -35,6 +35,15 @@ interface BlockUtil {
         out: (direction: NeoDirection?, quads: List<NeoBakedQuad>) -> Unit
     )
 
+    fun getFluidQuads(
+        state: BlockState,
+        fluid: FluidState,
+        level: Level,
+        pos: AbstractVec3<Int>,
+        occlusionCheck: (level: BlockGetter, from: BlockPos, direction: NeoDirection, otherState: BlockState) -> Boolean,
+        out: (quad: NeoBakedQuad) -> Unit
+    )
+
     companion object {
         val INSTANCE by lazy { BlockUtil::class.loadService() }
     }
