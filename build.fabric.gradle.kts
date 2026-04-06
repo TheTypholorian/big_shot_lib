@@ -94,6 +94,9 @@ jsonlang {
 
 repositories {
     mavenLocal()
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 tasks.withType<Javadoc>().configureEach {
@@ -110,6 +113,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:0.17.3")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
     modImplementation(libs.flk)
+    modImplementation(include("com.github.Chocohead:Fabric-ASM:v2.3")!!)
 }
 
 fabricApi {

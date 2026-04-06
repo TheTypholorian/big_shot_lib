@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.impl.client.rendering.opengl.state
 
-import com.mojang.blaze3d.opengl.GlStateManager
+import com.mojang.blaze3d.platform.GlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
@@ -68,20 +68,20 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     override val renderbuffer: GlStateStack<Int> = GlStateStack.Impl(
         "RENDERBUFFER",
         //? if <1.21.5 {
-        /*{ GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, it ?: 0) },
-        *///? } else {
-        { glBindRenderbuffer(GL_RENDERBUFFER, it ?: 0) },
-        //? }
+        { GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, it ?: 0) },
+        //? } else {
+        /*{ glBindRenderbuffer(GL_RENDERBUFFER, it ?: 0) },
+        *///? }
         { glGetInteger(GL_RENDERBUFFER_BINDING) }
     )
     override val framebuffer: GlStateStack<Int> = GlStateStack.Impl(
         "FRAMEBUFFER",
         { GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, it ?: 0) },
         //? if <1.21.5 {
-        /*{ GlStateManager.getBoundFramebuffer() }
-        *///? } else {
-        { glGetInteger(GL_FRAMEBUFFER_BINDING) }
-        //? }
+        { GlStateManager.getBoundFramebuffer() }
+        //? } else {
+        /*{ glGetInteger(GL_FRAMEBUFFER_BINDING) }
+        *///? }
     )
     override val readFramebuffer: GlStateStack<Int> = GlStateStack.Impl(
         "READ_FRAMEBUFFER",
@@ -90,10 +90,10 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     )
     override var activeTexture: Int
         //? if <1.21.5 {
-        /*get() = GlStateManager._getActiveTexture() - GL_TEXTURE0
-        *///? } else {
-        get() = GlStateManager.activeTexture
-        //? }
+        get() = GlStateManager._getActiveTexture() - GL_TEXTURE0
+        //? } else {
+        /*get() = GlStateManager.activeTexture
+        *///? }
         set(value) = GlStateManager._activeTexture(value + GL_TEXTURE0)
 
     override val blendColor: GlStateStack<NeoColor> = GlStateStack.Impl(

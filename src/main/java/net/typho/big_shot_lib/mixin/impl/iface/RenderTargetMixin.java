@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 //? if >=1.21.5 {
-import com.mojang.blaze3d.opengl.GlDevice;
+/*import com.mojang.blaze3d.opengl.GlDevice;
 import com.mojang.blaze3d.opengl.GlTexture;
 import com.mojang.blaze3d.textures.GpuTexture;
-//? }
+*///? }
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -32,13 +32,13 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(RenderTarget.class)
 public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuffer> {
     //? if >=1.21.5 {
-    @Shadow
+    /*@Shadow
     protected GpuTexture colorTexture;
 
     @Shadow
     protected GpuTexture depthTexture;
-    //? } else {
-    /*@Shadow
+    *///? } else {
+    @Shadow
     public int frameBufferId;
 
     @Shadow
@@ -50,7 +50,7 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
     @Shadow
     @Final
     public boolean useDepth;
-    *///? }
+    //? }
 
     @Shadow
     public abstract void destroyBuffers();
@@ -67,19 +67,19 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
             @Override
             public int getGlId() {
                 //? if >=1.21.5 {
-                return ((GlTexture) colorTexture).getFbo(((GlDevice) RenderSystem.getDevice()).directStateAccess(), depthTexture);
-                //? } else {
-                /*return frameBufferId;
-                *///? }
+                /*return ((GlTexture) colorTexture).getFbo(((GlDevice) RenderSystem.getDevice()).directStateAccess(), depthTexture);
+                *///? } else {
+                return frameBufferId;
+                //? }
             }
 
             @Override
             public boolean getFreed() {
                 //? if >=1.21.5 {
-                return colorTexture == null;
-                //? } else {
-                /*return frameBufferId == -1;
-                *///? }
+                /*return colorTexture == null;
+                *///? } else {
+                return frameBufferId == -1;
+                //? }
             }
 
             @Override
@@ -100,20 +100,20 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
                     }
 
                     //? if >=1.21.5 {
-                    return colorTexture == null ? null : ImmutableExtensionKt.getExtensionValue(colorTexture);
-                    //? } else {
-                    /*return colorTextureId == -1 ? null : new NeoGlTexture2D(colorTextureId, false, GlTextureFormat.RGBA8, width, height);
-                    *///? }
+                    /*return colorTexture == null ? null : ImmutableExtensionKt.getExtensionValue(colorTexture);
+                    *///? } else {
+                    return colorTextureId == -1 ? null : new NeoGlTexture2D(colorTextureId, false, GlTextureFormat.RGBA8, width, height);
+                    //? }
                 });
             }
 
             @Override
             public @Nullable GlFramebufferAttachment getDepthAttachment() {
                 //? if >=1.21.5 {
-                return depthTexture == null ? null : ImmutableExtensionKt.getExtensionValue(depthTexture);
-                 //? } else {
-                /*return useDepth && depthBufferId != -1 ? new NeoGlTexture2D(depthBufferId, false, GlTextureFormat.DEPTH_COMPONENT, width, height) : null;
-                *///? }
+                /*return depthTexture == null ? null : ImmutableExtensionKt.getExtensionValue(depthTexture);
+                 *///? } else {
+                return useDepth && depthBufferId != -1 ? new NeoGlTexture2D(depthBufferId, false, GlTextureFormat.DEPTH_COMPONENT, width, height) : null;
+                //? }
             }
 
             @Override

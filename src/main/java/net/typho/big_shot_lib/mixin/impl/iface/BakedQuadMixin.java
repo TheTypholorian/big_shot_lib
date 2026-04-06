@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 //? if >=1.21.11 {
-import org.joml.Vector3fc;
+/*import org.joml.Vector3fc;
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
-//? }
+*///? }
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(BakedQuad.class)
 public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad> {
     //? if <1.21.11 {
-    /*@Shadow
+    @Shadow
     @Final
     protected int[] vertices;
     @Shadow
@@ -91,8 +91,8 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
             return shade;
         }
     };
-    *///? } else {
-    @Shadow
+    //? } else {
+    /*@Shadow
     @Final
     private int tintIndex;
 
@@ -170,7 +170,7 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
             return shade;
         }
     };
-    //? }
+    *///? }
 
     @Override
     public NeoBakedQuad getBig_shot_lib$extension_value() {

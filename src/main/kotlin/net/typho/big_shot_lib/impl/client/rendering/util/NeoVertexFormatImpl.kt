@@ -7,8 +7,8 @@ import net.typho.big_shot_lib.mixin.impl.VertexFormatAccessor
 *///? }
 
 //? if >=1.21.5 {
-import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
-//? }
+/*import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
+*///? }
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
@@ -41,13 +41,13 @@ data class NeoVertexFormatImpl(
 
     override fun initVertexArrayState() {
         //? if <1.21.5 {
-        /*inner.setupBufferState()
-        *///? } else {
-        elements.forEachIndexed { index, element ->
+        inner.setupBufferState()
+        //? } else {
+        /*elements.forEachIndexed { index, element ->
             glEnableVertexAttribArray(index);
             element.vertexAttribPointer(index, getElementOffset(element).toLong(), vertexSizeBytes)
         }
-        //? }
+        *///? }
     }
 
     override fun toString() = inner.toString()
