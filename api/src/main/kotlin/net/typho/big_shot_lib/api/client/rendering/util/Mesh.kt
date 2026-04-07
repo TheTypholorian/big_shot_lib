@@ -11,6 +11,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlVertexArray
 import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.system.NativeResource
+import kotlin.io.use
 
 open class Mesh(
     @JvmField
@@ -22,7 +23,7 @@ open class Mesh(
     @JvmField
     val usage: GlBufferUsage,
     @JvmField
-    val vao: GlVertexArray = NeoGlVertexArray(),
+    val vao: ContextLocal<GlVertexArray> = ContextLocal(),
     @JvmField
     val vbo: GlBuffer = NeoGlBuffer(),
     @JvmField
@@ -87,11 +88,27 @@ open class Mesh(
         }
     }
 
+    fun getVAO(init: Boolean): GlVertexArray {
+        return vao.getOrSet {
+            val vao = NeoGlVertexArray()
+
+            if (init) {
+                vao.bind().use {
+                    vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
+                        format.initVertexArrayState()
+                    }
+                }
+            }
+
+            return@getOrSet vao
+        }
+    }
+
     fun rawUpload(size: Int, vertices: NeoBuffer) {
         this.size = size
         indexType = null
 
-        vao.bind().use {
+        getVAO(false).bind().use {
             vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
                 it.bufferData(vertices, usage)
                 format.initVertexArrayState()
@@ -107,7 +124,7 @@ open class Mesh(
             it.bufferData(indices, usage)
         }
 
-        vao.bind().use {
+        getVAO(false).bind().use {
             vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
                 it.bufferData(vertices, usage)
                 format.initVertexArrayState()
@@ -117,7 +134,7 @@ open class Mesh(
 
     override fun draw() {
         if (size > 0) {
-            vao.bind().use { vao ->
+            getVAO(true).bind().use { vao ->
                 if (ebo == null) {
                     vao.drawArrays(mode, 0, size)
                 } else {
@@ -144,7 +161,7 @@ open class Mesh(
                 indexType = built.indexType
             }
 
-            vao.bind().use {
+            getVAO(false).bind().use {
                 vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
                     format.initVertexArrayState()
                 }
