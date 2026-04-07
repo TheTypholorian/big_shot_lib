@@ -32,7 +32,7 @@ open class NeoGlTexture2D(
             throw IllegalArgumentException("Non-2D texture target $target")
         }
 
-        return object : GlBoundTexture2D.Basic(this, target, NeoGlStateManager.INSTANCE.textures[target].push(glId)) {
+        return object : GlBoundTexture2D.Basic(this, target, NeoGlStateManager.CURRENT.textures[target].push(glId)) {
             override fun resize(width: Int, height: Int, format: GlTextureFormat) {
                 this@NeoGlTexture2D.format = format
                 this@NeoGlTexture2D.width = width
@@ -47,7 +47,7 @@ open class NeoGlTexture2D(
             glId: Int,
             target: GlTextureTarget
         ): NeoGlTexture2D {
-            NeoGlStateManager.INSTANCE.textures[target].push(glId).use {
+            NeoGlStateManager.CURRENT.textures[target].push(glId).use {
                 return NeoGlTexture2D(
                     glId,
                     false,

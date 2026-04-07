@@ -10,6 +10,6 @@ open class NeoGlBuffer(glId: Int, autoFree: Boolean) : NeoGlResource(GlResourceT
     constructor() : this(GlResourceType.BUFFER.create(), true)
 
     override fun bind(target: GlBufferTarget): GlBoundBuffer {
-        return GlBoundBuffer.Basic(this, target, NeoGlStateManager.INSTANCE.buffers[target].push(glId))
+        return GlBoundBuffer.Basic(this, target, NeoGlStateManager.CURRENT.buffers[target].push(glId))
     }
 }

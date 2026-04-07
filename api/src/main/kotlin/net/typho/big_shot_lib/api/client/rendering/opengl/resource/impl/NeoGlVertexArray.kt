@@ -8,10 +8,13 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManage
 open class NeoGlVertexArray(glId: Int, autoFree: Boolean) : NeoGlResource(GlResourceType.VERTEX_ARRAY, glId, autoFree), GlVertexArray {
     constructor() : this(GlResourceType.VERTEX_ARRAY.create(), true)
 
+    override val thread: Thread = Thread.currentThread()
+
     override fun bind(): GlBoundVertexArray {
+        throwIfNotExists()
         return GlBoundVertexArray.Basic(
             this,
-            NeoGlStateManager.INSTANCE.vertexArray.push(glId)
+            NeoGlStateManager.CURRENT.vertexArray.push(glId)
         )
     }
 }

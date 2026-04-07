@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
-import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
@@ -48,14 +47,8 @@ interface GlStateStack<V> {
             get() = list.size
 
         override fun push(value: V): Handle<V> {
-            RenderSystem.assertOnRenderThread()
-
             if (list.isEmpty()) {
                 restoreTo = query()
-
-                //println("push $name with $value, restore to $restoreTo")
-            } else {
-                //println("push $name with $value")
             }
 
             val index = list.size
@@ -73,11 +66,9 @@ interface GlStateStack<V> {
 
             if (list.isEmpty()) {
                 bind(restoreTo)
-                //println("full popped $name to $restoreTo")
             } else {
                 val value = list.lastOrNull()?.value
                 bind(value)
-                //println("popped $name to $value")
             }
 
             return handle.value
@@ -104,7 +95,6 @@ interface GlStateStack<V> {
                 if (index == list.size - 1) {
                     this@Impl.pop()
                 } else {
-                    //println("popped $name at $index with $list")
                     list.removeAt(index)
                     list.forEachIndexed { i, handle -> handle.index = i }
                 }

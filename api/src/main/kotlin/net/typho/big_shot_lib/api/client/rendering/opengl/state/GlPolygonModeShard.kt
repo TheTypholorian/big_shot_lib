@@ -8,6 +8,6 @@ data class GlPolygonModeShard(
     val mode: GlPolygonMode
 ) : GlDrawStateShard {
     override fun bind(): BoundResource {
-        return NeoGlStateManager.INSTANCE.polygonMode.push(mode)
+        return NeoGlStateManager.CURRENT.polygonMode.push(mode)
     }
 }

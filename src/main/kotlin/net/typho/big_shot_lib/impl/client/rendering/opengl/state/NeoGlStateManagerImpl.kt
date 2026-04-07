@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.client.rendering.opengl.state
 
 import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
@@ -18,12 +19,8 @@ import org.lwjgl.opengl.GL11.glBindTexture
 import org.lwjgl.opengl.GL11.glGetInteger
 import org.lwjgl.opengl.GL20.GL_CURRENT_PROGRAM
 import org.lwjgl.opengl.GL30.*
-import org.lwjgl.opengl.GL31.GL_PRIMITIVE_RESTART
-import org.lwjgl.opengl.GL32.*
-import org.lwjgl.opengl.GL40.GL_SAMPLE_SHADING
 import org.lwjgl.opengl.GL41.GL_PROGRAM_PIPELINE_BINDING
 import org.lwjgl.opengl.GL41.glBindProgramPipeline
-import org.lwjgl.opengl.GL43.*
 import org.lwjgl.system.MemoryStack
 
 object NeoGlStateManagerImpl : NeoGlStateManager {

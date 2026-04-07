@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.util.KeyedDelegate
 import net.typho.big_shot_lib.api.util.WrapperUtil
 
-interface GlFramebuffer : GlResource {
+interface GlFramebuffer : GlResource.Container {
     companion object {
         @JvmField
         val MAIN = WrapperUtil.INSTANCE.wrap(Minecraft.getInstance().mainRenderTarget)

@@ -60,7 +60,7 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
         viewport: AbstractRect2<Int>?,
         override val handle: GlStateStack.Handle<Int>
     ) : GlBoundFramebuffer {
-        val viewportHandle: GlStateStack.Handle<AbstractRect2<Int>>? = viewport?.let { NeoGlStateManager.INSTANCE.viewport.push(it) }
+        val viewportHandle: GlStateStack.Handle<AbstractRect2<Int>>? = viewport?.let { NeoGlStateManager.CURRENT.viewport.push(it) }
         override var defaultWidth: Int
             get() = assertBound { glGetFramebufferParameteri(GL_FRAMEBUFFER, GL_FRAMEBUFFER_DEFAULT_WIDTH) }
             set(value) = assertBound { glFramebufferParameteri(GL_FRAMEBUFFER, GL_FRAMEBUFFER_DEFAULT_WIDTH, value) }
@@ -104,7 +104,7 @@ interface GlBoundFramebuffer : GlBoundResource<GlFramebuffer> {
         }
 
         override fun blitFrom(from: Int, src: AbstractRect2<Int>, dst: AbstractRect2<Int>, filter: GlTextureMinFilter, vararg mask: GlBufferBit){
-            NeoGlStateManager.INSTANCE.readFramebuffer.push(from).use {
+            NeoGlStateManager.CURRENT.readFramebuffer.push(from).use {
                 glBlitFramebuffer(
                     src.min.x, src.min.y, src.max.x, src.max.y,
                     dst.min.x, dst.min.y, dst.max.x, dst.max.y,

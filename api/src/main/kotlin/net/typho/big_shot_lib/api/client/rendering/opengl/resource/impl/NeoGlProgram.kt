@@ -25,11 +25,11 @@ open class NeoGlProgram(
     constructor(location: NeoIdentifier, format: NeoVertexFormat) : this(location, format, GlResourceType.PROGRAM.create(), true)
 
     override fun use(): GlBoundProgram {
-        val handle = NeoGlStateManager.INSTANCE.program.push(glId)
+        val handle = NeoGlStateManager.CURRENT.program.push(glId)
         return object : GlBoundProgram {
             override val resource: GlProgram = this@NeoGlProgram
             override val handle: GlStateStack.Handle<Int> = handle
-            val initialTextureUnit = NeoGlStateManager.INSTANCE.activeTexture
+            val initialTextureUnit = NeoGlStateManager.CURRENT.activeTexture
 
             override fun setUniform(
                 name: String,
@@ -51,7 +51,7 @@ open class NeoGlProgram(
                     val name = binding.uniformName ?: "Sampler$unit"
                     val texture = binding.texture
 
-                    NeoGlStateManager.INSTANCE.activeTexture = unit
+                    NeoGlStateManager.CURRENT.activeTexture = unit
                     glBindTexture(binding.target.glId, texture.glId)
                     glBindSampler(unit, binding.sampler?.glId ?: 0)
                     setUniform(name) { set(unit) }
@@ -61,7 +61,7 @@ open class NeoGlProgram(
 
             override fun unbind() {
                 super.unbind()
-                NeoGlStateManager.INSTANCE.activeTexture = initialTextureUnit
+                NeoGlStateManager.CURRENT.activeTexture = initialTextureUnit
             }
         }
     }

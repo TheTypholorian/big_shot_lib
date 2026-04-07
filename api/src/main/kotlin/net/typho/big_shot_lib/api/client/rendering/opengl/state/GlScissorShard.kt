@@ -9,8 +9,8 @@ sealed interface GlScissorShard : GlDrawStateShard {
         val scissor: AbstractRect2<Int>
     ) : GlScissorShard {
         override fun bind(): BoundResource {
-            val flag = NeoGlStateManager.INSTANCE.scissorEnabled.push(true)
-            val scissor = NeoGlStateManager.INSTANCE.scissor.push(scissor)
+            val flag = NeoGlStateManager.CURRENT.scissorEnabled.push(true)
+            val scissor = NeoGlStateManager.CURRENT.scissor.push(scissor)
 
             return BoundResource.all(flag, scissor)
         }
@@ -18,7 +18,7 @@ sealed interface GlScissorShard : GlDrawStateShard {
 
     object Disabled : GlScissorShard {
         override fun bind(): BoundResource {
-            return NeoGlStateManager.INSTANCE.scissorEnabled.push(false)
+            return NeoGlStateManager.CURRENT.scissorEnabled.push(false)
         }
     }
 }

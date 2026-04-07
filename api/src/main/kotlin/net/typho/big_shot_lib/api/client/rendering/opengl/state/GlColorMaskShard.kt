@@ -8,6 +8,6 @@ data class GlColorMaskShard(
     val mask: ColorMask
 ) : GlDrawStateShard {
     override fun bind(): BoundResource {
-        return NeoGlStateManager.INSTANCE.colorMask.push(mask)
+        return NeoGlStateManager.CURRENT.colorMask.push(mask)
     }
 }

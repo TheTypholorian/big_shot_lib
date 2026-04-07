@@ -14,10 +14,10 @@ sealed interface GlStencilShard : GlDrawStateShard {
         val op: StencilOp
     ) : GlStencilShard {
         override fun bind(): BoundResource {
-            val flag = NeoGlStateManager.INSTANCE.stencilEnabled.push(true)
-            val function = NeoGlStateManager.INSTANCE.stencilFunction.push(function)
-            val mask = NeoGlStateManager.INSTANCE.stencilMask.push(mask)
-            val op = NeoGlStateManager.INSTANCE.stencilOp.push(op)
+            val flag = NeoGlStateManager.CURRENT.stencilEnabled.push(true)
+            val function = NeoGlStateManager.CURRENT.stencilFunction.push(function)
+            val mask = NeoGlStateManager.CURRENT.stencilMask.push(mask)
+            val op = NeoGlStateManager.CURRENT.stencilOp.push(op)
 
             return BoundResource.all(flag, function, mask, op)
         }
@@ -25,7 +25,7 @@ sealed interface GlStencilShard : GlDrawStateShard {
 
     object Disabled : GlStencilShard {
         override fun bind(): BoundResource {
-            return NeoGlStateManager.INSTANCE.stencilEnabled.push(false)
+            return NeoGlStateManager.CURRENT.stencilEnabled.push(false)
         }
     }
 }

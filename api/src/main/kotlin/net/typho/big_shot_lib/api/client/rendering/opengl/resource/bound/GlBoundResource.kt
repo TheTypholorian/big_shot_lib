@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound
 
-import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResource
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
@@ -23,8 +22,6 @@ interface GlBoundResource<R : GlResource> : BoundResource {
             contract {
                 callsInPlace(action, InvocationKind.EXACTLY_ONCE)
             }
-
-            RenderSystem.assertOnRenderThread()
 
             if (!handle.isBound) {
                 throw IllegalStateException("Resource $resource was not on top of its gl state stack")
