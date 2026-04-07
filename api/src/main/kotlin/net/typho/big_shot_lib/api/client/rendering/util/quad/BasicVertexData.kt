@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.quad
+package net.typho.big_shot_lib.api.client.rendering.util.quad
 
 import net.typho.big_shot_lib.api.math.vec.AbstractVec2
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3

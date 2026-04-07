@@ -2,11 +2,12 @@ package net.typho.big_shot_lib.api
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.core.Registry
+import net.minecraft.server.packs.metadata.MetadataSectionSerializer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
-import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas
+import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
+import net.typho.big_shot_lib.api.client.rendering.util.NeoSpriteResourceLoader
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
-import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
@@ -41,6 +42,8 @@ interface InternalUtil {
     fun transformNormal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): AbstractVec3<Float>
 
     fun <T : Any> getRegistry(key: NeoResourceKey<Registry<T>>): Registry<T>?
+
+    fun createSpriteResourceLoader(sections: Collection<MetadataSectionSerializer<*>>): NeoSpriteResourceLoader
 
     companion object {
         internal val INSTANCE by lazy { InternalUtil::class.loadService() }

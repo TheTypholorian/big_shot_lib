@@ -1,10 +1,9 @@
 package net.typho.big_shot_lib.api.util
 
 import com.mojang.blaze3d.pipeline.RenderTarget
-import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.VertexConsumer
-import com.mojang.serialization.DataResult
 import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.texture.SpriteContents
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceKey
@@ -12,10 +11,9 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
-import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
-import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
+import net.typho.big_shot_lib.api.client.rendering.util.NeoSpriteContents
+import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resource.NeoTagKey
@@ -30,6 +28,8 @@ interface WrapperUtil {
     fun wrap(access: RegistryAccess): NeoRegistryAccess
 
     fun wrap(quad: BakedQuad): NeoBakedQuad
+
+    fun wrap(sprite: SpriteContents): NeoSpriteContents
 
     fun wrap(consumer: VertexConsumer): NeoVertexConsumer
 

@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.quad
+package net.typho.big_shot_lib.api.client.rendering.util
 
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D

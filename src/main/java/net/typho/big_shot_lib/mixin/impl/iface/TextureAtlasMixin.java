@@ -19,8 +19,8 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResour
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
-import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas;
-import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlasSprite;
+import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas;
+import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite;
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier;
 import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;

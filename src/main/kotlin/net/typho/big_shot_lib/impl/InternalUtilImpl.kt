@@ -4,14 +4,20 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.texture.atlas.SpriteResourceLoader
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.server.packs.metadata.MetadataSectionSerializer
+import net.minecraft.server.packs.resources.Resource
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
-import net.typho.big_shot_lib.api.client.rendering.quad.NeoAtlas
+import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
+import net.typho.big_shot_lib.api.client.rendering.util.NeoSpriteContents
+import net.typho.big_shot_lib.api.client.rendering.util.NeoSpriteResourceLoader
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
+import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
@@ -111,5 +117,17 @@ object InternalUtilImpl : InternalUtil {
         //? } else {
         /*return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
         *///? }
+    }
+
+    override fun createSpriteResourceLoader(sections: Collection<MetadataSectionSerializer<*>>): NeoSpriteResourceLoader {
+        val loader = SpriteResourceLoader.create(sections)
+        return object : NeoSpriteResourceLoader {
+            override fun loadSprite(
+                location: NeoIdentifier,
+                resource: Resource
+            ): NeoSpriteContents? {
+                return loader.loadSprite(location.mojang, resource)?.let { WrapperUtil.INSTANCE.wrap(it) }
+            }
+        }
     }
 }

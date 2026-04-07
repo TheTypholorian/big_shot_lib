@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.FluidState
-import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
+import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.math.NeoDirection

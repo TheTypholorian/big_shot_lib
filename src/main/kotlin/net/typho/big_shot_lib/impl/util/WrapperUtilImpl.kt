@@ -9,18 +9,22 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import com.mojang.serialization.DataResult
 import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.texture.SpriteContents
+import net.minecraft.client.renderer.texture.SpriteTicker
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceKey
 import net.minecraft.server.packs.PackResources
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.server.packs.resources.ResourceMetadata
 import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
-import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
+import net.typho.big_shot_lib.api.client.rendering.util.NeoSpriteContents
+import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.NeoRegistry
@@ -158,6 +162,27 @@ object WrapperUtilImpl : WrapperUtil {
         quad: BakedQuad
     ): NeoBakedQuad {
         return quad.getExtensionValue()
+    }
+
+    override fun wrap(sprite: SpriteContents): NeoSpriteContents {
+        return object : NeoSpriteContents {
+            override val width: Int = sprite.width()
+            override val height: Int = sprite.height()
+            override val metadata: ResourceMetadata = sprite.metadata()
+            override val location: NeoIdentifier = sprite.name().neo
+
+            override fun createTicker(): SpriteTicker? {
+                return sprite.createTicker()
+            }
+
+            override fun uploadFirstFrame(x: Int, y: Int) {
+                sprite.uploadFirstFrame(x, y)
+            }
+
+            override fun free() {
+                sprite.close()
+            }
+        }
     }
 
     override fun wrap(consumer: VertexConsumer): NeoVertexConsumer {

@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.impl.util
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.block.state.BlockState
-import net.typho.big_shot_lib.api.client.rendering.quad.NeoBakedQuad
+import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.math.NeoDirection
 
 class FluidQuadConsumer(
