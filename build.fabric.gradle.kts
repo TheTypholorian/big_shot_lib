@@ -75,6 +75,8 @@ tasks.named<ProcessResources>("processResources") {
         this["vibrancy_incompat_version"] = project.property("vibrancyIncompatVersion") as String
     }
 
+    inputs.properties(props)
+
     filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml", "**/*.mixins.json")) {
         expand(props)
     }
