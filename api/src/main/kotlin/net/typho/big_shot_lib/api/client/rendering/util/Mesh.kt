@@ -9,6 +9,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlBuf
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlVertexArray
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlVertexArray
+import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.system.NativeResource
 
 open class Mesh(
@@ -36,11 +37,11 @@ open class Mesh(
                 GlBufferWriter.Mode.REGULAR,
                 GlBufferUsage.STATIC_DRAW
             ).also { mesh ->
-                mesh.upload(4) {
-                    vertex(1f, 1f, 0f).textureUV(1f, 1f)
-                    vertex(-1f, 1f, 0f).textureUV(0f, 1f)
-                    vertex(-1f, -1f, 0f).textureUV(0f, 0f)
-                    vertex(1f, -1f, 0f).textureUV(1f, 0f)
+                mesh.builder(4)?.use {
+                    it.vertex(1f, 1f, 0f).textureUV(1f, 1f)
+                    it.vertex(-1f, 1f, 0f).textureUV(0f, 1f)
+                    it.vertex(-1f, -1f, 0f).textureUV(0f, 0f)
+                    it.vertex(1f, -1f, 0f).textureUV(1f, 0f)
                 }
             }
         }
@@ -86,18 +87,32 @@ open class Mesh(
         }
     }
 
-    fun upload(vertexCount: Int, out: Builder.() -> Unit) {
-        builder(vertexCount)?.use { out(it) }
+    fun rawUpload(size: Int, vertices: NeoBuffer) {
+        this.size = size
+        indexType = null
+
+        vao.bind().use {
+            vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
+                it.bufferData(vertices, usage)
+                format.initVertexArrayState()
+            }
+        }
     }
 
-    fun lazyUpload(vertexCount: Int, out: Builder.() -> Unit): () -> Unit {
-        if (!writeMode.canLazyUpload) {
-            throw UnsupportedOperationException("Buffer write mode $writeMode does not support lazy uploading")
+    fun rawUpload(size: Int, indexType: GlIndexDataType, vertices: NeoBuffer, indices: NeoBuffer) {
+        this.size = size
+        this.indexType = indexType
+
+        ebo!!.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER).use {
+            it.bufferData(indices, usage)
         }
 
-        val builder = builder(vertexCount) ?: return {}
-        out(builder)
-        return builder::free
+        vao.bind().use {
+            vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
+                it.bufferData(vertices, usage)
+                format.initVertexArrayState()
+            }
+        }
     }
 
     override fun draw() {
@@ -118,7 +133,7 @@ open class Mesh(
         @JvmField
         val bufferBuilder: NeoBufferBuilder
     ) : NeoVertexConsumer.Redirect(bufferBuilder), NativeResource {
-        override fun free() {
+        fun build() {
             val built = bufferBuilder.build() ?: throw IllegalStateException("Error with neo buffer builder")
 
             if (ebo == null) {
@@ -135,5 +150,7 @@ open class Mesh(
                 }
             }
         }
+
+        override fun free() = build()
     }
 }

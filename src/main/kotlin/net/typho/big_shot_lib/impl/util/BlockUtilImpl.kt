@@ -18,6 +18,7 @@ import net.minecraft.world.level.material.FluidState
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
+import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3
 import net.typho.big_shot_lib.api.math.vec.AbstractVec3.Companion.blockPos
@@ -141,7 +142,10 @@ object BlockUtilImpl : BlockUtil {
                 face,
                 quads.mapTo(ArrayList(quads.size)) {
                     WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
-                        vertex.withPosition { pos -> pos + offset }
+                        NeoVertexData(
+                            vertex,
+                            pos = vertex.pos + offset
+                        )
                     }
                 }
             )
@@ -185,7 +189,10 @@ object BlockUtilImpl : BlockUtil {
                 face,
                 quads.mapTo(ArrayList(quads.size)) {
                     WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
-                        vertex.withPosition { pos -> pos + offset }
+                        NeoVertexData(
+                            vertex,
+                            pos = vertex.pos + offset
+                        )
                     }
                 }
             )

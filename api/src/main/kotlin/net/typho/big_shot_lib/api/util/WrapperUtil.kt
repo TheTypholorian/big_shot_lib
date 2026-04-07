@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.api.util
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.block.model.BakedQuad
-import net.minecraft.client.renderer.texture.SpriteContents
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.ResourceKey
@@ -27,8 +26,6 @@ interface WrapperUtil {
     fun wrap(access: RegistryAccess): NeoRegistryAccess
 
     fun wrap(quad: BakedQuad): NeoBakedQuad
-
-    fun wrap(sprite: SpriteContents): NeoSpriteContents
 
     fun wrap(consumer: VertexConsumer): NeoVertexConsumer
 

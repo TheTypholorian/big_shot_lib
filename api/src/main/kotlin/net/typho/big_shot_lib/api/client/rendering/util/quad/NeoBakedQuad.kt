@@ -32,12 +32,17 @@ interface NeoBakedQuad {
     fun withCalculatedNormals(): NeoBakedQuad {
         var normal = (v1.pos - v0.pos) cross (v3.pos - v0.pos)
         normal /= normal.length
-        return withVertices { index, vertex -> vertex.withNormal { normal } }
+        return withVertices { index, vertex ->
+            NeoVertexData(
+                vertex,
+                normal = normal
+            )
+        }
     }
 
     fun withVertices(function: (index: Int, vertex: NeoVertexData) -> NeoVertexData): NeoBakedQuad {
         val parent = this
-        val vertices = parent.vertices.mapIndexed(function).toTypedArray()
+        val vertices = Array(4) { function(it, parent.vertices[it]) }
         return object : NeoBakedQuad {
             override val vertices: Array<NeoVertexData> = vertices
             override val tintIndex: Int?
@@ -124,7 +129,7 @@ interface NeoBakedQuad {
 
             if (index == 4) {
                 index = 0
-                take(BasicBakedQuad(vertices.map { it!! }.toTypedArray(), null, null, null, false))
+                take(BasicBakedQuad(Array(4) { vertices[it]!! }, null, null, null, false))
             }
         }
 

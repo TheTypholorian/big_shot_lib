@@ -5,7 +5,6 @@ import net.typho.big_shot_lib.api.math.NeoDirection
 import kotlin.collections.contentEquals
 import kotlin.collections.contentHashCode
 
-@JvmRecord
 data class BasicBakedQuad(
     override val vertices: Array<NeoVertexData>,
     override val tintIndex: Int?,

@@ -3,93 +3,63 @@ package net.typho.big_shot_lib.api.client.rendering.util.quad
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.math.vec.*
 import net.typho.big_shot_lib.api.util.NeoColor
-import java.util.function.UnaryOperator
 
-interface NeoVertexData {
-    val pos: AbstractVec3<Float>
-    val color: NeoColor?
-    val textureUV: AbstractVec2<Float>?
-    val overlayUV: AbstractVec2<Int>?
-    val lightUV: AbstractVec2<Int>?
-    val normal: AbstractVec3<Float>?
+data class NeoVertexData(
+    @JvmField
+    val pos: AbstractVec3<Float>,
+    @JvmField
+    val color: NeoColor? = null,
+    @JvmField
+    val textureUV: AbstractVec2<Float>? = null,
+    @JvmField
+    val overlayUV: AbstractVec2<Int>? = null,
+    @JvmField
+    val lightUV: AbstractVec2<Int>? = null,
+    @JvmField
+    val normal: AbstractVec3<Float>? = null
+) {
+    constructor(
+        data: IntArray,
+        offset: Int
+    ) : this(
+        NeoVec3f(
+            Float.fromBits(data[offset]),
+            Float.fromBits(data[offset + 1]),
+            Float.fromBits(data[offset + 2])
+        ),
+        NeoColor.RGBA(data[offset + 3]),
+        NeoVec2f(
+            Float.fromBits(data[offset + 4]),
+            Float.fromBits(data[offset + 5])
+        ),
+        NeoVec2i(
+            data[offset + 6] ushr 16,
+            data[offset + 6] and 0xFFFF
+        ),
+        null,
+        NeoVec3f(
+            (data[offset + 7] ushr 24).toByte() / 127f,
+            ((data[offset + 7] ushr 16) and 0xFF).toByte() / 127f,
+            ((data[offset + 7] ushr 8) and 0xFF).toByte() / 127f
+        )
+    )
 
-    fun withPosition(pos: UnaryOperator<AbstractVec3<Float>>): NeoVertexData {
-        val parent = this
-        val pos = pos.apply(parent.pos)
-        return object : NeoVertexData {
-            override val pos: AbstractVec3<Float> = pos
-            override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int>? = parent.lightUV
-            override val normal: AbstractVec3<Float>? = parent.normal
-        }
-    }
-
-    fun withColor(color: UnaryOperator<NeoColor?>): NeoVertexData {
-        val parent = this
-        val color = color.apply(parent.color)
-        return object : NeoVertexData {
-            override val pos: AbstractVec3<Float> = parent.pos
-            override val color: NeoColor? = color
-            override val textureUV: AbstractVec2<Float>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int>? = parent.lightUV
-            override val normal: AbstractVec3<Float>? = parent.normal
-        }
-    }
-
-    fun withTextureUV(textureUV: UnaryOperator<AbstractVec2<Float>?>): NeoVertexData {
-        val parent = this
-        val textureUV = textureUV.apply(parent.textureUV)
-        return object : NeoVertexData {
-            override val pos: AbstractVec3<Float> = parent.pos
-            override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float>? = textureUV
-            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int>? = parent.lightUV
-            override val normal: AbstractVec3<Float>? = parent.normal
-        }
-    }
-
-    fun withOverlayUV(overlayUV: UnaryOperator<AbstractVec2<Int>?>): NeoVertexData {
-        val parent = this
-        val overlayUV = overlayUV.apply(parent.overlayUV)
-        return object : NeoVertexData {
-            override val pos: AbstractVec3<Float> = parent.pos
-            override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int>? = overlayUV
-            override val lightUV: AbstractVec2<Int>? = parent.lightUV
-            override val normal: AbstractVec3<Float>? = parent.normal
-        }
-    }
-
-    fun withLightUV(lightUV: UnaryOperator<AbstractVec2<Int>?>): NeoVertexData {
-        val parent = this
-        val lightUV = lightUV.apply(parent.lightUV)
-        return object : NeoVertexData {
-            override val pos: AbstractVec3<Float> = parent.pos
-            override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int>? = lightUV
-            override val normal: AbstractVec3<Float>? = parent.normal
-        }
-    }
-
-    fun withNormal(normal: UnaryOperator<AbstractVec3<Float>?>): NeoVertexData {
-        val parent = this
-        val normal = normal.apply(parent.normal)
-        return object : NeoVertexData {
-            override val pos: AbstractVec3<Float> = parent.pos
-            override val color: NeoColor? = parent.color
-            override val textureUV: AbstractVec2<Float>? = parent.textureUV
-            override val overlayUV: AbstractVec2<Int>? = parent.overlayUV
-            override val lightUV: AbstractVec2<Int>? = parent.lightUV
-            override val normal: AbstractVec3<Float>? = normal
-        }
-    }
+    constructor(
+        copy: NeoVertexData,
+        pos: AbstractVec3<Float>? = null,
+        color: NeoColor? = null,
+        textureUV: AbstractVec2<Float>? = null,
+        overlayUV: AbstractVec2<Int>? = null,
+        lightUV: AbstractVec2<Int>? = null,
+        normal: AbstractVec3<Float>? = null
+    ) : this(
+        pos ?: copy.pos,
+        color ?: copy.color,
+        textureUV ?: copy.textureUV,
+        overlayUV ?: copy.overlayUV,
+        lightUV ?: copy.lightUV,
+        normal ?: copy.normal,
+    )
 
     fun put(consumer: NeoVertexConsumer) {
         consumer.vertex(pos)
@@ -100,80 +70,32 @@ interface NeoVertexData {
         normal?.let(consumer::normal)
     }
 
-    open class Mutable(
-        override var pos: AbstractVec3<Float>,
-        override var color: NeoColor? = null,
-        override var textureUV: AbstractVec2<Float>? = null,
-        override var overlayUV: AbstractVec2<Int>? = null,
-        override var lightUV: AbstractVec2<Int>? = null,
-        override var normal: AbstractVec3<Float>? = null
-    ) : NeoVertexData
-
-    open class PositionTexture(
-        override val pos: AbstractVec3<Float>,
-        override val textureUV: AbstractVec2<Float>
-    ) : NeoVertexData {
-        override val color: NeoColor?
-            get() = null
-        override val overlayUV: AbstractVec2<Int>?
-            get() = null
-        override val lightUV: AbstractVec2<Int>?
-            get() = null
-        override val normal: AbstractVec3<Float>?
-            get() = null
-    }
-
-    open class LazyPacked(
-        @JvmField
-        val data: IntArray,
-        @JvmField
-        val offset: Int
-    ) : NeoVertexData {
-        override val pos: AbstractVec3<Float> by lazy { NeoVec3f(
-            Float.fromBits(data[offset]),
-            Float.fromBits(data[offset + 1]),
-            Float.fromBits(data[offset + 2])
-        ) }
-        override val color: NeoColor by lazy { NeoColor.RGBA(data[offset + 3]) }
-        override val textureUV: AbstractVec2<Float> by lazy { NeoVec2f(
-            Float.fromBits(data[offset + 4]),
-            Float.fromBits(data[offset + 5])
-        ) }
-        override val overlayUV: AbstractVec2<Int> by lazy {
-            val packed = data[offset + 6]
-            NeoVec2i(
-                packed ushr 16,
-                packed and 0xFFFF
-            )
-        }
-        override val lightUV: AbstractVec2<Int>? = null
-        override val normal: AbstractVec3<Float> by lazy {
-            val packed = data[offset + 7]
-            NeoVec3f(
-                (packed ushr 24).toByte() / 127f,
-                ((packed ushr 16) and 0xFF).toByte() / 127f,
-                ((packed ushr 8) and 0xFF).toByte() / 127f
-            )
-        }
-
-        override fun put(consumer: NeoVertexConsumer) {
-            consumer.vertex(data, offset)
-            consumer.color(data, offset + 3)
-            consumer.textureUV(data, offset + 4)
-            consumer.overlayUV(data, offset + 6)
-            consumer.normal(data, offset + 7)
-            consumer.endVertex()
-        }
-    }
-
     abstract class Consumer : NeoVertexConsumer() {
-        var vertex: Mutable? = null
+        @JvmField
+        protected var pos: AbstractVec3<Float>? = null
+        @JvmField
+        protected var color: NeoColor? = null
+        @JvmField
+        protected var textureUV: AbstractVec2<Float>? = null
+        @JvmField
+        protected var overlayUV: AbstractVec2<Int>? = null
+        @JvmField
+        protected var lightUV: AbstractVec2<Int>? = null
+        @JvmField
+        protected var normal: AbstractVec3<Float>? = null
 
         abstract fun take(vertex: NeoVertexData)
 
         open fun flush() {
-            vertex?.let { take(it) }
-            vertex = null
+            pos?.let {
+                take(NeoVertexData(it, color, textureUV, overlayUV, lightUV, normal))
+            }
+            pos = null
+            color = null
+            textureUV = null
+            overlayUV = null
+            lightUV = null
+            normal = null
         }
 
         override fun vertex(
@@ -182,7 +104,7 @@ interface NeoVertexData {
             z: Float
         ): NeoVertexConsumer {
             flush()
-            vertex = Mutable(NeoVec3f(x, y, z))
+            pos = NeoVec3f(x, y, z)
             return this
         }
 
@@ -192,7 +114,7 @@ interface NeoVertexData {
             b: Int,
             a: Int
         ): NeoVertexConsumer {
-            vertex!!.color = NeoColor.RGBA(r, g, b, a)
+            color = NeoColor.RGBA(r, g, b, a)
             return this
         }
 
@@ -200,7 +122,7 @@ interface NeoVertexData {
             u: Float,
             v: Float
         ): NeoVertexConsumer {
-            vertex!!.textureUV = NeoVec2f(u, v)
+            textureUV = NeoVec2f(u, v)
             return this
         }
 
@@ -208,7 +130,7 @@ interface NeoVertexData {
             u: Int,
             v: Int
         ): NeoVertexConsumer {
-            vertex!!.overlayUV = NeoVec2i(u, v)
+            overlayUV = NeoVec2i(u, v)
             return this
         }
 
@@ -216,7 +138,7 @@ interface NeoVertexData {
             u: Int,
             v: Int
         ): NeoVertexConsumer {
-            vertex!!.lightUV = NeoVec2i(u, v)
+            lightUV = NeoVec2i(u, v)
             return this
         }
 
@@ -225,7 +147,7 @@ interface NeoVertexData {
             y: Float,
             z: Float
         ): NeoVertexConsumer {
-            vertex!!.normal = NeoVec3f(x, y, z)
+            normal = NeoVec3f(x, y, z)
             return this
         }
     }

@@ -58,10 +58,10 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
         public NeoVertexData[] getVertices() {
             if (vertices == null) {
                 vertices = new NeoVertexData[]{
-                        new NeoVertexData.LazyPacked(BakedQuadMixin.this.vertices, 0),
-                        new NeoVertexData.LazyPacked(BakedQuadMixin.this.vertices, 8),
-                        new NeoVertexData.LazyPacked(BakedQuadMixin.this.vertices, 16),
-                        new NeoVertexData.LazyPacked(BakedQuadMixin.this.vertices, 24)
+                        new NeoVertexData(BakedQuadMixin.this.vertices, 0),
+                        new NeoVertexData(BakedQuadMixin.this.vertices, 8),
+                        new NeoVertexData(BakedQuadMixin.this.vertices, 16),
+                        new NeoVertexData(BakedQuadMixin.this.vertices, 24)
                 };
             }
 
@@ -140,10 +140,10 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
         @SuppressWarnings("NullableProblems")
         public NeoVertexData[] getVertices() {
             return new NeoVertexData[]{
-                    new NeoVertexData.PositionTexture(new NeoVec3f(position0), new NeoVec2f(packedUV0)),
-                    new NeoVertexData.PositionTexture(new NeoVec3f(position1), new NeoVec2f(packedUV1)),
-                    new NeoVertexData.PositionTexture(new NeoVec3f(position2), new NeoVec2f(packedUV2)),
-                    new NeoVertexData.PositionTexture(new NeoVec3f(position3), new NeoVec2f(packedUV3))
+                    new NeoVertexData(new NeoVec3f(position0), null, new NeoVec2f(packedUV0), null, null, null),
+                    new NeoVertexData(new NeoVec3f(position1), null, new NeoVec2f(packedUV1), null, null, null),
+                    new NeoVertexData(new NeoVec3f(position2), null, new NeoVec2f(packedUV2), null, null, null),
+                    new NeoVertexData(new NeoVec3f(position3), null, new NeoVec2f(packedUV3), null, null, null)
             };
         }
 
