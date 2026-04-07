@@ -98,7 +98,7 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
                 return new BoundMinecraftTexture(
                         this,
                         target,
-                        NeoGlStateManager.Companion.getINSTANCE().getTextures().get(target).push(getGlId()),
+                        NeoGlStateManager.Companion.getCURRENT().getTextures().get(target).push(getGlId()),
                         width,
                         height,
                         getFormat()

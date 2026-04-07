@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(RenderTarget.class)
@@ -61,9 +62,17 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
     @Shadow
     public int height;
 
+    @Unique
+    private final Thread big_shot_lib$thread = Thread.currentThread();
+
     @Override
     public GlFramebuffer getBig_shot_lib$extension_value() {
         return new GlFramebuffer() {
+            @Override
+            public Thread getThread() {
+                return big_shot_lib$thread;
+            }
+
             @Override
             public int getGlId() {
                 //? if >=1.21.5 {
@@ -121,7 +130,7 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
                 return new BoundMinecraftRenderTarget(
                         this,
                         viewport,
-                        NeoGlStateManager.Companion.getINSTANCE().getFramebuffer().push(getGlId())
+                        NeoGlStateManager.Companion.getCURRENT().getFramebuffer().push(getGlId())
                 );
             }
         };

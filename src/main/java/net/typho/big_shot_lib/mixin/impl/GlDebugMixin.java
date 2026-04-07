@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 public class GlDebugMixin {
     static {
         if (PlatformUtil.Companion.getINSTANCE().isDevEnv()) {
-            NeoGlStateManager.Companion.getINSTANCE().getDebugOutputSynchronousEnabled().push(true);
+            NeoGlStateManager.Companion.getCURRENT().getDebugOutputSynchronousEnabled().push(true);
         }
     }
 

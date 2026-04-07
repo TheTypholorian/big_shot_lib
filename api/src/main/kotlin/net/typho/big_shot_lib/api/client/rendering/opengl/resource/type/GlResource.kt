@@ -7,7 +7,7 @@ interface GlResource : GlNamed, NativeResource {
     val type: GlResourceType
     val freed: Boolean
 
-    interface Container {
+    interface Container : GlResource {
         val thread: Thread
 
         fun existsOnCurrentThread() = thread == Thread.currentThread()

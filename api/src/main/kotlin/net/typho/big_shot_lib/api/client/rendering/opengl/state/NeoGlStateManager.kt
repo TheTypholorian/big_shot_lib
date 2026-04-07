@@ -1,12 +1,12 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.systems.RenderSystem.activeTexture
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
@@ -130,7 +130,7 @@ interface NeoGlStateManager {
         )
         override var activeTexture: Int
             get() = glGetInteger(GL_ACTIVE_TEXTURE) - GL_TEXTURE0
-            set(value) = activeTexture(value + GL_TEXTURE0)
+            set(value) = glActiveTexture(value + GL_TEXTURE0)
 
         override val blendColor: GlStateStack<NeoColor> = GlStateStack.Impl(
             "BLEND_COLOR",
@@ -257,6 +257,32 @@ interface NeoGlStateManager {
                 }
             }
         )
+
+        override val blendEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.BLEND)
+        override val colorLogicOpEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.COLOR_LOGIC_OP)
+        override val cullFaceEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.CULL_FACE)
+        override val debugOutputEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DEBUG_OUTPUT)
+        override val debugOutputSynchronousEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DEBUG_OUTPUT_SYNCHRONOUS)
+        override val depthClampEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DEPTH_CLAMP)
+        override val depthEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DEPTH_TEST)
+        override val ditherEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DITHER)
+        override val framebufferSRGBEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.FRAMEBUFFER_SRGB)
+        override val lineSmoothEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.LINE_SMOOTH)
+        override val multisampleEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.MULTISAMPLE)
+        override val polygonOffsetEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.POLYGON_OFFSET)
+        override val polygonSmoothEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.POLYGON_SMOOTH)
+        override val primitiveRestartEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.PRIMITIVE_RESTART)
+        override val primitiveRestartFixedIndexEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.PRIMITIVE_RESTART_FIXED_INDEX)
+        override val rasterizerDiscardEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.RASTERIZER_DISCARD)
+        override val sampleAlphaToCoverageEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SAMPLE_ALPHA_TO_COVERAGE)
+        override val sampleAlphaToOneEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SAMPLE_ALPHA_TO_ONE)
+        override val sampleCoverageEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SAMPLE_COVERAGE)
+        override val sampleShadingEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SAMPLE_SHADING)
+        override val sampleMaskEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SAMPLE_MASK)
+        override val scissorEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SCISSOR_TEST)
+        override val stencilEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.STENCIL_TEST)
+        override val textureCubeMapSeamlessEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.TEXTURE_CUBE_MAP_SEAMLESS)
+        override val programPointSizeEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.PROGRAM_POINT_SIZE)
     }
 
     companion object {

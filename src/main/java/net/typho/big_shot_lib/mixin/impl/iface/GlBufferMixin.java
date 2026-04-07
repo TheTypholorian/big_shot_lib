@@ -77,7 +77,7 @@ public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtens
                 return new GlBoundBuffer.NonResizable(
                         this,
                         target,
-                        NeoGlStateManager.Companion.getINSTANCE().getBuffers().get(target).push(handle),
+                        NeoGlStateManager.Companion.getCURRENT().getBuffers().get(target).push(handle),
                         size(),
                         //? if <1.21.6 {
                         switch (usage()) {

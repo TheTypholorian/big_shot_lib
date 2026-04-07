@@ -94,7 +94,7 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
                 return new BoundMinecraftTexture(
                         this,
                         target,
-                        NeoGlStateManager.Companion.getINSTANCE().getTextures().get(target).push(glId()),
+                        NeoGlStateManager.Companion.getCURRENT().getTextures().get(target).push(glId()),
                         getWidth(),
                         getHeight(),
                         getFormat()

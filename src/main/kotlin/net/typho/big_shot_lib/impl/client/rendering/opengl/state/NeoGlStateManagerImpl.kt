@@ -219,18 +219,38 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         }
     )
 
-    override val blendEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.BLEND)
-    override val colorLogicOpEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.COLOR_LOGIC_OP)
-    override val cullFaceEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.CULL_FACE)
+    override val blendEnabled: GlStateStack<Boolean> = GlStateStack.Impl(
+        "BLEND",
+        { if (it == true) GlStateManager._enableBlend() else GlStateManager._disableBlend() },
+        { glIsEnabled(GL_BLEND) }
+    )
+    override val colorLogicOpEnabled: GlStateStack<Boolean> = GlStateStack.Impl(
+        "COLOR_LOGIC_OP",
+        { if (it == true) GlStateManager._enableColorLogicOp() else GlStateManager._disableColorLogicOp() },
+        { glIsEnabled(GL_COLOR_LOGIC_OP) }
+    )
+    override val cullFaceEnabled: GlStateStack<Boolean> = GlStateStack.Impl(
+        "CULL_FACE",
+        { if (it == true) GlStateManager._enableCull() else GlStateManager._disableCull() },
+        { glIsEnabled(GL_CULL_FACE) }
+    )
     override val debugOutputEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DEBUG_OUTPUT)
     override val debugOutputSynchronousEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DEBUG_OUTPUT_SYNCHRONOUS)
     override val depthClampEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DEPTH_CLAMP)
-    override val depthEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DEPTH_TEST)
+    override val depthEnabled: GlStateStack<Boolean> = GlStateStack.Impl(
+        "DEPTH_TEST",
+        { if (it == true) GlStateManager._enableDepthTest() else GlStateManager._disableDepthTest() },
+        { glIsEnabled(GL_DEPTH_TEST) }
+    )
     override val ditherEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.DITHER)
     override val framebufferSRGBEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.FRAMEBUFFER_SRGB)
     override val lineSmoothEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.LINE_SMOOTH)
     override val multisampleEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.MULTISAMPLE)
-    override val polygonOffsetEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.POLYGON_OFFSET)
+    override val polygonOffsetEnabled: GlStateStack<Boolean> = GlStateStack.Impl(
+        "POLYGON_OFFSET",
+        { if (it == true) GlStateManager._enablePolygonOffset() else GlStateManager._disablePolygonOffset() },
+        { glIsEnabled(GL_POLYGON_OFFSET_FILL) }
+    )
     override val polygonSmoothEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.POLYGON_SMOOTH)
     override val primitiveRestartEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.PRIMITIVE_RESTART)
     override val primitiveRestartFixedIndexEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.PRIMITIVE_RESTART_FIXED_INDEX)
@@ -240,7 +260,11 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     override val sampleCoverageEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SAMPLE_COVERAGE)
     override val sampleShadingEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SAMPLE_SHADING)
     override val sampleMaskEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SAMPLE_MASK)
-    override val scissorEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.SCISSOR_TEST)
+    override val scissorEnabled: GlStateStack<Boolean> = GlStateStack.Impl(
+        "SCISSOR_TEST",
+        { if (it == true) GlStateManager._enableScissorTest() else GlStateManager._disableScissorTest() },
+        { glIsEnabled(GL_SCISSOR_TEST) }
+    )
     override val stencilEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.STENCIL_TEST)
     override val textureCubeMapSeamlessEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.TEXTURE_CUBE_MAP_SEAMLESS)
     override val programPointSizeEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.PROGRAM_POINT_SIZE)
