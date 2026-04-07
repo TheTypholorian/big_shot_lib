@@ -104,10 +104,10 @@ object InternalUtilImpl : InternalUtil {
         z: Float
     ): AbstractVec3<Float> {
         //? if >=1.20.5 {
-        return NeoVec3f(pose.transformNormal(x, y, z, Vector3f()))
-        //? } else {
-        /*return NeoVec3f(pose.normal().transform(Vector3f(x, y, z)))
-        *///? }
+        /*return NeoVec3f(pose.transformNormal(x, y, z, Vector3f()))
+        *///? } else {
+        return NeoVec3f(pose.normal().transform(Vector3f(x, y, z)))
+        //? }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -117,17 +117,5 @@ object InternalUtilImpl : InternalUtil {
         //? } else {
         /*return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
         *///? }
-    }
-
-    override fun createSpriteResourceLoader(sections: Collection<MetadataSectionSerializer<*>>): NeoSpriteResourceLoader {
-        val loader = SpriteResourceLoader.create(sections)
-        return object : NeoSpriteResourceLoader {
-            override fun loadSprite(
-                location: NeoIdentifier,
-                resource: Resource
-            ): NeoSpriteContents? {
-                return loader.loadSprite(location.mojang, resource)?.let { WrapperUtil.INSTANCE.wrap(it) }
-            }
-        }
     }
 }

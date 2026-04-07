@@ -94,10 +94,10 @@ class NeoVertexConsumerWrapper(
         //? if >=1.21 {
         /*inner.setNormal(pose, x, y, z)
         *///? } else if >=1.20.5 {
-        inner.normal(pose, x, y, z)
-        //? } else {
-        /*inner.normal(pose.normal(), x, y, z)
-        *///? }
+        /*inner.normal(pose, x, y, z)
+        *///? } else {
+        inner.normal(pose.normal(), x, y, z)
+        //? }
         return this
     }
 
