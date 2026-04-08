@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
@@ -126,18 +127,30 @@ open class Mesh(
 
     override fun draw() {
         if (size > 0) {
-            vao?.let { vao ->
-                vao.bind().use { vao -> _draw(vao) }
-            } ?: {
-                val vao = NeoGlVertexArray()
-                this.vao = vao
+            if (RenderSystem.isOnRenderThread()) {
+                if (vao == null) {
+                    val vao = NeoGlVertexArray()
+                    this.vao = vao
 
-                vao.bind().use { vao ->
-                    vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
-                        format.initVertexArrayState()
+                    vao.bind().use { vao ->
+                        vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
+                            format.initVertexArrayState()
+                        }
+
+                        _draw(vao)
                     }
+                } else {
+                    vao!!.bind().use { vao -> _draw(vao) }
+                }
+            } else {
+                NeoGlVertexArray().use { vao ->
+                    vao.bind().use { vao ->
+                        vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
+                            format.initVertexArrayState()
+                        }
 
-                    _draw(vao)
+                        _draw(vao)
+                    }
                 }
             }
         }
