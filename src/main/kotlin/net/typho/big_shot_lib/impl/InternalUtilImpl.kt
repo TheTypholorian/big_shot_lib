@@ -111,4 +111,12 @@ object InternalUtilImpl : InternalUtil {
         /*return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
         *///? }
     }
+
+    override fun mainWindowHandle(): Long {
+        //? if <1.21.9 {
+        return Minecraft.getInstance().window.window
+        //? } else {
+        /*return Minecraft.getInstance().window.handle()
+        *///? }
+    }
 }

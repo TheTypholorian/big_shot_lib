@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
-import net.minecraft.client.Minecraft
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResource
 import org.lwjgl.glfw.GLFW
@@ -31,7 +31,7 @@ class ContextLocal<R : GlResource.Container> : NativeResource {
     companion object {
         @JvmStatic
         val CLEANERS = mutableMapOf<Long, (resource: GlResource) -> Unit>(
-            Minecraft.getInstance().window.window to { GlQueue.INSTANCE.runOrQueue { it.free() } }
+            InternalUtil.INSTANCE.mainWindowHandle() to { GlQueue.INSTANCE.runOrQueue { it.free() } }
         )
     }
 }

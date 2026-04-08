@@ -41,6 +41,8 @@ interface InternalUtil {
 
     fun <T : Any> getRegistry(key: NeoResourceKey<Registry<T>>): Registry<T>?
 
+    fun mainWindowHandle(): Long
+
     companion object {
         internal val INSTANCE by lazy { InternalUtil::class.loadService() }
     }
