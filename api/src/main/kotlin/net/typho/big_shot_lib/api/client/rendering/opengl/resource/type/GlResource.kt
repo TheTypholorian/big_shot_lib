@@ -2,17 +2,26 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import org.lwjgl.system.NativeResource
+import kotlin.concurrent.thread
 
 interface GlResource : GlNamed, NativeResource {
     val type: GlResourceType
     val freed: Boolean
+
+    fun throwIfNotExists() {
+        if (freed) {
+            throw IllegalStateException("Used freed GlResource $this")
+        }
+    }
 
     interface Container : GlResource {
         val thread: Thread
 
         fun existsOnCurrentThread() = thread == Thread.currentThread()
 
-        fun throwIfNotExists() {
+        override fun throwIfNotExists() {
+            super.throwIfNotExists()
+
             if (!existsOnCurrentThread()) {
                 throw IllegalStateException("Tried to use $this on thread ${Thread.currentThread().name}, even though it's a container object and only valid on ${thread.name}")
             }

@@ -28,6 +28,7 @@ open class NeoGlTexture2D(
         protected set
 
     override fun bind(target: GlTextureTarget): GlBoundTexture2D {
+        throwIfNotExists()
         if (target.dimensions != 2) {
             throw IllegalArgumentException("Non-2D texture target $target")
         }

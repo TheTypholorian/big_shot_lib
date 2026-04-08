@@ -25,6 +25,7 @@ open class NeoGlProgram(
     constructor(location: NeoIdentifier, format: NeoVertexFormat) : this(location, format, GlResourceType.PROGRAM.create(), true)
 
     override fun use(): GlBoundProgram {
+        throwIfNotExists()
         val handle = NeoGlStateManager.CURRENT.program.push(glId)
         return object : GlBoundProgram {
             override val resource: GlProgram = this@NeoGlProgram
