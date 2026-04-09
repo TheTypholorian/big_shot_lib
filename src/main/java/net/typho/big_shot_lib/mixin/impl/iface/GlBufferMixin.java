@@ -15,6 +15,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundBuffer;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
+import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -52,6 +53,11 @@ public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtens
     @Override
     public net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer getBig_shot_lib$extension_value() {
         return new net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer() {
+            @Override
+            public RenderingContext getContext() {
+                return RenderingContext.MAIN;
+            }
+
             @Override
             public void free() {
                 GlBufferMixin.this.close();

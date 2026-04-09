@@ -21,6 +21,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite;
+import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext;
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier;
 import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;
@@ -58,6 +59,11 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
     @Override
     public NeoAtlas getBig_shot_lib$extension_value() {
         return new NeoAtlas() {
+            @Override
+            public RenderingContext getContext() {
+                return RenderingContext.MAIN;
+            }
+
             @Override
             public @NotNull NeoIdentifier getLocation() {
                 return IdentifierUtilKt.getNeo(location());

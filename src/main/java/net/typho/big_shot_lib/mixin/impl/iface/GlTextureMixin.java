@@ -11,6 +11,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResour
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
+import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +44,11 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
     @Override
     public GlTexture2D getBig_shot_lib$extension_value() {
         return new GlTexture2D() {
+            @Override
+            public RenderingContext getContext() {
+                return RenderingContext.MAIN;
+            }
+
             @Override
             public @Nullable GlTextureFormat getFormat() {
                 return switch (GlTextureMixin.this.getFormat()) {

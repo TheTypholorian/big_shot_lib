@@ -17,6 +17,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFrameb
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
+import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext;
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2;
 import net.typho.big_shot_lib.api.util.KeyedDelegate;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftRenderTarget;
@@ -69,8 +70,8 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
     public GlFramebuffer getBig_shot_lib$extension_value() {
         return new GlFramebuffer() {
             @Override
-            public Thread getThread() {
-                return big_shot_lib$thread;
+            public RenderingContext getContext() {
+                return RenderingContext.MAIN;
             }
 
             @Override
