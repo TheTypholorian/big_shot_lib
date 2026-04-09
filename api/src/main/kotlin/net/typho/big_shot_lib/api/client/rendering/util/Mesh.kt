@@ -57,11 +57,9 @@ open class Mesh(
         protected set
 
     override fun free() {
-        GlQueue.INSTANCE.runOrQueue {
-            //vao?.free()
-            vbo.free()
-            ebo?.free()
-        }
+        vao?.free()
+        vbo.free()
+        ebo?.free()
     }
 
     fun builder(vertexCount: Int): Builder? {
@@ -146,10 +144,10 @@ open class Mesh(
                 NeoGlVertexArray().use { vao ->
                     vao.bind().use { vao ->
                         vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
-                            //format.initVertexArrayState()
+                            format.initVertexArrayState()
                         }
 
-                        //_draw(vao)
+                        _draw(vao)
                     }
                 }
             }

@@ -6,6 +6,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
+import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import org.lwjgl.opengl.GL11.GL_TEXTURE_HEIGHT
 import org.lwjgl.opengl.GL11.GL_TEXTURE_INTERNAL_FORMAT
 import org.lwjgl.opengl.GL11.GL_TEXTURE_WIDTH
@@ -16,8 +17,9 @@ open class NeoGlTexture2D(
     autoFree: Boolean,
     format: GlTextureFormat?,
     width: Int,
-    height: Int
-) : NeoGlResource(GlResourceType.TEXTURE, glId, autoFree), GlTexture2D {
+    height: Int,
+    context: RenderingContext = RenderingContext.get()
+) : NeoGlResource(GlResourceType.TEXTURE, glId, autoFree, context), GlTexture2D {
     constructor() : this(GlResourceType.TEXTURE.create(), true, null, -1, -1)
 
     override var format: GlTextureFormat? = format

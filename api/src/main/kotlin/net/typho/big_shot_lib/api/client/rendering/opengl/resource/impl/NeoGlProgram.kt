@@ -10,6 +10,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
+import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL33.glBindSampler
@@ -18,8 +19,9 @@ open class NeoGlProgram(
     override val location: NeoIdentifier,
     override val format: NeoVertexFormat,
     glId: Int,
-    autoFree: Boolean
-) : NeoGlResource(GlResourceType.PROGRAM, glId, autoFree), GlProgram {
+    autoFree: Boolean,
+    context: RenderingContext = RenderingContext.get()
+) : NeoGlResource(GlResourceType.PROGRAM, glId, autoFree, context), GlProgram {
     private val uniforms = hashMapOf<String, GlUniform?>()
 
     constructor(location: NeoIdentifier, format: NeoVertexFormat) : this(location, format, GlResourceType.PROGRAM.create(), true)

@@ -16,7 +16,7 @@ open class NeoGlResource(
     private val cleanup: Cleaner.Cleanable = if (autoFree)
         CLEANER.register(this, Cleanup(type, context, glId))
     else
-        Cleaner.Cleanable { context.runOrQueue { type.destroy(glId) } }
+        Cleaner.Cleanable { /*context.runOrQueue { type.destroy(glId) }*/ }
 
     override fun free() {
         if (!freed) {
@@ -35,7 +35,7 @@ open class NeoGlResource(
         val glId: Int
     ) : Runnable {
         override fun run() {
-            context.runOrQueue { type.destroy(glId) }
+            //context.runOrQueue { type.destroy(glId) }
         }
     }
 
