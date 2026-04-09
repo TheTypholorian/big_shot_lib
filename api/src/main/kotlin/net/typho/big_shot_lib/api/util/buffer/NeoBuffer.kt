@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.util.buffer
 
 import net.typho.big_shot_lib.api.math.vec.*
+import net.typho.big_shot_lib.api.util.buffer.NeoBuffer.Native
 import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.system.NativeResource
 import java.io.*
@@ -375,16 +376,17 @@ abstract class NeoBuffer : Iterable<Byte> {
         }
     }
 
-    open class GCNative(
-        address: Long,
-        size: Long
-    ) : Native(address, size) {
+    open class GCNative : Native {
         companion object {
             @JvmStatic
             private val CLEANER = Cleaner.create()
         }
 
         protected val cleanup: Cleaner.Cleanable = CLEANER.register(this, createCleanup())
+
+        constructor(address: Long, size: Long) : super(address, size)
+
+        constructor(size: Long) : super(size)
 
         override fun free() {
             if (!isFreed) {

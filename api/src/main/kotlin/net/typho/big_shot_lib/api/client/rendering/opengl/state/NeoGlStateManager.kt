@@ -10,6 +10,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
+import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import net.typho.big_shot_lib.api.util.EnumArrayMap
@@ -287,16 +288,7 @@ interface NeoGlStateManager {
 
     companion object {
         val MAIN by lazy { NeoGlStateManager::class.loadService() }
-        val THREAD_LOCAL = ThreadLocal<NeoGlStateManager>()
         val CURRENT: NeoGlStateManager
-            get() {
-                THREAD_LOCAL.get()?.let { return it }
-
-                if (RenderSystem.isOnRenderThread()) {
-                    return MAIN
-                }
-
-                throw IllegalStateException("Not on main render thread and no NeoGlStateManager implementation has been set for thread ${Thread.currentThread().name}")
-            }
+            get() = RenderingContext.get().glManager
     }
 }

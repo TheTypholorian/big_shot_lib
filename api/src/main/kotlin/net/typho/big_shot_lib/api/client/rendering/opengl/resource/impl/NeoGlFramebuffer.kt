@@ -19,10 +19,9 @@ open class NeoGlFramebuffer(glId: Int, autoFree: Boolean) : NeoGlResource(GlReso
     override val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?> = KeyedDelegate.ReadOnly { key -> colorAttachmentsBacking[key] }
     override var depthAttachment: GlFramebufferAttachment? = null
         protected set
-    override val thread: Thread = Thread.currentThread()
 
     override fun bind(viewport: AbstractRect2<Int>?): GlBoundFramebuffer {
-        throwIfNotExists()
+        checkUsable()
         return object : GlBoundFramebuffer.Basic(this, viewport, NeoGlStateManager.CURRENT.framebuffer.push(glId)) {
             override val colorAttachments: KeyedDelegate<Int, GlFramebufferAttachment?> = object : KeyedDelegate<Int, GlFramebufferAttachment?> {
                 override fun get(key: Int) = colorAttachmentsBacking[key]

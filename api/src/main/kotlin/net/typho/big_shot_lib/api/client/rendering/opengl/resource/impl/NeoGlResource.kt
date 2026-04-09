@@ -1,22 +1,22 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl
 
-import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResource
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
+import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import java.lang.ref.Cleaner
-import kotlin.reflect.jvm.jvmName
 
 open class NeoGlResource(
     override val type: GlResourceType,
     override val glId: Int,
-    val autoFree: Boolean
+    val autoFree: Boolean,
+    override val context: RenderingContext = RenderingContext.get()
 ) : GlResource {
     final override var freed = false
-        private set
+        protected set
     private val cleanup: Cleaner.Cleanable = if (autoFree)
-        CLEANER.register(this, Cleanup(type, glId))
+        CLEANER.register(this, Cleanup(type, context, glId))
     else
-        Cleaner.Cleanable { GlQueue.INSTANCE.runOrQueue { type.destroy(glId) } }
+        Cleaner.Cleanable { context.runOrQueue { type.destroy(glId) } }
 
     override fun free() {
         if (!freed) {
@@ -31,10 +31,11 @@ open class NeoGlResource(
 
     private class Cleanup(
         val type: GlResourceType,
+        val context: RenderingContext,
         val glId: Int
     ) : Runnable {
         override fun run() {
-            GlQueue.INSTANCE.runOrQueue { type.destroy(glId) }
+            context.runOrQueue { type.destroy(glId) }
         }
     }
 
