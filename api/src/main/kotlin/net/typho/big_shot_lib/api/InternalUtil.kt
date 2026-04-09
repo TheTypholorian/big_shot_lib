@@ -44,6 +44,6 @@ interface InternalUtil {
     fun mainWindowHandle(): Long
 
     companion object {
-        internal val INSTANCE by lazy { InternalUtil::class.loadService() }
+        val INSTANCE by lazy { InternalUtil::class.loadService() }
     }
 }
