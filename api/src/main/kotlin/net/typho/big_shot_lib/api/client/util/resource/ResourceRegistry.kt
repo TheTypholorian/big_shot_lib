@@ -4,14 +4,10 @@ import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.BufferedReader
-import java.nio.file.FileSystems
-import java.nio.file.WatchService
 import java.util.*
-import kotlin.io.path.Path
 
 abstract class ResourceRegistry<T>(
     override val location: NeoIdentifier,
@@ -30,7 +26,6 @@ abstract class ResourceRegistry<T>(
 
     init {
         registries.add(this)
-        println("test ${Path("").toAbsolutePath().parent}")
     }
 
     fun getKey(t: T) = map.inverse()[t]
@@ -51,14 +46,5 @@ abstract class ResourceRegistry<T>(
         }
 
         BigShotApi.LOGGER.info("Loaded ${map.size} entries of resource registry $location")
-    }
-
-    abstract class HotReloadable<T>(location: NeoIdentifier, idConverter: NeoFileToIdConverter) : ResourceRegistry<T>(location, idConverter) {
-        protected val watchService: WatchService? = if (PlatformUtil.INSTANCE.isDevEnv()) FileSystems.getDefault().newWatchService() else null
-
-        init {
-            watchService?.let {
-            }
-        }
     }
 }
