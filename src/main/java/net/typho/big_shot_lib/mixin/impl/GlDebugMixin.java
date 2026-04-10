@@ -6,19 +6,22 @@ import com.mojang.blaze3d.platform.GlDebug;
 /*import com.mojang.blaze3d.opengl.GlDebug;
 *///? }
 
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.error.GlException;
-import net.typho.big_shot_lib.api.util.platform.PlatformUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(GlDebug.class)
 public class GlDebugMixin {
-    static {
-        if (PlatformUtil.Companion.getINSTANCE().isDevEnv()) {
-            NeoGlStateManager.Companion.getCURRENT().getDebugOutputSynchronousEnabled().push(true);
-        }
+    @ModifyVariable(
+            method = "enableDebugCallback",
+            at = @At("HEAD"),
+            argsOnly = true,
+            index = 1
+    )
+    private static boolean enableDebugCallback(boolean value) {
+        return true;
     }
 
     @ModifyArg(

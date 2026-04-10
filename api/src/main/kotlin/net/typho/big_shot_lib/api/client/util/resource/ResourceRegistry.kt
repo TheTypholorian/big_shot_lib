@@ -2,18 +2,13 @@ package net.typho.big_shot_lib.api.client.util.resource
 
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
-import com.google.gson.JsonElement
-import com.google.gson.JsonParser
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
-import net.typho.big_shot_lib.api.util.resource.NamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.BufferedReader
-import java.nio.file.FileSystem
 import java.nio.file.FileSystems
-import java.nio.file.Files
 import java.nio.file.WatchService
 import java.util.*
 import kotlin.io.path.Path
@@ -35,6 +30,7 @@ abstract class ResourceRegistry<T>(
 
     init {
         registries.add(this)
+        println("test ${Path("").toAbsolutePath().parent}")
     }
 
     fun getKey(t: T) = map.inverse()[t]
@@ -62,7 +58,6 @@ abstract class ResourceRegistry<T>(
 
         init {
             watchService?.let {
-                Path()
             }
         }
     }
