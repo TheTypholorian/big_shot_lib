@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering
 
 import com.google.gson.JsonElement
+import com.google.gson.JsonParser
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlProgram
@@ -22,7 +23,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 
-object NeoShaderLoader : ResourceRegistry.Json<GlProgram?>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
+object NeoShaderLoader : ResourceRegistry<GlProgram?>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
     @JvmField
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Shader Loader")
     @JvmField
@@ -91,8 +92,8 @@ object NeoShaderLoader : ResourceRegistry.Json<GlProgram?>(BigShotApi.id("shader
         }
     }
 
-    override fun decode(location: NeoIdentifier, json: JsonElement, manager: NeoResourceManager): GlProgram? {
-        val json = json.asJsonObject
+    override fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): GlProgram? {
+        val json = JsonParser.parseReader(reader).asJsonObject
         val formatKey = NeoIdentifier(json.getAsJsonPrimitive("format").asString)
         val program = NeoGlProgram(location, NeoVertexFormat.REGISTRY!!.get(formatKey) ?: throw NullPointerException("Nonexistent vertex format $formatKey, requested by shader $location"))
         val sources = json.getAsJsonObject("sources")

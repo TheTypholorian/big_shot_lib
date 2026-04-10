@@ -6,11 +6,17 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.NamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.BufferedReader
+import java.nio.file.FileSystem
+import java.nio.file.FileSystems
+import java.nio.file.Files
+import java.nio.file.WatchService
 import java.util.*
+import kotlin.io.path.Path
 
 abstract class ResourceRegistry<T>(
     override val location: NeoIdentifier,
@@ -51,11 +57,13 @@ abstract class ResourceRegistry<T>(
         BigShotApi.LOGGER.info("Loaded ${map.size} entries of resource registry $location")
     }
 
-    abstract class Json<T>(location: NeoIdentifier, idConverter: NeoFileToIdConverter) : ResourceRegistry<T>(location, idConverter) {
-        abstract fun decode(location: NeoIdentifier, json: JsonElement, manager: NeoResourceManager): T
+    abstract class HotReloadable<T>(location: NeoIdentifier, idConverter: NeoFileToIdConverter) : ResourceRegistry<T>(location, idConverter) {
+        protected val watchService: WatchService? = if (PlatformUtil.INSTANCE.isDevEnv()) FileSystems.getDefault().newWatchService() else null
 
-        final override fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): T {
-            return decode(location, JsonParser.parseReader(reader), manager)
+        init {
+            watchService?.let {
+                Path()
+            }
         }
     }
 }
