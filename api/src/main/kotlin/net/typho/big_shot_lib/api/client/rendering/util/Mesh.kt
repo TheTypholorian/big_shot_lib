@@ -1,12 +1,10 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
-import com.mojang.blaze3d.systems.RenderSystem
-import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlIndexDataType
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundVertexArray
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBufferWriter
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlVertexArray
@@ -14,7 +12,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlVertexArray
 import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.system.NativeResource
-import kotlin.io.use
 
 open class Mesh(
     @JvmField
@@ -25,6 +22,8 @@ open class Mesh(
     val writeMode: GlBufferWriter.Mode,
     @JvmField
     val usage: GlBufferUsage,
+    @JvmField
+    val vao: GlVertexArray = NeoGlVertexArray(),
     @JvmField
     val vbo: GlBuffer = NeoGlBuffer(),
     @JvmField
@@ -49,15 +48,13 @@ open class Mesh(
         }
     }
 
-    var vao: GlVertexArray? = null
-        protected set
     var size: Int = 0
         protected set
     var indexType: GlIndexDataType? = null
         protected set
 
     override fun free() {
-        vao?.free()
+        vao.free()
         vbo.free()
         ebo?.free()
     }
@@ -95,8 +92,11 @@ open class Mesh(
         this.size = size
         indexType = null
 
-        vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
-            it.bufferData(vertices, usage)
+        vao.bind().use {
+            vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
+                it.bufferData(vertices, usage)
+                format.initVertexArrayState()
+            }
         }
     }
 
@@ -104,50 +104,40 @@ open class Mesh(
         this.size = size
         this.indexType = indexType
 
-        ebo!!.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER).use {
-            it.bufferData(indices, usage)
-        }
+        vao.bind().use {
+            ebo!!.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER).use {
+                it.bufferData(indices, usage)
+                format.initVertexArrayState()
+            }
 
-        vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
-            it.bufferData(vertices, usage)
-        }
-    }
-
-    protected fun _draw(vao: GlBoundVertexArray) {
-        if (ebo == null) {
-            vao.drawArrays(mode, 0, size)
-        } else {
-            ebo.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER).use {
-                vao.drawElements(mode, size, indexType!!, 0L)
+            vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
+                it.bufferData(vertices, usage)
             }
         }
     }
 
     override fun draw() {
         if (size > 0) {
-            if (RenderSystem.isOnRenderThread()) {
-                if (vao == null) {
-                    val vao = NeoGlVertexArray()
-                    this.vao = vao
-
-                    vao.bind().use { vao ->
-                        vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
-                            format.initVertexArrayState()
-                        }
-
-                        _draw(vao)
-                    }
+            vao.bind().use { vao ->
+                if (ebo == null) {
+                    vao.drawArrays(mode, 0, size)
                 } else {
-                    vao!!.bind().use { vao -> _draw(vao) }
+                    ebo.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER).use {
+                        vao.drawElements(mode, size, indexType!!, 0L)
+                    }
                 }
-            } else {
-                NeoGlVertexArray().use { vao ->
-                    vao.bind().use { vao ->
-                        vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
-                            format.initVertexArrayState()
-                        }
+            }
+        }
+    }
 
-                        _draw(vao)
+    fun drawInstanced(instanceCount: Int) {
+        if (size > 0) {
+            vao.bind().use { vao ->
+                if (ebo == null) {
+                    vao.drawArraysInstanced(mode, 0, size, instanceCount)
+                } else {
+                    ebo.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER).use {
+                        vao.drawElementsInstanced(mode, size, indexType!!, 0L, instanceCount)
                     }
                 }
             }
@@ -167,6 +157,12 @@ open class Mesh(
             } else {
                 size = built.indexCount!!
                 indexType = built.indexType
+            }
+
+            vao.bind().use {
+                vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
+                    format.initVertexArrayState()
+                }
             }
         }
 
