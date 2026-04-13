@@ -20,10 +20,9 @@ import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
 import net.typho.big_shot_lib.api.math.NeoDirection
-import net.typho.big_shot_lib.api.math.vec.AbstractVec3
-import net.typho.big_shot_lib.api.math.vec.AbstractVec3.Companion.blockPos
-import net.typho.big_shot_lib.api.math.vec.AbstractVec3.Companion.plus
+import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
+import net.typho.big_shot_lib.api.math.vec.blockPos
 import net.typho.big_shot_lib.api.util.BlockUtil
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl
@@ -32,7 +31,7 @@ import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
 object BlockUtilImpl : BlockUtil {
     override fun isSolidRender(
         state: BlockState,
-        pos: AbstractVec3<Int>,
+        pos: IVec3<Int>,
         level: Level
     ): Boolean {
         //? if <1.21.2 {
@@ -44,9 +43,9 @@ object BlockUtilImpl : BlockUtil {
 
     override fun getOffset(
         state: BlockState,
-        pos: AbstractVec3<Int>,
+        pos: IVec3<Int>,
         level: Level
-    ): AbstractVec3<Float> {
+    ): IVec3<Float> {
         //? if <1.21.2 {
         return NeoVec3f(state.getOffset(level, BlockPos(pos.x, pos.y, pos.z)).toVector3f())
         //? } else {
@@ -102,7 +101,7 @@ object BlockUtilImpl : BlockUtil {
     @Suppress("DEPRECATION")
     override fun shouldRenderFace(
         level: BlockGetter,
-        pos: AbstractVec3<Int>,
+        pos: IVec3<Int>,
         direction: NeoDirection,
         state: BlockState
     ): Boolean {
@@ -118,7 +117,7 @@ object BlockUtilImpl : BlockUtil {
     override fun getBlockQuads(
         state: BlockState,
         level: Level,
-        pos: AbstractVec3<Int>,
+        pos: IVec3<Int>,
         out: (direction: NeoDirection?, quads: List<NeoBakedQuad>) -> Unit
     ) {
         //? if <1.21.5 {
@@ -222,7 +221,7 @@ object BlockUtilImpl : BlockUtil {
         state: BlockState,
         fluid: FluidState,
         level: Level,
-        pos: AbstractVec3<Int>,
+        pos: IVec3<Int>,
         occlusionCheck: (level: BlockGetter, from: BlockPos, direction: NeoDirection, otherState: BlockState) -> Boolean,
         out: (quad: NeoBakedQuad) -> Unit
     ) {

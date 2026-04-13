@@ -10,7 +10,7 @@ import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
-import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
@@ -95,7 +95,7 @@ object InternalUtilImpl : InternalUtil {
         x: Float,
         y: Float,
         z: Float
-    ): AbstractVec3<Float> {
+    ): IVec3<Float> {
         //? if >=1.20.5 {
         /*return NeoVec3f(pose.transformNormal(x, y, z, Vector3f()))
         *///? } else {
