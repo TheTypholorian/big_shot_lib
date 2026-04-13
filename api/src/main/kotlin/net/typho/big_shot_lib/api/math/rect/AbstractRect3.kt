@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.api.math.rect
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.vec.IVec3
-import net.typho.big_shot_lib.api.math.vec.IVec3.Companion.plus
 import net.typho.big_shot_lib.api.math.vec.NeoVec3i
 
 abstract class AbstractRect3<N : Number>(
@@ -89,9 +88,9 @@ abstract class AbstractRect3<N : Number>(
         @JvmStatic
         fun AbstractRect3<Int>.extend(direction: NeoDirection, x: Int): AbstractRect3<Int> {
             return if (direction.axisDirection == NeoDirection.AxisDirection.POSITIVE) {
-                create(min, max.plus(direction.inc * x))
+                create(min, max + direction * x)
             } else {
-                create(min.plus(direction.inc * x), max)
+                create(min + direction * x, max)
             }
         }
 
@@ -99,6 +98,6 @@ abstract class AbstractRect3<N : Number>(
         fun AbstractRect3<Int>.move(direction: NeoDirection) = create(min + direction, max + direction)
 
         @JvmStatic
-        fun AbstractRect3<Int>.move(direction: NeoDirection, x: Int) = create(min.plus(direction.inc * x), max.plus(direction.inc * x))
+        fun AbstractRect3<Int>.move(direction: NeoDirection, x: Int) = create(min + direction * x, max + direction * x)
     }
 }
