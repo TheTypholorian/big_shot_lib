@@ -35,4 +35,28 @@ class NeoVec4i(
         get() = NeoVec3i(r, g, b)
 
     override fun copyWith(x: Int, y: Int, z: Int, w: Int) = NeoVec4i(x, y, z, w)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is IVec4<*>) return false
+
+        if (x != other.x) return false
+        if (y != other.y) return false
+        if (z != other.z) return false
+        if (w != other.w) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = x.hashCode()
+        result = 41 * result + y.hashCode()
+        result = 41 * result + z.hashCode()
+        result = 41 * result + w.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "(x=$x, y=$y, z=$z, w=$w)"
+    }
 }
