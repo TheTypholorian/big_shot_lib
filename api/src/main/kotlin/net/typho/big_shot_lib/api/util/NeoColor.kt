@@ -47,22 +47,22 @@ interface NeoColor {
             { color -> color.toRGBA() }
         )
         @JvmField
-        val CODEC_3I: Codec<NeoColor> = AbstractVec3.INT_CODEC.xmap(
+        val CODEC_3I: Codec<NeoColor> = IVec3.INT_CODEC.xmap(
             { vec -> RGB(vec) },
             { color -> color.toVec3i() }
         )
         @JvmField
-        val CODEC_4I: Codec<NeoColor> = AbstractVec4.INT_CODEC.xmap(
+        val CODEC_4I: Codec<NeoColor> = IVec4.INT_CODEC.xmap(
             { vec -> RGBA(vec) },
             { color -> color.toVec4i() }
         )
         @JvmField
-        val CODEC_3F: Codec<NeoColor> = AbstractVec3.FLOAT_CODEC.xmap(
+        val CODEC_3F: Codec<NeoColor> = IVec3.FLOAT_CODEC.xmap(
             { vec -> RGBF(vec) },
             { color -> color.toVec3F() }
         )
         @JvmField
-        val CODEC_4F: Codec<NeoColor> = AbstractVec4.FLOAT_CODEC.xmap(
+        val CODEC_4F: Codec<NeoColor> = IVec4.FLOAT_CODEC.xmap(
             { vec -> RGBAF(vec) },
             { color -> color.toVec4F() }
         )
@@ -86,9 +86,9 @@ interface NeoColor {
     val alphaF: Float?
         get() = alpha?.div(255f)
 
-    fun toVec3F(): AbstractVec3<Float> = NeoVec3f(redF, greenF, blueF)
+    fun toVec3F(): IVec3<Float> = NeoVec3f(redF, greenF, blueF)
 
-    fun toVec4F(): AbstractVec4<Float> = NeoVec4f(redF, greenF, blueF, alphaF ?: 1f)
+    fun toVec4F(): IVec4<Float> = NeoVec4f(redF, greenF, blueF, alphaF ?: 1f)
 
     val red: Int
         get() = (redF * 255).toInt()
@@ -128,7 +128,7 @@ interface NeoColor {
 
         constructor(color: Color) : this(color.red, color.green, color.blue)
 
-        constructor(color: AbstractVec3<Int>) : this(color.r, color.g, color.b)
+        constructor(color: IVec3<Int>) : this(color.r, color.g, color.b)
 
         constructor(color: IntArray) : this(color[0], color[1], color[2])
 
@@ -154,7 +154,7 @@ interface NeoColor {
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)
 
-        constructor(color: AbstractVec4<Int>) : this(color.r, color.g, color.b, color.a)
+        constructor(color: IVec4<Int>) : this(color.r, color.g, color.b, color.a)
 
         constructor(color: IntArray) : this(color[0], color[1], color[2], color[3])
 
@@ -175,7 +175,7 @@ interface NeoColor {
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f)
 
-        constructor(color: AbstractVec3<Float>) : this(color.r, color.g, color.b)
+        constructor(color: IVec3<Float>) : this(color.r, color.g, color.b)
 
         constructor(color: IntArray) : this(color[0] / 255f, color[1] / 255f, color[2] / 255f)
 
@@ -201,7 +201,7 @@ interface NeoColor {
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
 
-        constructor(color: AbstractVec4<Float>) : this(color.r, color.g, color.b, color.a)
+        constructor(color: IVec4<Float>) : this(color.r, color.g, color.b, color.a)
 
         constructor(color: IntArray) : this(color[0] / 255f, color[1] / 255f, color[2] / 255f, color[3] / 255f)
 

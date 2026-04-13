@@ -1,34 +1,30 @@
 package net.typho.big_shot_lib.api.math.rect
 
-import net.minecraft.core.SectionPos.z
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.math.vec.AbstractVec2
-import net.typho.big_shot_lib.api.math.vec.AbstractVec4
-import net.typho.big_shot_lib.api.math.vec.NeoVec2i
-import net.typho.big_shot_lib.api.math.vec.NeoVec3i
+import net.typho.big_shot_lib.api.math.vec.IVec4
 import net.typho.big_shot_lib.api.math.vec.NeoVec4i
 
 abstract class AbstractRect4<N : Number>(
-    min: AbstractVec4<N>,
-    max: AbstractVec4<N>
+    min: IVec4<N>,
+    max: IVec4<N>
 ) {
     @JvmField
-    val min: AbstractVec4<N> = min.min(max)
+    val min: IVec4<N> = min.min(max)
     @JvmField
-    val max: AbstractVec4<N> = min.max(max)
+    val max: IVec4<N> = min.max(max)
     abstract val opSet: OperatorSet<N>
-    val size: AbstractVec4<N>
+    val size: IVec4<N>
         get() = max - min
     val area: N
         get() = opSet.times(size.x, opSet.times(size.y, opSet.times(size.z, size.w)))
 
-    abstract fun create(min: AbstractVec4<N>, max: AbstractVec4<N>): AbstractRect4<N>
+    abstract fun create(min: IVec4<N>, max: IVec4<N>): AbstractRect4<N>
 
     fun include(other: AbstractRect4<N>): AbstractRect4<N> {
         return create(min.min(other.min), max.max(other.max))
     }
 
-    fun include(other: AbstractVec4<N>): AbstractRect4<N> {
+    fun include(other: IVec4<N>): AbstractRect4<N> {
         return create(min.min(other), max.max(other))
     }
 
@@ -36,7 +32,7 @@ abstract class AbstractRect4<N : Number>(
         return min.allLequalThan(other.min) && max.allGequalThan(other.max)
     }
 
-    fun contains(other: AbstractVec4<N>): Boolean {
+    fun contains(other: IVec4<N>): Boolean {
         return min.allLequalThan(other) && max.allGequalThan(other)
     }
 
@@ -62,7 +58,7 @@ abstract class AbstractRect4<N : Number>(
 
     companion object {
         @JvmStatic
-        val <N : Number> AbstractRect4<N>.sizeInclusive: AbstractVec4<N>
+        val <N : Number> AbstractRect4<N>.sizeInclusive: IVec4<N>
             get() = size + opSet.one
 
         @JvmStatic
@@ -70,7 +66,7 @@ abstract class AbstractRect4<N : Number>(
             get() = opSet.times(size.x + 1, opSet.times(size.y + 1, opSet.times(size.z + 1, size.w + 1)))
 
         @JvmStatic
-        operator fun AbstractRect4<Int>.iterator(): Iterator<AbstractVec4<Int>> = (min.x..max.x)
+        operator fun AbstractRect4<Int>.iterator(): Iterator<IVec4<Int>> = (min.x..max.x)
             .flatMap { x ->
                 (min.y..max.y).map { y -> x to y }
             }

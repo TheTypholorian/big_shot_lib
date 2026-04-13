@@ -6,17 +6,17 @@ import net.typho.big_shot_lib.api.util.NeoColor
 
 data class NeoVertexData(
     @JvmField
-    val pos: AbstractVec3<Float>,
+    val pos: IVec3<Float>,
     @JvmField
     val color: NeoColor? = null,
     @JvmField
-    val textureUV: AbstractVec2<Float>? = null,
+    val textureUV: IVec2<Float>? = null,
     @JvmField
-    val overlayUV: AbstractVec2<Int>? = null,
+    val overlayUV: IVec2<Int>? = null,
     @JvmField
-    val lightUV: AbstractVec2<Int>? = null,
+    val lightUV: IVec2<Int>? = null,
     @JvmField
-    val normal: AbstractVec3<Float>? = null
+    val normal: IVec3<Float>? = null
 ) {
     constructor(
         data: IntArray,
@@ -46,12 +46,12 @@ data class NeoVertexData(
 
     constructor(
         copy: NeoVertexData,
-        pos: AbstractVec3<Float>? = null,
+        pos: IVec3<Float>? = null,
         color: NeoColor? = null,
-        textureUV: AbstractVec2<Float>? = null,
-        overlayUV: AbstractVec2<Int>? = null,
-        lightUV: AbstractVec2<Int>? = null,
-        normal: AbstractVec3<Float>? = null
+        textureUV: IVec2<Float>? = null,
+        overlayUV: IVec2<Int>? = null,
+        lightUV: IVec2<Int>? = null,
+        normal: IVec3<Float>? = null
     ) : this(
         pos ?: copy.pos,
         color ?: copy.color,
@@ -72,17 +72,17 @@ data class NeoVertexData(
 
     abstract class Consumer : NeoVertexConsumer() {
         @JvmField
-        protected var pos: AbstractVec3<Float>? = null
+        protected var pos: IVec3<Float>? = null
         @JvmField
         protected var color: NeoColor? = null
         @JvmField
-        protected var textureUV: AbstractVec2<Float>? = null
+        protected var textureUV: IVec2<Float>? = null
         @JvmField
-        protected var overlayUV: AbstractVec2<Int>? = null
+        protected var overlayUV: IVec2<Int>? = null
         @JvmField
-        protected var lightUV: AbstractVec2<Int>? = null
+        protected var lightUV: IVec2<Int>? = null
         @JvmField
-        protected var normal: AbstractVec3<Float>? = null
+        protected var normal: IVec3<Float>? = null
 
         abstract fun take(vertex: NeoVertexData)
 

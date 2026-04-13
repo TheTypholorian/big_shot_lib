@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.util.buffer
 
 import net.typho.big_shot_lib.api.math.vec.*
-import net.typho.big_shot_lib.api.util.buffer.NeoBuffer.Native
 import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.system.NativeResource
 import java.io.*
@@ -85,23 +84,23 @@ abstract class NeoBuffer : Iterable<Byte> {
         return array
     }
 
-    fun getVec2d(index: Long): AbstractVec2<Double> = NeoVec2d(getDouble(index), getDouble(index + 8))
+    fun getVec2d(index: Long): IVec2<Double> = NeoVec2d(getDouble(index), getDouble(index + 8))
 
-    fun getVec2f(index: Long): AbstractVec2<Float> = NeoVec2f(getFloat(index), getFloat(index + 4))
+    fun getVec2f(index: Long): IVec2<Float> = NeoVec2f(getFloat(index), getFloat(index + 4))
 
-    fun getVec2i(index: Long): AbstractVec2<Int> = NeoVec2i(getInt(index), getInt(index + 4))
+    fun getVec2i(index: Long): IVec2<Int> = NeoVec2i(getInt(index), getInt(index + 4))
 
-    fun getVec3d(index: Long): AbstractVec3<Double> = NeoVec3d(getDouble(index), getDouble(index + 8), getDouble(index + 16))
+    fun getVec3d(index: Long): IVec3<Double> = NeoVec3d(getDouble(index), getDouble(index + 8), getDouble(index + 16))
 
-    fun getVec3f(index: Long): AbstractVec3<Float> = NeoVec3f(getFloat(index), getFloat(index + 4), getFloat(index + 8))
+    fun getVec3f(index: Long): IVec3<Float> = NeoVec3f(getFloat(index), getFloat(index + 4), getFloat(index + 8))
 
-    fun getVec3i(index: Long): AbstractVec3<Int> = NeoVec3i(getInt(index), getInt(index + 4), getInt(index + 8))
+    fun getVec3i(index: Long): IVec3<Int> = NeoVec3i(getInt(index), getInt(index + 4), getInt(index + 8))
 
-    fun getVec4d(index: Long): AbstractVec4<Double> = NeoVec4d(getDouble(index), getDouble(index + 8), getDouble(index + 16), getDouble(index + 24))
+    fun getVec4d(index: Long): IVec4<Double> = NeoVec4d(getDouble(index), getDouble(index + 8), getDouble(index + 16), getDouble(index + 24))
 
-    fun getVec4f(index: Long): AbstractVec4<Float> = NeoVec4f(getFloat(index), getFloat(index + 4), getFloat(index + 8), getFloat(index + 12))
+    fun getVec4f(index: Long): IVec4<Float> = NeoVec4f(getFloat(index), getFloat(index + 4), getFloat(index + 8), getFloat(index + 12))
 
-    fun getVec4i(index: Long): AbstractVec4<Int> = NeoVec4i(getInt(index), getInt(index + 4), getInt(index + 8), getInt(index + 12))
+    fun getVec4i(index: Long): IVec4<Int> = NeoVec4i(getInt(index), getInt(index + 4), getInt(index + 8), getInt(index + 12))
 
     operator fun set(index: Long, value: Byte) = memPutByte(checkIndex(index, 1), value)
 
@@ -163,20 +162,20 @@ abstract class NeoBuffer : Iterable<Byte> {
         nio.asDoubleBuffer().put(index.toInt(), value, offset, length)
     }
 
-    operator fun <N : Number> set(index: Long, value: AbstractVec2<N>) {
+    operator fun <N : Number> set(index: Long, value: IVec2<N>) {
         val ptr = checkIndex(index, 2L * value.opSet.byteSize)
         value.opSet.put(ptr, value.x)
         value.opSet.put(ptr + value.opSet.byteSize, value.y)
     }
 
-    operator fun <N : Number> set(index: Long, value: AbstractVec3<N>) {
+    operator fun <N : Number> set(index: Long, value: IVec3<N>) {
         val ptr = checkIndex(index, 3L * value.opSet.byteSize)
         value.opSet.put(ptr, value.x)
         value.opSet.put(ptr + value.opSet.byteSize, value.y)
         value.opSet.put(ptr + 2L * value.opSet.byteSize, value.z)
     }
 
-    operator fun <N : Number> set(index: Long, value: AbstractVec4<N>) {
+    operator fun <N : Number> set(index: Long, value: IVec4<N>) {
         val ptr = checkIndex(index, 4L * value.opSet.byteSize)
         value.opSet.put(ptr, value.x)
         value.opSet.put(ptr + value.opSet.byteSize, value.y)

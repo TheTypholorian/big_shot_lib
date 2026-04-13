@@ -3,8 +3,8 @@ package net.typho.big_shot_lib.api.client.rendering.util
 import com.mojang.blaze3d.vertex.PoseStack
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.math.rect.AbstractRect3
-import net.typho.big_shot_lib.api.math.vec.AbstractVec2
-import net.typho.big_shot_lib.api.math.vec.AbstractVec3
+import net.typho.big_shot_lib.api.math.vec.IVec2
+import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.Matrix4fc
@@ -43,7 +43,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun vertex(vertex: AbstractVec3<*>): NeoVertexConsumer {
+    open fun vertex(vertex: IVec3<*>): NeoVertexConsumer {
         vertex(vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
         return this
     }
@@ -54,7 +54,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun vertex(mat: Matrix4fc, vertex: AbstractVec3<*>): NeoVertexConsumer {
+    open fun vertex(mat: Matrix4fc, vertex: IVec3<*>): NeoVertexConsumer {
         vertex(mat, vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
         return this
     }
@@ -64,7 +64,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun vertex(pose: PoseStack.Pose, vertex: AbstractVec3<*>): NeoVertexConsumer {
+    open fun vertex(pose: PoseStack.Pose, vertex: IVec3<*>): NeoVertexConsumer {
         vertex(pose, vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
         return this
     }
@@ -97,7 +97,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun textureUV(uv: AbstractVec2<Float>): NeoVertexConsumer {
+    open fun textureUV(uv: IVec2<Float>): NeoVertexConsumer {
         textureUV(uv.x, uv.y)
         return this
     }
@@ -107,7 +107,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun overlayUV(uv: AbstractVec2<Int>): NeoVertexConsumer {
+    open fun overlayUV(uv: IVec2<Int>): NeoVertexConsumer {
         overlayUV(uv.x, uv.y)
         return this
     }
@@ -122,7 +122,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun lightUV(uv: AbstractVec2<Int>): NeoVertexConsumer {
+    open fun lightUV(uv: IVec2<Int>): NeoVertexConsumer {
         lightUV(uv.x, uv.y)
         return this
     }
@@ -137,7 +137,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun normal(normal: AbstractVec3<*>): NeoVertexConsumer {
+    open fun normal(normal: IVec3<*>): NeoVertexConsumer {
         normal(normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
         return this
     }
@@ -156,7 +156,7 @@ abstract class NeoVertexConsumer {
         return this
     }
 
-    open fun normal(pose: PoseStack.Pose, normal: AbstractVec3<*>): NeoVertexConsumer {
+    open fun normal(pose: PoseStack.Pose, normal: IVec3<*>): NeoVertexConsumer {
         normal(pose, normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
         return this
     }
@@ -186,11 +186,11 @@ abstract class NeoVertexConsumer {
     }
 
     open fun quad(
-        v0: AbstractVec3<*>,
-        v1: AbstractVec3<*>,
-        v2: AbstractVec3<*>,
-        v3: AbstractVec3<*>,
-        normal: AbstractVec3<*>
+        v0: IVec3<*>,
+        v1: IVec3<*>,
+        v2: IVec3<*>,
+        v3: IVec3<*>,
+        normal: IVec3<*>
     ): NeoVertexConsumer {
         vertex(v0).textureUV(0f, 1f).normal(normal)
         vertex(v1).textureUV(1f, 1f).normal(normal)
@@ -220,7 +220,7 @@ abstract class NeoVertexConsumer {
             return this
         }
 
-        override fun vertex(vertex: AbstractVec3<*>): NeoVertexConsumer {
+        override fun vertex(vertex: IVec3<*>): NeoVertexConsumer {
             other.vertex(vertex)
             return this
         }
@@ -237,7 +237,7 @@ abstract class NeoVertexConsumer {
 
         override fun vertex(
             mat: Matrix4fc,
-            vertex: AbstractVec3<*>
+            vertex: IVec3<*>
         ): NeoVertexConsumer {
             other.vertex(mat, vertex)
             return this
@@ -255,7 +255,7 @@ abstract class NeoVertexConsumer {
 
         override fun vertex(
             pose: PoseStack.Pose,
-            vertex: AbstractVec3<*>
+            vertex: IVec3<*>
         ): NeoVertexConsumer {
             other.vertex(pose, vertex)
             return this
@@ -315,7 +315,7 @@ abstract class NeoVertexConsumer {
             return this
         }
 
-        override fun textureUV(uv: AbstractVec2<Float>): NeoVertexConsumer {
+        override fun textureUV(uv: IVec2<Float>): NeoVertexConsumer {
             other.textureUV(uv)
             return this
         }
@@ -336,7 +336,7 @@ abstract class NeoVertexConsumer {
             return this
         }
 
-        override fun overlayUV(uv: AbstractVec2<Int>): NeoVertexConsumer {
+        override fun overlayUV(uv: IVec2<Int>): NeoVertexConsumer {
             other.overlayUV(uv)
             return this
         }
@@ -362,7 +362,7 @@ abstract class NeoVertexConsumer {
             return this
         }
 
-        override fun lightUV(uv: AbstractVec2<Int>): NeoVertexConsumer {
+        override fun lightUV(uv: IVec2<Int>): NeoVertexConsumer {
             other.lightUV(uv)
             return this
         }
@@ -399,7 +399,7 @@ abstract class NeoVertexConsumer {
             return this
         }
 
-        override fun normal(normal: AbstractVec3<*>): NeoVertexConsumer {
+        override fun normal(normal: IVec3<*>): NeoVertexConsumer {
             other.normal(normal)
             return this
         }
@@ -411,7 +411,7 @@ abstract class NeoVertexConsumer {
 
         override fun normal(
             pose: PoseStack.Pose,
-            normal: AbstractVec3<*>
+            normal: IVec3<*>
         ): NeoVertexConsumer {
             other.normal(pose, normal)
             return this
@@ -427,11 +427,11 @@ abstract class NeoVertexConsumer {
         }
 
         override fun quad(
-            v0: AbstractVec3<*>,
-            v1: AbstractVec3<*>,
-            v2: AbstractVec3<*>,
-            v3: AbstractVec3<*>,
-            normal: AbstractVec3<*>
+            v0: IVec3<*>,
+            v1: IVec3<*>,
+            v2: IVec3<*>,
+            v3: IVec3<*>,
+            normal: IVec3<*>
         ): NeoVertexConsumer {
             other.quad(v0, v1, v2, v3, normal)
             return this

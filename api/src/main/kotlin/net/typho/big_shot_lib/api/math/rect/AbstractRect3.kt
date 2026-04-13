@@ -2,33 +2,31 @@ package net.typho.big_shot_lib.api.math.rect
 
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.math.rect.AbstractRect3.Companion.iterator
-import net.typho.big_shot_lib.api.math.vec.AbstractVec2
-import net.typho.big_shot_lib.api.math.vec.AbstractVec3
-import net.typho.big_shot_lib.api.math.vec.AbstractVec3.Companion.plus
+import net.typho.big_shot_lib.api.math.vec.IVec3
+import net.typho.big_shot_lib.api.math.vec.IVec3.Companion.plus
 import net.typho.big_shot_lib.api.math.vec.NeoVec3i
 
 abstract class AbstractRect3<N : Number>(
-    min: AbstractVec3<N>,
-    max: AbstractVec3<N>
+    min: IVec3<N>,
+    max: IVec3<N>
 ) {
     @JvmField
-    val min: AbstractVec3<N> = min.min(max)
+    val min: IVec3<N> = min.min(max)
     @JvmField
-    val max: AbstractVec3<N> = min.max(max)
+    val max: IVec3<N> = min.max(max)
     abstract val opSet: OperatorSet<N>
-    val size: AbstractVec3<N>
+    val size: IVec3<N>
         get() = max - min
     val area: N
         get() = opSet.times(size.x, opSet.times(size.y, size.z))
 
-    abstract fun create(min: AbstractVec3<N>, max: AbstractVec3<N>): AbstractRect3<N>
+    abstract fun create(min: IVec3<N>, max: IVec3<N>): AbstractRect3<N>
 
     fun include(other: AbstractRect3<N>): AbstractRect3<N> {
         return create(min.min(other.min), max.max(other.max))
     }
 
-    fun include(other: AbstractVec3<N>): AbstractRect3<N> {
+    fun include(other: IVec3<N>): AbstractRect3<N> {
         return create(min.min(other), max.max(other))
     }
 
@@ -36,7 +34,7 @@ abstract class AbstractRect3<N : Number>(
         return min.allLequalThan(other.min) && max.allGequalThan(other.max)
     }
 
-    fun contains(other: AbstractVec3<N>): Boolean {
+    fun contains(other: IVec3<N>): Boolean {
         return min.allLequalThan(other) && max.allGequalThan(other)
     }
 
@@ -62,7 +60,7 @@ abstract class AbstractRect3<N : Number>(
 
     companion object {
         @JvmStatic
-        val <N : Number> AbstractRect3<N>.sizeInclusive: AbstractVec3<N>
+        val <N : Number> AbstractRect3<N>.sizeInclusive: IVec3<N>
             get() = size + opSet.one
 
         @JvmStatic
@@ -70,7 +68,7 @@ abstract class AbstractRect3<N : Number>(
             get() = opSet.times(size.x + 1, opSet.times(size.y + 1, size.z + 1))
 
         @JvmStatic
-        operator fun AbstractRect3<Int>.iterator(): Iterator<AbstractVec3<Int>> = (min.x..max.x)
+        operator fun AbstractRect3<Int>.iterator(): Iterator<IVec3<Int>> = (min.x..max.x)
             .flatMap { x ->
                 (min.y..max.y).map { y -> x to y }
             }
