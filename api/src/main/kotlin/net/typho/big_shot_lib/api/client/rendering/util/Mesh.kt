@@ -107,11 +107,11 @@ open class Mesh(
         vao.bind().use {
             ebo!!.bind(GlBufferTarget.ELEMENT_ARRAY_BUFFER).use {
                 it.bufferData(indices, usage)
-                format.initVertexArrayState()
             }
 
             vbo.bind(GlBufferTarget.ARRAY_BUFFER).use {
                 it.bufferData(vertices, usage)
+                format.initVertexArrayState()
             }
         }
     }
