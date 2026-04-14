@@ -133,7 +133,7 @@ open class Mesh(
         this.indexType = indexType
     }
 
-    fun generateIndices(numVertices: Int): NeoBuffer.GCNative {
+    fun generateIndices(numVertices: Int): Pair<NeoBuffer.GCNative, GlIndexDataType> {
         val indexData = mode.indexData ?: throw IllegalStateException("Mode $mode is not indexed")
         val primitiveCount = numVertices / mode.indexData.stride
         val indexCount = primitiveCount * mode.indexData.offsets.size
@@ -156,7 +156,7 @@ open class Mesh(
             }
         }
 
-        return indexBuffer
+        return indexBuffer to indexType
     }
 
     fun initVertexArrayState() {
