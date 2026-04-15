@@ -6,17 +6,21 @@ import net.fabricmc.loader.api.metadata.CustomValue
 //? } neoforge {
 /*import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLLoader
+import net.neoforged.fml.loading.FMLPaths
 *///? }
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
 import net.typho.big_shot_lib.api.util.platform.ModLoader
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import java.nio.file.Path
 
 object PlatformUtilImpl : PlatformUtil {
     //? fabric {
     override val loader = ModLoader.FABRIC
     override val mods: Collection<ModContainer>
         get() = FabricLoader.getInstance().allMods.map { ModContainerImpl(it) }
+    override val configPath: Path
+        get() = FabricLoader.getInstance().configDir
 
     override fun isDevEnv(): Boolean {
         return FabricLoader.getInstance().isDevelopmentEnvironment
@@ -61,6 +65,8 @@ object PlatformUtilImpl : PlatformUtil {
     /*override val loader = ModLoader.NEOFORGE
     override val mods: Collection<ModContainer>
         get() = ModList.get().sortedMods.map { ModContainerImpl(it) }
+    override val configPath: Path
+        get() = FMLPaths.FMLCONFIG.get()
 
     override fun isDevEnv(): Boolean {
         //? if <1.21.9 {
