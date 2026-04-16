@@ -79,7 +79,7 @@ object InternalUtilImpl : InternalUtil {
     override val positionTexColorNormalVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL)
 
     override fun getTexture(location: NeoIdentifier): GlTexture2D {
-        TODO("Not yet implemented")
+        return Minecraft.getInstance().textureManager.getTexture(location.mojang).getExtensionValue()
     }
 
     override fun getAtlas(location: NeoIdentifier): NeoAtlas {

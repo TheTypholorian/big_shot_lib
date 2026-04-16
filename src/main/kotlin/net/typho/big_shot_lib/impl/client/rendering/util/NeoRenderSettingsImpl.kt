@@ -21,7 +21,7 @@ import net.typho.big_shot_lib.impl.util.getExtensionValue
 import net.typho.big_shot_lib.mixin.impl.RenderTypeNameAccessor
 import kotlin.jvm.optionals.getOrNull
 
-class NeoRenderSettingsImpl(
+data class NeoRenderSettingsImpl(
     @JvmField
     val renderType: RenderType
 ) : NeoRenderSettings {

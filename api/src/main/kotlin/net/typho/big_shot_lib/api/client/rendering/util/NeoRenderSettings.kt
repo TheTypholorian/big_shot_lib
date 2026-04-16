@@ -53,8 +53,6 @@ interface NeoRenderSettings : NamedResource {
         val textBackground: NeoRenderSettings
         val textBackgroundSeeThrough: NeoRenderSettings
         val lightning: NeoRenderSettings
-        val dragonRays: NeoRenderSettings
-        val dragonRaysDepth: NeoRenderSettings
         val tripwire: NeoRenderSettings
         val endPortal: NeoRenderSettings
         val endGateway: NeoRenderSettings
@@ -62,7 +60,6 @@ interface NeoRenderSettings : NamedResource {
         val lineStrip: NeoRenderSettings
         val debugFilledBox: NeoRenderSettings
         val debugQuads: NeoRenderSettings
-        val debugStructureQuads: NeoRenderSettings
         val debugSectionQuads: NeoRenderSettings
 
         fun armorCutoutNoCull(texture: NeoIdentifier): NeoRenderSettings
