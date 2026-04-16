@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering
 
-import com.google.gson.JsonElement
 import com.google.gson.JsonParser
+import com.mojang.serialization.DataResult
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlProgram
@@ -23,7 +23,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 
-object NeoShaderLoader : ResourceRegistry<GlProgram?>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
+object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
     @JvmField
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Shader Loader")
     @JvmField
@@ -40,8 +40,8 @@ object NeoShaderLoader : ResourceRegistry<GlProgram?>(BigShotApi.id("shaders"), 
             location: NeoIdentifier,
             reader: BufferedReader,
             manager: NeoResourceManager
-        ): String {
-            return reader.readText()
+        ): DataResult<String> {
+            return DataResult.success(reader.readText())
         }
     }
 
@@ -61,16 +61,16 @@ object NeoShaderLoader : ResourceRegistry<GlProgram?>(BigShotApi.id("shaders"), 
                 location: NeoIdentifier,
                 reader: BufferedReader,
                 manager: NeoResourceManager
-            ): GlShader? {
+            ): DataResult<GlShader?> {
                 val shader = NeoGlShader(location, shaderType)
                 shader.source = PREPROCESSORS_REGISTRY!!.values().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
 
                 if (shader.compile()) {
-                    return shader
+                    return DataResult.success(shader)
                 } else {
-                    LOGGER.error("Error compiling shader $location:\n${shader.getInfoLog()}")
+                    val message = "Error compiling shader $location:\n${shader.getInfoLog()}"
                     shader.free()
-                    return null
+                    return DataResult.error { message }
                 }
             }
         }
@@ -92,7 +92,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram?>(BigShotApi.id("shaders"), 
         }
     }
 
-    override fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): GlProgram? {
+    override fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): DataResult<GlProgram> {
         val json = JsonParser.parseReader(reader).asJsonObject
         val formatKey = NeoIdentifier(json.getAsJsonPrimitive("format").asString)
         val program = NeoGlProgram(location, NeoVertexFormat.REGISTRY!!.get(formatKey) ?: throw NullPointerException("Nonexistent vertex format $formatKey, requested by shader $location"))
@@ -103,20 +103,19 @@ object NeoShaderLoader : ResourceRegistry<GlProgram?>(BigShotApi.id("shaders"), 
             val shader = shaderRegistries[GlShaderType.valueOf(entry.key.uppercase())][shaderKey]
 
             if (shader == null) {
-                LOGGER.error("Unknown shader $shaderKey requested by $location")
                 program.free()
-                return null
+                return DataResult.error { "Unknown shader $shaderKey requested by $location" }
             }
 
             program.attach(shader)
         }
 
         if (program.link()) {
-            return program
+            return DataResult.success(program)
         } else {
-            LOGGER.error("Error linking program $location:\n${program.getInfoLog()}")
+            val message = "Error linking program $location:\n${program.getInfoLog()}"
             program.free()
-            return null
+            return DataResult.error { message }
         }
     }
 }

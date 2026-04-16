@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.util.resource
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import com.mojang.serialization.Codec
+import com.mojang.serialization.DataResult
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
@@ -19,8 +20,8 @@ abstract class ResourceRegistry<T>(
         val registries = LinkedList<ResourceRegistry<*>>()
     }
 
-    @JvmField
-    val map: BiMap<NeoIdentifier, T> = HashBiMap.create()
+    var map: BiMap<NeoIdentifier, T> = HashBiMap.create()
+        protected set
     @JvmField
     val lookupCodec: Codec<T> = NeoIdentifier.CODEC.xmap(this::get, this::getKey)
 
@@ -32,19 +33,30 @@ abstract class ResourceRegistry<T>(
 
     operator fun get(location: NeoIdentifier) = map[location]
 
-    abstract fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): T
+    abstract fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): DataResult<T>
 
     override fun onResourceManagerReload(manager: NeoResourceManager) {
-        map.values.forEach { value -> if (value is AutoCloseable) value.close() }
-        map.clear()
+        val oldMap = map
+        map = HashBiMap.create()
 
         for (entry in idConverter.listMatchingResources(manager)) {
-            entry.value.openAsReader().use {
+            entry.value.openAsReader().use { reader ->
                 val id = idConverter.fileToId(entry.key)
-                map.put(id, decode(id, it, manager))
+
+                decode(id, reader, manager).mapOrElse(
+                    {
+                        map[id] = it
+                    },
+                    { error ->
+                        BigShotApi.LOGGER.error("Error loading $id of resource registry $location: ${error.message()}")
+                        map[id] = oldMap.remove(id)
+                    }
+                )
             }
         }
 
         BigShotApi.LOGGER.info("Loaded ${map.size} entries of resource registry $location")
+
+        oldMap.values.forEach { value -> if (value is AutoCloseable) value.close() }
     }
 }
