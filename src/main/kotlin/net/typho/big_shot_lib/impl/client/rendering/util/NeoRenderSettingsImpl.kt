@@ -17,6 +17,7 @@ import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
+import net.typho.big_shot_lib.impl.util.getExtensionValue
 import net.typho.big_shot_lib.mixin.impl.RenderTypeNameAccessor
 import kotlin.jvm.optionals.getOrNull
 
@@ -50,7 +51,7 @@ class NeoRenderSettingsImpl(
     override val isOutline: Boolean = renderType.isOutline
     override val location: NeoIdentifier = NeoIdentifier((renderType as RenderTypeNameAccessor).`big_shot_lib$getName`())
     override val drawState: GlDrawState
-        get() = TODO("Not yet implemented")
+        get() = (renderType as RenderType.CompositeRenderType).state().getExtensionValue()
 
     override fun bind(): BoundResource {
         //? if <1.21.10 {

@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.util
 
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.vertex.VertexConsumer
+import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
@@ -11,6 +12,7 @@ import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
+import net.typho.big_shot_lib.api.client.rendering.util.NeoMultiBufferSource
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
@@ -38,6 +40,10 @@ interface WrapperUtil {
     fun <T : Any> wrap(key: TagKey<T>): NeoTagKey<T>
 
     fun <T : Any> unwrap(key: NeoTagKey<T>): TagKey<T>
+
+    fun wrap(source: MultiBufferSource): NeoMultiBufferSource
+
+    fun unwrap(source: NeoMultiBufferSource): MultiBufferSource
 
     companion object {
         val INSTANCE by lazy { WrapperUtil::class.loadService() }

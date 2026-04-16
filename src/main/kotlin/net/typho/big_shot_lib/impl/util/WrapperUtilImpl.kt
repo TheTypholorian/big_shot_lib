@@ -8,6 +8,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import com.mojang.serialization.DataResult
+import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
@@ -21,6 +23,8 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
+import net.typho.big_shot_lib.api.client.rendering.util.NeoMultiBufferSource
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.util.NeoColor
@@ -30,6 +34,7 @@ import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resource.NeoTagKey
+import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexConsumerWrapper
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
@@ -183,5 +188,13 @@ object WrapperUtilImpl : WrapperUtil {
 
     override fun <T : Any> unwrap(key: NeoTagKey<T>): TagKey<T> {
         return key.mojang
+    }
+
+    override fun wrap(source: MultiBufferSource): NeoMultiBufferSource {
+        return NeoMultiBufferSource { renderSettings -> wrap(source.getBuffer((renderSettings as NeoRenderSettingsImpl).renderType)) }
+    }
+
+    override fun unwrap(source: NeoMultiBufferSource): MultiBufferSource {
+        return MultiBufferSource { renderType -> unwrap(source.getBuffer(NeoRenderSettingsImpl(renderType))) }
     }
 }
