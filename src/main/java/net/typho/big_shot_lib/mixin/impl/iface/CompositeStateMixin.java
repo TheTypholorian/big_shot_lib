@@ -64,27 +64,10 @@ public class CompositeStateMixin implements ImmutableExtension<GlDrawState> {
 
             @Override
             public @NotNull GlShaderShard getShader() {
-                return new GlShaderShard() {
-                    @Override
-                    public @NotNull GlProgram getProgram() {
-                        throw new NotImplementedError("Minecraft RenderType get shader");
-                    }
-
-                    @Override
-                    public @NotNull Function1<@NotNull GlBoundProgram, @NotNull Unit> getUniforms() {
-                        throw new NotImplementedError("Minecraft RenderType get shader uniforms");
-                    }
-
-                    @Override
-                    public @NotNull List<@NotNull GlTextureBinding> getTextures() {
-                        return List.of(
-                                new GlTextureBinding.FromLocation(
-                                        IdentifierUtilKt.getNeo(textureState.cutoutTexture().orElseThrow()),
-                                        GlTextureTarget.TEXTURE_2D
-                                )
-                        );
-                    }
-                };
+                return new GlShaderShard.NoShader(new GlTextureBinding.FromLocation(
+                        IdentifierUtilKt.getNeo(textureState.cutoutTexture().orElseThrow()),
+                        GlTextureTarget.TEXTURE_2D
+                ));
             }
 
             @Override

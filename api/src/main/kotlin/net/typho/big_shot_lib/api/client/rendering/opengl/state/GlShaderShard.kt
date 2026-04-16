@@ -26,6 +26,19 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
         return program
     }
 
+    data class NoShader(
+        override val textures: List<GlTextureBinding>
+    ) : GlShaderShard {
+        constructor(
+            vararg textures: GlTextureBinding
+        ) : this(listOf(*textures))
+
+        override val program: GlProgram
+            get() = throw NullPointerException("No shader")
+        override val uniforms: GlBoundProgram.() -> Unit = {}
+        override val location: NeoIdentifier? = null
+    }
+
     data class FromLocation(
         override val location: NeoIdentifier,
         override val uniforms: GlBoundProgram.() -> Unit,
