@@ -25,40 +25,40 @@ object InternalUtilImpl : InternalUtil {
 
     override val positionVertexElement: NeoVertexFormat.Element
         //? if >=1.21 {
-        /*get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.POSITION)
-        *///? } else {
-        get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_POSITION)
-        //? }
+        get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.POSITION)
+        //? } else {
+        /*get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_POSITION)
+        *///? }
     override val colorVertexElement: NeoVertexFormat.Element
         //? if >=1.21 {
-        /*get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.COLOR)
-        *///? } else {
-        get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_COLOR)
-        //? }
+        get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.COLOR)
+        //? } else {
+        /*get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_COLOR)
+        *///? }
     override val textureUVVertexElement: NeoVertexFormat.Element
         //? if >=1.21 {
-        /*get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV0)
-        *///? } else {
-        get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV0)
-        //? }
+        get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV0)
+        //? } else {
+        /*get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV0)
+        *///? }
     override val overlayUVVertexElement: NeoVertexFormat.Element
         //? if >=1.21 {
-        /*get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV1)
-        *///? } else {
-        get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV1)
-        //? }
+        get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV1)
+        //? } else {
+        /*get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV1)
+        *///? }
     override val lightUVVertexElement: NeoVertexFormat.Element
         //? if >=1.21 {
-        /*get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV2)
-        *///? } else {
-        get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV2)
-        //? }
+        get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.UV2)
+        //? } else {
+        /*get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_UV2)
+        *///? }
     override val normalVertexElement: NeoVertexFormat.Element
         //? if >=1.21 {
-        /*get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.NORMAL)
-        *///? } else {
-        get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_NORMAL)
-        //? }
+        get() = NeoVertexFormatImpl.ElementImpl(VertexFormatElement.NORMAL)
+        //? } else {
+        /*get() = NeoVertexFormatImpl.ElementImpl(DefaultVertexFormat.ELEMENT_NORMAL)
+        *///? }
 
     //? if <1.21.9 {
     override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
@@ -97,10 +97,10 @@ object InternalUtilImpl : InternalUtil {
         z: Float
     ): IVec3<Float> {
         //? if >=1.20.5 {
-        /*return NeoVec3f(pose.transformNormal(x, y, z, Vector3f()))
-        *///? } else {
-        return NeoVec3f(pose.normal().transform(Vector3f(x, y, z)))
-        //? }
+        return NeoVec3f(pose.transformNormal(x, y, z, Vector3f()))
+        //? } else {
+        /*return NeoVec3f(pose.normal().transform(Vector3f(x, y, z)))
+        *///? }
     }
 
     @Suppress("UNCHECKED_CAST")

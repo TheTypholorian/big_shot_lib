@@ -15,10 +15,10 @@ class NeoVertexConsumerWrapper(
     ): NeoVertexConsumer {
         //? if >=1.21 {
 
-        /*inner.addVertex(x, y, z)
-        *///? } else {
-        inner.vertex(x.toDouble(), y.toDouble(), z.toDouble())
-        //? }
+        inner.addVertex(x, y, z)
+        //? } else {
+        /*inner.vertex(x.toDouble(), y.toDouble(), z.toDouble())
+        *///? }
         return this
     }
 
@@ -29,10 +29,10 @@ class NeoVertexConsumerWrapper(
         a: Int
     ): NeoVertexConsumer {
         //? if >=1.21 {
-        /*inner.setColor(r, g, b, a)
-        *///? } else {
-        inner.color(r, g, b, a)
-        //? }
+        inner.setColor(r, g, b, a)
+        //? } else {
+        /*inner.color(r, g, b, a)
+        *///? }
         return this
     }
 
@@ -41,10 +41,10 @@ class NeoVertexConsumerWrapper(
         v: Float
     ): NeoVertexConsumer {
         //? if >=1.21 {
-        /*inner.setUv(u, v)
-        *///? } else {
-        inner.uv(u, v)
-        //? }
+        inner.setUv(u, v)
+        //? } else {
+        /*inner.uv(u, v)
+        *///? }
         return this
     }
 
@@ -53,10 +53,10 @@ class NeoVertexConsumerWrapper(
         v: Int
     ): NeoVertexConsumer {
         //? if >=1.21 {
-        /*inner.setUv1(u, v)
-        *///? } else {
-        inner.overlayCoords(u, v)
-        //? }
+        inner.setUv1(u, v)
+        //? } else {
+        /*inner.overlayCoords(u, v)
+        *///? }
         return this
     }
 
@@ -65,10 +65,10 @@ class NeoVertexConsumerWrapper(
         v: Int
     ): NeoVertexConsumer {
         //? if >=1.21 {
-        /*inner.setUv2(u, v)
-        *///? } else {
-        inner.uv2(u, v)
-        //? }
+        inner.setUv2(u, v)
+        //? } else {
+        /*inner.uv2(u, v)
+        *///? }
         return this
     }
 
@@ -78,10 +78,10 @@ class NeoVertexConsumerWrapper(
         z: Float
     ): NeoVertexConsumer {
         //? if >=1.21 {
-        /*inner.setNormal(x, y, z)
-        *///? } else {
-        inner.normal(x, y, z)
-        //? }
+        inner.setNormal(x, y, z)
+        //? } else {
+        /*inner.normal(x, y, z)
+        *///? }
         return this
     }
 
@@ -92,18 +92,18 @@ class NeoVertexConsumerWrapper(
         z: Float
     ): NeoVertexConsumer {
         //? if >=1.21 {
-        /*inner.setNormal(pose, x, y, z)
-        *///? } else if >=1.20.5 {
+        inner.setNormal(pose, x, y, z)
+        //? } else if >=1.20.5 {
         /*inner.normal(pose, x, y, z)
         *///? } else {
-        inner.normal(pose.normal(), x, y, z)
-        //? }
+        /*inner.normal(pose.normal(), x, y, z)
+        *///? }
         return this
     }
 
     override fun _endVertex() {
         //? if <1.21 {
-        inner.endVertex()
-        //? }
+        /*inner.endVertex()
+        *///? }
     }
 }
