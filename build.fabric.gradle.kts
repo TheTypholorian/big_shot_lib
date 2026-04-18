@@ -57,7 +57,7 @@ tasks.withType<RemapSourcesJarTask> {
 
 tasks.named<ProcessResources>("processResources") {
     val props = HashMap<String, String>().apply {
-        this["minecraft"] = project.property("deps.minecraft") as String
+        this["minecraft"] = (project.property("deps.minecraft_range") ?: project.property("deps.minecraft")) as String
         this["java"] = when {
             sc.current.parsed >= "1.20.5" -> "21"
             sc.current.parsed >= "1.18" -> "17"

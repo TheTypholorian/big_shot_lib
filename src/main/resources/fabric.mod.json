@@ -19,9 +19,7 @@
   "depends": {
     "fabricloader": "*",
     "fabric-api-base": "*",
-    "minecraft": [
-      "${minecraft}"
-    ],
+    "minecraft": "${minecraft}",
     "fabric-language-kotlin": "*"
   },
   "accessWidener": "${access_widener}",
