@@ -64,10 +64,12 @@ public class CompositeStateMixin implements ImmutableExtension<GlDrawState> {
 
             @Override
             public @NotNull GlShaderShard getShader() {
-                return new GlShaderShard.NoShader(new GlTextureBinding.FromLocation(
-                        IdentifierUtilKt.getNeo(textureState.cutoutTexture().orElseThrow()),
-                        GlTextureTarget.TEXTURE_2D
-                ));
+                return textureState.cutoutTexture().map(texture ->
+                        new GlShaderShard.NoShader(new GlTextureBinding.FromLocation(
+                                IdentifierUtilKt.getNeo(texture),
+                                GlTextureTarget.TEXTURE_2D
+                        ))
+                ).orElseGet(GlShaderShard.NoShader::new);
             }
 
             @Override
