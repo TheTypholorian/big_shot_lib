@@ -184,6 +184,15 @@ object WrapperUtilImpl : WrapperUtil {
         return vanilla
     }
 
+    override fun uninject(
+        vanilla: MultiBufferSource.BufferSource,
+        injection: MultiBufferSourceInjection
+    ): MultiBufferSource.BufferSource {
+        val injections = vanilla.getExtensionValue<MutableList<MultiBufferSourceInjection>>()
+        injections.remove(injection)
+        return vanilla
+    }
+
     override fun wrap(source: MultiBufferSource): NeoMultiBufferSource {
         return NeoMultiBufferSource { renderSettings -> wrap(source.getBuffer((renderSettings as NeoRenderSettingsImpl).renderType)) }
     }

@@ -39,7 +39,8 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
         NeoRenderSettings settings = new NeoRenderSettingsImpl(renderType);
         var consumers = big_shot_lib$injections.stream()
                 .map(source -> source.getBuffer(settings))
-                .filter(Objects::nonNull);
+                .filter(Objects::nonNull)
+                .toList();
 
         return new VertexConsumer() {
             @Override

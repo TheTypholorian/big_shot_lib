@@ -44,6 +44,8 @@ interface WrapperUtil {
 
     fun inject(vanilla: MultiBufferSource.BufferSource, injection: MultiBufferSourceInjection): MultiBufferSource.BufferSource
 
+    fun uninject(vanilla: MultiBufferSource.BufferSource, injection: MultiBufferSourceInjection): MultiBufferSource.BufferSource
+
     fun wrap(source: MultiBufferSource): NeoMultiBufferSource
 
     fun unwrap(source: NeoMultiBufferSource): MultiBufferSource
