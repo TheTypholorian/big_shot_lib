@@ -102,7 +102,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
                 program.free()
                 return DataResult.error { "Unknown ${entry.key} shader $shaderKey" }
             }
-            println("Attaching shader ${shader.glId} of type ${shader.shaderType}")
+
             program.attach(shader)
         }
 
