@@ -9,6 +9,12 @@ base {
     archivesName = project.property("mod.id") as String
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xjvm-default=all")
+    }
+}
+
 repositories {
     gradlePluginPortal()
     mavenCentral()

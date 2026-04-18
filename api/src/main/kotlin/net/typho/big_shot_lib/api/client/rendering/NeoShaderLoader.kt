@@ -25,8 +25,6 @@ import java.io.BufferedReader
 
 object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
     @JvmField
-    val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Shader Loader")
-    @JvmField
     val PREPROCESSORS_REGISTRY_KEY = NeoResourceKey.registry<ShaderPreprocessor>(BigShotApi.id("shader_preprocessors"))
     var PREPROCESSORS_REGISTRY: NeoRegistry<ShaderPreprocessor>? = null
         private set
@@ -34,7 +32,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
     @JvmField
     val includes = object : ResourceRegistry<String>(
         BigShotApi.id("shaders/include"),
-        NeoFileToIdConverter("neo/shaders", "glsl")
+        NeoFileToIdConverter("neo/shaders/include", "glsl")
     ) {
         override fun decode(
             location: NeoIdentifier,
@@ -46,8 +44,8 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
     }
 
     @JvmField
-    val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader?>> { shaderType ->
-        object : ResourceRegistry<GlShader?>(
+    val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> { shaderType ->
+        object : ResourceRegistry<GlShader>(
             BigShotApi.id("shaders/${shaderType.name.lowercase()}"),
             NeoFileToIdConverter.shader("neo/shaders", shaderType)
         ) {
@@ -61,14 +59,14 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
                 location: NeoIdentifier,
                 reader: BufferedReader,
                 manager: NeoResourceManager
-            ): DataResult<GlShader?> {
+            ): DataResult<GlShader> {
                 val shader = NeoGlShader(location, shaderType)
                 shader.source = PREPROCESSORS_REGISTRY!!.values().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
 
                 if (shader.compile()) {
                     return DataResult.success(shader)
                 } else {
-                    val message = "Error compiling shader $location:\n${shader.getInfoLog()}"
+                    val message = "Error compiling shader:\n${shader.getInfoLog()}"
                     shader.free()
                     return DataResult.error { message }
                 }
@@ -95,7 +93,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
     override fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): DataResult<GlProgram> {
         val json = JsonParser.parseReader(reader).asJsonObject
         val formatKey = NeoIdentifier(json.getAsJsonPrimitive("format").asString)
-        val program = NeoGlProgram(location, NeoVertexFormat.REGISTRY!!.get(formatKey) ?: throw NullPointerException("Nonexistent vertex format $formatKey, requested by shader $location"))
+        val program = NeoGlProgram(location, NeoVertexFormat.REGISTRY!!.get(formatKey) ?: throw NullPointerException("Nonexistent vertex format $formatKey"))
         val sources = json.getAsJsonObject("sources")
 
         for (entry in sources.asMap()) {
@@ -104,7 +102,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
 
             if (shader == null) {
                 program.free()
-                return DataResult.error { "Unknown shader $shaderKey requested by $location" }
+                return DataResult.error { "Unknown ${entry.key} shader $shaderKey" }
             }
 
             program.attach(shader)
@@ -113,7 +111,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
         if (program.link()) {
             return DataResult.success(program)
         } else {
-            val message = "Error linking program $location:\n${program.getInfoLog()}"
+            val message = "Error linking program:\n${program.getInfoLog()}"
             program.free()
             return DataResult.error { message }
         }

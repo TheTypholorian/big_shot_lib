@@ -21,8 +21,8 @@ import net.typho.big_shot_lib.api.BigShotApi
 @Mod(value = BigShotApi.MOD_ID, dist = [Dist.CLIENT])
 class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
-        NeoForge.EVENT_BUS.register(BigShotClientEvents.ScrewYouNeoforge())
         BigShotClientEvents.init()
+        NeoForge.EVENT_BUS.register(BigShotClientEvents.ScrewYouNeoforge())
     }
 }
 //? }

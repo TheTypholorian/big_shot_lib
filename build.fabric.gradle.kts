@@ -12,6 +12,12 @@ plugins {
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xjvm-default=all")
+    }
+}
+
 sourceSets {
     main {
         java {

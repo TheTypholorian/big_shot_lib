@@ -13,6 +13,8 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 /*import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 *///? }
 *///? } neoforge {
+import net.minecraft.client.Minecraft
+import net.minecraft.resources.ResourceLocation
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.fml.common.EventBusSubscriber
@@ -37,6 +39,7 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent
 
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
@@ -186,7 +189,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             for (listener in reloadListeners) {
                 event.addListener(object : ResourceManagerReloadListener {
                     override fun onResourceManagerReload(manager: ResourceManager) {
-                        listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
+                        listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(Minecraft.getInstance().resourceManager))
                     }
                 })
             }
@@ -202,6 +205,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             clientTickEnd.forEach { it.run() }
         }
 
+        //? if <=1.21.5 {
         @SubscribeEvent
         fun postRender(event: RenderLevelStageEvent) {
             if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
@@ -222,8 +226,6 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 }
             }
         }
-
-        //? if <=1.21.5 {
         //? } else if <1.21.9 {
         /*@SubscribeEvent
         fun postRender(event: RenderLevelStageEvent.AfterLevel) {
