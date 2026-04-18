@@ -19,8 +19,6 @@ import net.typho.big_shot_lib.api.util.RegistrationConsumer.Companion.register
 import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 
 object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
@@ -93,7 +91,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
     override fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): DataResult<GlProgram> {
         val json = JsonParser.parseReader(reader).asJsonObject
         val formatKey = NeoIdentifier(json.getAsJsonPrimitive("format").asString)
-        val program = NeoGlProgram(location, NeoVertexFormat.REGISTRY!!.get(formatKey) ?: throw NullPointerException("Nonexistent vertex format $formatKey"))
+        val program = NeoGlProgram(location, NeoVertexFormat.REGISTRY!!.get(formatKey) ?: return DataResult.error { "Nonexistent vertex format $formatKey" })
         val sources = json.getAsJsonObject("sources")
 
         for (entry in sources.asMap()) {
@@ -104,7 +102,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
                 program.free()
                 return DataResult.error { "Unknown ${entry.key} shader $shaderKey" }
             }
-
+            println("Attaching shader ${shader.glId} of type ${shader.shaderType}")
             program.attach(shader)
         }
 

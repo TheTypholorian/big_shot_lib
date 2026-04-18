@@ -59,7 +59,7 @@ object ShaderIncludePreprocessor : ShaderPreprocessor {
             val includePath = NeoIdentifier(contents)
 
             code = code.substring(0, index) +
-                    (NeoShaderLoader.includes[includePath] ?: throw FileNotFoundException("Could not find include file '$includePath' requested by $location"))
+                    (NeoShaderLoader.includes[includePath] ?: throw FileNotFoundException("Could not find include file '$includePath' requested by $location")) +
                     code.substring(endIndex)
         }
 

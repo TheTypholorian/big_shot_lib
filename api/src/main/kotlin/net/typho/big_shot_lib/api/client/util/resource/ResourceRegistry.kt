@@ -49,7 +49,7 @@ abstract class ResourceRegistry<T>(
                     },
                     { error ->
                         BigShotApi.LOGGER.error("Error loading $id of resource registry $location: ${error.message()}")
-                        map[id] = oldMap.remove(id)
+                        oldMap.remove(id)?.let { map[id] = it }
                     }
                 )
             }
