@@ -262,5 +262,10 @@ interface IVec4<N : Number> {
 
         @JvmStatic
         fun IVec4<Double>.toJOML() = Vector4d(x, y, z, w)
+
+        @JvmStatic
+        inline fun <reified N : Number> Array<IVec4<N>>.flat(): Array<N> {
+            return flatMap { listOf(it.x, it.y, it.z, it.w) }.toTypedArray()
+        }
     }
 }

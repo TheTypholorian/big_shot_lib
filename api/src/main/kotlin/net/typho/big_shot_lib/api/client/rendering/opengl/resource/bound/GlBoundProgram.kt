@@ -8,4 +8,6 @@ interface GlBoundProgram : GlBoundResource<GlProgram> {
     fun setUniform(name: String, value: GlUniform.() -> Unit)
 
     fun setTexture(unit: Int, binding: GlTextureBinding)
+
+    fun setTextureArray(unit: Int, name: String, vararg bindings: GlTextureBinding)
 }

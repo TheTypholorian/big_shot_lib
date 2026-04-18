@@ -240,5 +240,10 @@ interface IVec2<N : Number> {
 
         @JvmStatic
         fun IVec2<Double>.toJOML() = Vector2d(x, y)
+
+        @JvmStatic
+        inline fun <reified N : Number> Array<IVec2<N>>.flat(): Array<N> {
+            return flatMap { listOf(it.x, it.y) }.toTypedArray()
+        }
     }
 }

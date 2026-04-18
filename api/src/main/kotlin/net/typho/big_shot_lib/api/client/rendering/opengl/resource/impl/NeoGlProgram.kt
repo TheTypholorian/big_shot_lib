@@ -11,9 +11,11 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
+import net.typho.big_shot_lib.api.math.vec.NeoVec2i
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL33.glBindSampler
+import kotlin.collections.map
 
 open class NeoGlProgram(
     override val location: NeoIdentifier,
@@ -33,6 +35,7 @@ open class NeoGlProgram(
             override val resource: GlProgram = this@NeoGlProgram
             override val handle: GlStateStack.Handle<Int> = handle
             val initialTextureUnit = NeoGlStateManager.CURRENT.activeTexture
+            val usedUnits = hashSetOf<Int>()
 
             override fun setUniform(
                 name: String,
@@ -59,12 +62,39 @@ open class NeoGlProgram(
                     glBindSampler(unit, binding.sampler?.glId ?: 0)
                     setUniform(name) { set(unit) }
                     setUniform("${name}Size") { set(texture.width, texture.height) }
+
+                    usedUnits.add(unit)
+                }
+            }
+
+            override fun setTextureArray(
+                unit: Int,
+                name: String,
+                vararg bindings: GlTextureBinding
+            ) {
+                assertBound {
+                    var unitInc = unit
+
+                    for (binding in bindings) {
+                        val texture = binding.texture
+                        val unit = unitInc++
+
+                        NeoGlStateManager.CURRENT.activeTexture = unit
+                        glBindTexture(binding.target.glId, texture.glId)
+                        glBindSampler(unit, binding.sampler?.glId ?: 0)
+
+                        usedUnits.add(unit)
+                    }
+
+                    setUniform(name) { set(IntArray(bindings.size) { it + unit }) }
+                    setUniform("${name}Sizes") { setIntVecs(bindings.map { NeoVec2i(it.texture.width, it.texture.height) }.toTypedArray()) }
                 }
             }
 
             override fun unbind() {
                 super.unbind()
                 NeoGlStateManager.CURRENT.activeTexture = initialTextureUnit
+                usedUnits.forEach { glBindSampler(it, 0) }
             }
         }
     }
