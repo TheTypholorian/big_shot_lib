@@ -19,8 +19,7 @@ import net.typho.big_shot_lib.api.BigShotApi
 @Mod(value = BigShotApi.MOD_ID)
 class BigShotCommonInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
-        eventBus.register(BigShotCommonEvents::class.java)
-        BigShotCommonEvents.init()
+        BigShotCommonEvents.init(eventBus)
     }
 }
 //? }

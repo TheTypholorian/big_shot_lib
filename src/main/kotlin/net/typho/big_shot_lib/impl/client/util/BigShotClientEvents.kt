@@ -157,6 +157,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         *///? }
     }
 
+    //? neoforge {
     init {
         NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
@@ -179,7 +180,6 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         }
     }
 
-    //? neoforge {
     class ScrewYouNeoforge {
         @SubscribeEvent
         fun addReloadListeners(event: AddReloadListenerEvent) {
@@ -202,11 +202,26 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             clientTickEnd.forEach { it.run() }
         }
 
-        /*
         @SubscribeEvent
         fun postRender(event: RenderLevelStageEvent) {
+            if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+                if (levelRenderEnd.isNotEmpty()) {
+                    val data = RenderEventData(
+                        NeoCamera(
+                            NeoVec3f(event.camera.position),
+                            NeoVec2f(event.camera.xRot, event.camera.yRot),
+                            event.camera.rotation()
+                        ),
+                        (event.levelRenderer as LevelRendererAccessor).`big_shot_lib$getLevel`(),
+                        event.projectionMatrix,
+                        event.modelViewMatrix,
+                        (event.frustum as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
+                        NeoGlStateManagerImpl.currentTarget ?: GlFramebuffer.MAIN
+                    )
+                    levelRenderEnd.forEach { it.invoke(data) }
+                }
+            }
         }
-         */
 
         //? if <=1.21.5 {
         //? } else if <1.21.9 {
