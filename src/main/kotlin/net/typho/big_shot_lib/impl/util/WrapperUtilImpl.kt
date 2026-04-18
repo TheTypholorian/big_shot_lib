@@ -1,15 +1,8 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.pipeline.RenderTarget
-import com.mojang.blaze3d.vertex.BufferBuilder
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
-import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
-import com.mojang.blaze3d.vertex.VertexFormat
-import com.mojang.blaze3d.vertex.VertexFormatElement
-import com.mojang.serialization.DataResult
 import net.minecraft.client.renderer.MultiBufferSource
-import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
@@ -17,17 +10,13 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.server.packs.PackResources
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
-import net.minecraft.server.packs.resources.ResourceMetadata
 import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
-import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
+import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection
 import net.typho.big_shot_lib.api.client.rendering.util.NeoMultiBufferSource
-import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
-import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.NeoRegistryAccess
 import net.typho.big_shot_lib.api.util.WrapperUtil
@@ -36,13 +25,9 @@ import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resource.NeoTagKey
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexConsumerWrapper
-import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
-import org.joml.Matrix4f
-import org.joml.Matrix4fc
-import org.joml.Vector3f
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -188,6 +173,15 @@ object WrapperUtilImpl : WrapperUtil {
 
     override fun <T : Any> unwrap(key: NeoTagKey<T>): TagKey<T> {
         return key.mojang
+    }
+
+    override fun inject(
+        vanilla: MultiBufferSource.BufferSource,
+        injection: MultiBufferSourceInjection
+    ): MultiBufferSource.BufferSource {
+        val injections = vanilla.getExtensionValue<MutableList<MultiBufferSourceInjection>>()
+        injections.add(injection)
+        return vanilla
     }
 
     override fun wrap(source: MultiBufferSource): NeoMultiBufferSource {
