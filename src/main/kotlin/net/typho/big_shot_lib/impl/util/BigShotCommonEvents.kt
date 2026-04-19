@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 //? fabric {
-/*import com.mojang.serialization.Lifecycle
+import com.mojang.serialization.Lifecycle
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -19,8 +19,8 @@ import net.typho.big_shot_lib.api.util.RegistryFactory
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
-*///? } neoforge {
-import com.mojang.serialization.Lifecycle
+//? } neoforge {
+/*import com.mojang.serialization.Lifecycle
 import net.minecraft.core.DefaultedMappedRegistry
 import net.minecraft.core.MappedRegistry
 import net.minecraft.core.registries.Registries
@@ -39,7 +39,7 @@ import net.typho.big_shot_lib.api.util.RegistryFactory
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
-//? }
+*///? }
 
 import net.minecraft.core.Registry
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
@@ -65,13 +65,13 @@ object BigShotCommonEvents : CommonEventFactory {
 
     internal fun init(
         //? neoforge {
-        eventBus: IEventBus
-        //? }
+        /*eventBus: IEventBus
+        *///? }
     ) {
         BigShotCommonEntrypoint.registerEvents(this)
 
         //? fabric {
-        /*BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
+        BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> create(
                 location: NeoIdentifier,
@@ -275,8 +275,8 @@ object BigShotCommonEvents : CommonEventFactory {
                 }
             }
         })
-        *///? } neoforge {
-        eventBus.addListener { event: NewRegistryEvent ->
+        //? } neoforge {
+        /*eventBus.addListener { event: NewRegistryEvent ->
             BigShotCommonEntrypoint.registerRegistries(object : RegistryFactory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : Any> create(
@@ -508,6 +508,6 @@ object BigShotCommonEvents : CommonEventFactory {
                 }
             })
         }
-        //? }
+        *///? }
     }
 }

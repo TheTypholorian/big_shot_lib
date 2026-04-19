@@ -10,6 +10,7 @@ import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjecti
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings;
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
+import net.typho.big_shot_lib.impl.util.WrapperUtilImplKt;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -36,7 +37,7 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
             at = @At("RETURN")
     )
     private VertexConsumer getBuffer(VertexConsumer original, @Local(argsOnly = true) RenderType renderType) {
-        NeoRenderSettings settings = new NeoRenderSettingsImpl(renderType);
+        NeoRenderSettings settings = WrapperUtilImplKt.getNeo(renderType);
         var consumers = big_shot_lib$injections.stream()
                 .map(source -> source.getBuffer(settings))
                 .filter(Objects::nonNull)
@@ -86,7 +87,7 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
             at = @At("TAIL")
     )
     private void endBatch(RenderType p_350903_, BufferBuilder p_350797_, CallbackInfo ci) {
-        NeoRenderSettings settings = new NeoRenderSettingsImpl(p_350903_);
+        NeoRenderSettings settings = WrapperUtilImplKt.getNeo(p_350903_);
 
         for (MultiBufferSourceInjection injection : big_shot_lib$injections) {
             injection.endBatch(settings);

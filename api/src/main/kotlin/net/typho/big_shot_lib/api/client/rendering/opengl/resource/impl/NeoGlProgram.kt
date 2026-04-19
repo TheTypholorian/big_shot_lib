@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl
 
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundResource.Companion.assertBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
@@ -30,6 +31,7 @@ open class NeoGlProgram(
 
     override fun use(): GlBoundProgram {
         checkUsable()
+        InternalUtil.INSTANCE.onBind(this)
         val handle = NeoGlStateManager.CURRENT.program.push(glId)
         return object : GlBoundProgram {
             override val resource: GlProgram = this@NeoGlProgram
@@ -95,6 +97,7 @@ open class NeoGlProgram(
                 super.unbind()
                 NeoGlStateManager.CURRENT.activeTexture = initialTextureUnit
                 usedUnits.forEach { glBindSampler(it, 0) }
+                InternalUtil.INSTANCE.onUnbind(resource)
             }
         }
     }

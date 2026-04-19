@@ -1,12 +1,15 @@
 package net.typho.big_shot_lib.impl
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
@@ -16,6 +19,8 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.util.getExtensionValue
+import net.typho.big_shot_lib.impl.util.setExtensionValue
+import net.typho.big_shot_lib.mixin.impl.MemoryUtilAccessor
 import org.joml.Vector3f
 
 object InternalUtilImpl : InternalUtil {
@@ -118,5 +123,17 @@ object InternalUtilImpl : InternalUtil {
         //? } else {
         /*return Minecraft.getInstance().window.handle()
         *///? }
+    }
+
+    override fun onBind(program: GlProgram) {
+        RenderSystem.setShader {
+            val shader = MemoryUtilAccessor.`big_shot_lib$unsafe`().allocateInstance(ShaderInstance::class.java) as ShaderInstance
+            shader.setExtensionValue(program)
+            shader
+        }
+    }
+
+    override fun onUnbind(program: GlProgram) {
+        RenderSystem.setShader { null }
     }
 }

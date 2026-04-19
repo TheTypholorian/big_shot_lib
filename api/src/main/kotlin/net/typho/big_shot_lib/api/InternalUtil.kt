@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.core.Registry
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
@@ -42,6 +43,10 @@ interface InternalUtil {
     fun <T : Any> getRegistry(key: NeoResourceKey<Registry<T>>): Registry<T>?
 
     fun mainWindowHandle(): Long
+
+    fun onBind(program: GlProgram)
+
+    fun onUnbind(program: GlProgram)
 
     companion object {
         val INSTANCE by lazy { InternalUtil::class.loadService() }

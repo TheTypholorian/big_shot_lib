@@ -18,6 +18,7 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.impl.util.getExtensionValue
+import net.typho.big_shot_lib.impl.util.neo
 import net.typho.big_shot_lib.mixin.impl.RenderTypeNameAccessor
 import kotlin.jvm.optionals.getOrNull
 
@@ -47,7 +48,7 @@ data class NeoRenderSettingsImpl(
     *///? } else {
     override val sortOnUpload: Boolean = renderType.sortOnUpload()
     //? }
-    override val outlineSettings: NeoRenderSettings? = renderType.outline().map { NeoRenderSettingsImpl(it) }.getOrNull()
+    override val outlineSettings: NeoRenderSettings? = renderType.outline().getOrNull()?.neo
     override val isOutline: Boolean = renderType.isOutline
     override val location: NeoIdentifier = NeoIdentifier((renderType as RenderTypeNameAccessor).`big_shot_lib$getName`())
     override val drawState: GlDrawState

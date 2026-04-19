@@ -5,10 +5,23 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTextur
 import net.typho.big_shot_lib.api.util.resource.NamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
-interface NeoAtlas : NamedResource, GlTexture2D {
-    val sprites: Map<NeoIdentifier, NeoAtlasSprite>
-    override val width: Int
-    override val height: Int
+abstract class NeoAtlas : NamedResource, GlTexture2D {
+    abstract val sprites: Map<NeoIdentifier, NeoAtlasSprite>
+    abstract override val width: Int
+    abstract override val height: Int
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NeoAtlas) return false
+
+        if (glId != other.glId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return glId
+    }
 
     companion object {
         val blocks: NeoAtlas
