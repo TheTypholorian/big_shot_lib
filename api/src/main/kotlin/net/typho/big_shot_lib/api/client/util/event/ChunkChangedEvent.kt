@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.client.util.event
 
-import net.minecraft.client.multiplayer.ClientLevel
-import net.minecraft.world.level.chunk.LevelChunk
+import net.minecraft.world.level.LevelAccessor
+import net.minecraft.world.level.chunk.ChunkAccess
 
 fun interface ChunkChangedEvent {
-    fun invoke(level: ClientLevel, old: LevelChunk?, new: LevelChunk?)
+    fun invoke(level: LevelAccessor, old: ChunkAccess?, new: ChunkAccess?)
 }

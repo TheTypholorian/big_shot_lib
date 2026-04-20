@@ -20,6 +20,7 @@ import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.neoforge.event.level.ChunkEvent
 //? if <1.21.9 {
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 
@@ -181,6 +182,12 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                     levelRenderEnd.forEach { it.invoke(data) }
                 }
             }
+        }
+        NeoForge.EVENT_BUS.addListener { event: ChunkEvent.Load ->
+            chunkChanged.forEach { it.invoke(event.level, null, event.chunk) }
+        }
+        NeoForge.EVENT_BUS.addListener { event: ChunkEvent.Unload ->
+            chunkChanged.forEach { it.invoke(event.level, event.chunk, null) }
         }
     }
 
