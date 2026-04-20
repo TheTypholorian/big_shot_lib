@@ -4,7 +4,9 @@
   "package": "net.typho.big_shot_lib.mixin",
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_${java}",
-  "mixins": [],
+  "mixins": [
+    "impl.iface.ShaderInstanceMixin"
+  ],
   "client": [],
   "server": [],
   "injectors": {

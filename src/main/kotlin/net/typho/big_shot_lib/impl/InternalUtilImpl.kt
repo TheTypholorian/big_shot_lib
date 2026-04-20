@@ -20,10 +20,37 @@ import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.util.getExtensionValue
 import net.typho.big_shot_lib.impl.util.setExtensionValue
-import net.typho.big_shot_lib.mixin.impl.MemoryUtilAccessor
 import org.joml.Vector3f
+import sun.misc.Unsafe
+import java.lang.reflect.Modifier
 
 object InternalUtilImpl : InternalUtil {
+    @JvmField
+    val UNSAFE = getUnsafe()
+
+    private fun getUnsafe(): Unsafe {
+        val fields = Unsafe::class.java.getDeclaredFields()
+
+        for (field in fields) {
+            if (field.type != Unsafe::class.java) {
+                continue
+            }
+
+            val modifiers = field.modifiers
+            if (!(Modifier.isStatic(modifiers) && Modifier.isFinal(modifiers))) {
+                continue
+            }
+
+            try {
+                field.setAccessible(true)
+                return field.get(null) as Unsafe
+            } catch (ignored: Exception) {
+            }
+        }
+
+        throw UnsupportedOperationException("Big Shot Lib requires sun.misc.Unsafe to be available.")
+    }
+
     override fun createVertexFormatBuilder(): NeoVertexFormat.Builder {
         return NeoVertexFormatImpl.BuilderImpl()
     }
@@ -127,7 +154,7 @@ object InternalUtilImpl : InternalUtil {
 
     override fun onBind(program: GlProgram) {
         RenderSystem.setShader {
-            val shader = MemoryUtilAccessor.`big_shot_lib$unsafe`().allocateInstance(ShaderInstance::class.java) as ShaderInstance
+            val shader = UNSAFE.allocateInstance(ShaderInstance::class.java) as ShaderInstance
             shader.setExtensionValue(program)
             shader
         }
