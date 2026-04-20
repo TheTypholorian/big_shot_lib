@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.client.util
 
 //? fabric {
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents
+/*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.server.packs.PackType
 import net.typho.big_shot_lib.impl.mojang
@@ -12,8 +12,9 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 //? } else {
 /*import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 *///? }
-//? } neoforge {
-/*import net.minecraft.client.Minecraft
+*///? } neoforge {
+import com.mojang.blaze3d.systems.RenderSystem
+import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.client.event.ClientTickEvent
@@ -35,11 +36,12 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent
 //? } else {
 /*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 *///? }
-*///? }
+//? }
 
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
-import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
@@ -53,8 +55,7 @@ import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl
 import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
-import net.typho.big_shot_lib.mixin.impl.LevelRendererAccessor
-import net.typho.big_shot_lib.impl.mojang
+import org.joml.Matrix4f
 
 //? if >=1.21.9 {
 /*import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
@@ -76,8 +77,8 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
     //? }
 
     //? neoforge {
-    /*val reloadListeners = arrayListOf<NeoResourceManagerReloadListener>()
-    *///? }
+    val reloadListeners = arrayListOf<NeoResourceManagerReloadListener>()
+    //? }
 
     internal fun init() {
         BigShotClientEntrypoint.registerReloadListeners(this)
@@ -85,7 +86,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         BigShotClientEntrypoint.registerDebugScreenInfo(this)
 
         //? fabric {
-        //? if <1.21.9 {
+        /*//? if <1.21.9 {
         WorldRenderEvents.LAST.register { context ->
             val data = RenderEventData(
                 NeoCamera(
@@ -110,12 +111,12 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         ClientTickEvents.END_CLIENT_TICK.register { clientTickEnd.forEach { it.run() } }
         ClientChunkEvents.CHUNK_LOAD.register { level, chunk -> chunkChanged.forEach { it.invoke(level, null, chunk) } }
         ClientChunkEvents.CHUNK_UNLOAD.register { level, chunk -> chunkChanged.forEach { it.invoke(level, chunk, null) } }
-        //? }
+        *///? }
     }
 
     override fun register(listener: NeoResourceManagerReloadListener) {
         //? fabric {
-        //? if <1.21.9 {
+        /*//? if <1.21.9 {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
             override fun getFabricId() = listener.location.mojang
 
@@ -130,9 +131,9 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             }
         })
         *///? }
-        //? } neoforge {
-        /*reloadListeners.add(listener)
-        *///? }
+        *///? } neoforge {
+        reloadListeners.add(listener)
+        //? }
     }
 
     override fun register(
@@ -161,7 +162,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
     }
 
     //? neoforge {
-    /*init {
+    init {
         NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
                 if (levelRenderEnd.isNotEmpty()) {
@@ -171,7 +172,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                             NeoVec2f(event.camera.xRot, event.camera.yRot),
                             event.camera.rotation()
                         ),
-                        (event.levelRenderer as LevelRendererAccessor).`big_shot_lib$getLevel`(),
+                        event.levelRenderer.level,
                         event.projectionMatrix,
                         event.modelViewMatrix,
                         (event.frustum as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
@@ -205,28 +206,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             clientTickEnd.forEach { it.run() }
         }
 
-        //? if <=1.21.5 {
-        @SubscribeEvent
-        fun postRender(event: RenderLevelStageEvent) {
-            if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
-                if (levelRenderEnd.isNotEmpty()) {
-                    val data = RenderEventData(
-                        NeoCamera(
-                            NeoVec3f(event.camera.position),
-                            NeoVec2f(event.camera.xRot, event.camera.yRot),
-                            event.camera.rotation()
-                        ),
-                        (event.levelRenderer as LevelRendererAccessor).`big_shot_lib$getLevel`(),
-                        event.projectionMatrix,
-                        event.modelViewMatrix,
-                        (event.frustum as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
-                        NeoGlStateManagerImpl.currentTarget ?: GlFramebuffer.MAIN
-                    )
-                    levelRenderEnd.forEach { it.invoke(data) }
-                }
-            }
-        }
-        //? } else if <1.21.9 {
+        //? if >1.21.5 && <1.21.9 {
         /*@SubscribeEvent
         fun postRender(event: RenderLevelStageEvent.AfterLevel) {
             if (levelRenderEnd.isNotEmpty()) {
@@ -236,7 +216,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                         NeoVec2f(event.camera.xRot, event.camera.yRot),
                         event.camera.rotation()
                     ),
-                    (event.levelRenderer as LevelRendererAccessor).`big_shot_lib$getLevel`(),
+                    event.levelRenderer.level,
                     Matrix4f(
                         RenderSystem.getProjectionMatrixBuffer()!!
                             .buffer
@@ -255,5 +235,5 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         }
         *///? }
     }
-    *///? }
+    //? }
 }

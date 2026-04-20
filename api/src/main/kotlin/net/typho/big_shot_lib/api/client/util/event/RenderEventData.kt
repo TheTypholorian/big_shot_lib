@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.util.event
 
+import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.world.level.Level
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.util.NeoCamera
@@ -10,7 +11,7 @@ data class RenderEventData(
     @JvmField
     val camera: NeoCamera,
     @JvmField
-    val level: Level,
+    val level: ClientLevel?,
     @JvmField
     val projMat: Matrix4f,
     @JvmField

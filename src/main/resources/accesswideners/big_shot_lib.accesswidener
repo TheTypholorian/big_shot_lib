@@ -30,3 +30,4 @@ accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
 accessible class net/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard
 
 accessible method com/mojang/blaze3d/shaders/Program <init> (Lcom/mojang/blaze3d/shaders/Program$Type;ILjava/lang/String;)V
+accessible field net/minecraft/client/renderer/LevelRenderer level Lnet/minecraft/client/multiplayer/ClientLevel;
