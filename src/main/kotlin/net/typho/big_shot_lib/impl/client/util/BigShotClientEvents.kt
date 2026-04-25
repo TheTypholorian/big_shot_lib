@@ -41,6 +41,7 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent
 
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
@@ -79,6 +80,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
 
     //? neoforge {
     val reloadListeners = arrayListOf<NeoResourceManagerReloadListener>()
+    var listenersLoaded = false
     //? }
 
     internal fun init() {
@@ -117,7 +119,8 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
 
     override fun register(listener: NeoResourceManagerReloadListener) {
         //? fabric {
-        /*//? if <1.21.9 {
+        /*BigShotApi.LOGGER.info("Registering reload listener ${listener.location}")
+        *//*//? if <1.21.9 {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
             override fun getFabricId() = listener.location.mojang
 
@@ -133,6 +136,12 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         })
         *///? }
         *///? } neoforge {
+        if (listenersLoaded) {
+            throw IllegalStateException("Attempted to registered resource listener ${listener.location} after add resource listeners event has been fired")
+        }
+
+        BigShotApi.LOGGER.info("Queueing reload listener ${listener.location}")
+
         reloadListeners.add(listener)
         //? }
     }
@@ -189,12 +198,11 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         NeoForge.EVENT_BUS.addListener { event: ChunkEvent.Unload ->
             chunkChanged.forEach { it.invoke(event.level, event.chunk, null) }
         }
-    }
-
-    class ScrewYouNeoforge {
-        @SubscribeEvent
-        fun addReloadListeners(event: AddReloadListenerEvent) {
+        NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
+            listenersLoaded = true
+            BigShotApi.LOGGER.info("Registering reload listeners")
             for (listener in reloadListeners) {
+                BigShotApi.LOGGER.info("Actually registering reload listener ${listener.location}")
                 event.addListener(object : ResourceManagerReloadListener {
                     override fun onResourceManagerReload(manager: ResourceManager) {
                         listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(Minecraft.getInstance().resourceManager))
@@ -202,7 +210,9 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 })
             }
         }
+    }
 
+    class ScrewYouNeoforge {
         @SubscribeEvent
         fun preClientTick(event: ClientTickEvent.Pre) {
             clientTickStart.forEach { it.run() }
