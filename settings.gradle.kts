@@ -44,3 +44,4 @@ stonecutter {
         vcsVersion = "mc1_21_fabric"
     }
 }
+include("plugin")
