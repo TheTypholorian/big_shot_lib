@@ -1,47 +1,122 @@
 package net.typho.big_shot_lib.api.client.util
 
-import net.typho.big_shot_lib.api.BigShotApi
+import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.brigadier.CommandDispatcher
+import net.minecraft.client.DeltaTracker
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.renderer.LevelRenderer
+import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.commands.CommandBuildContext
+import net.minecraft.commands.CommandSourceStack
+import net.minecraft.network.chat.ChatType
+import net.minecraft.network.chat.Component
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.item.ItemStack
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
+import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
+import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
+import net.typho.big_shot_lib.api.util.ModEntrypoint
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
-import net.typho.big_shot_lib.api.client.util.event.ClientEventFactory
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
+import org.joml.FrustumIntersection
+import org.joml.Matrix4f
+import java.util.UUID
 
-interface BigShotClientEntrypoint {
-    fun registerReloadListeners(factory: ResourceListenerFactory) {
+abstract class BigShotClientEntrypoint : ModEntrypoint() {
+    abstract fun onInitializeClient()
+
+    open fun addReloadListeners(
+        out: (listener: NeoResourceManagerReloadListener) -> Unit
+    ) {
     }
 
-    fun registerEvents(factory: ClientEventFactory) {
+    open fun addF3Info(
+        out: (location: NeoIdentifier, allowedWithReducedDebugInfo: Boolean, text: (out: (line: String) -> Unit) -> Unit) -> Unit
+    ) {
     }
 
-    fun registerDebugScreenInfo(factory: DebugScreenFactory) {
+    open fun displayInitialScreens(
+        out: (text: Component, onClose: () -> Unit) -> Unit
+    ) {
     }
 
-    fun displayInitialScreens(factory: InitialScreenFactory) {
+    open fun clientLevelChanged(
+        old: ClientLevel?,
+        new: ClientLevel?
+    ) {
     }
 
-    companion object : BigShotClientEntrypoint {
-        val entrypoints by lazy {
-            val services = BigShotClientEntrypoint::class.loadServices()
+    open fun renderHand(
+        hand: InteractionHand,
+        poseStack: PoseStack,
+        buffers: MultiBufferSource,
+        packedLight: Int,
+        partialTick: Float,
+        interpolatedPitch: Float,
+        swingProgress: Float,
+        equipProgress: Float,
+        stack: ItemStack
+    ) {
+    }
 
-            for (entrypoint in services) {
-                BigShotApi.LOGGER.info("Loading client entrypoint $entrypoint")
-            }
+    open fun renderLevel(
+        stage: RenderLevelStage,
+        levelRenderer: LevelRenderer,
+        camera: NeoCamera,
+        level: ClientLevel?,
+        projMat: Matrix4f,
+        modelViewMat: Matrix4f,
+        frustum: FrustumIntersection,
+        target: GlFramebuffer,
+        renderTick: Int,
+        partialTick: DeltaTracker
+    ) {
+    }
 
-            services
-        }
+    open fun clientCommands(
+        dispatcher: CommandDispatcher<CommandSourceStack>,
+        context: CommandBuildContext
+    ) {
+    }
 
-        override fun registerReloadListeners(factory: ResourceListenerFactory) {
-            entrypoints.forEach { it.registerReloadListeners(factory) }
-        }
+    open fun displayResized(
+        windowWidth: Int,
+        windowHeight: Int,
+        framebufferWidth: Int,
+        framebufferHeight: Int
+    ) {
+    }
 
-        override fun registerEvents(factory: ClientEventFactory) {
-            entrypoints.forEach { it.registerEvents(factory) }
-        }
+    open fun renderTooltip(
+        stack: ItemStack,
+        graphics: GuiGraphics,
+        x: Int,
+        y: Int,
+        font: Font,
+        components: List<ClientTooltipComponent>
+    ) {
+    }
 
-        override fun registerDebugScreenInfo(factory: DebugScreenFactory) {
-            entrypoints.forEach { it.registerDebugScreenInfo(factory) }
-        }
+    open fun renderGui(
+        graphics: GuiGraphics,
+        partialTick: DeltaTracker
+    ) {
+    }
 
-        override fun displayInitialScreens(factory: InitialScreenFactory) {
-            entrypoints.forEach { it.displayInitialScreens(factory) }
-        }
+    open fun clientChatMessage(
+        message: Component,
+        type: ChatType.Bound?,
+        sender: UUID
+    ) {
+    }
+
+    open fun clientTick() {
+    }
+
+    companion object {
+        val entrypoints by lazy { BigShotClientEntrypoint::class.loadServices() }
     }
 }

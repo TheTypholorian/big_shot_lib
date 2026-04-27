@@ -46,9 +46,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarge
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
-import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
 import net.typho.big_shot_lib.api.client.util.NeoCamera
-import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
 import net.typho.big_shot_lib.api.client.util.event.*
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f

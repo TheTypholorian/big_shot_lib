@@ -3,14 +3,16 @@ package net.typho.big_shot_lib.api.util
 import net.minecraft.core.Registry
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
+import kotlin.reflect.KProperty
 
-interface RegisteredObject<T : Any> : () -> T {
-    val registry: NeoResourceKey<Registry<T>>
+interface RegisteredObject<T : Any> {
+    val registry: NeoResourceKey<out Registry<T>>
     val key: NeoIdentifier
+    val value: T
 
-    override fun invoke(): T = get()
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T = value
 
-    fun get(): T
+    operator fun invoke() = value
 
     fun isRegistered(): Boolean
 }

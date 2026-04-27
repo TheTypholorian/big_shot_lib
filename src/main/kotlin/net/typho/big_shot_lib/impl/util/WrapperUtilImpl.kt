@@ -139,6 +139,10 @@ object WrapperUtilImpl : WrapperUtil {
                 /*return registry.listTagIds().map { it.neo }.collect(Collectors.toSet())
                 *///? }
             }
+
+            override fun addAlias(old: NeoIdentifier, new: NeoIdentifier) {
+                registry.addAlias(old.mojang, new.mojang)
+            }
         }
     }
 

@@ -11,7 +11,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
-import net.typho.big_shot_lib.api.client.util.ResourceListenerFactory
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.client.util.resource.ResourceRegistry
 import net.typho.big_shot_lib.api.util.*

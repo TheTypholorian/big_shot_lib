@@ -53,7 +53,7 @@ object BigShotCommonEvents : CommonEventFactory {
     override val blockChanged: MutableList<BlockChangedEvent> = arrayListOf()
 
     data class RegisteredObjectImpl<T : Any>(
-        override val registry: NeoResourceKey<Registry<T>>,
+        override val registry: NeoResourceKey<out Registry<T>>,
         override val key: NeoIdentifier,
         @JvmField
         val value: T
