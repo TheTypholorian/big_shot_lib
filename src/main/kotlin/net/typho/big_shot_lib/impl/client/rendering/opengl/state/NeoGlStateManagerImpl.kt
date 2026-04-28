@@ -268,4 +268,15 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     override val stencilEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.STENCIL_TEST)
     override val textureCubeMapSeamlessEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.TEXTURE_CUBE_MAP_SEAMLESS)
     override val programPointSizeEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.PROGRAM_POINT_SIZE)
+
+    override fun rawBindTexture(
+        target: GlTextureTarget,
+        id: Int
+    ) {
+        if (target == GlTextureTarget.TEXTURE_2D) {
+            GlStateManager._bindTexture(id)
+        } else {
+            glBindTexture(target.glId, id)
+        }
+    }
 }

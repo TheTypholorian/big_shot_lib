@@ -80,6 +80,8 @@ interface NeoGlStateManager {
     val textureCubeMapSeamlessEnabled: GlStateStack<Boolean>
     val programPointSizeEnabled: GlStateStack<Boolean>
 
+    fun rawBindTexture(target: GlTextureTarget, id: Int)
+
     class Standalone : NeoGlStateManager {
         override val buffers: EnumArrayMap<GlBufferTarget, GlStateStack<Int>> = enumArrayMapOf { target ->
             GlStateStack.Impl(
@@ -284,6 +286,10 @@ interface NeoGlStateManager {
         override val stencilEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.STENCIL_TEST)
         override val textureCubeMapSeamlessEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.TEXTURE_CUBE_MAP_SEAMLESS)
         override val programPointSizeEnabled: GlStateStack<Boolean> = GlStateStack.Flag(GlFlag.PROGRAM_POINT_SIZE)
+
+        override fun rawBindTexture(target: GlTextureTarget, id: Int) {
+            glBindTexture(target.glId, id)
+        }
     }
 
     companion object {
