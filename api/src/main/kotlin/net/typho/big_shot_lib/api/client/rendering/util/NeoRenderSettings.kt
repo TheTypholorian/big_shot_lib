@@ -42,7 +42,6 @@ interface NeoRenderSettings : NamedResource {
         val solid: NeoRenderSettings
         val cutout: NeoRenderSettings
         val cutoutMipped: NeoRenderSettings
-        val translucent: NeoRenderSettings
         val translucentMovingBlock: NeoRenderSettings
         val leash: NeoRenderSettings
         val waterMask: NeoRenderSettings

@@ -72,11 +72,11 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
             @Override
             public int getGlId() {
                 //? if <1.21.5 {
-                return id;
-                //? } else {
-                /*GlTexture2D texture = ImmutableExtensionKt.getExtensionValue(TextureAtlasMixin.this.texture);
+                /*return id;
+                *///? } else {
+                GlTexture2D texture = ImmutableExtensionKt.getExtensionValue(TextureAtlasMixin.this.texture);
                 return texture == null ? -1 : texture.getGlId();
-                 *///? }
+                 //? }
             }
 
             @Override

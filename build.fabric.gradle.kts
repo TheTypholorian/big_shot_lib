@@ -50,6 +50,7 @@ fletchingTable {
 
 val accessWidener = when {
     stonecutter.eval(stonecutter.current.version, ">=1.21.5") -> "accesswideners/big_shot_lib-1.21.5.accesswidener"
+    stonecutter.eval(stonecutter.current.version, ">=1.21.2") -> "accesswideners/big_shot_lib-1.21.2.accesswidener"
     else -> "accesswideners/big_shot_lib.accesswidener"
 }
 

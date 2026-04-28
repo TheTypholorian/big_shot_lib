@@ -9,7 +9,6 @@ object NeoRenderSettingsBuiltinsImpl : NeoRenderSettings.Builtins {
     override val solid: NeoRenderSettings = NeoRenderSettingsImpl(RenderType.solid())
     override val cutout: NeoRenderSettings = NeoRenderSettingsImpl(RenderType.cutout())
     override val cutoutMipped: NeoRenderSettings = NeoRenderSettingsImpl(RenderType.cutoutMipped())
-    override val translucent: NeoRenderSettings = NeoRenderSettingsImpl(RenderType.translucent())
     override val translucentMovingBlock: NeoRenderSettings = NeoRenderSettingsImpl(RenderType.translucentMovingBlock())
     override val leash: NeoRenderSettings = NeoRenderSettingsImpl(RenderType.leash())
     override val waterMask: NeoRenderSettings = NeoRenderSettingsImpl(RenderType.waterMask())

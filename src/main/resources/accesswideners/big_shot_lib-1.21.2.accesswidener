@@ -1,0 +1,32 @@
+accessWidener v2 named
+
+accessible field com/mojang/blaze3d/platform/GlStateManager TEXTURES [Lcom/mojang/blaze3d/platform/GlStateManager$TextureState;
+accessible class com/mojang/blaze3d/platform/GlStateManager$TextureState
+
+accessible class net/minecraft/client/renderer/RenderType$CompositeRenderType
+accessible class net/minecraft/client/renderer/RenderType$CompositeState
+accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType state ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
+
+accessible class net/minecraft/client/renderer/RenderStateShard$TransparencyStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$ShaderStateShard
+accessible field net/minecraft/client/renderer/RenderStateShard$ShaderStateShard shader Ljava/util/Optional;
+accessible class net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard
+accessible method net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible class net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard
+accessible method net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible method net/minecraft/client/renderer/RenderStateShard$TextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible class net/minecraft/client/renderer/RenderStateShard$TextureStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$TexturingStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$OffsetTexturingStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$BooleanStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$LightmapStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$OverlayStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$CullStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$DepthTestStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$LayeringStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$OutputStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
+accessible class net/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard
+
+accessible field net/minecraft/client/renderer/LevelRenderer level Lnet/minecraft/client/multiplayer/ClientLevel;

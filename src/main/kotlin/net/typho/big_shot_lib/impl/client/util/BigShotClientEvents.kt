@@ -1,19 +1,19 @@
 package net.typho.big_shot_lib.impl.client.util
 
 //? fabric {
-/*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.server.packs.PackType
 import net.typho.big_shot_lib.impl.mojang
 //? if <1.21.9 {
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
+/*import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
-//? } else {
-/*import net.fabricmc.fabric.api.resource.v1.ResourceLoader
-*///? }
-*///? } neoforge {
-import com.mojang.blaze3d.systems.RenderSystem
+*///? } else {
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader
+//? }
+//? } neoforge {
+/*import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.Minecraft
 import net.minecraft.resources.ResourceLocation
 import net.neoforged.neoforge.common.NeoForge
@@ -37,7 +37,7 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent
 //? } else {
 /*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 *///? }
-//? }
+*///? }
 
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
@@ -60,12 +60,12 @@ import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
 import org.joml.Matrix4f
 
 //? if >=1.21.9 {
-/*import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
+import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
 import net.minecraft.client.gui.components.debug.DebugScreenEntry
 import net.typho.big_shot_lib.mixin.impl.DebugScreenEntriesAccessor
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.chunk.LevelChunk
-*///? }
+//? }
 
 object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugScreenFactory {
     override val clientTickStart: MutableList<Runnable> = arrayListOf()
@@ -74,14 +74,14 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
     override val levelChanged: MutableList<ClientLevelChangedEvent> = arrayListOf()
     override val chunkChanged: MutableList<ChunkChangedEvent> = arrayListOf()
     //? if <1.21.9 {
-    @JvmField
+    /*@JvmField
     val debugScreenInfo = arrayListOf<Pair<Boolean, (out: (line: String) -> Unit) -> Unit>>()
-    //? }
+    *///? }
 
     //? neoforge {
-    val reloadListeners = arrayListOf<NeoResourceManagerReloadListener>()
+    /*val reloadListeners = arrayListOf<NeoResourceManagerReloadListener>()
     var listenersLoaded = false
-    //? }
+    *///? }
 
     internal fun init() {
         BigShotClientEntrypoint.registerReloadListeners(this)
@@ -89,8 +89,8 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         BigShotClientEntrypoint.registerDebugScreenInfo(this)
 
         //? fabric {
-        /*//? if <1.21.9 {
-        WorldRenderEvents.LAST.register { context ->
+        //? if <1.21.9 {
+        /*WorldRenderEvents.LAST.register { context ->
             val data = RenderEventData(
                 NeoCamera(
                     NeoVec3f(context.camera().position),
@@ -109,41 +109,41 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             )
             levelRenderEnd.forEach { it.invoke(data) }
         }
-        //? }
+        *///? }
         ClientTickEvents.START_CLIENT_TICK.register { clientTickStart.forEach { it.run() } }
         ClientTickEvents.END_CLIENT_TICK.register { clientTickEnd.forEach { it.run() } }
         ClientChunkEvents.CHUNK_LOAD.register { level, chunk -> chunkChanged.forEach { it.invoke(level, null, chunk) } }
         ClientChunkEvents.CHUNK_UNLOAD.register { level, chunk -> chunkChanged.forEach { it.invoke(level, chunk, null) } }
-        *///? }
+        //? }
     }
 
     override fun register(listener: NeoResourceManagerReloadListener) {
         //? fabric {
-        /*BigShotApi.LOGGER.info("Registering reload listener ${listener.location}")
-        *//*//? if <1.21.9 {
-        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
+        BigShotApi.LOGGER.info("Registering reload listener ${listener.location}")
+        //? if <1.21.9 {
+        /*ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
             override fun getFabricId() = listener.location.mojang
 
             override fun onResourceManagerReload(manager: ResourceManager) {
                 listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
             }
         })
-        //? } else {
-        /*ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(listener.location.mojang, object : ResourceManagerReloadListener {
+        *///? } else {
+        ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloader(listener.location.mojang, object : ResourceManagerReloadListener {
             override fun onResourceManagerReload(manager: ResourceManager) {
                 listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(manager))
             }
         })
-        *///? }
-        *///? } neoforge {
-        if (listenersLoaded) {
+        //? }
+        //? } neoforge {
+        /*if (listenersLoaded) {
             throw IllegalStateException("Attempted to registered resource listener ${listener.location} after add resource listeners event has been fired")
         }
 
         BigShotApi.LOGGER.info("Queueing reload listener ${listener.location}")
 
         reloadListeners.add(listener)
-        //? }
+        *///? }
     }
 
     override fun register(
@@ -152,9 +152,9 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         text: (out: (line: String) -> Unit) -> Unit
     ) {
         //? if <1.21.9 {
-        debugScreenInfo.add(allowedWithReducedDebugInfo to text)
-        //? } else {
-        /*DebugScreenEntriesAccessor.`big_shot_lib$register`(location.mojang, object : DebugScreenEntry {
+        /*debugScreenInfo.add(allowedWithReducedDebugInfo to text)
+        *///? } else {
+        DebugScreenEntriesAccessor.`big_shot_lib$register`(location.mojang, object : DebugScreenEntry {
             override fun display(
                 displayer: DebugScreenDisplayer,
                 level: Level?,
@@ -168,11 +168,11 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 return allowedWithReducedDebugInfo || !reducedDebugInfo
             }
         })
-        *///? }
+        //? }
     }
 
     //? neoforge {
-    init {
+    /*init {
         NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
                 if (levelRenderEnd.isNotEmpty()) {
@@ -252,5 +252,5 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         }
         *///? }
     }
-    //? }
+    *///? }
 }

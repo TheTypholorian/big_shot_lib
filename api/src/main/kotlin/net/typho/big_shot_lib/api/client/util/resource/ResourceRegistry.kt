@@ -43,15 +43,10 @@ abstract class ResourceRegistry<T>(
             entry.value.openAsReader().use { reader ->
                 val id = idConverter.fileToId(entry.key)
 
-                decode(id, reader, manager).mapOrElse(
-                    {
-                        map[id] = it
-                    },
-                    { error ->
-                        BigShotApi.LOGGER.error("Error loading $id of resource registry $location: ${error.message()}")
-                        oldMap.remove(id)?.let { map[id] = it }
-                    }
-                )
+                decode(id, reader, manager).resultOrPartial { error ->
+                    BigShotApi.LOGGER.error("Error loading $id of resource registry $location: $error")
+                    oldMap.remove(id)?.let { map[id] = it }
+                }.ifPresent { map[id] = it }
             }
         }
 

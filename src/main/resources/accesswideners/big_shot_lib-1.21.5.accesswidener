@@ -3,3 +3,11 @@ accessWidener v2 named
 accessible field com/mojang/blaze3d/opengl/GlStateManager TEXTURES [Lcom/mojang/blaze3d/opengl/GlStateManager$TextureState;
 accessible class com/mojang/blaze3d/opengl/GlStateManager$TextureState
 accessible field com/mojang/blaze3d/opengl/GlStateManager activeTexture I
+
+accessible class net/minecraft/client/renderer/RenderType$CompositeState
+accessible class net/minecraft/client/renderer/RenderType$CompositeRenderType
+extendable class net/minecraft/client/renderer/RenderType$CompositeRenderType
+accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType <init> (Ljava/lang/String;IZZLcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/renderer/RenderType$CompositeState;)V
+accessible field net/minecraft/client/renderer/RenderType$CompositeRenderType state Lnet/minecraft/client/renderer/RenderType$CompositeState;
+
+accessible field net/minecraft/client/renderer/LevelRenderer level Lnet/minecraft/client/multiplayer/ClientLevel;

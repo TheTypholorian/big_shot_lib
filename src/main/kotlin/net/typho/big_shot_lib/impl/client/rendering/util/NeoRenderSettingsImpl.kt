@@ -52,17 +52,21 @@ data class NeoRenderSettingsImpl(
     override val isOutline: Boolean = renderType.isOutline
     override val location: NeoIdentifier = NeoIdentifier((renderType as RenderTypeNameAccessor).`big_shot_lib$getName`())
     override val drawState: GlDrawState
-        get() = (renderType as RenderType.CompositeRenderType).state().getExtensionValue()
+        //? if <1.21.5 {
+        /*get() = (renderType as RenderType.CompositeRenderType).state().getExtensionValue()
+        *///? } else {
+        get() = (renderType as RenderType.CompositeRenderType).state.getExtensionValue()
+        //? }
 
     override fun bind(): BoundResource {
         //? if <1.21.10 {
-        renderType.setupRenderState()
+        /*renderType.setupRenderState()
 
         return BoundResource {
             renderType.clearRenderState()
         }
-        //? } else {
-        /*TODO("Not yet implemented")
-        *///? }
+        *///? } else {
+        TODO("Not yet implemented")
+        //? }
     }
 }

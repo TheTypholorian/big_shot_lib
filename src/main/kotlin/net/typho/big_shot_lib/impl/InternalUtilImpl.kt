@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.typho.big_shot_lib.api.InternalUtil
@@ -23,6 +22,11 @@ import net.typho.big_shot_lib.impl.util.setExtensionValue
 import org.joml.Vector3f
 import sun.misc.Unsafe
 import java.lang.reflect.Modifier
+import kotlin.jvm.java
+
+//? if <1.21.2 {
+/*import net.minecraft.client.renderer.ShaderInstance
+*///? }
 
 object InternalUtilImpl : InternalUtil {
     @JvmField
@@ -93,10 +97,10 @@ object InternalUtilImpl : InternalUtil {
         *///? }
 
     //? if <1.21.9 {
-    override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
-    //? } else {
-    /*override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
-    *///? }
+    /*override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
+    *///? } else {
+    override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
+    //? }
     override val blockVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLOCK)
     override val newEntityVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.NEW_ENTITY)
     override val particleVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.PARTICLE)
@@ -116,10 +120,10 @@ object InternalUtilImpl : InternalUtil {
 
     override fun getAtlas(location: NeoIdentifier): NeoAtlas {
         //? if <1.21.9 {
-        return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
-        //? } else {
-        /*return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
-        *///? }
+        /*return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
+        *///? } else {
+        return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
+        //? }
     }
 
     override fun transformNormal(
@@ -138,29 +142,33 @@ object InternalUtilImpl : InternalUtil {
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> getRegistry(key: NeoResourceKey<Registry<T>>): Registry<T>? {
         //? if <1.21.2 {
-        return BuiltInRegistries.REGISTRY.get(key.location.mojang) as? Registry<T>
-        //? } else {
-        /*return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
-        *///? }
+        /*return BuiltInRegistries.REGISTRY.get(key.location.mojang) as? Registry<T>
+        *///? } else {
+        return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
+        //? }
     }
 
     override fun mainWindowHandle(): Long {
         //? if <1.21.9 {
-        return Minecraft.getInstance().window.window
-        //? } else {
-        /*return Minecraft.getInstance().window.handle()
-        *///? }
+        /*return Minecraft.getInstance().window.window
+        *///? } else {
+        return Minecraft.getInstance().window.handle()
+        //? }
     }
 
     override fun onBind(program: GlProgram) {
-        RenderSystem.setShader {
+        //? if <1.21.2 {
+        /*RenderSystem.setShader {
             val shader = UNSAFE.allocateInstance(ShaderInstance::class.java) as ShaderInstance
             shader.setExtensionValue(program)
             shader
         }
+        *///? }
     }
 
     override fun onUnbind(program: GlProgram) {
-        RenderSystem.setShader { null }
+        //? if <1.21.2 {
+        /*RenderSystem.setShader { null }
+        *///? }
     }
 }
