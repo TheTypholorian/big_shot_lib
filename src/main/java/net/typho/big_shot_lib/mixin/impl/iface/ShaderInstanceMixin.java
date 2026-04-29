@@ -14,10 +14,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 //? if >1.21.1 {
-import dev.kikugie.fletching_table.annotation.MixinIgnore;
+/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-//? }
+*///? }
 @Mixin(ShaderInstance.class)
 public class ShaderInstanceMixin implements MutableExtension<GlProgram> {
     @Unique

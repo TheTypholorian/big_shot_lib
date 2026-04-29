@@ -13,10 +13,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 //? if >=1.21.11 {
-import dev.kikugie.fletching_table.annotation.MixinIgnore;
+/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-//? }
+*///? }
 @Mixin(RenderType.CompositeState.class)
 public class CompositeStateMixin implements ImmutableExtension<GlDrawState> {
     @Shadow

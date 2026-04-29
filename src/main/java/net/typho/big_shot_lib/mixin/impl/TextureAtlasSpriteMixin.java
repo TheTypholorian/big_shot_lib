@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.mixin.impl;
 
 //? if <1.21.11 {
-/*import net.minecraft.resources.ResourceLocation;
-*///? } else {
-import net.minecraft.resources.Identifier;
-//? }
+import net.minecraft.resources.ResourceLocation;
+//? } else {
+/*import net.minecraft.resources.Identifier;
+*///? }
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.texture.SpriteContents;
@@ -46,10 +46,10 @@ public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprit
     @Shadow
     @Final
     //? if <1.21.11 {
-    /*private ResourceLocation atlasLocation;
-    *///? } else {
-    private Identifier atlasLocation;
-    //? }
+    private ResourceLocation atlasLocation;
+    //? } else {
+    /*private Identifier atlasLocation;
+    *///? }
     @Unique
     private final NeoAtlasSprite big_shot_lib$extension_value = new NeoAtlasSprite() {
         @Override

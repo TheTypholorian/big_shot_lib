@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Objects;
 
 //? if <1.21.11 {
-/*import net.minecraft.client.renderer.RenderType;
-*///? } else {
-import net.minecraft.client.renderer.rendertype.RenderType;
-//? }
+import net.minecraft.client.renderer.RenderType;
+//? } else {
+/*import net.minecraft.client.renderer.rendertype.RenderType;
+*///? }
 
 @Mixin(MultiBufferSource.BufferSource.class)
 public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<List<MultiBufferSourceInjection>> {
@@ -98,10 +98,10 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
             //? if <1.21 {
             /*method = "endBatch(Lnet/minecraft/client/renderer/RenderType;)V",
             *///? } else if <1.21.11 {
-            /*method = "endBatch(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
-            *///? } else {
-            method = "endBatch(Lnet/minecraft/client/renderer/rendertype/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
-            //? }
+            method = "endBatch(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
+            //? } else {
+            /*method = "endBatch(Lnet/minecraft/client/renderer/rendertype/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
+            *///? }
             at = @At("TAIL")
     )
     private void endBatch(

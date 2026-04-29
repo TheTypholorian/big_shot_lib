@@ -28,10 +28,10 @@ import net.typho.big_shot_lib.mixin.impl.VertexFormatElementAccessor
 //? }
 
 //? if <=1.21 {
-/*import net.minecraft.client.renderer.ShaderInstance
+import net.minecraft.client.renderer.ShaderInstance
 import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.impl.util.setExtensionValue
-*///? }
+//? }
 
 object InternalUtilImpl : InternalUtil {
     @JvmField
@@ -152,10 +152,10 @@ object InternalUtilImpl : InternalUtil {
         *///? }
 
     //? if <1.21.9 {
-    /*override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
-    *///? } else {
-    override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
-    //? }
+    override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLIT_SCREEN)
+    //? } else {
+    /*override val blitScreenVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.POSITION)
+    *///? }
     override val blockVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.BLOCK)
     override val newEntityVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.NEW_ENTITY)
     override val particleVertexFormat = NeoVertexFormatImpl(DefaultVertexFormat.PARTICLE)
@@ -175,10 +175,10 @@ object InternalUtilImpl : InternalUtil {
 
     override fun getAtlas(location: NeoIdentifier): NeoAtlas {
         //? if <1.21.9 {
-        /*return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
-        *///? } else {
-        return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
-        //? }
+        return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
+        //? } else {
+        /*return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
+        *///? }
     }
 
     override fun transformNormal(
@@ -197,33 +197,33 @@ object InternalUtilImpl : InternalUtil {
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> getRegistry(key: NeoResourceKey<Registry<T>>): Registry<T>? {
         //? if <1.21.2 {
-        /*return BuiltInRegistries.REGISTRY.get(key.location.mojang) as? Registry<T>
-        *///? } else {
-        return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
-        //? }
+        return BuiltInRegistries.REGISTRY.get(key.location.mojang) as? Registry<T>
+        //? } else {
+        /*return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
+        *///? }
     }
 
     override fun mainWindowHandle(): Long {
         //? if <1.21.9 {
-        /*return Minecraft.getInstance().window.window
-        *///? } else {
-        return Minecraft.getInstance().window.handle()
-        //? }
+        return Minecraft.getInstance().window.window
+        //? } else {
+        /*return Minecraft.getInstance().window.handle()
+        *///? }
     }
 
     override fun onBind(program: GlProgram) {
         //? if <=1.21 {
-        /*RenderSystem.setShader {
+        RenderSystem.setShader {
             val shader = UNSAFE.allocateInstance(ShaderInstance::class.java) as ShaderInstance
             shader.setExtensionValue(program)
             shader
         }
-        *///? }
+        //? }
     }
 
     override fun onUnbind(program: GlProgram) {
         //? if <=1.21 {
-        /*RenderSystem.setShader { null }
-        *///? }
+        RenderSystem.setShader { null }
+        //? }
     }
 }

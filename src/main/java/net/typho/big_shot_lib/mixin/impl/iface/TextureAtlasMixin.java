@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 //? if <1.21.11 {
-/*import net.minecraft.resources.ResourceLocation;
-*///? } else {
-import net.minecraft.resources.Identifier;
-//? }
+import net.minecraft.resources.ResourceLocation;
+//? } else {
+/*import net.minecraft.resources.Identifier;
+*///? }
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.collections.MapsKt;
@@ -42,19 +42,19 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
     private int height;
 
     //? if <1.21.11 {
-    /*@Shadow
+    @Shadow
     private Map<ResourceLocation, TextureAtlasSprite> texturesByName;
 
     @Shadow
     public abstract ResourceLocation location();
-    *///? } else {
+    //? } else {
     
-    @Shadow
+    /*@Shadow
     private Map<Identifier, TextureAtlasSprite> texturesByName;
 
     @Shadow
     public abstract Identifier location();
-    //? }
+    *///? }
 
     @Override
     public NeoAtlas getBig_shot_lib$extension_value() {
@@ -72,11 +72,11 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
             @Override
             public int getGlId() {
                 //? if <1.21.5 {
-                /*return id;
-                *///? } else {
-                GlTexture2D texture = ImmutableExtensionKt.getExtensionValue(TextureAtlasMixin.this.texture);
+                return id;
+                //? } else {
+                /*GlTexture2D texture = ImmutableExtensionKt.getExtensionValue(TextureAtlasMixin.this.texture);
                 return texture == null ? -1 : texture.getGlId();
-                 //? }
+                 *///? }
             }
 
             @Override

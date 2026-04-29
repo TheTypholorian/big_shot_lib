@@ -20,23 +20,23 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 //? if <1.21.5 {
-/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-*///? }
+//? }
 
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(GlTexture.class)
 public abstract class GlTextureMixin extends GpuTexture implements ImmutableExtension<GlTexture2D> {
     //? if <1.21.6 {
-    /*public GlTextureMixin(String string, TextureFormat textureFormat, int i, int j, int k) {
+    public GlTextureMixin(String string, TextureFormat textureFormat, int i, int j, int k) {
         super(string, textureFormat, i, j, k);
     }
-    *///? } else {
-    public GlTextureMixin(int p_404771_, String p_405873_, TextureFormat p_405456_, int p_405638_, int p_404958_, int p_419943_, int p_423664_) {
+    //? } else {
+    /*public GlTextureMixin(int p_404771_, String p_405873_, TextureFormat p_405456_, int p_405638_, int p_404958_, int p_419943_, int p_423664_) {
         super(p_404771_, p_405873_, p_405456_, p_405638_, p_404958_, p_419943_, p_423664_);
     }
-    //? }
+    *///? }
 
     @Shadow
     public abstract int glId();
@@ -56,12 +56,12 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
                     case RED8 -> GlTextureFormat.R8;
                     case DEPTH32 -> GlTextureFormat.DEPTH_COMPONENT32;
                     //? if >=1.21.6 {
-                    case RED8I -> GlTextureFormat.R8I;
-                    //? }
-                    //? neoforge {
-                    /*case DEPTH24_STENCIL8 -> GlTextureFormat.DEPTH24_STENCIL8;
-                    case DEPTH32_STENCIL8 -> GlTextureFormat.DEPTH32F_STENCIL8;
+                    /*case RED8I -> GlTextureFormat.R8I;
                     *///? }
+                    //? neoforge {
+                    case DEPTH24_STENCIL8 -> GlTextureFormat.DEPTH24_STENCIL8;
+                    case DEPTH32_STENCIL8 -> GlTextureFormat.DEPTH32F_STENCIL8;
+                    //? }
                 };
             }
 
