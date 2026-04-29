@@ -13,37 +13,28 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 //? }
 //? } neoforge {
-/*import com.mojang.blaze3d.systems.RenderSystem
+/*import net.neoforged.neoforge.client.event.RenderLevelStageEvent
+import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.Minecraft
-import net.minecraft.resources.ResourceLocation
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
-//? if <1.21.9 {
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent
-
-//? if >1.21.5 {
-/*import org.joml.Matrix4f
-import com.mojang.blaze3d.systems.RenderSystem
+import org.joml.Matrix4f
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.impl.util.getExtensionValue
-*///? }
-//? }
 //? if <1.21.4 {
-import net.neoforged.neoforge.event.AddReloadListenerEvent
-//? } else {
-/*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
-*///? }
+/*import net.neoforged.neoforge.event.AddReloadListenerEvent
+*///? } else {
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
+//? }
 *///? }
 
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.DebugScreenFactory
@@ -56,8 +47,8 @@ import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl
+import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
-import org.joml.Matrix4f
 
 //? if >=1.21.9 {
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
@@ -65,6 +56,7 @@ import net.minecraft.client.gui.components.debug.DebugScreenEntry
 import net.typho.big_shot_lib.mixin.impl.DebugScreenEntriesAccessor
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.chunk.LevelChunk
+import net.typho.big_shot_lib.impl.mojang
 //? }
 
 object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugScreenFactory {
@@ -173,7 +165,8 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
 
     //? neoforge {
     /*init {
-        NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
+        //? if <=1.21.5 {
+        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
                 if (levelRenderEnd.isNotEmpty()) {
                     val data = RenderEventData(
@@ -192,40 +185,8 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 }
             }
         }
-        NeoForge.EVENT_BUS.addListener { event: ChunkEvent.Load ->
-            chunkChanged.forEach { it.invoke(event.level, null, event.chunk) }
-        }
-        NeoForge.EVENT_BUS.addListener { event: ChunkEvent.Unload ->
-            chunkChanged.forEach { it.invoke(event.level, event.chunk, null) }
-        }
-        NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
-            listenersLoaded = true
-            BigShotApi.LOGGER.info("Registering reload listeners")
-            for (listener in reloadListeners) {
-                BigShotApi.LOGGER.info("Actually registering reload listener ${listener.location}")
-                event.addListener(object : ResourceManagerReloadListener {
-                    override fun onResourceManagerReload(manager: ResourceManager) {
-                        listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(Minecraft.getInstance().resourceManager))
-                    }
-                })
-            }
-        }
-    }
-
-    class ScrewYouNeoforge {
-        @SubscribeEvent
-        fun preClientTick(event: ClientTickEvent.Pre) {
-            clientTickStart.forEach { it.run() }
-        }
-
-        @SubscribeEvent
-        fun postClientTick(event: ClientTickEvent.Post) {
-            clientTickEnd.forEach { it.run() }
-        }
-
-        //? if >1.21.5 && <1.21.9 {
-        /*@SubscribeEvent
-        fun postRender(event: RenderLevelStageEvent.AfterLevel) {
+        *///? } else if <1.21.9 {
+        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent.AfterLevel ->
             if (levelRenderEnd.isNotEmpty()) {
                 val data = RenderEventData(
                     NeoCamera(
@@ -251,6 +212,47 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             }
         }
         *///? }
+        NeoForge.EVENT_BUS.addListener { event: ChunkEvent.Load ->
+            chunkChanged.forEach { it.invoke(event.level, null, event.chunk) }
+        }
+        NeoForge.EVENT_BUS.addListener { event: ChunkEvent.Unload ->
+            chunkChanged.forEach { it.invoke(event.level, event.chunk, null) }
+        }
+        //? if <1.21.4 {
+        /*NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
+            listenersLoaded = true
+            for (listener in reloadListeners) {
+                event.addListener(object : ResourceManagerReloadListener {
+                    override fun onResourceManagerReload(manager: ResourceManager) {
+                        listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(Minecraft.getInstance().resourceManager))
+                    }
+                })
+            }
+        }
+        *///? } else {
+        NeoForge.EVENT_BUS.addListener { event: AddClientReloadListenersEvent ->
+            listenersLoaded = true
+            for (listener in reloadListeners) {
+                event.addListener(listener.location.mojang, object : ResourceManagerReloadListener {
+                    override fun onResourceManagerReload(manager: ResourceManager) {
+                        listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(Minecraft.getInstance().resourceManager))
+                    }
+                })
+            }
+        }
+        //? }
+    }
+
+    class ScrewYouNeoforge {
+        @SubscribeEvent
+        fun preClientTick(event: ClientTickEvent.Pre) {
+            clientTickStart.forEach { it.run() }
+        }
+
+        @SubscribeEvent
+        fun postClientTick(event: ClientTickEvent.Post) {
+            clientTickEnd.forEach { it.run() }
+        }
     }
     *///? }
 }

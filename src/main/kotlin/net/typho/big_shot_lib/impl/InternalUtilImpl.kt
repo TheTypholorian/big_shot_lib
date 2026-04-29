@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.impl
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormatElement
@@ -8,6 +7,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
@@ -18,14 +18,19 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.util.getExtensionValue
-import net.typho.big_shot_lib.impl.util.setExtensionValue
 import org.joml.Vector3f
 import sun.misc.Unsafe
 import java.lang.reflect.Modifier
 import kotlin.jvm.java
 
-//? if <1.21.2 {
+//? if >=1.21 {
+import net.typho.big_shot_lib.mixin.impl.VertexFormatElementAccessor
+//? }
+
+//? if <=1.21 {
 /*import net.minecraft.client.renderer.ShaderInstance
+import com.mojang.blaze3d.systems.RenderSystem
+import net.typho.big_shot_lib.impl.util.setExtensionValue
 *///? }
 
 object InternalUtilImpl : InternalUtil {
@@ -57,6 +62,56 @@ object InternalUtilImpl : InternalUtil {
 
     override fun createVertexFormatBuilder(): NeoVertexFormat.Builder {
         return NeoVertexFormatImpl.BuilderImpl()
+    }
+
+    override fun createVertexFormatElement(
+        index: Int,
+        type: GlDataType,
+        normalized: Boolean?,
+        count: Int
+    ): NeoVertexFormat.Element {
+        //? if >=1.21 {
+        return NeoVertexFormatImpl.ElementImpl(VertexFormatElement.register(
+            VertexFormatElementAccessor.`big_shot_lib$getElements`().size,
+            index,
+            when (type) {
+                GlDataType.UNSIGNED_BYTE -> VertexFormatElement.Type.UBYTE
+                GlDataType.BYTE -> VertexFormatElement.Type.BYTE
+                GlDataType.UNSIGNED_SHORT -> VertexFormatElement.Type.USHORT
+                GlDataType.SHORT -> VertexFormatElement.Type.SHORT
+                GlDataType.UNSIGNED_INT -> VertexFormatElement.Type.UINT
+                GlDataType.INT -> VertexFormatElement.Type.INT
+                GlDataType.FLOAT -> VertexFormatElement.Type.FLOAT
+                GlDataType.BYTES_2, GlDataType.BYTES_3, GlDataType.BYTES_4, GlDataType.DOUBLE -> throw UnsupportedOperationException("Minecraft does not support vertex format elements of type $type")
+            },
+            when (normalized) {
+                true -> VertexFormatElement.Usage.NORMAL
+                false -> VertexFormatElement.Usage.POSITION
+                null -> VertexFormatElement.Usage.UV
+            },
+            count
+        ))
+        //? } else {
+        /*return NeoVertexFormatImpl.ElementImpl(VertexFormatElement(
+            index,
+            when (type) {
+                GlDataType.UNSIGNED_BYTE -> VertexFormatElement.Type.UBYTE
+                GlDataType.BYTE -> VertexFormatElement.Type.BYTE
+                GlDataType.UNSIGNED_SHORT -> VertexFormatElement.Type.USHORT
+                GlDataType.SHORT -> VertexFormatElement.Type.SHORT
+                GlDataType.UNSIGNED_INT -> VertexFormatElement.Type.UINT
+                GlDataType.INT -> VertexFormatElement.Type.INT
+                GlDataType.FLOAT -> VertexFormatElement.Type.FLOAT
+                GlDataType.BYTES_2, GlDataType.BYTES_3, GlDataType.BYTES_4, GlDataType.DOUBLE -> throw UnsupportedOperationException("Minecraft does not support vertex format elements of type $type")
+            },
+            when (normalized) {
+                true -> VertexFormatElement.Usage.NORMAL
+                false -> VertexFormatElement.Usage.POSITION
+                null -> VertexFormatElement.Usage.UV
+            },
+            count
+        ))
+        *///? }
     }
 
     override val positionVertexElement: NeoVertexFormat.Element
@@ -157,7 +212,7 @@ object InternalUtilImpl : InternalUtil {
     }
 
     override fun onBind(program: GlProgram) {
-        //? if <1.21.2 {
+        //? if <=1.21 {
         /*RenderSystem.setShader {
             val shader = UNSAFE.allocateInstance(ShaderInstance::class.java) as ShaderInstance
             shader.setExtensionValue(program)
@@ -167,7 +222,7 @@ object InternalUtilImpl : InternalUtil {
     }
 
     override fun onUnbind(program: GlProgram) {
-        //? if <1.21.2 {
+        //? if <=1.21 {
         /*RenderSystem.setShader { null }
         *///? }
     }

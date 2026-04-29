@@ -380,10 +380,10 @@ object BigShotCommonEvents : CommonEventFactory {
                                 Registries.BLOCK.neo as NeoResourceKey<Registry<V>>,
                                 id,
                                 //? if <1.21.2 {
-                                value(BlockBehaviour.Properties.of())
-                                    //? } else {
-                                    /*value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
-                                    *///? }
+                                /*value(BlockBehaviour.Properties.of())
+                                    *///? } else {
+                                    value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
+                                    //? }
                                     .also {
                                         event.register(
                                             Registries.BLOCK,
@@ -412,10 +412,10 @@ object BigShotCommonEvents : CommonEventFactory {
                                 Registries.BLOCK.neo as NeoResourceKey<Registry<V>>,
                                 id,
                                 //? if <1.21.2 {
-                                value(BlockBehaviour.Properties.of())
-                                    //? } else {
-                                    /*value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
-                                    *///? }
+                                /*value(BlockBehaviour.Properties.of())
+                                    *///? } else {
+                                    value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
+                                    //? }
                                     .also {
                                         event.register(
                                             Registries.BLOCK,
@@ -443,10 +443,10 @@ object BigShotCommonEvents : CommonEventFactory {
                                 Registries.ITEM.neo as NeoResourceKey<Registry<V>>,
                                 id,
                                 //? if <1.21.2 {
-                                value(Item.Properties())
-                                    //? } else {
-                                    /*value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
-                                    *///? }
+                                /*value(Item.Properties())
+                                    *///? } else {
+                                    value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
+                                    //? }
                                     .also {
                                         event.register(
                                             Registries.ITEM,
@@ -483,10 +483,10 @@ object BigShotCommonEvents : CommonEventFactory {
                                 Registries.ITEM.neo as NeoResourceKey<Registry<V>>,
                                 id,
                                 //? if <1.21.2 {
-                                value(Item.Properties())
-                                    //? } else {
-                                    /*value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
-                                    *///? }
+                                /*value(Item.Properties())
+                                    *///? } else {
+                                    value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
+                                    //? }
                                     .also {
                                         event.register(
                                             Registries.ITEM,

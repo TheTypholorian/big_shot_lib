@@ -1,8 +1,7 @@
 package net.typho.big_shot_lib.impl.client.rendering.util
 
 //? if <1.21.5 {
-/*import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.blaze3d.vertex.VertexFormat
+/*import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode

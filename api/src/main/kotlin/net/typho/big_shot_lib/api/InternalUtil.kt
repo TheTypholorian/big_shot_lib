@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.core.Registry
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
@@ -33,6 +34,8 @@ interface InternalUtil {
     val positionTexColorNormalVertexFormat: NeoVertexFormat
 
     fun createVertexFormatBuilder(): NeoVertexFormat.Builder
+
+    fun createVertexFormatElement(index: Int, type: GlDataType, normalized: Boolean?, count: Int): NeoVertexFormat.Element
 
     fun getTexture(location: NeoIdentifier): GlTexture2D?
 

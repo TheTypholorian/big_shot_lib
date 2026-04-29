@@ -39,8 +39,21 @@ sourceSets {
                 exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
             }
 
+            if (sc.current.parsed < "1.21") {
+                exclude("net/typho/big_shot_lib/mixin/impl/VertexFormatElementAccessor.java")
+            }
+
             if (sc.current.parsed > "1.21.1") {
                 exclude("net/typho/big_shot_lib/mixin/impl/iface/ShaderInstanceMixin.java")
+            }
+
+            if (sc.current.parsed < "1.21.11") {
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlSamplerMixin.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/RenderSetupMixin.java")
+            }
+
+            if (sc.current.parsed >= "1.21.11") {
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/CompositeStateMixin.java")
             }
         }
     }

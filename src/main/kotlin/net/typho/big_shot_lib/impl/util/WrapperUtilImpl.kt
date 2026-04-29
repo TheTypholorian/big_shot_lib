@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.impl.util
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.MultiBufferSource
-import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Registry
 import net.minecraft.core.RegistryAccess
@@ -38,6 +37,12 @@ import kotlin.jvm.optionals.getOrNull
 //? if <1.21.5 {
 /*import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderType
 *///? }
+
+//? if <1.21.11 {
+/*import net.minecraft.client.renderer.RenderType
+*///? } else {
+import net.minecraft.client.renderer.rendertype.RenderType
+//? }
 
 val RenderType.neo: NeoRenderSettings
     //? if <1.21.5 {

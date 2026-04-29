@@ -1,9 +1,10 @@
 package net.typho.big_shot_lib.impl.client.rendering.util
 
+/*
 //? if <1.21.11 {
 /*import net.minecraft.client.renderer.RenderType
 *///? } else {
-import net.minecraft.client.renderer.rendertype.RenderType
+import net.minecraft.client.renderer.RenderPipelines
 //? }
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
@@ -139,3 +140,4 @@ object NeoRenderSettingsBuiltinsImpl : NeoRenderSettings.Builtins {
         return NeoRenderSettingsImpl(RenderType.debugLineStrip(lineWidth))
     }
 }
+ */

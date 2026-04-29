@@ -35,7 +35,7 @@ object BlockUtilImpl : BlockUtil {
         level: Level
     ): Boolean {
         //? if <1.21.2 {
-        /*return state.isSolidRender(level, BlockPos(pos.x, pos.y, pos.z))
+        /*return state.isSolidRender(level, pos.blockPos)
         *///? } else {
         return state.isSolidRender
         //? }
@@ -47,9 +47,9 @@ object BlockUtilImpl : BlockUtil {
         level: Level
     ): IVec3<Float> {
         //? if <1.21.2 {
-        /*return NeoVec3f(state.getOffset(level, BlockPos(pos.x, pos.y, pos.z)).toVector3f())
+        /*return NeoVec3f(state.getOffset(level, pos.blockPos).toVector3f())
         *///? } else {
-        return NeoVec3f(state.getOffset(BlockPos(pos.x, pos.y, pos.z)).toVector3f())
+        return NeoVec3f(state.getOffset(pos.blockPos).toVector3f())
         //? }
     }
 
@@ -91,9 +91,9 @@ object BlockUtilImpl : BlockUtil {
         val pos1 = pos + direction
 
         //? if >=1.21.2 {
-        return Block.shouldRenderFace(state, level.getBlockState(BlockPos(pos1.x, pos1.y, pos1.z)), direction.mojang)
+        return Block.shouldRenderFace(state, level.getBlockState(pos1.blockPos), direction.mojang)
         //? } else {
-        /*return Block.shouldRenderFace(state, level, BlockPos(pos.x, pos.y, pos.z), direction.mojang, BlockPos(pos1.x, pos1.y, pos1.z))
+        /*return Block.shouldRenderFace(state, level, pos.blockPos, direction.mojang, pos1.blockPos)
         *///? }
     }
 
@@ -106,7 +106,7 @@ object BlockUtilImpl : BlockUtil {
         //? if <1.21.5 {
         /*val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
-        val seed = state.getSeed(BlockPos(pos.x, pos.y, pos.z))
+        val seed = state.getSeed(pos.blockPos)
 
         fun face(face: NeoDirection?, random: RandomSource) {
             random.setSeed(seed)
@@ -165,7 +165,7 @@ object BlockUtilImpl : BlockUtil {
         *///? } else {
         val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
-        val parts = model.collectParts(RandomSource.create(state.getSeed(BlockPos(pos.x, pos.y, pos.z))))
+        val parts = model.collectParts(RandomSource.create(state.getSeed(pos.blockPos)))
 
         fun face(face: NeoDirection?) {
             val quads = parts.flatMap { it.getQuads(face?.mojang) }

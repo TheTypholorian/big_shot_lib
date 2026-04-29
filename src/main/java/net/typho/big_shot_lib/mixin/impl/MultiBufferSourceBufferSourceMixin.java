@@ -2,15 +2,12 @@ package net.typho.big_shot_lib.mixin.impl;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer;
 import net.typho.big_shot_lib.api.util.WrapperUtil;
-import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.WrapperUtilImplKt;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +20,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+//? if <1.21.11 {
+/*import net.minecraft.client.renderer.RenderType;
+*///? } else {
+import net.minecraft.client.renderer.rendertype.RenderType;
+//? }
 
 @Mixin(MultiBufferSource.BufferSource.class)
 public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<List<MultiBufferSourceInjection>> {
@@ -93,9 +96,11 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
 
     @Inject(
             //? if <1.21 {
+            /*method = "endBatch(Lnet/minecraft/client/renderer/RenderType;)V",
+            *///? } else if <1.21.11 {
             /*method = "endBatch(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
             *///? } else {
-            method = "endBatch(Lnet/minecraft/client/renderer/RenderType;)V",
+            method = "endBatch(Lnet/minecraft/client/renderer/rendertype/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
             //? }
             at = @At("TAIL")
     )

@@ -33,6 +33,7 @@ interface NeoRenderSettings : NamedResource {
         override val drawState: GlDrawState
     ) : NeoRenderSettings
 
+    /*
     companion object {
         @JvmStatic
         val BUILTINS = Builtins::class.loadService()
@@ -107,4 +108,5 @@ interface NeoRenderSettings : NamedResource {
 
         fun debugLineStrip(lineWidth: Double): NeoRenderSettings
     }
+     */
 }

@@ -233,6 +233,12 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
              */
             @JvmField
             val NORMAL = InternalUtil.INSTANCE.normalVertexElement
+
+            /**
+             * @param normalized True/False if float, null if int
+             */
+            @JvmStatic
+            fun create(index: Int, type: GlDataType, normalized: Boolean?, count: Int): Element = InternalUtil.INSTANCE.createVertexFormatElement(index, type, normalized, count)
         }
     }
 

@@ -1,27 +1,30 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
+import com.mojang.blaze3d.textures.GpuSampler;
 import kotlin.NotImplementedError;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
 import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
+import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-//? if >=1.21.11 {
+import java.util.Map;
+
+//? if <1.21.11 {
 import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }
-@Mixin(RenderType.CompositeState.class)
-public class CompositeStateMixin implements ImmutableExtension<GlDrawState> {
+@Mixin(RenderSetup.class)
+public class RenderSetupMixin implements ImmutableExtension<GlDrawState> {
     @Shadow
     @Final
-    RenderStateShard.EmptyTextureStateShard textureState;
+    public Map<String, RenderSetup.TextureBinding> textures;
 
     @Override
     public GlDrawState getBig_shot_lib$extension_value() {
@@ -63,12 +66,31 @@ public class CompositeStateMixin implements ImmutableExtension<GlDrawState> {
 
             @Override
             public @NotNull GlShaderShard getShader() {
-                return textureState.cutoutTexture().map(texture ->
-                        new GlShaderShard.NoShader(new GlTextureBinding.FromLocation(
-                                IdentifierUtilKt.getNeo(texture),
-                                GlTextureTarget.TEXTURE_2D
-                        ))
-                ).orElseGet(GlShaderShard.NoShader::new);
+                GlTextureBinding[] neoTextures = new GlTextureBinding[textures.size()];
+
+                textures.entrySet().stream()
+                        .filter(entry -> {
+                            if (entry.getKey().startsWith("Sampler")) {
+                                try {
+                                    GpuSampler gpuSampler = entry.getValue().sampler().get();
+                                    neoTextures[Integer.parseInt(entry.getKey().substring("Sampler".length()))] = gpuSampler == null ? new GlTextureBinding.FromLocation(
+                                            IdentifierUtilKt.getNeo(entry.getValue().location()),
+                                            GlTextureTarget.TEXTURE_2D
+                                    ) : new GlTextureBinding.FromLocation(
+                                            IdentifierUtilKt.getNeo(entry.getValue().location()),
+                                            GlTextureTarget.TEXTURE_2D,
+                                            ImmutableExtensionKt.getExtensionValue(gpuSampler)
+                                    );
+                                    return false;
+                                } catch (NumberFormatException ignored) {
+                                }
+                            }
+                            return true;
+                        })
+                        .forEachOrdered(entry -> {
+                        });
+
+                return new GlShaderShard.NoShader(neoTextures);
             }
 
             @Override
