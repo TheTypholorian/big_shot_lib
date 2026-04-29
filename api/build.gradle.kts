@@ -60,6 +60,10 @@ java {
     withSourcesJar()
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 tasks.remapSourcesJar {
     destinationDirectory.set(rootProject.file("build/libs/${project.version}"))
 }
