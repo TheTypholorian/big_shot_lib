@@ -51,10 +51,10 @@ public class LevelRendererMixin {
             at = @At(
                     value = "INVOKE",
                     //? if <1.21.11 {
-                    target = "Lnet/minecraft/client/renderer/LevelRenderer;addLateDebugPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/world/phys/Vec3;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lnet/minecraft/client/renderer/culling/Frustum;)V"
-                    //? } else {
-                    /*target = "Lnet/minecraft/client/renderer/LevelRenderer;addLateDebugPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/client/renderer/state/CameraRenderState;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Matrix4f;)V"
-                    *///? }
+                    /*target = "Lnet/minecraft/client/renderer/LevelRenderer;addLateDebugPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/world/phys/Vec3;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lnet/minecraft/client/renderer/culling/Frustum;)V"
+                    *///? } else {
+                    target = "Lnet/minecraft/client/renderer/LevelRenderer;addLateDebugPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/client/renderer/state/CameraRenderState;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Matrix4f;)V"
+                    //? }
             )
     )
     private void renderLevel(
@@ -81,7 +81,7 @@ public class LevelRendererMixin {
                 assert level != null;
 
                 //? if <=1.21.10 {
-                RenderEventData data = new RenderEventData(
+                /*RenderEventData data = new RenderEventData(
                         new NeoCamera(
                                 new NeoVec3f(camera.getPosition()),
                                 new NeoVec2f(camera.getXRot(), camera.getYRot()),
@@ -93,8 +93,8 @@ public class LevelRendererMixin {
                         ((FrustumAccessor) frustum).big_shot_lib$getFrustmIntersection(),
                         GlFramebuffer.MAIN
                 );
-                //? } else {
-                /*RenderEventData data = new RenderEventData(
+                *///? } else {
+                RenderEventData data = new RenderEventData(
                         new NeoCamera(
                                 new NeoVec3f(camera.position()),
                                 new NeoVec2f(camera.xRot(), camera.yRot()),
@@ -106,7 +106,7 @@ public class LevelRendererMixin {
                         ((FrustumAccessor) frustum).big_shot_lib$getFrustmIntersection(),
                         GlFramebuffer.MAIN
                 );
-                *///? }
+                //? }
 
                 BigShotClientEvents.INSTANCE.getLevelRenderEnd().forEach(event -> event.invoke(data));
             });

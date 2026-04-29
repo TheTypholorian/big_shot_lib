@@ -1,6 +1,10 @@
 package net.typho.big_shot_lib.impl.client.rendering.util
 
-import net.minecraft.client.renderer.RenderType
+//? if <1.21.11 {
+/*import net.minecraft.client.renderer.RenderType
+*///? } else {
+import net.minecraft.client.renderer.rendertype.RenderType
+//? }
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.impl.mojang

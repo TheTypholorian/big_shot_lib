@@ -33,12 +33,17 @@ sourceSets {
             if (sc.current.parsed >= "1.21.9") {
                 exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
             }
+
+            if (sc.current.parsed > "1.21.1") {
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/ShaderInstanceMixin.java")
+            }
         }
     }
 }
 
 val accessTransformer = project.file("build/resources/main/META-INF/accesstransformer.cfg")
 val accessWidener = when {
+    stonecutter.eval(stonecutter.current.version, ">=1.21.11") -> "accesswideners/big_shot_lib-1.21.11.accesswidener"
     stonecutter.eval(stonecutter.current.version, ">=1.21.5") -> "accesswideners/big_shot_lib-1.21.5.accesswidener"
     stonecutter.eval(stonecutter.current.version, ">=1.21.2") -> "accesswideners/big_shot_lib-1.21.2.accesswidener"
     else -> "accesswideners/big_shot_lib.accesswidener"

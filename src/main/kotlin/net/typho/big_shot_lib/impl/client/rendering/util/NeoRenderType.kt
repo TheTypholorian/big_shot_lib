@@ -1,14 +1,15 @@
 package net.typho.big_shot_lib.impl.client.rendering.util
 
-import com.mojang.blaze3d.pipeline.RenderPipeline
+//? if <1.21.5 {
+/*import com.mojang.blaze3d.pipeline.RenderPipeline
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 
-//? if <1.21.5 {
-/*open class NeoRenderType(
+open class NeoRenderType(
     @JvmField
     val settings: NeoRenderSettings,
     @JvmField

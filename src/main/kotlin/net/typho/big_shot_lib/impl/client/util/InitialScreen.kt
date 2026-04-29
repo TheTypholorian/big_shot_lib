@@ -33,8 +33,8 @@ open class InitialScreen(
     /*protected var textWidget: FocusableTextWidget? = null
     *///? } else {
     //? if <1.21.11 {
-    protected var textWidget: FocusableTextWidget? = null
-    //? }
+    /*protected var textWidget: FocusableTextWidget? = null
+    *///? }
     protected val layout = HeaderAndFooterLayout(this, 90, 33)
     //? }
 
@@ -62,10 +62,10 @@ open class InitialScreen(
         val layout = layout.addToContents(LinearLayout.vertical())
         layout.defaultCellSetting().alignHorizontallyCenter().padding(4)
         //? if <1.21.11 {
-        textWidget = layout.addChild(FocusableTextWidget(width, title, font)) { it.padding(8) }
-        //? } else {
-        /*layout.addChild(FocusableTextWidget.builder(title, font).maxWidth(374).build(), { it.padding(8) })
-        *///? }
+        /*textWidget = layout.addChild(FocusableTextWidget(width, title, font)) { it.padding(8) }
+        *///? } else {
+        layout.addChild(FocusableTextWidget.builder(title, font).maxWidth(374).build(), { it.padding(8) })
+        //? }
         this.layout.addToFooter(Button.builder(CommonComponents.GUI_CONTINUE) { onClose() }.build())
         this.layout.visitWidgets { addRenderableWidget(it) }
         repositionElements()
@@ -75,8 +75,8 @@ open class InitialScreen(
     //? if >=1.20.5 {
     override fun repositionElements() {
         //? if <1.21.11 {
-        textWidget?.containWithin(width)
-        //? }
+        /*textWidget?.containWithin(width)
+        *///? }
         layout.arrangeElements()
     }
     //? }

@@ -57,17 +57,17 @@ object BlockUtilImpl : BlockUtil {
     override fun getBlockChunkLayer(state: BlockState): BlockChunkLayer? {
         return when (ItemBlockRenderTypes.getChunkRenderType(state)) {
             //? if >=1.21.11 {
-            /*ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
+            ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
             ChunkSectionLayer.CUTOUT -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockChunkLayer.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockChunkLayer.TRIPWIRE
-            *///? } else if >=1.21.6 {
-            ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
+            //? } else if >=1.21.6 {
+            /*ChunkSectionLayer.SOLID -> BlockChunkLayer.SOLID
             ChunkSectionLayer.CUTOUT -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.CUTOUT_MIPPED -> BlockChunkLayer.CUTOUT
             ChunkSectionLayer.TRANSLUCENT -> BlockChunkLayer.TRANSLUCENT
             ChunkSectionLayer.TRIPWIRE -> BlockChunkLayer.TRIPWIRE
-            //? } else {
+            *///? } else {
             /*RenderType.solid() -> BlockChunkLayer.SOLID
             RenderType.cutout(), RenderType.cutoutMipped() -> BlockChunkLayer.CUTOUT
             RenderType.translucent() -> BlockChunkLayer.TRANSLUCENT
@@ -78,24 +78,7 @@ object BlockUtilImpl : BlockUtil {
     }
 
     override fun getFluidRenderSettings(state: FluidState): NeoRenderSettings {
-        //? if >=1.21.11 {
-        /*return when (ItemBlockRenderTypes.getRenderLayer(state)) {
-            ChunkSectionLayer.SOLID -> NeoRenderSettings.BUILTINS.solid
-            ChunkSectionLayer.CUTOUT -> NeoRenderSettings.BUILTINS.cutout
-            ChunkSectionLayer.TRANSLUCENT -> NeoRenderSettings.BUILTINS.translucent
-            ChunkSectionLayer.TRIPWIRE -> NeoRenderSettings.BUILTINS.tripwire
-        }
-        *///? } else if >=1.21.6 {
-        return when (ItemBlockRenderTypes.getRenderLayer(state)) {
-            ChunkSectionLayer.SOLID -> NeoRenderSettings.BUILTINS.solid
-            ChunkSectionLayer.CUTOUT -> NeoRenderSettings.BUILTINS.cutout
-            ChunkSectionLayer.CUTOUT_MIPPED -> NeoRenderSettings.BUILTINS.cutout
-            ChunkSectionLayer.TRANSLUCENT -> NeoRenderSettings.BUILTINS.translucent
-            ChunkSectionLayer.TRIPWIRE -> NeoRenderSettings.BUILTINS.tripwire
-        }
-        //? } else {
-        /*return NeoRenderSettingsImpl(ItemBlockRenderTypes.getRenderLayer(state))
-        *///? }
+        TODO("Not yet implemented")
     }
 
     @Suppress("DEPRECATION")
