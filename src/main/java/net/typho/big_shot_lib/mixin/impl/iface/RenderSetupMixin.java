@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.textures.GpuSampler;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.NotImplementedError;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
@@ -20,6 +21,7 @@ import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(RenderSetup.class)
 public class RenderSetupMixin implements ImmutableExtension<GlDrawState> {
     @Shadow

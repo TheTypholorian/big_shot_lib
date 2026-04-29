@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.mixin.impl;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.Pair;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @MixinIgnore
 *///? }
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(DebugScreenOverlay.class)
 public class DebugScreenOverlayMixin {
     @Shadow

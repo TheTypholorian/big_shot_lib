@@ -6,12 +6,14 @@ import com.mojang.blaze3d.platform.GlDebug;
 /*import com.mojang.blaze3d.opengl.GlDebug;
 *///? }
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.typho.big_shot_lib.api.error.GlException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(GlDebug.class)
 public class GlDebugMixin {
     @ModifyVariable(

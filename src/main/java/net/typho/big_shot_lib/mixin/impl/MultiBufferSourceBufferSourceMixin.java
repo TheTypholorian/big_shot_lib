@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.mixin.impl;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings;
@@ -27,6 +28,7 @@ import net.minecraft.client.renderer.RenderType;
 /*import net.minecraft.client.renderer.rendertype.RenderType;
 *///? }
 
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(MultiBufferSource.BufferSource.class)
 public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<List<MultiBufferSourceInjection>> {
     @Unique
@@ -91,15 +93,23 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
                 neoOriginal.normal(x, y, z);
                 return this;
             }
+
+            //? if <1.21 {
+            @Override
+            public void _endVertex$big_shot_lib() {
+                consumers.forEach(it -> it.endVertex());
+                neoOriginal.endVertex();
+            }
+            //? }
         });
     }
 
     @Inject(
             //? if <1.21 {
-            /*method = "endBatch(Lnet/minecraft/client/renderer/RenderType;)V",
-            *///? } else if <1.21.11 {
-            method = "endBatch(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
-            //? } else {
+            method = "endBatch(Lnet/minecraft/client/renderer/RenderType;)V",
+            //? } else if <1.21.11 {
+            /*method = "endBatch(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
+            *///? } else {
             /*method = "endBatch(Lnet/minecraft/client/renderer/rendertype/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
             *///? }
             at = @At("TAIL")

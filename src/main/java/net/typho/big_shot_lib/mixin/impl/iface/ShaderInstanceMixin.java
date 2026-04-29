@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.shaders.Program;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl;
@@ -18,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @MixinIgnore
 *///? }
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(ShaderInstance.class)
 public class ShaderInstanceMixin implements MutableExtension<GlProgram> {
     @Unique

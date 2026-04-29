@@ -19,7 +19,7 @@ class VertexConsumerWrapper(
     *///? }
 
     //? if >=1.21 {
-    override fun addVertex(
+    /*override fun addVertex(
         f: Float,
         g: Float,
         h: Float
@@ -120,8 +120,8 @@ class VertexConsumerWrapper(
         inner.overlayUV(i)
         return this
     }
-    //? } else {
-    /*var defaultColor: NeoColor? = null
+    *///? } else {
+    var defaultColor: NeoColor? = null
 
     override fun vertex(
         d: Double,
@@ -178,5 +178,5 @@ class VertexConsumerWrapper(
     override fun unsetDefaultColor() {
         defaultColor = null
     }
-    *///? }
+    //? }
 }

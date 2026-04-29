@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
+import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.NotImplementedError;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -17,6 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @MixinIgnore
 *///? }
+@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(RenderType.CompositeState.class)
 public class CompositeStateMixin implements ImmutableExtension<GlDrawState> {
     @Shadow

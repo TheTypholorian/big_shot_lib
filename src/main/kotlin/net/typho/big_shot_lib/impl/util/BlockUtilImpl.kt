@@ -108,19 +108,19 @@ object BlockUtilImpl : BlockUtil {
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
         val seed = state.getSeed(pos.blockPos)
         //? neoforge {
-        val modelData = model.getModelData(level, pos.blockPos, state, level.getModelData(pos.blockPos))
-        //? }
+        /*val modelData = model.getModelData(level, pos.blockPos, state, level.getModelData(pos.blockPos))
+        *///? }
 
         fun face(face: NeoDirection?, random: RandomSource) {
             //? fabric {
-            /*random.setSeed(seed)
+            random.setSeed(seed)
             val quads = model.getQuads(state, face?.mojang, random)
-            *///? } neoforge {
-            val quads = model.getRenderTypes(state, random, modelData).flatMap {
+            //? } neoforge {
+            /*val quads = model.getRenderTypes(state, random, modelData).flatMap {
                 random.setSeed(seed)
                 model.getQuads(state, face?.mojang, random, modelData, it)
             }
-            //? }
+            *///? }
             out(
                 face,
                 quads.mapTo(ArrayList(quads.size)) { WrapperUtil.INSTANCE.wrap(it) }
@@ -129,14 +129,14 @@ object BlockUtilImpl : BlockUtil {
 
         fun faceWithOffset(face: NeoDirection?, random: RandomSource) {
             //? fabric {
-            /*random.setSeed(seed)
+            random.setSeed(seed)
             val quads = model.getQuads(state, face?.mojang, random)
-            *///? } neoforge {
-            val quads = model.getRenderTypes(state, random, modelData).flatMap {
+            //? } neoforge {
+            /*val quads = model.getRenderTypes(state, random, modelData).flatMap {
                 random.setSeed(seed)
                 model.getQuads(state, face?.mojang, random, modelData, it)
             }
-            //? }
+            *///? }
             out(
                 face,
                 quads.mapTo(ArrayList(quads.size)) {
