@@ -47,15 +47,20 @@ interface GlStateStack<V> {
             get() = list.size
 
         override fun push(value: V): Handle<V> {
-            if (list.isEmpty()) {
-                restoreTo = query()
-            }
-
             val index = list.size
             val handle = HandleImpl(value, index)
 
+            if (list.isEmpty()) {
+                restoreTo = query()
+
+                if (value != restoreTo) {
+                    bind(value)
+                }
+            } else if (value != list.last().value) {
+                bind(value)
+            }
+
             list.add(handle)
-            bind(value)
 
             return handle
         }
@@ -65,10 +70,15 @@ interface GlStateStack<V> {
             handle.index = -1
 
             if (list.isEmpty()) {
-                bind(restoreTo)
+                if (restoreTo != handle.value) {
+                    bind(restoreTo)
+                }
             } else {
                 val value = list.lastOrNull()?.value
-                bind(value)
+
+                if (value != handle.value) {
+                    bind(value)
+                }
             }
 
             return handle.value
