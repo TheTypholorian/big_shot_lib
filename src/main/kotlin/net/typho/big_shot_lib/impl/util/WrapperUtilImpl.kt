@@ -41,7 +41,6 @@ import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderType
 //? if <1.21.11 {
 import net.minecraft.client.renderer.RenderType
 import net.typho.big_shot_lib.impl.client.rendering.util.StupidBufferSource
-
 //? } else {
 /*import net.minecraft.client.renderer.rendertype.RenderType
 *///? }
@@ -232,6 +231,9 @@ object WrapperUtilImpl : WrapperUtil {
         get: (settings: NeoRenderSettings) -> NeoVertexConsumer,
         end: (settings: NeoRenderSettings) -> Unit
     ): MultiBufferSource.BufferSource {
-        return StupidBufferSource(get, end)
+        return StupidBufferSource(
+            { renderType -> WrapperUtil.INSTANCE.unwrap(get(renderType.neo)) },
+            { renderType -> end(renderType.neo) }
+        )
     }
 }
