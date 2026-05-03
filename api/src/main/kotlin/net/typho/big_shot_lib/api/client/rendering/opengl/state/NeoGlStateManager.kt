@@ -1,31 +1,17 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
-import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
 import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
-import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import net.typho.big_shot_lib.api.util.EnumArrayMap
 import net.typho.big_shot_lib.api.util.NeoColor
-import net.typho.big_shot_lib.api.util.enumArrayMapOf
-import org.lwjgl.opengl.ARBImaging.*
-import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL13.*
-import org.lwjgl.opengl.GL14
-import org.lwjgl.opengl.GL14.*
-import org.lwjgl.opengl.GL20.*
-import org.lwjgl.opengl.GL30.*
-import org.lwjgl.opengl.GL41.*
-import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.NativeResource
-import kotlin.use
 
 interface NeoGlStateManager {
     val buffers: EnumArrayMap<GlBufferTarget, GlStateStack<Int>>
@@ -81,12 +67,6 @@ interface NeoGlStateManager {
     val programPointSizeEnabled: GlStateStack<Boolean>
 
     fun rawBindTexture(target: GlTextureTarget, id: Int)
-
-    fun createCache(): Cache
-
-    interface Cache : NativeResource {
-        fun flush()
-    }
 
     /*
     class Standalone : NeoGlStateManager {

@@ -364,6 +364,10 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
 
         override fun free() {
             cacheCounter--
+
+            if (cacheCounter == 0) {
+                flush()
+            }
         }
     }
 

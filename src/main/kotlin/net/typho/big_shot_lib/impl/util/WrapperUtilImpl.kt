@@ -26,6 +26,7 @@ import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resource.NeoTagKey
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexConsumerWrapper
+import net.typho.big_shot_lib.impl.client.rendering.util.StupidBufferSource
 import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
 import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.neo
@@ -40,7 +41,6 @@ import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderType
 
 //? if <1.21.11 {
 import net.minecraft.client.renderer.RenderType
-import net.typho.big_shot_lib.impl.client.rendering.util.StupidBufferSource
 //? } else {
 /*import net.minecraft.client.renderer.rendertype.RenderType
 *///? }
