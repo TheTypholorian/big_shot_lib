@@ -88,6 +88,7 @@ interface NeoGlStateManager {
         fun flush()
     }
 
+    /*
     class Standalone : NeoGlStateManager {
         override val buffers: EnumArrayMap<GlBufferTarget, GlStateStack<Int>> = enumArrayMapOf { target ->
             GlStateStack.Impl(
@@ -297,6 +298,7 @@ interface NeoGlStateManager {
             glBindTexture(target.glId, id)
         }
     }
+     */
 
     companion object {
         val MAIN by lazy { NeoGlStateManager::class.loadService() }
