@@ -121,6 +121,7 @@ jsonlang {
 
 repositories {
     mavenLocal()
+    maven("https://api.modrinth.com/maven")
 }
 
 tasks.withType<Javadoc>().configureEach {
@@ -137,6 +138,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:0.17.3")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
     modImplementation(libs.flk)
+    modImplementation(libs.sodium)
 }
 
 fabricApi {

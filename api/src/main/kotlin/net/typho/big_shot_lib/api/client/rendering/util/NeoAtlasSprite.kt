@@ -1,8 +1,9 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import net.typho.big_shot_lib.api.util.resource.NamedResource
 import org.joml.Vector2f
 
-interface NeoAtlasSprite {
+interface NeoAtlasSprite : NamedResource {
     val atlas: NeoAtlas
     val x: Int
     val y: Int

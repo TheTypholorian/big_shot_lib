@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
-import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
@@ -25,6 +24,7 @@ import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL41.*
 import org.lwjgl.system.MemoryStack
+import org.lwjgl.system.NativeResource
 import kotlin.use
 
 interface NeoGlStateManager {
@@ -81,6 +81,12 @@ interface NeoGlStateManager {
     val programPointSizeEnabled: GlStateStack<Boolean>
 
     fun rawBindTexture(target: GlTextureTarget, id: Int)
+
+    fun createCache(): Cache
+
+    interface Cache : NativeResource {
+        fun flush()
+    }
 
     class Standalone : NeoGlStateManager {
         override val buffers: EnumArrayMap<GlBufferTarget, GlStateStack<Int>> = enumArrayMapOf { target ->

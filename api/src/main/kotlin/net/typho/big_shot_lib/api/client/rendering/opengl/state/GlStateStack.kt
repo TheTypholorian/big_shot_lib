@@ -113,4 +113,15 @@ interface GlStateStack<V> {
     ), GlNamed {
         override val glId: Int = flag.glId
     }
+
+    open class DelegatedFlag(
+        flag: GlFlag,
+        delegate: (flag: GlFlag) -> ((value: Boolean?) -> Unit)
+    ) : Impl<Boolean>(
+        flag.name,
+        delegate(flag),
+        { glIsEnabled(flag.glId) }
+    ), GlNamed {
+        override val glId: Int = flag.glId
+    }
 }

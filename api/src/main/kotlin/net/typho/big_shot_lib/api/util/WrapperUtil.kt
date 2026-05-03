@@ -14,6 +14,7 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection
 import net.typho.big_shot_lib.api.client.rendering.util.NeoMultiBufferSource
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
@@ -49,6 +50,8 @@ interface WrapperUtil {
     fun wrap(source: MultiBufferSource): NeoMultiBufferSource
 
     fun unwrap(source: NeoMultiBufferSource): MultiBufferSource
+
+    fun unwrapStupid(get: (settings: NeoRenderSettings) -> NeoVertexConsumer, end: (settings: NeoRenderSettings) -> Unit): MultiBufferSource.BufferSource
 
     companion object {
         val INSTANCE by lazy { WrapperUtil::class.loadService() }

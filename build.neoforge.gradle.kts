@@ -147,10 +147,12 @@ neoForge {
 repositories {
     mavenLocal()
     maven("https://thedarkcolour.github.io/KotlinForForge/") { name = "KotlinForForge" }
+    maven("https://api.modrinth.com/maven")
 }
 
 dependencies {
     implementation(libs.kff)
+    implementation(libs.sodium)
 }
 
 tasks {

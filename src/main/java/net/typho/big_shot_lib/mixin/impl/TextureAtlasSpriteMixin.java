@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite;
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier;
 import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
@@ -95,6 +96,16 @@ public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprit
         @Override
         public float getV1() {
             return v1;
+        }
+
+        @Override
+        public NeoIdentifier getLocation() {
+            return IdentifierUtilKt.getNeo(contents.name());
+        }
+
+        @Override
+        public String toString() {
+            return getLocation().toString();
         }
     };
 

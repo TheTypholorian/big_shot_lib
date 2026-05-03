@@ -12,6 +12,8 @@ asm = "9.5"
 kff = "5.9.0"
 flk = "1.13.4+kotlin.2.2.0"
 
+sodium = "mc1.21.1-0.6.13-neoforge"
+
 [libraries]
 minecraftForAPI = { group = "com.mojang", name = "minecraft", version.ref = "minecraftForAPI" }
 mixin = { group = "org.spongepowered", name = "mixin", version.ref = "mixin" }
@@ -21,6 +23,7 @@ asm-commons = { group = "org.ow2.asm", name = "asm-commons", version.ref = "asm"
 asm-util = { group = "org.ow2.asm", name = "asm-util", version.ref = "asm" }
 flk = { group = "net.fabricmc", name = "fabric-language-kotlin", version.ref = "flk" }
 kff = { group = "thedarkcolour", name = "kotlinforforge-neoforge", version.ref = "kff" }
+sodium = { group = "maven.modrinth", name = "sodium", version.ref = "sodium" }
 
 [plugins]
 moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
