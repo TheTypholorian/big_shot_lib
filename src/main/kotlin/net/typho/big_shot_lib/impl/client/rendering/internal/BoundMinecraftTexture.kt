@@ -17,8 +17,13 @@ internal class BoundMinecraftTexture(
     @JvmField
     val format: GlTextureFormat? = null
 ) : GlBoundTexture2D.Basic(resource, target, handle) {
-    override fun resize(width: Int, height: Int, format: GlTextureFormat) {
-        if (width != this.width || height != this.height) {
+    override fun onResize(
+        width: Int,
+        height: Int,
+        format: GlTextureFormat,
+        level: Int
+    ) {
+        if (width != this.width ushr level || height != this.height ushr level) {
             throw UnsupportedOperationException("Cannot resize a Minecraft GlTexture from " + this.width + "x" + this.height + " to " + width + "x" + height)
         }
 

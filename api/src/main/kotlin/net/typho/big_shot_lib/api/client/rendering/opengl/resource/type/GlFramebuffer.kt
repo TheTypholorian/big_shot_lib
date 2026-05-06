@@ -12,7 +12,7 @@ interface GlFramebuffer : GlResource.Container {
         val MAIN = WrapperUtil.INSTANCE.wrap(Minecraft.getInstance().mainRenderTarget)
     }
 
-    val colorAttachments: KeyedDelegate.ReadOnly<Int, out GlFramebufferAttachment?>
+    val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?>
     val depthAttachment: GlFramebufferAttachment?
     val textureAttachments: KeyedDelegate.ReadOnly<Int, TextureMipmapLevel?>
         get() = KeyedDelegate.ReadOnly { colorAttachments[it] as? TextureMipmapLevel }
