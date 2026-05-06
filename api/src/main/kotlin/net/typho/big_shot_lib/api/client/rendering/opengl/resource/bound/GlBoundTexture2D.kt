@@ -78,7 +78,7 @@ interface GlBoundTexture2D : GlBoundResource<GlTexture2D> {
     ) : GlBoundTexture2D {
         override var borderColor: NeoColor
             get() = assertBound { NeoColor.RGBA(glGetTexParameteri(target.glId, GL_TEXTURE_BORDER_COLOR)) }
-            set(value) = assertBound { glTexParameteri(target.glId, GL_TEXTURE_BORDER_COLOR, value.toRGBA()) }
+            set(value) = assertBound { glTexParameterfv(target.glId, GL_TEXTURE_BORDER_COLOR, value.toFloatArray()) }
         override var compareMode: GlTextureCompareMode
             get() = assertBound { GlNamed.getEnum<GlTextureCompareMode>(glGetTexParameteri(target.glId, GL_TEXTURE_COMPARE_MODE)) }
             set(value) = assertBound { glTexParameteri(target.glId, GL_TEXTURE_COMPARE_MODE, value.glId) }
