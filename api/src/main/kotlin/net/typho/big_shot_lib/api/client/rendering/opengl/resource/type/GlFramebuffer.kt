@@ -12,8 +12,12 @@ interface GlFramebuffer : GlResource.Container {
         val MAIN = WrapperUtil.INSTANCE.wrap(Minecraft.getInstance().mainRenderTarget)
     }
 
-    val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?>
+    val colorAttachments: KeyedDelegate.ReadOnly<Int, out GlFramebufferAttachment?>
     val depthAttachment: GlFramebufferAttachment?
+    val textureAttachments: KeyedDelegate.ReadOnly<Int, TextureMipmapLevel?>
+        get() = KeyedDelegate.ReadOnly { colorAttachments[it] as? TextureMipmapLevel }
+    val renderBufferAttachments: KeyedDelegate.ReadOnly<Int, GlRenderbuffer?>
+        get() = KeyedDelegate.ReadOnly { colorAttachments[it] as? GlRenderbuffer }
 
     fun bind(viewport: AbstractRect2<Int>? = null): GlBoundFramebuffer
 }

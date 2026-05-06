@@ -14,10 +14,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundTexture2D;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite;
@@ -123,12 +120,12 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
             }
 
             @Override
-            public int getWidth() {
+            public @NotNull Integer getWidth() {
                 return width;
             }
 
             @Override
-            public int getHeight() {
+            public @NotNull Integer getHeight() {
                 return height;
             }
         };

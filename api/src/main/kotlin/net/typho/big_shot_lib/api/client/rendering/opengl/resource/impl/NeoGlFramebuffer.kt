@@ -17,7 +17,7 @@ open class NeoGlFramebuffer(glId: Int, autoFree: Boolean, context: RenderingCont
     constructor() : this(GlResourceType.FRAMEBUFFER.create(), true)
 
     private val colorAttachmentsBacking = Array<GlFramebufferAttachment?>(8) { null }
-    override val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?> = KeyedDelegate.ReadOnly { key -> colorAttachmentsBacking[key] }
+    override val colorAttachments: KeyedDelegate.ReadOnly<Int, out GlFramebufferAttachment?> = KeyedDelegate.ReadOnly { key -> colorAttachmentsBacking[key] }
     override var depthAttachment: GlFramebufferAttachment? = null
         protected set
 

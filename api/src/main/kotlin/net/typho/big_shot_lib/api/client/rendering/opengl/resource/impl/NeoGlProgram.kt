@@ -63,7 +63,7 @@ open class NeoGlProgram(
                     NeoGlStateManager.CURRENT.rawBindTexture(binding.target, texture.glId)
                     glBindSampler(unit, binding.sampler?.glId ?: 0)
                     setUniform(name) { set(unit) }
-                    setUniform("${name}Size") { set(texture.width, texture.height) }
+                    setUniform("${name}Size") { set(texture.width!!, texture.height!!) }
 
                     usedUnits.add(unit)
                 }
@@ -89,7 +89,7 @@ open class NeoGlProgram(
                     }
 
                     setUniform(name) { set(IntArray(bindings.size) { it + unit }) }
-                    setUniform("${name}Sizes") { setIntVecs(bindings.map { NeoVec2i(it.texture.width, it.texture.height) }.toTypedArray()) }
+                    setUniform("${name}Sizes") { setIntVecs(bindings.map { NeoVec2i(it.texture.width!!, it.texture.height!!) }.toTypedArray()) }
                 }
             }
 
