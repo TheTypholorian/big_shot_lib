@@ -63,7 +63,7 @@ open class NeoGlProgram(
                     NeoGlStateManager.CURRENT.rawBindTexture(binding.target, texture.glId)
                     glBindSampler(unit, binding.sampler?.glId ?: 0)
                     setUniform(name) { set(unit) }
-                    setUniform("${name}Size") { set(texture.width, texture.height) }
+                    setUniform("${name}Size") { set(texture.width!!, texture.height!!) }
 
                     usedUnits.add(unit)
                 }

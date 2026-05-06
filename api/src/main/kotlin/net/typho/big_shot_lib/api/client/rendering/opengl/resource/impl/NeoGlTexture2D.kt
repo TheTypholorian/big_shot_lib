@@ -7,6 +7,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResour
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
+import net.typho.big_shot_lib.api.util.KeyedDelegate
 import org.lwjgl.opengl.GL11.GL_TEXTURE_HEIGHT
 import org.lwjgl.opengl.GL11.GL_TEXTURE_INTERNAL_FORMAT
 import org.lwjgl.opengl.GL11.GL_TEXTURE_WIDTH
@@ -15,19 +16,16 @@ import org.lwjgl.opengl.GL11.glGetTexLevelParameteri
 open class NeoGlTexture2D(
     glId: Int,
     autoFree: Boolean,
-    format: GlTextureFormat?,
-    width: Int,
-    height: Int,
     context: RenderingContext = RenderingContext.get()
 ) : NeoGlResource(GlResourceType.TEXTURE, glId, autoFree, context), GlTexture2D {
-    constructor() : this(GlResourceType.TEXTURE.create(), true, null, -1, -1)
+    constructor() : this(GlResourceType.TEXTURE.create(), true)
 
-    override var format: GlTextureFormat? = format
-        protected set
-    override var width: Int = width
-        protected set
-    override var height: Int = height
-        protected set
+    protected val formatMap = hashMapOf<Int, GlTextureFormat>()
+    protected val widthMap = hashMapOf<Int, Int>()
+    protected val heightMap = hashMapOf<Int, Int>()
+    override val formats: KeyedDelegate.ReadOnly<Int, GlTextureFormat?> = KeyedDelegate.ReadOnly { formatMap[it] }
+    override val widths: KeyedDelegate.ReadOnly<Int, Int?> = KeyedDelegate.ReadOnly { widthMap[it] }
+    override val heights: KeyedDelegate.ReadOnly<Int, Int?> = KeyedDelegate.ReadOnly { heightMap[it] }
 
     override fun bind(target: GlTextureTarget): GlBoundTexture2D {
         checkUsable()
@@ -36,10 +34,10 @@ open class NeoGlTexture2D(
         }
 
         return object : GlBoundTexture2D.Basic(this, target, NeoGlStateManager.CURRENT.textures[target].push(glId)) {
-            override fun resize(width: Int, height: Int, format: GlTextureFormat) {
-                this@NeoGlTexture2D.format = format
-                this@NeoGlTexture2D.width = width
-                this@NeoGlTexture2D.height = height
+            override fun onResize(width: Int, height: Int, format: GlTextureFormat, level: Int) {
+                formatMap[level] = format
+                widthMap[level] = width
+                heightMap[level] = height
             }
         }
     }
@@ -53,11 +51,12 @@ open class NeoGlTexture2D(
             NeoGlStateManager.CURRENT.textures[target].push(glId).use {
                 return NeoGlTexture2D(
                     glId,
-                    false,
-                    GlTextureFormat.fromInternalId(glGetTexLevelParameteri(target.glId, 0, GL_TEXTURE_INTERNAL_FORMAT)),
-                    glGetTexLevelParameteri(target.glId, 0, GL_TEXTURE_WIDTH),
-                    glGetTexLevelParameteri(target.glId, 0, GL_TEXTURE_HEIGHT)
-                )
+                    false
+                ).also { tex ->
+                    GlTextureFormat.fromInternalId(glGetTexLevelParameteri(target.glId, 0, GL_TEXTURE_INTERNAL_FORMAT))?.let { tex.formatMap[0] = it }
+                    tex.widthMap[0] = glGetTexLevelParameteri(target.glId, 0, GL_TEXTURE_WIDTH)
+                    tex.heightMap[0] = glGetTexLevelParameteri(target.glId, 0, GL_TEXTURE_HEIGHT)
+                }
             }
         }
     }

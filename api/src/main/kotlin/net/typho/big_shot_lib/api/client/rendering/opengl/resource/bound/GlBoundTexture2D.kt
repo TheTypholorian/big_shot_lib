@@ -135,7 +135,7 @@ interface GlBoundTexture2D : GlBoundResource<GlTexture2D> {
             return "Bound($resource to $target)"
         }
 
-        protected abstract fun resize(width: Int, height: Int, format: GlTextureFormat)
+        protected abstract fun onResize(width: Int, height: Int, format: GlTextureFormat, level: Int)
 
         override fun textureDataMutable(
             width: Int,
@@ -146,7 +146,7 @@ interface GlBoundTexture2D : GlBoundResource<GlTexture2D> {
             data: NeoBuffer?
         ) {
             assertBound {
-                resize(width, height, format)
+                onResize(width, height, format, level)
                 glTexImage2D(
                     target.glId,
                     level,
@@ -169,7 +169,7 @@ interface GlBoundTexture2D : GlBoundResource<GlTexture2D> {
             fixedSampleLocations: Boolean
         ) {
             assertBound {
-                resize(width, height, format)
+                onResize(width, height, format, 0)
                 glTexImage2DMultisample(
                     target.glId,
                     samples,
@@ -188,7 +188,7 @@ interface GlBoundTexture2D : GlBoundResource<GlTexture2D> {
             levels: Int
         ) {
             assertBound {
-                resize(width, height, format)
+                onResize(width, height, format, 0)
                 glTexStorage2D(target.glId, levels, format.internalId, width, height)
             }
         }
@@ -201,7 +201,7 @@ interface GlBoundTexture2D : GlBoundResource<GlTexture2D> {
             fixedSampleLocations: Boolean
         ) {
             assertBound {
-                resize(width, height, format)
+                onResize(width, height, format, 0)
                 glTexStorage2DMultisample(target.glId, samples, format.internalId, width, height, fixedSampleLocations)
             }
         }
