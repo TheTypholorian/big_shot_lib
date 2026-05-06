@@ -59,5 +59,22 @@ open class NeoGlTexture2D(
                 }
             }
         }
+
+        @JvmStatic
+        fun ofExisting(
+            glId: Int,
+            format: GlTextureFormat?,
+            width: Int,
+            height: Int
+        ): NeoGlTexture2D {
+            return NeoGlTexture2D(
+                glId,
+                false
+            ).also { tex ->
+                format?.let { tex.formatMap[0] = it }
+                tex.widthMap[0] = width
+                tex.heightMap[0] = height
+            }
+        }
     }
 }

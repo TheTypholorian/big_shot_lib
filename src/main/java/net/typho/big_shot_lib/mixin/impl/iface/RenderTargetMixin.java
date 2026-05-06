@@ -112,7 +112,7 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
                     //? if >=1.21.5 {
                     /*return colorTexture == null ? null : ImmutableExtensionKt.getExtensionValue(colorTexture);
                     *///? } else {
-                    return colorTextureId == -1 ? null : new NeoGlTexture2D(colorTextureId, false, GlTextureFormat.RGBA8, width, height, RenderingContext.MAIN);
+                    return colorTextureId == -1 ? null : NeoGlTexture2D.ofExisting(colorTextureId, GlTextureFormat.RGBA8, width, height);
                     //? }
                 });
             }
@@ -122,7 +122,7 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
                 //? if >=1.21.5 {
                 /*return depthTexture == null ? null : ImmutableExtensionKt.getExtensionValue(depthTexture);
                  *///? } else {
-                return useDepth && depthBufferId != -1 ? new NeoGlTexture2D(depthBufferId, false, GlTextureFormat.DEPTH_COMPONENT, width, height, RenderingContext.MAIN) : null;
+                return useDepth && depthBufferId != -1 ? NeoGlTexture2D.ofExisting(depthBufferId, GlTextureFormat.DEPTH_COMPONENT, width, height) : null;
                 //? }
             }
 
