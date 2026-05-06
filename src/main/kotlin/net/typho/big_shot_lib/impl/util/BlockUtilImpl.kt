@@ -31,11 +31,11 @@ import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
 object BlockUtilImpl : BlockUtil {
     override fun isSolidRender(
         state: BlockState,
-        pos: IVec3<Int>,
+        pos: BlockPos,
         level: Level
     ): Boolean {
         //? if <1.21.2 {
-        return state.isSolidRender(level, pos.blockPos)
+        return state.isSolidRender(level, pos)
         //? } else {
         /*return state.isSolidRender
         *///? }
@@ -43,13 +43,13 @@ object BlockUtilImpl : BlockUtil {
 
     override fun getOffset(
         state: BlockState,
-        pos: IVec3<Int>,
+        pos: BlockPos,
         level: Level
     ): IVec3<Float> {
         //? if <1.21.2 {
-        return NeoVec3f(state.getOffset(level, pos.blockPos).toVector3f())
+        return NeoVec3f(state.getOffset(level, pos).toVector3f())
         //? } else {
-        /*return NeoVec3f(state.getOffset(pos.blockPos).toVector3f())
+        /*return NeoVec3f(state.getOffset(pos).toVector3f())
         *///? }
     }
 
@@ -84,31 +84,31 @@ object BlockUtilImpl : BlockUtil {
     @Suppress("DEPRECATION")
     override fun shouldRenderFace(
         level: BlockGetter,
-        pos: IVec3<Int>,
+        pos: BlockPos,
         direction: NeoDirection,
         state: BlockState
     ): Boolean {
-        val pos1 = pos + direction
+        val pos1 = pos.relative(direction.mojang)
 
         //? if >=1.21.2 {
-        /*return Block.shouldRenderFace(state, level.getBlockState(pos1.blockPos), direction.mojang)
+        /*return Block.shouldRenderFace(state, level.getBlockState(pos1), direction.mojang)
         *///? } else {
-        return Block.shouldRenderFace(state, level, pos.blockPos, direction.mojang, pos1.blockPos)
+        return Block.shouldRenderFace(state, level, pos, direction.mojang, pos1)
         //? }
     }
 
     override fun getBlockQuads(
         state: BlockState,
         level: Level,
-        pos: IVec3<Int>,
+        pos: BlockPos,
         out: (direction: NeoDirection?, quads: List<NeoBakedQuad>) -> Unit
     ) {
         //? if <1.21.5 {
         val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
-        val seed = state.getSeed(pos.blockPos)
+        val seed = state.getSeed(pos)
         //? neoforge {
-        /*val modelData = model.getModelData(level, pos.blockPos, state, level.getModelData(pos.blockPos))
+        /*val modelData = model.getModelData(level, pos, state, level.getModelData(pos))
         *///? }
 
         fun face(face: NeoDirection?, random: RandomSource) {
@@ -123,7 +123,7 @@ object BlockUtilImpl : BlockUtil {
             *///? }
             out(
                 face,
-                quads.mapTo(ArrayList(quads.size)) { WrapperUtil.INSTANCE.wrap(it) }
+                quads.mapTo(ArrayList(quads.size)) { WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex -> NeoVertexData(vertex, normal = vertex.normal ?: face?.toFloat() ?: NeoVec3f(0f, 1f, 0f)) } }
             )
         }
 
@@ -143,7 +143,8 @@ object BlockUtilImpl : BlockUtil {
                     WrapperUtil.INSTANCE.wrap(it).withVertices { index, vertex ->
                         NeoVertexData(
                             vertex,
-                            pos = vertex.pos + offset
+                            pos = vertex.pos + offset,
+                            normal = vertex.normal ?: face?.toFloat() ?: NeoVec3f(0f, 1f, 0f)
                         )
                     }
                 }
@@ -173,9 +174,9 @@ object BlockUtilImpl : BlockUtil {
         /*val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
         //? fabric {
-        /*val parts = model.collectParts(RandomSource.create(state.getSeed(pos.blockPos)))
+        /*val parts = model.collectParts(RandomSource.create(state.getSeed(pos)))
         *///? } else {
-        val parts = model.collectParts(level, pos.blockPos, state, RandomSource.create(state.getSeed(pos.blockPos)))
+        val parts = model.collectParts(level, pos, state, RandomSource.create(state.getSeed(pos)))
         //? }
 
         fun face(face: NeoDirection?) {
@@ -225,7 +226,7 @@ object BlockUtilImpl : BlockUtil {
         state: BlockState,
         fluid: FluidState,
         level: Level,
-        pos: IVec3<Int>,
+        pos: BlockPos,
         occlusionCheck: (level: BlockGetter, from: BlockPos, direction: NeoDirection, otherState: BlockState) -> Boolean,
         out: (quad: NeoBakedQuad) -> Unit
     ) {
@@ -233,7 +234,7 @@ object BlockUtilImpl : BlockUtil {
             val consumer = FluidQuadConsumer(occlusionCheck, out)
 
             Minecraft.getInstance().blockRenderer.renderLiquid(
-                pos.blockPos,
+                pos,
                 level,
                 VertexConsumerWrapper(consumer),
                 state,

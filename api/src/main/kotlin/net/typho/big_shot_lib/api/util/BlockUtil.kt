@@ -13,9 +13,9 @@ import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.vec.IVec3
 
 interface BlockUtil {
-    fun isSolidRender(state: BlockState, pos: IVec3<Int>, level: Level): Boolean
+    fun isSolidRender(state: BlockState, pos: BlockPos, level: Level): Boolean
 
-    fun getOffset(state: BlockState, pos: IVec3<Int>, level: Level): IVec3<Float>
+    fun getOffset(state: BlockState, pos: BlockPos, level: Level): IVec3<Float>
 
     fun getBlockChunkLayer(state: BlockState): BlockChunkLayer?
 
@@ -23,7 +23,7 @@ interface BlockUtil {
 
     fun shouldRenderFace(
         level: BlockGetter,
-        pos: IVec3<Int>,
+        pos: BlockPos,
         direction: NeoDirection,
         state: BlockState = level.getBlockState(BlockPos(pos.x, pos.y, pos.z))
     ): Boolean
@@ -31,7 +31,7 @@ interface BlockUtil {
     fun getBlockQuads(
         state: BlockState,
         level: Level,
-        pos: IVec3<Int>,
+        pos: BlockPos,
         out: (direction: NeoDirection?, quads: List<NeoBakedQuad>) -> Unit
     )
 
@@ -39,7 +39,7 @@ interface BlockUtil {
         state: BlockState,
         fluid: FluidState,
         level: Level,
-        pos: IVec3<Int>,
+        pos: BlockPos,
         occlusionCheck: (level: BlockGetter, from: BlockPos, direction: NeoDirection, otherState: BlockState) -> Boolean,
         out: (quad: NeoBakedQuad) -> Unit
     )
