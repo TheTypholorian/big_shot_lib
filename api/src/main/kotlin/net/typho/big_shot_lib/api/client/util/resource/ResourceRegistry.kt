@@ -4,6 +4,9 @@ import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
+import net.minecraft.ChatFormatting
+import net.minecraft.client.Minecraft
+import net.minecraft.network.chat.Component
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
@@ -44,7 +47,9 @@ abstract class ResourceRegistry<T>(
                 val id = idConverter.fileToId(entry.key)
 
                 decode(id, reader, manager).resultOrPartial { error ->
-                    BigShotApi.LOGGER.error("Error loading $id of resource registry $location: $error")
+                    val message = "Error loading $id of resource registry $location: $error"
+                    BigShotApi.LOGGER.error(message)
+                    Minecraft.getInstance().chatListener.handleSystemMessage(Component.literal(message).withStyle(ChatFormatting.RED), false)
                     oldMap.remove(id)?.let { map[id] = it }
                 }.ifPresent { map[id] = it }
             }
