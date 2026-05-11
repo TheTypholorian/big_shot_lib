@@ -8,6 +8,9 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarg
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
 import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
+import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
+import net.typho.big_shot_lib.impl.util.MutableExtension;
+import net.typho.big_shot_lib.impl.util.MutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,12 +28,16 @@ public class CompositeStateMixin implements ImmutableExtension<GlDrawState> {
     @Final
     RenderStateShard.EmptyTextureStateShard textureState;
 
+    @Shadow
+    @Final
+    private RenderStateShard.TransparencyStateShard transparencyState;
+
     @Override
     public GlDrawState getBig_shot_lib$extension_value() {
         return new GlDrawState() {
             @Override
             public @NotNull GlBlendShard getBlend() {
-                throw new NotImplementedError("Minecraft RenderType get blend");
+                return ImmutableExtensionKt.getExtensionValue(transparencyState);
             }
 
             @Override
