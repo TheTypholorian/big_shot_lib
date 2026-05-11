@@ -35,10 +35,10 @@ object BlockUtilImpl : BlockUtil {
         level: Level
     ): Boolean {
         //? if <1.21.2 {
-        return state.isSolidRender(level, pos)
-        //? } else {
-        /*return state.isSolidRender
-        *///? }
+        /*return state.isSolidRender(level, pos)
+        *///? } else {
+        return state.isSolidRender
+        //? }
     }
 
     override fun getOffset(
@@ -47,10 +47,10 @@ object BlockUtilImpl : BlockUtil {
         level: Level
     ): IVec3<Float> {
         //? if <1.21.2 {
-        return NeoVec3f(state.getOffset(level, pos).toVector3f())
-        //? } else {
-        /*return NeoVec3f(state.getOffset(pos).toVector3f())
-        *///? }
+        /*return NeoVec3f(state.getOffset(level, pos).toVector3f())
+        *///? } else {
+        return NeoVec3f(state.getOffset(pos).toVector3f())
+        //? }
     }
 
     @Suppress("DEPRECATION")
@@ -91,10 +91,10 @@ object BlockUtilImpl : BlockUtil {
         val pos1 = pos.relative(direction.mojang)
 
         //? if >=1.21.2 {
-        /*return Block.shouldRenderFace(state, level.getBlockState(pos1), direction.mojang)
-        *///? } else {
-        return Block.shouldRenderFace(state, level, pos, direction.mojang, pos1)
-        //? }
+        return Block.shouldRenderFace(state, level.getBlockState(pos1), direction.mojang)
+        //? } else {
+        /*return Block.shouldRenderFace(state, level, pos, direction.mojang, pos1)
+        *///? }
     }
 
     override fun getBlockQuads(
@@ -104,7 +104,7 @@ object BlockUtilImpl : BlockUtil {
         out: (direction: NeoDirection?, quads: List<NeoBakedQuad>) -> Unit
     ) {
         //? if <1.21.5 {
-        val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
+        /*val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
         val seed = state.getSeed(pos)
         //? neoforge {
@@ -170,14 +170,14 @@ object BlockUtilImpl : BlockUtil {
             faceWithOffset(NeoDirection.EAST, random.also { it.setSeed(seed) })
             faceWithOffset(null, random.also { it.setSeed(seed) })
         }
-        //? } else {
-        /*val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
+        *///? } else {
+        val offset = BlockUtil.INSTANCE.getOffset(state, pos, level)
         val model = Minecraft.getInstance().blockRenderer.getBlockModel(state)
         //? fabric {
-        /*val parts = model.collectParts(RandomSource.create(state.getSeed(pos)))
-        *///? } else {
-        val parts = model.collectParts(level, pos, state, RandomSource.create(state.getSeed(pos)))
-        //? }
+        val parts = model.collectParts(RandomSource.create(state.getSeed(pos)))
+        //? } else {
+        /*val parts = model.collectParts(level, pos, state, RandomSource.create(state.getSeed(pos)))
+        *///? }
 
         fun face(face: NeoDirection?) {
             val quads = parts.flatMap { it.getQuads(face?.mojang) }
@@ -219,7 +219,7 @@ object BlockUtilImpl : BlockUtil {
             faceWithOffset(NeoDirection.EAST)
             faceWithOffset(null)
         }
-        *///? }
+        //? }
     }
 
     override fun getFluidQuads(

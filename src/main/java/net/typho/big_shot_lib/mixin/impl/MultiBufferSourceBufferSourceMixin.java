@@ -99,21 +99,21 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
             }
 
             //? if <1.21 {
-            @Override
+            /*@Override
             public void _endVertex$big_shot_lib() {
                 consumers.forEach(it -> it.endVertex());
                 neoOriginal.endVertex();
             }
-            //? }
+            *///? }
         });
     }
 
     @Inject(
             //? if <1.21 {
-            method = "endBatch(Lnet/minecraft/client/renderer/RenderType;)V",
-            //? } else if <1.21.11 {
-            /*method = "endBatch(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
-            *///? } else {
+            /*method = "endBatch(Lnet/minecraft/client/renderer/RenderType;)V",
+            *///? } else if <1.21.11 {
+            method = "endBatch(Lnet/minecraft/client/renderer/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
+            //? } else {
             /*method = "endBatch(Lnet/minecraft/client/renderer/rendertype/RenderType;Lcom/mojang/blaze3d/vertex/BufferBuilder;)V",
             *///? }
             at = @At("TAIL")

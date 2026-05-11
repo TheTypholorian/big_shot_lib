@@ -52,7 +52,7 @@ public abstract class MinecraftMixin {
     }
 
     //? if <=1.20 {
-    @Inject(
+    /*@Inject(
             method = "setInitialScreen",
             at = @At("TAIL")
     )
@@ -72,8 +72,8 @@ public abstract class MinecraftMixin {
             }, new LogoRenderer(true)));
         }
     }
-    //? } else {
-    /*@Inject(
+    *///? } else {
+    @Inject(
             method = "addInitialScreens",
             at = @At(
                     value = "INVOKE",
@@ -89,5 +89,5 @@ public abstract class MinecraftMixin {
             }, new LogoRenderer(true)));
         });
     }
-    *///? }
+    //? }
 }

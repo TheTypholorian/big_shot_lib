@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.List;
 
 //? if <1.21 {
-import dev.kikugie.fletching_table.annotation.MixinIgnore;
+/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-//? }
+*///? }
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(VertexFormatElement.class)
 public interface VertexFormatElementAccessor {

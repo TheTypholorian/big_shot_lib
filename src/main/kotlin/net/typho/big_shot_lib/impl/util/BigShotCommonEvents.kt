@@ -169,10 +169,10 @@ object BigShotCommonEvents : CommonEventFactory {
                                 registry,
                                 id.mojang,
                                 //? if <1.21.2 {
-                                value(BlockBehaviour.Properties.of())
-                                //? } else {
-                                /*value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
-                                *///? }
+                                /*value(BlockBehaviour.Properties.of())
+                                *///? } else {
+                                value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
+                                //? }
                             )
                         )
                     }
@@ -196,10 +196,10 @@ object BigShotCommonEvents : CommonEventFactory {
                                 registry,
                                 id.mojang,
                                 //? if <1.21.2 {
-                                value(BlockBehaviour.Properties.of())
-                                //? } else {
-                                /*value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
-                                *///? }
+                                /*value(BlockBehaviour.Properties.of())
+                                *///? } else {
+                                value(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, id.mojang)))
+                                //? }
                             )
                         )
                     }
@@ -222,10 +222,10 @@ object BigShotCommonEvents : CommonEventFactory {
                                 registry,
                                 id.mojang,
                                 //? if <1.21.2 {
-                                value(Item.Properties())
-                                //? } else {
-                                /*value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
-                                *///? }
+                                /*value(Item.Properties())
+                                *///? } else {
+                                value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
+                                //? }
                             )
                         )
                     }
@@ -257,10 +257,10 @@ object BigShotCommonEvents : CommonEventFactory {
                                 registry,
                                 id.mojang,
                                 //? if <1.21.2 {
-                                value(Item.Properties())
-                                //? } else {
-                                /*value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
-                                *///? }
+                                /*value(Item.Properties())
+                                *///? } else {
+                                value(Item.Properties().setId(ResourceKey.create(Registries.ITEM, id.mojang)))
+                                //? }
                             )
                         )
                     }

@@ -6,10 +6,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 //? if >=1.21 {
-/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-*///? }
+//? }
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(RenderType.class)
 public interface RenderTypeAccessor {

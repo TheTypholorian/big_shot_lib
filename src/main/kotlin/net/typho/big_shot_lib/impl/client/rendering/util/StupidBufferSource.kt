@@ -7,17 +7,17 @@ import net.minecraft.client.renderer.RenderType
 *///? }
 
 //? if <1.21 {
-import com.mojang.blaze3d.vertex.BufferBuilder
-//? } else {
-/*import com.mojang.blaze3d.vertex.ByteBufferBuilder
+/*import com.mojang.blaze3d.vertex.BufferBuilder
+*///? } else {
+import com.mojang.blaze3d.vertex.ByteBufferBuilder
 import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMaps
-*///? }
+//? }
 
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.MultiBufferSource
 
 //? if <1.21 {
-data class StupidBufferSource(
+/*data class StupidBufferSource(
     @JvmField
     val get: (renderType: RenderType) -> VertexConsumer,
     @JvmField
@@ -31,8 +31,8 @@ data class StupidBufferSource(
         end(renderType)
     }
 }
-//? } else {
-/*data class StupidBufferSource(
+*///? } else {
+data class StupidBufferSource(
     @JvmField
     val get: (renderType: RenderType) -> VertexConsumer,
     @JvmField
@@ -46,4 +46,4 @@ data class StupidBufferSource(
         end(renderType)
     }
 }
-*///? }
+//? }

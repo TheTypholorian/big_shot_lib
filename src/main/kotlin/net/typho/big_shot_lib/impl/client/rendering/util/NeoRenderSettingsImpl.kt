@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.impl.client.rendering.util
 
 //? if <1.21 {
-import net.typho.big_shot_lib.mixin.impl.RenderTypeAccessor
-//? }
+/*import net.typho.big_shot_lib.mixin.impl.RenderTypeAccessor
+*///? }
 
 //? if <1.21.11 {
 import net.minecraft.client.renderer.RenderType
@@ -44,19 +44,19 @@ data class NeoRenderSettingsImpl(
     override val defaultBufferSize: Int = renderType.bufferSize()
     override val affectsCrumbling: Boolean = renderType.affectsCrumbling()
     //? if <1.21 {
-    override val sortOnUpload: Boolean = (renderType as RenderTypeAccessor).`big_shot_lib$getSortOnUpload`()
-    //? } else {
-    /*override val sortOnUpload: Boolean = renderType.sortOnUpload()
-    *///? }
+    /*override val sortOnUpload: Boolean = (renderType as RenderTypeAccessor).`big_shot_lib$getSortOnUpload`()
+    *///? } else {
+    override val sortOnUpload: Boolean = renderType.sortOnUpload()
+    //? }
     override val outlineSettings: NeoRenderSettings? = renderType.outline().getOrNull()?.neo
     override val isOutline: Boolean = renderType.isOutline
     override val location: NeoIdentifier = NeoIdentifier((renderType as RenderTypeNameAccessor).`big_shot_lib$getName`())
     override val drawState: GlDrawState
         //? if <1.21.5 {
-        get() = (renderType as RenderType.CompositeRenderType).state().getExtensionValue()
-        //? } else if <1.21.11 {
-        /*get() = (renderType as RenderType.CompositeRenderType).state.getExtensionValue()
-        *///? } else {
+        /*get() = (renderType as RenderType.CompositeRenderType).state().getExtensionValue()
+        *///? } else if <1.21.11 {
+        get() = (renderType as RenderType.CompositeRenderType).state.getExtensionValue()
+        //? } else {
         /*get() = renderType.state.getExtensionValue()
         *///? }
 
