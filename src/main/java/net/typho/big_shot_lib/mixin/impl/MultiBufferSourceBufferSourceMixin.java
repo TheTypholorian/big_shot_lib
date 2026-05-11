@@ -44,6 +44,10 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
             at = @At("RETURN")
     )
     private VertexConsumer getBuffer(VertexConsumer original, @Local(argsOnly = true) RenderType renderType) {
+        if (big_shot_lib$injections.isEmpty()) {
+            return original;
+        }
+
         NeoRenderSettings settings = WrapperUtilImplKt.getNeo(renderType);
         var consumers = big_shot_lib$injections.stream()
                 .map(source -> source.getBuffer(settings))
