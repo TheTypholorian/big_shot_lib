@@ -42,6 +42,7 @@ import net.typho.big_shot_lib.impl.neo
 *///? }
 
 import net.minecraft.core.Registry
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 import net.typho.big_shot_lib.api.util.RegisteredObject
 import net.typho.big_shot_lib.api.util.event.BlockChangedEvent
@@ -107,7 +108,7 @@ object BigShotCommonEvents : CommonEventFactory {
         BigShotCommonEntrypoint.registerContent(object : RegistrationFactory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> begin(key: NeoResourceKey<Registry<T>>): RegistrationConsumer<T, NeoIdentifier> {
-                val registry = InternalUtil.INSTANCE.getRegistry(key)!!
+                val registry = InternalUtil.INSTANCE.getRegistry(key) ?: throw NullPointerException("No registry $key")
 
                 return object : RegistrationConsumer<T, NeoIdentifier> {
                     override fun <V : T> register(

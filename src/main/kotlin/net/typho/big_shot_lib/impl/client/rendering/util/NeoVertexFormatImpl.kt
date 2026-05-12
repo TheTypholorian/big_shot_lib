@@ -40,14 +40,10 @@ data class NeoVertexFormatImpl(
     }
 
     override fun initVertexArrayState() {
-        //? if <1.21.5 {
-        /*inner.setupBufferState()
-        *///? } else {
         elements.forEachIndexed { index, element ->
-            glEnableVertexAttribArray(index);
+            glEnableVertexAttribArray(index)
             element.vertexAttribPointer(index, getElementOffset(element).toLong(), vertexSizeBytes)
         }
-        //? }
     }
 
     override fun toString() = inner.toString()
@@ -72,7 +68,7 @@ data class NeoVertexFormatImpl(
             get() = when (inner.usage) {
                 VertexFormatElement.Usage.POSITION -> false
                 VertexFormatElement.Usage.NORMAL -> true
-                VertexFormatElement.Usage.COLOR -> false
+                VertexFormatElement.Usage.COLOR -> true
                 VertexFormatElement.Usage.UV -> if (inner.type == VertexFormatElement.Type.FLOAT) false else null
                 VertexFormatElement.Usage.GENERIC -> false
                 //? if <1.21 {

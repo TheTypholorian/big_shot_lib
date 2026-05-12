@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
@@ -199,7 +200,7 @@ object InternalUtilImpl : InternalUtil {
         //? if <1.21.2 {
         /*return BuiltInRegistries.REGISTRY.get(key.location.mojang) as? Registry<T>
         *///? } else {
-        return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
+        return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it.value() as? Registry<T> }.orElse(null)
         //? }
     }
 

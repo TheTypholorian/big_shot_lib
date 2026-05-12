@@ -8,6 +8,7 @@ import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.typho.big_shot_lib.api.math.NeoDirection;
@@ -20,7 +21,8 @@ import org.spongepowered.asm.mixin.injection.At;
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(LiquidBlockRenderer.class)
 public class LiquidBlockRendererMixin {
-    @WrapOperation(
+    //? if <1.21.5 {
+    /*@WrapOperation(
             method = "tesselate",
             at = @At(
                     value = "INVOKE",
@@ -47,4 +49,33 @@ public class LiquidBlockRendererMixin {
 
         return original.call(blockGetter, blockPos, direction, f, blockState);
     }
+    *///? } else {
+    @WrapOperation(
+            method = "tesselate",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;isFaceOccludedByNeighbor(Lnet/minecraft/core/Direction;FLnet/minecraft/world/level/block/state/BlockState;)Z"
+            )
+    )
+    private boolean isFaceOccludedByNeighbor(
+            Direction direction,
+            float v,
+            BlockState blockState,
+            Operation<Boolean> original,
+            @Local(argsOnly = true) VertexConsumer consumer,
+            @Local(argsOnly = true) BlockAndTintGetter blockGetter,
+            @Local(argsOnly = true) BlockPos blockPos
+    ) {
+        if (consumer instanceof VertexConsumerWrapper wrapper && wrapper.inner instanceof FluidQuadConsumer fluid) {
+            NeoDirection direction1 = NeoDirectionKt.getNeo(direction);
+            fluid.direction = direction1;
+
+            if (fluid.occlusionCheck.invoke(blockGetter, blockPos, direction1, blockState)) {
+                return true;
+            }
+        }
+
+        return original.call(direction, v, blockState);
+    }
+    //? }
 }
