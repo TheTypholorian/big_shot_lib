@@ -55,7 +55,7 @@ data class NeoRenderSettingsImpl(
         //? if <1.21.5 {
         /*get() = (renderType as RenderType.CompositeRenderType).state().getExtensionValue()
         *///? } else if <1.21.11 {
-        get() = (renderType as RenderType.CompositeRenderType).state.getExtensionValue()
+        get() = (renderType as RenderType.CompositeRenderType).getExtensionValue()
         //? } else {
         /*get() = renderType.state.getExtensionValue()
         *///? }

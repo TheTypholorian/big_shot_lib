@@ -11,6 +11,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResour
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext;
+import net.typho.big_shot_lib.api.util.KeyedDelegate;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +50,7 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
             }
 
             @Override
-            public @Nullable GlTextureFormat getFormat() {
+            public @NotNull GlTextureFormat getFormat() {
                 return switch (GlTextureMixin.this.getFormat()) {
                     case RGBA8 -> GlTextureFormat.RGBA8;
                     case RED8 -> GlTextureFormat.R8;
@@ -85,16 +86,6 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
             }
 
             @Override
-            public int getWidth() {
-                return GlTextureMixin.this.getWidth(0);
-            }
-
-            @Override
-            public int getHeight() {
-                return GlTextureMixin.this.getHeight(0);
-            }
-
-            @Override
             public @NotNull GlBoundTexture2D bind(@NotNull GlTextureTarget target) {
                 return new BoundMinecraftTexture(
                         this,
@@ -104,6 +95,21 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
                         getHeight(),
                         getFormat()
                 );
+            }
+
+            @Override
+            public KeyedDelegate.@NotNull ReadOnly<@NotNull Integer, @Nullable GlTextureFormat> getFormats() {
+                return level -> getFormat();
+            }
+
+            @Override
+            public KeyedDelegate.@NotNull ReadOnly<@NotNull Integer, @Nullable Integer> getWidths() {
+                return GlTextureMixin.this::getWidth;
+            }
+
+            @Override
+            public KeyedDelegate.@NotNull ReadOnly<@NotNull Integer, @Nullable Integer> getHeights() {
+                return GlTextureMixin.this::getHeight;
             }
         };
     }

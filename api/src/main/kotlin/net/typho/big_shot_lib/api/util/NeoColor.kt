@@ -72,6 +72,20 @@ interface NeoColor {
             CODEC_3I,
             CODEC_PACKED
         )
+
+        fun argb(argb: Int) = RGBA(
+            rgba.byteAt(2).toInt(),
+            rgba.byteAt(1).toInt(),
+            rgba.byteAt(0).toInt(),
+            rgba.byteAt(3).toInt()
+        )
+
+        fun argbF(argb: Int) = RGBAF(
+            rgba.byteAt(2).toInt() / 255f,
+            rgba.byteAt(1).toInt() / 255f,
+            rgba.byteAt(0).toInt() / 255f,
+            rgba.byteAt(3).toInt() / 255f
+        )
     }
 
     val redF: Float

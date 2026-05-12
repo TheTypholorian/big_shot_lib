@@ -43,7 +43,7 @@ sourceSets {
                 exclude("net/typho/big_shot_lib/mixin/impl/VertexFormatElementAccessor.java")
             }
 
-            if (sc.current.parsed > "1.21.1") {
+            if (sc.current.parsed > "1.21") {
                 exclude("net/typho/big_shot_lib/mixin/impl/iface/ShaderInstanceMixin.java")
             }
 
@@ -54,6 +54,11 @@ sourceSets {
 
             if (sc.current.parsed >= "1.21.11") {
                 exclude("net/typho/big_shot_lib/mixin/impl/iface/CompositeStateMixin.java")
+            }
+
+            if (sc.current.parsed >= "1.21.5") {
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/TransparencyStateShardMixin.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/RenderStateShardMixin.java")
             }
         }
     }

@@ -15,4 +15,6 @@ accessible method net/minecraft/client/renderer/RenderStateShard$MultiTextureSta
 accessible class net/minecraft/client/renderer/RenderStateShard$TextureStateShard
 accessible method net/minecraft/client/renderer/RenderStateShard$TextureStateShard cutoutTexture ()Ljava/util/Optional;
 
+accessible field net/minecraft/client/renderer/RenderType$CompositeState textureState Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
+
 accessible field net/minecraft/client/renderer/LevelRenderer level Lnet/minecraft/client/multiplayer/ClientLevel;

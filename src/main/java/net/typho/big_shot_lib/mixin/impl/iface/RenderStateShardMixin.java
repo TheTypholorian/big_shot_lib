@@ -9,6 +9,11 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+//? if >=1.21.5 {
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
+
+@MixinIgnore
+//? }
 @Mixin(RenderStateShard.class)
 public class RenderStateShardMixin {
     @Shadow

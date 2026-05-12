@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.pipeline.RenderTarget
+import com.mojang.blaze3d.platform.DestFactor
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.block.model.BakedQuad
@@ -37,13 +38,55 @@ import kotlin.jvm.optionals.getOrNull
 
 //? if <1.21.5 {
 /*import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderType
-*///? }
+*///? } else {
+import com.mojang.blaze3d.platform.SourceFactor
+//? }
 
 //? if <1.21.11 {
 import net.minecraft.client.renderer.RenderType
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor
+
 //? } else {
 /*import net.minecraft.client.renderer.rendertype.RenderType
 *///? }
+
+//? if >=1.21.5 {
+val SourceFactor.neo: GlBlendingFactor
+    get() = when (this) {
+        SourceFactor.CONSTANT_ALPHA -> GlBlendingFactor.CONSTANT_ALPHA
+        SourceFactor.CONSTANT_COLOR -> GlBlendingFactor.CONSTANT_COLOR
+        SourceFactor.DST_ALPHA -> GlBlendingFactor.DST_ALPHA
+        SourceFactor.DST_COLOR -> GlBlendingFactor.DST_COLOR
+        SourceFactor.ONE -> GlBlendingFactor.ONE
+        SourceFactor.ONE_MINUS_CONSTANT_ALPHA -> GlBlendingFactor.ONE_MINUS_CONSTANT_ALPHA
+        SourceFactor.ONE_MINUS_CONSTANT_COLOR -> GlBlendingFactor.ONE_MINUS_CONSTANT_COLOR
+        SourceFactor.ONE_MINUS_DST_ALPHA -> GlBlendingFactor.ONE_MINUS_DST_ALPHA
+        SourceFactor.ONE_MINUS_DST_COLOR -> GlBlendingFactor.ONE_MINUS_DST_COLOR
+        SourceFactor.ONE_MINUS_SRC_ALPHA -> GlBlendingFactor.ONE_MINUS_SRC_ALPHA
+        SourceFactor.ONE_MINUS_SRC_COLOR -> GlBlendingFactor.ONE_MINUS_SRC_COLOR
+        SourceFactor.SRC_ALPHA -> GlBlendingFactor.SRC_ALPHA
+        SourceFactor.SRC_ALPHA_SATURATE -> GlBlendingFactor.SRC_ALPHA_SATURATE
+        SourceFactor.SRC_COLOR -> GlBlendingFactor.SRC_COLOR
+        SourceFactor.ZERO -> GlBlendingFactor.ZERO
+    }
+val DestFactor.neo: GlBlendingFactor
+    get() = when (this) {
+        DestFactor.CONSTANT_ALPHA -> GlBlendingFactor.CONSTANT_ALPHA
+        DestFactor.CONSTANT_COLOR -> GlBlendingFactor.CONSTANT_COLOR
+        DestFactor.DST_ALPHA -> GlBlendingFactor.DST_ALPHA
+        DestFactor.DST_COLOR -> GlBlendingFactor.DST_COLOR
+        DestFactor.ONE -> GlBlendingFactor.ONE
+        DestFactor.ONE_MINUS_CONSTANT_ALPHA -> GlBlendingFactor.ONE_MINUS_CONSTANT_ALPHA
+        DestFactor.ONE_MINUS_CONSTANT_COLOR -> GlBlendingFactor.ONE_MINUS_CONSTANT_COLOR
+        DestFactor.ONE_MINUS_DST_ALPHA -> GlBlendingFactor.ONE_MINUS_DST_ALPHA
+        DestFactor.ONE_MINUS_DST_COLOR -> GlBlendingFactor.ONE_MINUS_DST_COLOR
+        DestFactor.ONE_MINUS_SRC_ALPHA -> GlBlendingFactor.ONE_MINUS_SRC_ALPHA
+        DestFactor.ONE_MINUS_SRC_COLOR -> GlBlendingFactor.ONE_MINUS_SRC_COLOR
+        DestFactor.SRC_ALPHA -> GlBlendingFactor.SRC_ALPHA
+        DestFactor.SRC_COLOR -> GlBlendingFactor.SRC_COLOR
+        DestFactor.ZERO -> GlBlendingFactor.ZERO
+    }
+//? }
 
 val RenderType.neo: NeoRenderSettings
     //? if <1.21.5 {
