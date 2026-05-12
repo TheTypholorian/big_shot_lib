@@ -22,7 +22,7 @@ import net.typho.big_shot_lib.api.BigShotApi
 class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
         BigShotClientEvents.init()
-        NeoForge.EVENT_BUS.register(BigShotClientEvents.ScrewYouNeoforge())
+        eventBus.register(BigShotClientEvents.ScrewYouNeoforge())
     }
 }
 *///? }

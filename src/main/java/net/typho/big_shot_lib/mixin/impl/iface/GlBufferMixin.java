@@ -1,11 +1,12 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 //? if <1.21.6 {
-import com.mojang.blaze3d.buffers.BufferType;
+/*import com.mojang.blaze3d.buffers.BufferType;
 import com.mojang.blaze3d.buffers.BufferUsage;
-//? } else {
-/*import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed;
-*///? }
+*///? } else {
+import com.mojang.blaze3d.opengl.GlConst;
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed;
+//? }
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.opengl.GlBuffer;
@@ -31,14 +32,14 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(GlBuffer.class)
 public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtension<net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer> {
     //? if <1.21.6 {
-    public GlBufferMixin(BufferType bufferType, BufferUsage bufferUsage, int i) {
+    /*public GlBufferMixin(BufferType bufferType, BufferUsage bufferUsage, int i) {
         super(bufferType, bufferUsage, i);
     }
-    //? } else {
-    /*public GlBufferMixin(int p_374082_, int p_418241_) {
+    *///? } else {
+    public GlBufferMixin(int p_374082_, int p_418241_) {
         super(p_374082_, p_418241_);
     }
-    *///? }
+    //? }
 
     @Shadow
     public abstract boolean isClosed();
@@ -86,7 +87,7 @@ public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtens
                         NeoGlStateManager.Companion.getCURRENT().getBuffers().get(target).push(handle),
                         size(),
                         //? if <1.21.6 {
-                        switch (usage()) {
+                        /*switch (usage()) {
                             case DYNAMIC_WRITE -> GlBufferUsage.DYNAMIC_DRAW;
                             case STATIC_WRITE -> GlBufferUsage.STATIC_DRAW;
                             case STREAM_WRITE -> GlBufferUsage.STREAM_DRAW;
@@ -97,9 +98,9 @@ public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtens
                             case STATIC_COPY -> GlBufferUsage.STATIC_COPY;
                             case STREAM_COPY -> GlBufferUsage.STREAM_COPY;
                         }
-                        //? } else {
-                        /*GlNamed.getEnum(GlBufferUsage.class, usage())
-                        *///? }
+                        *///? } else {
+                        GlNamed.getEnum(GlBufferUsage.class, GlConst.bufferUsageToGlEnum(usage()))
+                        //? }
                 );
             }
         };

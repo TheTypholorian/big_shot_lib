@@ -7,10 +7,10 @@ plugins {
     //id("me.modmuss50.mod-publish-plugin") version "0.8.+" apply false
 }
 
-stonecutter active "mc1_21_5_fabric"
+stonecutter active "mc1_21_6_fabric"
 stonecutter parameters {
     constants.match(node.metadata.project.substringAfterLast('_'), "fabric", "neoforge")
-    filters.include("**/*.fsh", "**/*.vsh")
+    filters.include("**/*.fsh", "**/*.vsh", "**/*.glsl")
     filters.exclude("**/*.accesswidener")
 
     replacements.string(current.parsed >= "1.21.5") {

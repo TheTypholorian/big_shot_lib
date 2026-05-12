@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -36,12 +37,14 @@ public abstract class MinecraftMixin {
     @Nullable
     public ClientLevel level;
 
-    @Shadow
+    //? if <=1.20 {
+    /*@Shadow
     public abstract void setScreen(@Nullable Screen screen);
 
     @Shadow
     @Nullable
     public Screen screen;
+    *///? }
 
     @Inject(
             method = "setLevel",
@@ -72,6 +75,23 @@ public abstract class MinecraftMixin {
             }, new LogoRenderer(true)));
         }
     }
+    *///? } else if <1.21.6 {
+    /*@Inject(
+            method = "addInitialScreens",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/Minecraft;multiplayerBan()Lcom/mojang/authlib/minecraft/BanDetails;"
+            )
+    )
+    private void addInitialScreens(List<Function<Runnable, Screen>> list, CallbackInfo ci) {
+        BigShotClientEntrypoint.Companion.displayInitialScreens((text, onClose) -> {
+            list.add(onClose1 -> new InitialScreen(text, () -> {
+                onClose.invoke();
+                onClose1.run();
+                return Unit.INSTANCE;
+            }, new LogoRenderer(true)));
+        });
+    }
     *///? } else {
     @Inject(
             method = "addInitialScreens",
@@ -80,7 +100,7 @@ public abstract class MinecraftMixin {
                     target = "Lnet/minecraft/client/Minecraft;multiplayerBan()Lcom/mojang/authlib/minecraft/BanDetails;"
             )
     )
-    private void addInitialScreens(List<Function<Runnable, Screen>> list, CallbackInfo ci) {
+    private void addInitialScreens(List<Function<Runnable, Screen>> list, CallbackInfoReturnable<Boolean> cir) {
         BigShotClientEntrypoint.Companion.displayInitialScreens((text, onClose) -> {
             list.add(onClose1 -> new InitialScreen(text, () -> {
                 onClose.invoke();

@@ -16,7 +16,7 @@ import java.util.*
 abstract class ResourceRegistry<T>(
     override val location: NeoIdentifier,
     @JvmField
-    val idConverter: NeoFileToIdConverter,
+    vararg val paths: NeoFileToIdConverter,
 ) : NeoResourceManagerReloadListener {
     companion object {
         @JvmField
@@ -42,16 +42,18 @@ abstract class ResourceRegistry<T>(
         val oldMap = map
         map = HashBiMap.create()
 
-        for (entry in idConverter.listMatchingResources(manager)) {
-            entry.value.openAsReader().use { reader ->
-                val id = idConverter.fileToId(entry.key)
+        for (path in paths) {
+            for (entry in path.listMatchingResources(manager)) {
+                entry.value.openAsReader().use { reader ->
+                    val id = path.fileToId(entry.key)
 
-                decode(id, reader, manager).resultOrPartial { error ->
-                    val message = "Error loading $id of resource registry $location: $error"
-                    BigShotApi.LOGGER.error(message)
-                    Minecraft.getInstance().chatListener.handleSystemMessage(Component.literal(message).withStyle(ChatFormatting.RED), false)
-                    oldMap.remove(id)?.let { map[id] = it }
-                }.ifPresent { map[id] = it }
+                    decode(id, reader, manager).resultOrPartial { error ->
+                        val message = "Error loading $id of resource registry $location: $error"
+                        BigShotApi.LOGGER.error(message)
+                        Minecraft.getInstance().chatListener.handleSystemMessage(Component.literal(message).withStyle(ChatFormatting.RED), false)
+                        oldMap.remove(id)?.let { map[id] = it }
+                    }.ifPresent { map[id] = it }
+                }
             }
         }
 

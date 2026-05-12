@@ -9,6 +9,7 @@ import net.typho.big_shot_lib.impl.mojang
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
+import net.minecraft.client.Minecraft
 //? } else {
 /*import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 *///? }
@@ -229,8 +230,15 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 })
             }
         }
-        //? } else {
-        /*NeoForge.EVENT_BUS.addListener { event: AddClientReloadListenersEvent ->
+        //? }
+        NeoForge.EVENT_BUS.addListener { event: ClientTickEvent.Pre -> clientTickStart.forEach { it.run() } }
+        NeoForge.EVENT_BUS.addListener { event: ClientTickEvent.Post -> clientTickEnd.forEach { it.run() } }
+    }
+
+    class ScrewYouNeoforge {
+        //? if >=1.21.4 {
+        @SubscribeEvent
+        fun addReloadListeners(event: AddClientReloadListenersEvent) {
             listenersLoaded = true
             for (listener in reloadListeners) {
                 event.addListener(listener.location.mojang, object : ResourceManagerReloadListener {
@@ -240,19 +248,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 })
             }
         }
-        *///? }
-    }
-
-    class ScrewYouNeoforge {
-        @SubscribeEvent
-        fun preClientTick(event: ClientTickEvent.Pre) {
-            clientTickStart.forEach { it.run() }
-        }
-
-        @SubscribeEvent
-        fun postClientTick(event: ClientTickEvent.Post) {
-            clientTickEnd.forEach { it.run() }
-        }
+        //? }
     }
     *///? }
 }

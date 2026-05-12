@@ -30,14 +30,21 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), N
     @JvmField
     val includes = object : ResourceRegistry<String>(
         BigShotApi.id("shaders/include"),
-        NeoFileToIdConverter("neo/shaders/include", "glsl")
+        NeoFileToIdConverter("neo/shaders/include", "glsl"),
+        NeoFileToIdConverter("shaders/include", "glsl")
     ) {
         override fun decode(
             location: NeoIdentifier,
             reader: BufferedReader,
             manager: NeoResourceManager
         ): DataResult<String> {
-            return DataResult.success(reader.readText())
+            var text = reader.readText().trim()
+
+            if (text.startsWith("#version")) {
+                text = text.substring(text.indexOf('\n') + 1)
+            }
+
+            return DataResult.success(text)
         }
     }
 
