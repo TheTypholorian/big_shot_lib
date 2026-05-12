@@ -15,7 +15,16 @@ import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import net.typho.big_shot_lib.api.math.vec.NeoVec2i
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.lwjgl.opengl.GL20.*
+import org.lwjgl.opengl.GL30.glBindBufferBase
+import org.lwjgl.opengl.GL30.glBindBufferRange
+import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
+import org.lwjgl.opengl.GL31.glGetUniformBlockIndex
+import org.lwjgl.opengl.GL31.glUniformBlockBinding
 import org.lwjgl.opengl.GL33.glBindSampler
+import org.lwjgl.opengl.GL43.GL_SHADER_STORAGE_BLOCK
+import org.lwjgl.opengl.GL43.GL_SHADER_STORAGE_BUFFER
+import org.lwjgl.opengl.GL43.glGetProgramResourceIndex
+import org.lwjgl.opengl.GL43.glShaderStorageBlockBinding
 import kotlin.collections.map
 
 open class NeoGlProgram(
@@ -26,8 +35,34 @@ open class NeoGlProgram(
     context: RenderingContext = RenderingContext.get()
 ) : NeoGlResource(GlResourceType.PROGRAM, glId, autoFree, context), GlProgram {
     private val uniforms = hashMapOf<String, GlUniform?>()
+    private val uniformBuffers = hashMapOf<String, Int?>()
+    private val shaderStorageBuffers = hashMapOf<String, Int?>()
 
     constructor(location: NeoIdentifier, format: NeoVertexFormat) : this(location, format, GlResourceType.PROGRAM.create(), true)
+
+    protected fun getUniformBuffer(name: String): Int? = uniformBuffers.computeIfAbsent(name) {
+        val index = glGetUniformBlockIndex(glId, name)
+
+        if (index == -1) {
+            return@computeIfAbsent null
+        } else {
+            val binding = uniformBuffers.count { it.value != null }
+            glUniformBlockBinding(glId, index, binding)
+            return@computeIfAbsent binding
+        }
+    }
+
+    protected fun getShaderStorageBuffer(name: String): Int? = shaderStorageBuffers.computeIfAbsent(name) {
+        val index = glGetProgramResourceIndex(glId, GL_SHADER_STORAGE_BLOCK, name)
+
+        if (index == -1) {
+            return@computeIfAbsent null
+        } else {
+            val binding = uniformBuffers.count { it.value != null }
+            glShaderStorageBlockBinding(glId, index, binding)
+            return@computeIfAbsent binding
+        }
+    }
 
     override fun use(): GlBoundProgram {
         checkUsable()
@@ -49,6 +84,32 @@ open class NeoGlProgram(
                         return@computeIfAbsent if (location == -1) null else GlUniform.Basic(location)
                     }?.let(value)
                 }
+            }
+
+            override fun setUniformBuffer(name: String, glId: Int) {
+                glBindBufferBase(GL_UNIFORM_BUFFER, getUniformBuffer(name) ?: throw NullPointerException("No uniform buffer $name"), glId)
+            }
+
+            override fun setUniformBufferRange(
+                name: String,
+                glId: Int,
+                offset: Long,
+                length: Long
+            ) {
+                glBindBufferRange(GL_UNIFORM_BUFFER, getUniformBuffer(name) ?: throw NullPointerException("No uniform buffer $name"), glId, offset, length)
+            }
+
+            override fun setShaderStorageBuffer(name: String, glId: Int) {
+                glBindBufferBase(GL_SHADER_STORAGE_BUFFER, getShaderStorageBuffer(name) ?: throw NullPointerException("No shader storage buffer $name"), glId)
+            }
+
+            override fun setShaderStorageBufferRange(
+                name: String,
+                glId: Int,
+                offset: Long,
+                length: Long
+            ) {
+                glBindBufferRange(GL_SHADER_STORAGE_BUFFER, getShaderStorageBuffer(name) ?: throw NullPointerException("No shader storage buffer $name"), glId, offset, length)
             }
 
             override fun setTexture(

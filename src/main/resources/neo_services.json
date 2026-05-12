@@ -26,5 +26,8 @@
   ],
   "net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings$Builtins": [
     "net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsBuiltinsImpl"
+  ],
+  "net.typho.big_shot_lib.api.client.rendering.util.FogUtil": [
+    "net.typho.big_shot_lib.impl.client.rendering.util.FogUtilImpl"
   ]
 }

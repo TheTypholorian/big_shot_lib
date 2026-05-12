@@ -98,17 +98,17 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
             }
 
             @Override
-            public KeyedDelegate.@NotNull ReadOnly<@NotNull Integer, @Nullable GlTextureFormat> getFormats() {
+            public KeyedDelegate.ReadOnly<Integer, GlTextureFormat> getFormats() {
                 return level -> getFormat();
             }
 
             @Override
-            public KeyedDelegate.@NotNull ReadOnly<@NotNull Integer, @Nullable Integer> getWidths() {
+            public KeyedDelegate.ReadOnly<Integer, Integer> getWidths() {
                 return GlTextureMixin.this::getWidth;
             }
 
             @Override
-            public KeyedDelegate.@NotNull ReadOnly<@NotNull Integer, @Nullable Integer> getHeights() {
+            public KeyedDelegate.ReadOnly<Integer, Integer> getHeights() {
                 return GlTextureMixin.this::getHeight;
             }
         };
