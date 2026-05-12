@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.NotImplementedError;
 import net.minecraft.client.renderer.RenderType;
@@ -17,7 +16,9 @@ import org.spongepowered.asm.mixin.Shadow;
 
 //? if <1.21.5 {
 /*import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
-*///? }
+*///? } else {
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+//? }
 
 //? if >=1.21.11 {
 /*import dev.kikugie.fletching_table.annotation.MixinIgnore;

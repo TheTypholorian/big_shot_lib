@@ -53,7 +53,7 @@ sourceSets {
             }
 
             if (sc.current.parsed >= "1.21.11") {
-                exclude("net/typho/big_shot_lib/mixin/impl/iface/CompositeStateMixin.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/CompositeRenderTypeMixin.java")
             }
 
             if (sc.current.parsed >= "1.21.5") {
