@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.impl.util
 
 import com.mojang.blaze3d.pipeline.RenderTarget
-import com.mojang.blaze3d.platform.DestFactor
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.block.model.BakedQuad
@@ -12,8 +11,9 @@ import net.minecraft.server.packs.PackResources
 import net.minecraft.server.packs.resources.Resource
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.tags.TagKey
-import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection
 import net.typho.big_shot_lib.api.client.rendering.util.NeoMultiBufferSource
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
@@ -40,11 +40,11 @@ import kotlin.jvm.optionals.getOrNull
 /*import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderType
 *///? } else {
 import com.mojang.blaze3d.platform.SourceFactor
+import com.mojang.blaze3d.platform.DestFactor
 //? }
 
 //? if <1.21.11 {
 import net.minecraft.client.renderer.RenderType
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor
 
 //? } else {
 /*import net.minecraft.client.renderer.rendertype.RenderType

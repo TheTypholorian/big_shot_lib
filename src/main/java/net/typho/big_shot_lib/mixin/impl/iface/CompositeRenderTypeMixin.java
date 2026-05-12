@@ -43,7 +43,7 @@ public class CompositeRenderTypeMixin implements ImmutableExtension<GlDrawState>
             @Override
             public @NotNull GlBlendShard getBlend() {
                 //? if <1.21.5 {
-                /*return ImmutableExtensionKt.getExtensionValue(transparencyState);
+                /*return ImmutableExtensionKt.getExtensionValue(state.transparencyState);
                 *///? } else {
                 return renderPipeline.getBlendFunction().<GlBlendShard>map(
                         function ->

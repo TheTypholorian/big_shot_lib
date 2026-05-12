@@ -53,9 +53,9 @@ data class NeoRenderSettingsImpl(
     override val location: NeoIdentifier = NeoIdentifier((renderType as RenderTypeNameAccessor).`big_shot_lib$getName`())
     override val drawState: GlDrawState
         //? if <1.21.5 {
-        /*get() = (renderType as RenderType.CompositeRenderType).state().getExtensionValue()
+        /*get() = renderType.getExtensionValue()
         *///? } else if <1.21.11 {
-        get() = (renderType as RenderType.CompositeRenderType).getExtensionValue()
+        get() = renderType.getExtensionValue()
         //? } else {
         /*get() = renderType.state.getExtensionValue()
         *///? }
