@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering
 import com.google.gson.JsonParser
 import com.mojang.serialization.DataResult
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader.PREPROCESSORS_REGISTRY
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
@@ -21,67 +22,69 @@ import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import java.io.BufferedReader
 
-object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), NeoFileToIdConverter.json("neo/shaders")), BigShotClientEntrypoint, BigShotCommonEntrypoint {
+@JvmField
+val shaderIncludes = object : ResourceRegistry<String>(
+    BigShotApi.id("shaders/include"),
+    mutableListOf(),
+    mutableListOf(
+        NeoFileToIdConverter("neo/shaders/include", "glsl"),
+        NeoFileToIdConverter("shaders/include", "glsl")
+    )
+) {
+    override fun decode(
+        location: NeoIdentifier,
+        reader: BufferedReader,
+        manager: NeoResourceManager
+    ): DataResult<String> {
+        var text = reader.readText().trim()
+
+        if (text.startsWith("#version")) {
+            text = text.substring(text.indexOf('\n') + 1)
+        }
+
+        return DataResult.success(text)
+    }
+}
+
+@JvmField
+val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> { shaderType ->
+    object : ResourceRegistry<GlShader>(
+        BigShotApi.id("shaders/${shaderType.name.lowercase()}"),
+        mutableListOf(),
+        mutableListOf(NeoFileToIdConverter.shader("neo/shaders", shaderType))
+    ) {
+        override fun onResourceManagerReload(manager: NeoResourceManager) {
+            GlQueue.INSTANCE.runOrQueue {
+                super.onResourceManagerReload(manager)
+            }
+        }
+
+        override fun decode(
+            location: NeoIdentifier,
+            reader: BufferedReader,
+            manager: NeoResourceManager
+        ): DataResult<GlShader> {
+            val shader = NeoGlShader(location, shaderType)
+            shader.source = PREPROCESSORS_REGISTRY!!.values().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
+
+            if (shader.compile()) {
+                return DataResult.success(shader)
+            } else {
+                val message = "Error compiling shader:\n${shader.getInfoLog()}"
+                shader.free()
+                return DataResult.error { message }
+            }
+        }
+    }
+}
+
+object NeoShaderLoader : ResourceRegistry<GlProgram>(BigShotApi.id("shaders"), mutableListOf<ResourceRegistry<*>>(shaderIncludes).also { it.addAll(shaderRegistries.values) }, mutableListOf(NeoFileToIdConverter.json("neo/shaders"))), BigShotClientEntrypoint, BigShotCommonEntrypoint {
     @JvmField
     val PREPROCESSORS_REGISTRY_KEY = NeoResourceKey.registry<ShaderPreprocessor>(BigShotApi.id("shader_preprocessors"))
     var PREPROCESSORS_REGISTRY: NeoRegistry<ShaderPreprocessor>? = null
         private set
 
-    @JvmField
-    val includes = object : ResourceRegistry<String>(
-        BigShotApi.id("shaders/include"),
-        NeoFileToIdConverter("neo/shaders/include", "glsl"),
-        NeoFileToIdConverter("shaders/include", "glsl")
-    ) {
-        override fun decode(
-            location: NeoIdentifier,
-            reader: BufferedReader,
-            manager: NeoResourceManager
-        ): DataResult<String> {
-            var text = reader.readText().trim()
-
-            if (text.startsWith("#version")) {
-                text = text.substring(text.indexOf('\n') + 1)
-            }
-
-            return DataResult.success(text)
-        }
-    }
-
-    @JvmField
-    val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> { shaderType ->
-        object : ResourceRegistry<GlShader>(
-            BigShotApi.id("shaders/${shaderType.name.lowercase()}"),
-            NeoFileToIdConverter.shader("neo/shaders", shaderType)
-        ) {
-            override fun onResourceManagerReload(manager: NeoResourceManager) {
-                GlQueue.INSTANCE.runOrQueue {
-                    super.onResourceManagerReload(manager)
-                }
-            }
-
-            override fun decode(
-                location: NeoIdentifier,
-                reader: BufferedReader,
-                manager: NeoResourceManager
-            ): DataResult<GlShader> {
-                val shader = NeoGlShader(location, shaderType)
-                shader.source = PREPROCESSORS_REGISTRY!!.values().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
-
-                if (shader.compile()) {
-                    return DataResult.success(shader)
-                } else {
-                    val message = "Error compiling shader:\n${shader.getInfoLog()}"
-                    shader.free()
-                    return DataResult.error { message }
-                }
-            }
-        }
-    }
-
     override fun registerReloadListeners(factory: ResourceListenerFactory) {
-        factory.register(includes)
-        shaderRegistries.forEach { (type, registry) -> factory.register(registry) }
         factory.register(this)
     }
 

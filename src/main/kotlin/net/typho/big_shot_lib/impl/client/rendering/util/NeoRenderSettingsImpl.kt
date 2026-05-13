@@ -50,7 +50,7 @@ data class NeoRenderSettingsImpl(
     //? }
     override val outlineSettings: NeoRenderSettings? = renderType.outline().getOrNull()?.neo
     override val isOutline: Boolean = renderType.isOutline
-    override val location: NeoIdentifier = NeoIdentifier((renderType as RenderTypeNameAccessor).`big_shot_lib$getName`())
+    override val location: NeoIdentifier? = NeoIdentifier.tryParse((renderType as RenderTypeNameAccessor).`big_shot_lib$getName`())
     override val drawState: GlDrawState
         //? if <1.21.5 {
         /*get() = renderType.getExtensionValue()

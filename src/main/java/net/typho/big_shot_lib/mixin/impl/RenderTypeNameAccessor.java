@@ -1,10 +1,8 @@
 package net.typho.big_shot_lib.mixin.impl;
 
-//? if <1.21.10 {
+//? if <1.21.11 {
 import net.minecraft.client.renderer.RenderStateShard;
-//? } else if <1.21.11 {
-/*import net.minecraft.client.renderer.RenderType;
-*///? } else {
+//? } else {
 /*import net.minecraft.client.renderer.rendertype.RenderType;
 *///? }
 
@@ -13,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
-//? if <1.21.10 {
+//? if <1.21.11 {
 @Mixin(RenderStateShard.class)
 //? } else {
 /*@Mixin(RenderType.class)

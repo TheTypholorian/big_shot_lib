@@ -29,7 +29,6 @@ import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
 
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
-import net.neoforged.neoforge.client.event.FrameGraphSetupEvent
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint

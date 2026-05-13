@@ -16,7 +16,9 @@ import java.util.*
 abstract class ResourceRegistry<T>(
     override val location: NeoIdentifier,
     @JvmField
-    vararg val paths: NeoFileToIdConverter,
+    val dependencies: MutableList<ResourceRegistry<*>>,
+    @JvmField
+    val paths: MutableList<NeoFileToIdConverter>,
 ) : NeoResourceManagerReloadListener {
     companion object {
         @JvmField
@@ -39,6 +41,10 @@ abstract class ResourceRegistry<T>(
     abstract fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): DataResult<T>
 
     override fun onResourceManagerReload(manager: NeoResourceManager) {
+        for (registry in dependencies) {
+            registry.onResourceManagerReload(manager)
+        }
+
         val oldMap = map
         map = HashBiMap.create()
 
