@@ -76,7 +76,7 @@ public abstract class MinecraftMixin {
         }
     }
     *///? } else if <1.21.6 {
-    @Inject(
+    /*@Inject(
             method = "addInitialScreens",
             at = @At(
                     value = "INVOKE",
@@ -92,8 +92,8 @@ public abstract class MinecraftMixin {
             }, new LogoRenderer(true)));
         });
     }
-    //? } else {
-    /*@Inject(
+    *///? } else {
+    @Inject(
             method = "addInitialScreens",
             at = @At(
                     value = "INVOKE",
@@ -109,5 +109,5 @@ public abstract class MinecraftMixin {
             }, new LogoRenderer(true)));
         });
     }
-    *///? }
+    //? }
 }

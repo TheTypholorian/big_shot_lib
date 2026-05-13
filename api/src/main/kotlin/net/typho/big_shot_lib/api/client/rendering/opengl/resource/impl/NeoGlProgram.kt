@@ -58,7 +58,7 @@ open class NeoGlProgram(
         if (index == -1) {
             return@computeIfAbsent null
         } else {
-            val binding = uniformBuffers.count { it.value != null }
+            val binding = shaderStorageBuffers.count { it.value != null }
             glShaderStorageBlockBinding(glId, index, binding)
             return@computeIfAbsent binding
         }

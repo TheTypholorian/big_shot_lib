@@ -7,7 +7,10 @@ plugins {
     //id("me.modmuss50.mod-publish-plugin") version "0.8.+" apply false
 }
 
-stonecutter active "mc1_21_5_fabric"
+stonecutter active "mc1_21_6_neoforge"
+stonecutter handlers {
+    inherit("vsh", "glsl")
+}
 stonecutter parameters {
     constants.match(node.metadata.project.substringAfterLast('_'), "fabric", "neoforge")
     filters.include("**/*.fsh", "**/*.vsh", "**/*.glsl")

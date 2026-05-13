@@ -50,7 +50,11 @@ abstract class ResourceRegistry<T>(
                     decode(id, reader, manager).resultOrPartial { error ->
                         val message = "Error loading $id of resource registry $location: $error"
                         BigShotApi.LOGGER.error(message)
-                        Minecraft.getInstance().chatListener.handleSystemMessage(Component.literal(message).withStyle(ChatFormatting.RED), false)
+
+                        if (Minecraft.getInstance().level != null) {
+                            Minecraft.getInstance().chatListener.handleSystemMessage(Component.literal(message).withStyle(ChatFormatting.RED), false)
+                        }
+
                         oldMap.remove(id)?.let { map[id] = it }
                     }.ifPresent { map[id] = it }
                 }

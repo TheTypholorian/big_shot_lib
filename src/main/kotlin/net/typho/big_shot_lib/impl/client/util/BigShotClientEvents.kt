@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.client.util
 
 //? fabric {
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents
+/*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.server.packs.PackType
 import net.typho.big_shot_lib.impl.mojang
@@ -13,28 +13,23 @@ import net.minecraft.client.Minecraft
 //? } else {
 /*import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 *///? }
-//? } neoforge {
-/*import net.neoforged.neoforge.client.event.RenderLevelStageEvent
-import com.mojang.blaze3d.systems.RenderSystem
+*///? } neoforge {
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.minecraft.client.Minecraft
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.client.event.ClientTickEvent
-import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
-import org.joml.Matrix4f
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
-import net.typho.big_shot_lib.impl.util.getExtensionValue
 //? if <1.21.4 {
-import net.neoforged.neoforge.event.AddReloadListenerEvent
-//? } else {
-/*import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
-*///? }
-*///? }
+/*import net.neoforged.neoforge.event.AddReloadListenerEvent
+*///? } else {
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
+//? }
+//? }
 
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
+import net.neoforged.neoforge.client.event.FrameGraphSetupEvent
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
@@ -72,9 +67,9 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
     //? }
 
     //? neoforge {
-    /*val reloadListeners = arrayListOf<NeoResourceManagerReloadListener>()
+    val reloadListeners = arrayListOf<NeoResourceManagerReloadListener>()
     var listenersLoaded = false
-    *///? }
+    //? }
 
     internal fun init() {
         BigShotClientEntrypoint.registerReloadListeners(this)
@@ -82,7 +77,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         BigShotClientEntrypoint.registerDebugScreenInfo(this)
 
         //? fabric {
-        //? if <1.21.9 {
+        /*//? if <=1.21.5 {
         WorldRenderEvents.LAST.register { context ->
             val data = RenderEventData(
                 NeoCamera(
@@ -97,7 +92,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 //? } else {
                 /*context.matrixStack()!!.last().pose(),
                 *///? }
-                (context.frustum() as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
+                (context.frustum() as FrustumAccessor).`big_shot_lib$getFrustumIntersection`(),
                 NeoGlStateManagerImpl.currentTarget ?: GlFramebuffer.MAIN
             )
             levelRenderEnd.forEach { it.invoke(data) }
@@ -107,12 +102,12 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         ClientTickEvents.END_CLIENT_TICK.register { clientTickEnd.forEach { it.run() } }
         ClientChunkEvents.CHUNK_LOAD.register { level, chunk -> chunkChanged.forEach { it.invoke(level, null, chunk) } }
         ClientChunkEvents.CHUNK_UNLOAD.register { level, chunk -> chunkChanged.forEach { it.invoke(level, chunk, null) } }
-        //? }
+        *///? }
     }
 
     override fun register(listener: NeoResourceManagerReloadListener) {
         //? fabric {
-        BigShotApi.LOGGER.info("Registering reload listener ${listener.location}")
+        /*BigShotApi.LOGGER.info("Registering reload listener ${listener.location}")
         //? if <1.21.9 {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(object : SimpleSynchronousResourceReloadListener {
             override fun getFabricId() = listener.location.mojang
@@ -128,15 +123,15 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             }
         })
         *///? }
-        //? } neoforge {
-        /*if (listenersLoaded) {
+        *///? } neoforge {
+        if (listenersLoaded) {
             throw IllegalStateException("Attempted to registered resource listener ${listener.location} after add resource listeners event has been fired")
         }
 
         BigShotApi.LOGGER.info("Queueing reload listener ${listener.location}")
 
         reloadListeners.add(listener)
-        *///? }
+        //? }
     }
 
     override fun register(
@@ -165,9 +160,9 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
     }
 
     //? neoforge {
-    /*init {
+    init {
         //? if <=1.21.5 {
-        NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
+        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             if (event.stage == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
                 if (levelRenderEnd.isNotEmpty()) {
                     val data = RenderEventData(
@@ -179,37 +174,11 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                         event.levelRenderer.level,
                         event.projectionMatrix,
                         event.modelViewMatrix,
-                        (event.frustum as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
+                        (event.frustum as FrustumAccessor).`big_shot_lib$getFrustumIntersection`(),
                         NeoGlStateManagerImpl.currentTarget ?: GlFramebuffer.MAIN
                     )
                     levelRenderEnd.forEach { it.invoke(data) }
                 }
-            }
-        }
-        //? } else if <1.21.9 {
-        /*NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent.AfterLevel ->
-            if (levelRenderEnd.isNotEmpty()) {
-                val data = RenderEventData(
-                    NeoCamera(
-                        NeoVec3f(event.camera.position),
-                        NeoVec2f(event.camera.xRot, event.camera.yRot),
-                        event.camera.rotation()
-                    ),
-                    event.levelRenderer.level,
-                    Matrix4f(
-                        RenderSystem.getProjectionMatrixBuffer()!!
-                            .buffer
-                            .getExtensionValue<GlBuffer>()
-                            .bind(GlBufferTarget.ARRAY_BUFFER)
-                            .use { it.getBufferData(0L, 16L * Float.SIZE_BYTES) }
-                            .asByteBuffer()
-                            .asFloatBuffer()
-                    ),
-                    event.modelViewMatrix,
-                    (event.frustum as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
-                    NeoGlStateManagerImpl.currentTarget ?: GlFramebuffer.MAIN
-                )
-                levelRenderEnd.forEach { it.invoke(data) }
             }
         }
         *///? }
@@ -220,7 +189,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
             chunkChanged.forEach { it.invoke(event.level, event.chunk, null) }
         }
         //? if <1.21.4 {
-        NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
+        /*NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
             listenersLoaded = true
             for (listener in reloadListeners) {
                 event.addListener(object : ResourceManagerReloadListener {
@@ -230,7 +199,7 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
                 })
             }
         }
-        //? }
+        *///? }
         NeoForge.EVENT_BUS.addListener { event: ClientTickEvent.Pre -> clientTickStart.forEach { it.run() } }
         NeoForge.EVENT_BUS.addListener { event: ClientTickEvent.Post -> clientTickEnd.forEach { it.run() } }
     }
@@ -250,5 +219,5 @@ object BigShotClientEvents : ResourceListenerFactory, ClientEventFactory, DebugS
         }
         //? }
     }
-    *///? }
+    //? }
 }
