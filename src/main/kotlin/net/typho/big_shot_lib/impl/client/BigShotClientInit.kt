@@ -21,7 +21,9 @@ import net.typho.big_shot_lib.api.BigShotApi
 class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
         BigShotClientEvents.init()
+        //? if >=1.21.4 {
         eventBus.register(BigShotClientEvents.ScrewYouNeoforge())
+        //? }
     }
 }
 //? }
