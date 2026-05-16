@@ -44,6 +44,5 @@ class BoundMinecraftProgram(
         super.unbind()
         NeoGlStateManager.MAIN.activeTexture = initialTextureUnit
         usedUnits.forEach { glBindSampler(it, 0) }
-        InternalUtil.INSTANCE.onUnbind(resource)
     }
 }

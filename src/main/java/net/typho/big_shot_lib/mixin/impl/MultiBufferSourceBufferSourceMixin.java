@@ -7,10 +7,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection;
-import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings;
-import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl;
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
-import net.typho.big_shot_lib.impl.util.WrapperUtilImplKt;
+import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,9 +36,9 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
             at = @At("RETURN")
     )
     private VertexConsumer getBuffer(VertexConsumer original, @Local(argsOnly = true) RenderType renderType) {
-        NeoRenderSettings settings = WrapperUtilImplKt.getNeo(renderType);
+        NeoRenderType neoRenderType = ImmutableExtensionKt.getExtensionValue(renderType, NeoRenderType.class);
         var consumers = big_shot_lib$injections.stream()
-                .map(source -> source.getBuffer(settings))
+                .map(source -> source.getBuffer(neoRenderType))
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -87,10 +86,10 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
             at = @At("TAIL")
     )
     private void endBatch(RenderType p_350903_, BufferBuilder p_350797_, CallbackInfo ci) {
-        NeoRenderSettings settings = WrapperUtilImplKt.getNeo(p_350903_);
+        NeoRenderType neoRenderType = ImmutableExtensionKt.getExtensionValue(p_350903_, NeoRenderType.class);
 
         for (MultiBufferSourceInjection injection : big_shot_lib$injections) {
-            injection.endBatch(settings);
+            injection.endBatch(neoRenderType);
         }
     }
 }

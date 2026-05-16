@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
 interface MultiBufferSourceInjection {
-    fun getBuffer(settings: NeoRenderSettings): NeoVertexConsumer?
+    fun getBuffer(settings: NeoRenderType): NeoVertexConsumer?
 
-    fun endBatch(settings: NeoRenderSettings)
+    fun endBatch(settings: NeoRenderType)
 }

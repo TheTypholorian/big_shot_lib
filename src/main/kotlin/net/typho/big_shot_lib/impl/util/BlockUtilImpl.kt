@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.FluidState
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
-import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.vec.IVec3
@@ -25,7 +25,6 @@ import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.math.vec.blockPos
 import net.typho.big_shot_lib.api.util.BlockUtil
 import net.typho.big_shot_lib.api.util.WrapperUtil
-import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl
 import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
 
 object BlockUtilImpl : BlockUtil {
@@ -77,7 +76,7 @@ object BlockUtilImpl : BlockUtil {
         }
     }
 
-    override fun getFluidRenderSettings(state: FluidState): NeoRenderSettings {
+    override fun getFluidRenderSettings(state: FluidState): NeoRenderType {
         //? if >=1.21.11 {
         /*return when (ItemBlockRenderTypes.getRenderLayer(state)) {
             ChunkSectionLayer.SOLID -> NeoRenderSettings.BUILTINS.solid
@@ -94,7 +93,7 @@ object BlockUtilImpl : BlockUtil {
             ChunkSectionLayer.TRIPWIRE -> NeoRenderSettings.BUILTINS.tripwire
         }
         *///? } else {
-        return NeoRenderSettingsImpl(ItemBlockRenderTypes.getRenderLayer(state))
+        return ItemBlockRenderTypes.getRenderLayer(state).getExtensionValue()
         //? }
     }
 

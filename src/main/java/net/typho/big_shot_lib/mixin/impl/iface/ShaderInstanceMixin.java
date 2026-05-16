@@ -24,7 +24,6 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.BoundMinecraftProgram;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension;
-import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +32,6 @@ import org.lwjgl.system.MemoryStack;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.IntBuffer;
@@ -41,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL31.glGetUniformIndices;
 import static org.lwjgl.opengl.GL33.glBindSampler;
 
 @Mixin(ShaderInstance.class)
@@ -291,7 +288,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
 
                 @Override
                 public @NotNull NeoVertexFormat getFormat() {
-                    return new NeoVertexFormatImpl(vertexFormat);
+                    return ImmutableExtensionKt.getExtensionValue(vertexFormat, NeoVertexFormat.class);
                 }
             };
         }
@@ -308,7 +305,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
         uniformLocations = Lists.newArrayList();
         uniformMap = Maps.newHashMap();
         name = location.toShortString();
-        vertexFormat = ((NeoVertexFormatImpl) format).inner;
+        vertexFormat = ImmutableExtensionKt.getExtensionValue(format, VertexFormat.class);
         programId = glId;
     }
 

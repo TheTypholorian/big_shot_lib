@@ -3,11 +3,9 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.state
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlShaderShard.FromLocation
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.FileNotFoundException
-import kotlin.collections.forEachIndexed
 
 interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
     val program: GlProgram
@@ -29,6 +27,7 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
     data class NoShader(
         override val textures: Map<String, GlTextureBinding>
     ) : GlShaderShard {
+        @SafeVarargs
         constructor(
             vararg textures: Pair<String, GlTextureBinding>
         ) : this(mapOf(*textures))
@@ -44,6 +43,7 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
         override val uniforms: GlBoundProgram.() -> Unit,
         override val textures: Map<String, GlTextureBinding>
     ) : GlShaderShard {
+        @SafeVarargs
         constructor(
             location: NeoIdentifier,
             uniforms: GlBoundProgram.() -> Unit,
@@ -59,6 +59,7 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
         override val uniforms: GlBoundProgram.() -> Unit,
         override val textures: Map<String, GlTextureBinding>
     ) : GlShaderShard {
+        @SafeVarargs
         constructor(
             program: GlProgram,
             uniforms: GlBoundProgram.() -> Unit,

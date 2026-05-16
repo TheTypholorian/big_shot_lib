@@ -8,7 +8,7 @@ import net.minecraft.world.level.material.FluidState
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
-import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.math.vec.IVec3
 
@@ -19,7 +19,7 @@ interface BlockUtil {
 
     fun getBlockChunkLayer(state: BlockState): BlockChunkLayer?
 
-    fun getFluidRenderSettings(state: FluidState): NeoRenderSettings
+    fun getFluidRenderSettings(state: FluidState): NeoRenderType
 
     fun shouldRenderFace(
         level: BlockGetter,

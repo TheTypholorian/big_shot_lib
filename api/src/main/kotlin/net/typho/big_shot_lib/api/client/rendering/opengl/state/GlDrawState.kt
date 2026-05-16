@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlPolygonMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
+import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl.scissor
 
 interface GlDrawState {
     val blend: GlBlendShard
@@ -11,8 +12,7 @@ interface GlDrawState {
     val cull: GlCullShard
     val depth: GlDepthShard
     val polygonMode: GlPolygonModeShard
-    val polygonOffset: GlPolygonOffsetShard
-    val scissor: GlScissorShard
+    val layering: GlLayeringShard
     val shader: GlShaderShard
     val stencil: GlStencilShard
 
@@ -22,8 +22,7 @@ interface GlDrawState {
         val cull = cull.bind()
         val depth = depth.bind()
         val polygonMode = polygonMode.bind()
-        val polygonOffset = polygonOffset.bind()
-        val scissor = scissor.bind()
+        val layering = this@GlDrawState.layering.bind()
         val shader = shader.bind()
         val stencil = stencil.bind()
 
@@ -37,8 +36,7 @@ interface GlDrawState {
                 cull.unbind()
                 depth.unbind()
                 polygonMode.unbind()
-                polygonOffset.unbind()
-                scissor.unbind()
+                layering.unbind()
                 shader.unbind()
                 stencil.unbind()
             }
@@ -52,12 +50,11 @@ interface GlDrawState {
 
     open class Basic(
         override val blend: GlBlendShard = GlBlendShard.Disabled,
-        override val colorMask: GlColorMaskShard = GlColorMaskShard(ColorMask.DEFAULT),
+        override val colorMask: GlColorMaskShard = GlColorMaskShard(ColorMask.ENABLED),
         override val cull: GlCullShard = GlCullShard.Disabled,
         override val depth: GlDepthShard = GlDepthShard.Disabled,
         override val polygonMode: GlPolygonModeShard = GlPolygonModeShard(GlPolygonMode.FILL),
-        override val polygonOffset: GlPolygonOffsetShard = GlPolygonOffsetShard.Disabled,
-        override val scissor: GlScissorShard = GlScissorShard.Disabled,
+        override val layering: GlLayeringShard = GlLayeringShard.Disabled,
         override val shader: GlShaderShard,
         override val stencil: GlStencilShard = GlStencilShard.Disabled
     ) : GlDrawState

@@ -16,7 +16,9 @@ data class ColorMask(
 ) {
     companion object {
         @JvmField
-        val DEFAULT = ColorMask(true, true, true, true)
+        val ENABLED = ColorMask(true, true, true, true)
+        @JvmField
+        val DISABLED = ColorMask(false, false, false, false)
         @JvmField
         val CODEC: MapCodec<ColorMask> = RecordCodecBuilder.mapCodec {
             it.group(

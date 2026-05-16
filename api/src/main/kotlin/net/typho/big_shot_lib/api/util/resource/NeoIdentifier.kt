@@ -118,5 +118,20 @@ data class NeoIdentifier(
         fun isLegalChar(c: Char): Boolean {
             return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || c == '_' || c == '/' || c == '.' || c == '-'
         }
+
+        @JvmStatic
+        fun tryParse(s: String): NeoIdentifier? {
+            val split = splitKey(s, DEFAULT_DELIMITER)
+
+            if (split.first.any { !isLegalChar(it) }) {
+                return null
+            }
+
+            if (split.second.any { !isLegalChar(it) }) {
+                return null
+            }
+
+            return NeoIdentifier(split)
+        }
     }
 }

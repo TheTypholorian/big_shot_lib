@@ -16,7 +16,7 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection
 import net.typho.big_shot_lib.api.client.rendering.util.NeoMultiBufferSource
-import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderSettings
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.util.NeoRegistry
@@ -25,8 +25,6 @@ import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resource.NeoTagKey
-import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderSettingsImpl
-import net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexConsumerWrapper
 import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
 import net.typho.big_shot_lib.impl.mojang
@@ -35,12 +33,6 @@ import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import kotlin.jvm.optionals.getOrNull
-
-val RenderType.neo: NeoRenderSettings
-    get() = if (this is NeoRenderType) settings else NeoRenderSettingsImpl(this)
-
-val NeoRenderSettings.mojang: RenderType
-    get() = if (this is NeoRenderSettingsImpl) renderType else NeoRenderType(this)
 
 object WrapperUtilImpl : WrapperUtil {
     override fun wrap(manager: ResourceManager): NeoResourceManager {
@@ -207,10 +199,10 @@ object WrapperUtilImpl : WrapperUtil {
     }
 
     override fun wrap(source: MultiBufferSource): NeoMultiBufferSource {
-        return NeoMultiBufferSource { settings -> wrap(source.getBuffer(settings.mojang)) }
+        return NeoMultiBufferSource { renderType -> wrap(source.getBuffer(renderType.getExtensionValue())) }
     }
 
     override fun unwrap(source: NeoMultiBufferSource): MultiBufferSource {
-        return MultiBufferSource { renderType -> unwrap(source.getBuffer(renderType.neo)) }
+        return MultiBufferSource { renderType -> unwrap(source.getBuffer(renderType.getExtensionValue())) }
     }
 }

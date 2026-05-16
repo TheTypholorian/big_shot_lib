@@ -2,10 +2,10 @@ package net.typho.big_shot_lib.api.client.rendering.util
 
 enum class BlockChunkLayer(
     @JvmField
-    val settings: NeoRenderSettings
+    val settings: NeoRenderType
 ) {
-    SOLID(NeoRenderSettings.BUILTINS.solid),
-    CUTOUT(NeoRenderSettings.BUILTINS.cutout),
-    TRANSLUCENT(NeoRenderSettings.BUILTINS.translucent),
-    TRIPWIRE(NeoRenderSettings.BUILTINS.tripwire)
+    SOLID(NeoRenderType.BUILTINS.solid),
+    CUTOUT(NeoRenderType.BUILTINS.cutout),
+    TRANSLUCENT(NeoRenderType.BUILTINS.translucent),
+    TRIPWIRE(NeoRenderType.BUILTINS.tripwire)
 }
