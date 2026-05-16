@@ -5,6 +5,6 @@ fun <V> Any.setExtensionValue(value: V) {
     (this as MutableExtension<V>).`big_shot_lib$extension_value` = value
 }
 
-internal interface MutableExtension<V> : ImmutableExtension<V> {
+interface MutableExtension<V> : ImmutableExtension<V> {
     override var `big_shot_lib$extension_value`: V
 }

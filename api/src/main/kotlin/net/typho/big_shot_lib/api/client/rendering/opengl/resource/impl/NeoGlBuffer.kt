@@ -5,13 +5,12 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
-import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 
-open class NeoGlBuffer(glId: Int, autoFree: Boolean, context: RenderingContext = RenderingContext.get()) : NeoGlResource(GlResourceType.BUFFER, glId, autoFree, context), GlBuffer {
-    constructor() : this(GlResourceType.BUFFER.create(), true)
+open class NeoGlBuffer(glId: Int) : NeoGlResource(GlResourceType.BUFFER, glId), GlBuffer {
+    constructor() : this(GlResourceType.BUFFER.create())
 
     override fun bind(target: GlBufferTarget): GlBoundBuffer {
         checkUsable()
-        return GlBoundBuffer.Basic(this, target, NeoGlStateManager.CURRENT.buffers[target].push(glId))
+        return GlBoundBuffer.Basic(this, target, NeoGlStateManager.MAIN.buffers[target].push(glId))
     }
 }

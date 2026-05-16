@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 import kotlin.NotImplementedError;
+import kotlin.Pair;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -65,9 +66,12 @@ public class CompositeStateMixin implements ImmutableExtension<GlDrawState> {
             @Override
             public @NotNull GlShaderShard getShader() {
                 return textureState.cutoutTexture().map(texture ->
-                        new GlShaderShard.NoShader(new GlTextureBinding.FromLocation(
-                                IdentifierUtilKt.getNeo(texture),
-                                GlTextureTarget.TEXTURE_2D
+                        new GlShaderShard.NoShader(new Pair<>(
+                                "Sampler0",
+                                new GlTextureBinding.FromLocation(
+                                        IdentifierUtilKt.getNeo(texture),
+                                        GlTextureTarget.TEXTURE_2D
+                                )
                         ))
                 ).orElseGet(GlShaderShard.NoShader::new);
             }

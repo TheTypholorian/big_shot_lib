@@ -10,7 +10,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.util.GlFlag
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
-import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import net.typho.big_shot_lib.api.util.EnumArrayMap
@@ -293,8 +292,7 @@ interface NeoGlStateManager {
     }
 
     companion object {
+        @JvmStatic
         val MAIN by lazy { NeoGlStateManager::class.loadService() }
-        val CURRENT: NeoGlStateManager
-            get() = RenderingContext.get().glManager
     }
 }

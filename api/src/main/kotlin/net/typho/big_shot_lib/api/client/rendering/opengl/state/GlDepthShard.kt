@@ -11,9 +11,9 @@ sealed interface GlDepthShard : GlDrawStateShard {
         val mask: Boolean = true
     ) : GlDepthShard {
         override fun bind(): BoundResource {
-            val flag = NeoGlStateManager.CURRENT.depthEnabled.push(true)
-            val func = NeoGlStateManager.CURRENT.depthFunc.push(func)
-            val mask = NeoGlStateManager.CURRENT.depthMask.push(mask)
+            val flag = NeoGlStateManager.MAIN.depthEnabled.push(true)
+            val func = NeoGlStateManager.MAIN.depthFunc.push(func)
+            val mask = NeoGlStateManager.MAIN.depthMask.push(mask)
 
             return BoundResource.all(flag, func, mask)
         }
@@ -21,7 +21,7 @@ sealed interface GlDepthShard : GlDrawStateShard {
 
     object Disabled : GlDepthShard {
         override fun bind(): BoundResource {
-            return NeoGlStateManager.CURRENT.depthEnabled.push(false)
+            return NeoGlStateManager.MAIN.depthEnabled.push(false)
         }
     }
 }

@@ -5,12 +5,15 @@ package net.typho.big_shot_lib.impl.util.platform
 import net.fabricmc.loader.api.metadata.CustomValue
 *///? } neoforge {
 import net.minecraft.core.Registry
+import net.minecraft.resources.ResourceKey
 import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
+import net.neoforged.neoforge.registries.NewRegistryEvent
 import net.neoforged.neoforge.registries.RegisterEvent
+import net.neoforged.neoforge.registries.RegistryBuilder
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.util.Registrar
-import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.RegisteredObject
 //? }
 
@@ -87,9 +90,9 @@ object PlatformUtilImpl : PlatformUtil {
         @JvmField
         val inner: net.neoforged.fml.ModContainer
     ) : ModContainer {
-        override val modId: String
+        override val id: String
             get() = inner.modId
-        override val modName: String?
+        override val name: String?
             get() = inner.modInfo.displayName
         override val description: String?
             get() = inner.modInfo.description
@@ -97,8 +100,12 @@ object PlatformUtilImpl : PlatformUtil {
             get() = inner.modInfo.version.toString()
     }
 
-    override fun createRegistrar(): Registrar {
-        return NeoForgeRegistrar()
+    override fun createRegistrar(mod: ModContainer): Registrar {
+        return NeoForgeRegistrar(mod)
+    }
+
+    override fun getMod(id: String): ModContainer? {
+        return mods.firstOrNull { it.id == id }
     }
 
     class NeoForgeRegisteredObject<T : Any>(
@@ -121,9 +128,23 @@ object PlatformUtilImpl : PlatformUtil {
         }
     }
 
-    class NeoForgeRegistrar : Registrar {
+    class NeoForgeRegistrar(
+        @JvmField
+        val mod: ModContainer
+    ) : Registrar {
         @JvmField
         val queue = arrayListOf<RegistryPair<*>>()
+        @JvmField
+        val registries = arrayListOf<NewRegistry<*>>()
+
+        data class NewRegistry<T : Any>(
+            @JvmField
+            val key: NeoResourceKey<out Registry<T>>
+        ) {
+            fun register(event: NewRegistryEvent) {
+                event.create(RegistryBuilder(key.mojang))
+            }
+        }
 
         data class RegistryPair<T : Any>(
             @JvmField
@@ -137,13 +158,35 @@ object PlatformUtilImpl : PlatformUtil {
             }
         }
 
+        init {
+            val bus = (mod as ModContainerImpl).inner.eventBus!!
+            bus.addListener { event: NewRegistryEvent ->
+                for (registry in registries) {
+                    registry.register(event)
+                }
+            }
+            bus.addListener { event: RegisterEvent ->
+                for (content in queue) {
+                    for (value in content.values) {
+                        value.register(event)
+                    }
+                }
+            }
+        }
+
+        override fun <T : Any> createRegistry(id: NeoIdentifier): NeoResourceKey<out Registry<T>> {
+            val key = NeoResourceKey.registry<T>(id)
+            registries.add(NewRegistry(key))
+            return key
+        }
+
         @Suppress("UNCHECKED_CAST")
         override fun <T : Any> register(
-            registry: NeoRegistry<out Registry<T>>,
+            registry: NeoResourceKey<out Registry<T>>,
             id: NeoIdentifier,
             value: T
         ): RegisteredObject<T> {
-            return (queue.firstOrNull { it.registry == registry.key } ?: RegistryPair(registry.key, arrayListOf()).also { queue.add(it) }).register(id, value) as RegisteredObject<T>
+            return (queue.firstOrNull { it.registry == registry } ?: RegistryPair(registry, arrayListOf()).also { queue.add(it) }).register(id, value) as RegisteredObject<T>
         }
     }
     //? }

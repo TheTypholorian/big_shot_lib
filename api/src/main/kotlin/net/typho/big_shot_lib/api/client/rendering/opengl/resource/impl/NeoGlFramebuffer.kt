@@ -6,15 +6,14 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFrameb
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebufferAttachment
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
-import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import net.typho.big_shot_lib.api.math.rect.AbstractRect2
 import net.typho.big_shot_lib.api.util.KeyedDelegate
 import org.lwjgl.opengl.GL11.GL_NONE
 import org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0
 import org.lwjgl.opengl.GL30.GL_FRAMEBUFFER
 
-open class NeoGlFramebuffer(glId: Int, autoFree: Boolean, context: RenderingContext = RenderingContext.get()) : NeoGlResource(GlResourceType.FRAMEBUFFER, glId, autoFree, context), GlFramebuffer {
-    constructor() : this(GlResourceType.FRAMEBUFFER.create(), true)
+open class NeoGlFramebuffer(glId: Int) : NeoGlResource(GlResourceType.FRAMEBUFFER, glId), GlFramebuffer {
+    constructor() : this(GlResourceType.FRAMEBUFFER.create())
 
     private val colorAttachmentsBacking = Array<GlFramebufferAttachment?>(8) { null }
     override val colorAttachments: KeyedDelegate.ReadOnly<Int, GlFramebufferAttachment?> = KeyedDelegate.ReadOnly { key -> colorAttachmentsBacking[key] }
@@ -23,7 +22,7 @@ open class NeoGlFramebuffer(glId: Int, autoFree: Boolean, context: RenderingCont
 
     override fun bind(viewport: AbstractRect2<Int>?): GlBoundFramebuffer {
         checkUsable()
-        return object : GlBoundFramebuffer.Basic(this, viewport, NeoGlStateManager.CURRENT.framebuffer.push(glId)) {
+        return object : GlBoundFramebuffer.Basic(this, viewport, NeoGlStateManager.MAIN.framebuffer.push(glId)) {
             override val colorAttachments: KeyedDelegate<Int, GlFramebufferAttachment?> = object : KeyedDelegate<Int, GlFramebufferAttachment?> {
                 override fun get(key: Int) = colorAttachmentsBacking[key]
 

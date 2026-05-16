@@ -3,6 +3,8 @@ package net.typho.big_shot_lib.api
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.core.Registry
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
@@ -48,7 +50,12 @@ interface InternalUtil {
 
     fun onUnbind(program: GlProgram)
 
+    fun createShader(location: NeoIdentifier, type: GlShaderType, glId: Int): GlShader
+
+    fun createProgram(location: NeoIdentifier, format: NeoVertexFormat, glId: Int): GlProgram
+
     companion object {
+        @JvmStatic
         val INSTANCE by lazy { InternalUtil::class.loadService() }
     }
 }

@@ -15,6 +15,7 @@ import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 
+// TODO switch to extension
 data class NeoVertexFormatImpl(
     @JvmField
     val inner: VertexFormat

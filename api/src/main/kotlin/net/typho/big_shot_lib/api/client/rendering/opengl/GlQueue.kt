@@ -14,6 +14,7 @@ interface GlQueue {
     fun runOrQueue(task: () -> Unit)
 
     companion object {
+        @JvmStatic
         val INSTANCE by lazy { GlQueue::class.loadService() }
     }
 }

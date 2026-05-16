@@ -1,0 +1,7 @@
+{
+  "sources": {
+    "vertex": "big_shot_lib:solid",
+    "fragment": "big_shot_lib:solid"
+  },
+  "format": "minecraft:block"
+}

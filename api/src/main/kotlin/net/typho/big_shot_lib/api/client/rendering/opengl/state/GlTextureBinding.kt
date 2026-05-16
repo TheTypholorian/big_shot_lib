@@ -11,13 +11,11 @@ interface GlTextureBinding : MaybeNamedResource {
     val texture: GlTexture2D
     val target: GlTextureTarget
     val sampler: GlSampler?
-    val uniformName: String?
 
     data class FromLocation @JvmOverloads constructor(
         override val location: NeoIdentifier,
-        override val target: GlTextureTarget,
+        override val target: GlTextureTarget = GlTextureTarget.TEXTURE_2D,
         override val sampler: GlSampler? = null,
-        override val uniformName: String? = null
     ) : GlTextureBinding {
         override val texture: GlTexture2D
             get() = GlTexture2D[location] ?: throw FileNotFoundException("Couldn't find texture $location")
@@ -25,9 +23,8 @@ interface GlTextureBinding : MaybeNamedResource {
 
     data class FromInstance @JvmOverloads constructor(
         override val texture: GlTexture2D,
-        override val target: GlTextureTarget,
-        override val sampler: GlSampler? = null,
-        override val uniformName: String? = null
+        override val target: GlTextureTarget = GlTextureTarget.TEXTURE_2D,
+        override val sampler: GlSampler? = null
     ) : GlTextureBinding {
         override val location: NeoIdentifier? = if (texture is MaybeNamedResource) texture.location else null
     }

@@ -11,9 +11,12 @@ interface PlatformUtil {
 
     fun isDevEnv(): Boolean
 
-    fun createRegistrar(): Registrar
+    fun createRegistrar(mod: ModContainer): Registrar
+
+    fun getMod(id: String): ModContainer?
 
     companion object {
+        @JvmStatic
         val INSTANCE by lazy { PlatformUtil::class.loadService() }
     }
 }

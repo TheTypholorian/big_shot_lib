@@ -9,8 +9,8 @@ sealed interface GlPolygonOffsetShard : GlDrawStateShard {
         val offset: PolygonOffset
     ) : GlPolygonOffsetShard {
         override fun bind(): BoundResource {
-            val flag = NeoGlStateManager.CURRENT.polygonOffsetEnabled.push(true)
-            val offset = NeoGlStateManager.CURRENT.polygonOffset.push(offset)
+            val flag = NeoGlStateManager.MAIN.polygonOffsetEnabled.push(true)
+            val offset = NeoGlStateManager.MAIN.polygonOffset.push(offset)
 
             return BoundResource.all(flag, offset)
         }
@@ -18,7 +18,7 @@ sealed interface GlPolygonOffsetShard : GlDrawStateShard {
 
     object Disabled : GlPolygonOffsetShard {
         override fun bind(): BoundResource {
-            return NeoGlStateManager.CURRENT.polygonOffsetEnabled.push(false)
+            return NeoGlStateManager.MAIN.polygonOffsetEnabled.push(false)
         }
     }
 }

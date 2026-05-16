@@ -25,7 +25,7 @@ import org.joml.FrustumIntersection
 import org.joml.Matrix4f
 import java.util.UUID
 
-abstract class BigShotClientEntrypoint : ModEntrypoint() {
+abstract class BigShotClientEntrypoint(modId: String) : ModEntrypoint(modId) {
     abstract fun onInitializeClient()
 
     open fun addReloadListeners(

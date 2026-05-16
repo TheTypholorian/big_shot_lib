@@ -7,6 +7,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
 import net.typho.big_shot_lib.api.util.*
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
+import net.typho.big_shot_lib.api.util.resource.NeoResourceKey.Companion.lookupOrThrow
 
 interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     val vertexSizeBytes: Int
@@ -21,44 +22,17 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
 
     override fun iterator() = elements.iterator()
 
-    companion object : BigShotCommonEntrypoint {
-        val REGISTRY_KEY = NeoResourceKey.registry<NeoVertexFormat>(BigShotApi.id("vertex_formats"))
-        var REGISTRY: NeoRegistry<NeoVertexFormat>? = null
-            private set
-        val CODEC: Codec<NeoVertexFormat> = NeoResourceKey.codec(REGISTRY_KEY).xmap(
-            { REGISTRY!!.get(it) },
-            { REGISTRY!!.getKey(it) }
+    companion object : BigShotCommonEntrypoint(BigShotApi.MOD_ID) {
+        var REGISTRY = createRegistry<NeoVertexFormat>(BigShotApi.id("vertex_formats"))
+        val CODEC: Codec<NeoVertexFormat> = NeoResourceKey.codec(REGISTRY).xmap(
+            { REGISTRY.lookupOrThrow().get(it) },
+            { REGISTRY.lookupOrThrow().getKey(it) }
         )
-
-        override fun registerRegistries(factory: RegistryFactory) {
-            REGISTRY = factory.create(REGISTRY_KEY)
-        }
-
-        override fun registerContent(factory: RegistrationFactory) {
-            factory.begin(REGISTRY_KEY, NeoIdentifier.DEFAULT_NAMESPACE)?.run {
-                register("blit_screen") { BLIT_SCREEN }
-                register("block") { BLOCK }
-                register("new_entity") { NEW_ENTITY }
-                register("particle") { PARTICLE }
-                register("position") { POSITION }
-                register("position_color") { POSITION_COLOR }
-                register("position_color_normal") { POSITION_COLOR_NORMAL }
-                register("position_color_lightmap") { POSITION_COLOR_LIGHTMAP }
-                register("position_tex") { POSITION_TEX }
-                register("position_tex_color") { POSITION_TEX_COLOR }
-                register("position_color_tex_lightmap") { POSITION_COLOR_TEX_LIGHTMAP }
-                register("position_tex_lightmap_color") { POSITION_TEX_LIGHTMAP_COLOR }
-                register("position_tex_color_normal") { POSITION_TEX_COLOR_NORMAL }
-            }
-        }
-
-        @JvmStatic
-        fun provider() = this
 
         /**
          * - Position
          */
-        val BLIT_SCREEN = InternalUtil.INSTANCE.blitScreenVertexFormat
+        val BLIT_SCREEN by register(REGISTRY, NeoIdentifier("blit_screen"), InternalUtil.INSTANCE.blitScreenVertexFormat)
         /**
          * - Position
          * - Color
@@ -67,7 +41,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        val BLOCK = InternalUtil.INSTANCE.blockVertexFormat
+        val BLOCK by register(REGISTRY, NeoIdentifier("block"), InternalUtil.INSTANCE.blockVertexFormat)
         /**
          * - Position
          * - Color
@@ -77,61 +51,61 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        val NEW_ENTITY = InternalUtil.INSTANCE.newEntityVertexFormat
+        val NEW_ENTITY by register(REGISTRY, NeoIdentifier("new_entity"), InternalUtil.INSTANCE.newEntityVertexFormat)
         /**
          * - Position
          * - Texture UV
          * - Color
          * - Light UV
          */
-        val PARTICLE = InternalUtil.INSTANCE.particleVertexFormat
+        val PARTICLE by register(REGISTRY, NeoIdentifier("particle"), InternalUtil.INSTANCE.particleVertexFormat)
         /**
          * - Position
          */
-        val POSITION = InternalUtil.INSTANCE.positionVertexFormat
+        val POSITION by register(REGISTRY, NeoIdentifier("position"), InternalUtil.INSTANCE.positionVertexFormat)
         /**
          * - Position
          * - Color
          */
-        val POSITION_COLOR = InternalUtil.INSTANCE.positionColorVertexFormat
+        val POSITION_COLOR by register(REGISTRY, NeoIdentifier("position_color"), InternalUtil.INSTANCE.positionColorVertexFormat)
         /**
          * - Position
          * - Color
          * - Normal
          * - 1 byte padding
          */
-        val POSITION_COLOR_NORMAL = InternalUtil.INSTANCE.positionColorNormalVertexFormat
+        val POSITION_COLOR_NORMAL by register(REGISTRY, NeoIdentifier("position_color_normal"), InternalUtil.INSTANCE.positionColorNormalVertexFormat)
         /**
          * - Position
          * - Color
          * - Light UV
          */
-        val POSITION_COLOR_LIGHTMAP = InternalUtil.INSTANCE.positionColorLightVertexFormat
+        val POSITION_COLOR_LIGHTMAP by register(REGISTRY, NeoIdentifier("position_color_lightmap"), InternalUtil.INSTANCE.positionColorLightVertexFormat)
         /**
          * - Position
          * - Texture UV
          */
-        val POSITION_TEX = InternalUtil.INSTANCE.positionTexVertexFormat
+        val POSITION_TEX by register(REGISTRY, NeoIdentifier("position_tex"), InternalUtil.INSTANCE.positionTexVertexFormat)
         /**
          * - Position
          * - Texture UV
          * - Color
          */
-        val POSITION_TEX_COLOR = InternalUtil.INSTANCE.positionTexColorVertexFormat
+        val POSITION_TEX_COLOR by register(REGISTRY, NeoIdentifier("position_tex_color"), InternalUtil.INSTANCE.positionTexColorVertexFormat)
         /**
          * - Position
          * - Color
          * - Texture UV
          * - Light UV
          */
-        val POSITION_COLOR_TEX_LIGHTMAP = InternalUtil.INSTANCE.positionColorTexLightVertexFormat
+        val POSITION_COLOR_TEX_LIGHTMAP by register(REGISTRY, NeoIdentifier("position_color_tex_lightmap"), InternalUtil.INSTANCE.positionColorTexLightVertexFormat)
         /**
          * - Position
          * - Texture UV
          * - Light UV
          * - Color
          */
-        val POSITION_TEX_LIGHTMAP_COLOR = InternalUtil.INSTANCE.positionTexLightColorVertexFormat
+        val POSITION_TEX_LIGHTMAP_COLOR by register(REGISTRY, NeoIdentifier("position_tex_lightmap_color"), InternalUtil.INSTANCE.positionTexLightColorVertexFormat)
         /**
          * - Position
          * - Texture UV
@@ -139,10 +113,13 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
-        val POSITION_TEX_COLOR_NORMAL = InternalUtil.INSTANCE.positionTexColorNormalVertexFormat
+        val POSITION_TEX_COLOR_NORMAL by register(REGISTRY, NeoIdentifier("position_tex_color_normal"), InternalUtil.INSTANCE.positionTexColorNormalVertexFormat)
 
         @JvmStatic
         fun builder() = InternalUtil.INSTANCE.createVertexFormatBuilder()
+
+        override fun onInitialize() {
+        }
     }
 
     interface Element {

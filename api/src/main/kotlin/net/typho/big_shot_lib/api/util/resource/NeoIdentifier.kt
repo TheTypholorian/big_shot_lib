@@ -24,6 +24,10 @@ data class NeoIdentifier(
         return namespace + DEFAULT_DELIMITER + path
     }
 
+    fun toShortString(): String {
+        return if (namespace == DEFAULT_NAMESPACE) path else toString()
+    }
+
     fun toPair(): Pair<String, String> {
         return namespace to path
     }

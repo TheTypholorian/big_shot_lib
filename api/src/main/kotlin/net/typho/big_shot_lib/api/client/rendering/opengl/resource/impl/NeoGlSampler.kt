@@ -8,10 +8,9 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureMinF
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureWrapMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlSampler
-import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import org.lwjgl.opengl.GL42.*
 
-open class NeoGlSampler(glId: Int, autoFree: Boolean, context: RenderingContext = RenderingContext.get()) : NeoGlResource(GlResourceType.SAMPLER, glId, autoFree, context), GlSampler {
+open class NeoGlSampler(glId: Int) : NeoGlResource(GlResourceType.SAMPLER, glId), GlSampler {
     override var compareMode: GlTextureCompareMode
         get() = GlNamed.getEnum<GlTextureCompareMode>(glGetSamplerParameteri(glId, GL_TEXTURE_COMPARE_MODE))
         set(value) = glSamplerParameteri(glId, GL_TEXTURE_COMPARE_MODE, value.glId)
@@ -43,5 +42,5 @@ open class NeoGlSampler(glId: Int, autoFree: Boolean, context: RenderingContext 
         get() = GlNamed.getEnum<GlTextureWrapMode>(glGetSamplerParameteri(glId, GL_TEXTURE_WRAP_R))
         set(value) = glSamplerParameteri(glId, GL_TEXTURE_WRAP_R, value.glId)
     
-    constructor() : this(GlResourceType.SAMPLER.create(), true)
+    constructor() : this(GlResourceType.SAMPLER.create())
 }

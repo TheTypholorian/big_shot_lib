@@ -1,10 +1,12 @@
 package net.typho.big_shot_lib.api.util
 
-import net.typho.big_shot_lib.api.util.platform.ModContainer
+import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
-abstract class ModEntrypoint {
-    val metadata = ModContainer.get(javaClass) ?: throw NullPointerException("Could not find big shot lib mod metadata for ${javaClass.name}")
+abstract class ModEntrypoint(
+    modId: String
+) {
+    val container = PlatformUtil.INSTANCE.getMod(modId)!!
 
-    fun id(path: String) = NeoIdentifier(metadata.modId, path)
+    fun id(path: String) = NeoIdentifier(container.id, path)
 }

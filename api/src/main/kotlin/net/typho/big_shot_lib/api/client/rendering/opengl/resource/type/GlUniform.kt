@@ -43,41 +43,41 @@ interface GlUniform {
 
     fun set(array: DoubleArray)
 
-    fun setIntVec(v: IVec2<Int>)
+    fun setIntVec(v: IVec2<Int>) = set(v.x, v.y)
 
-    fun setIntVecs(array: Array<IVec2<Int>>)
+    fun setIntVecs(array: Array<IVec2<Int>>) = set(array.flat().toIntArray())
 
-    fun setIntVec(v: IVec3<Int>)
+    fun setIntVec(v: IVec3<Int>) = set(v.x, v.y, v.z)
 
-    fun setIntVecs(array: Array<IVec3<Int>>)
+    fun setIntVecs(array: Array<IVec3<Int>>) = set(array.flat().toIntArray())
 
-    fun setIntVec(v: IVec4<Int>)
+    fun setIntVec(v: IVec4<Int>) = set(v.x, v.y, v.z, v.w)
 
-    fun setIntVecs(array: Array<IVec4<Int>>)
+    fun setIntVecs(array: Array<IVec4<Int>>) = set(array.flat().toIntArray())
 
-    fun setFloatVec(v: IVec2<Float>)
+    fun setFloatVec(v: IVec2<Float>) = set(v.x, v.y)
 
-    fun setFloatVecs(array: Array<IVec2<Float>>)
+    fun setFloatVecs(array: Array<IVec2<Float>>) = set(array.flat().toFloatArray())
 
-    fun setFloatVec(v: IVec3<Float>)
+    fun setFloatVec(v: IVec3<Float>) = set(v.x, v.y, v.z)
 
-    fun setFloatVecs(array: Array<IVec3<Float>>)
+    fun setFloatVecs(array: Array<IVec3<Float>>) = set(array.flat().toFloatArray())
 
-    fun setFloatVec(v: IVec4<Float>)
+    fun setFloatVec(v: IVec4<Float>) = set(v.x, v.y, v.z, v.w)
 
-    fun setFloatVecs(array: Array<IVec4<Float>>)
+    fun setFloatVecs(array: Array<IVec4<Float>>) = set(array.flat().toFloatArray())
 
-    fun setDoubleVec(v: IVec2<Double>)
+    fun setDoubleVec(v: IVec2<Double>) = set(v.x, v.y)
 
-    fun setDoubleVecs(array: Array<IVec2<Double>>)
+    fun setDoubleVecs(array: Array<IVec2<Double>>) = set(array.flat().toDoubleArray())
 
-    fun setDoubleVec(v: IVec3<Double>)
+    fun setDoubleVec(v: IVec3<Double>) = set(v.x, v.y, v.z)
 
-    fun setDoubleVecs(array: Array<IVec3<Double>>)
+    fun setDoubleVecs(array: Array<IVec3<Double>>) = set(array.flat().toDoubleArray())
 
-    fun setDoubleVec(v: IVec4<Double>)
+    fun setDoubleVec(v: IVec4<Double>) = set(v.x, v.y, v.z, v.w)
 
-    fun setDoubleVecs(array: Array<IVec4<Double>>)
+    fun setDoubleVecs(array: Array<IVec4<Double>>) = set(array.flat().toDoubleArray())
 
     fun set(mat: Matrix2f, transpose: Boolean = false)
 
@@ -151,78 +151,6 @@ interface GlUniform {
 
         override fun set(array: DoubleArray) {
             glUniform1dv(location, array)
-        }
-
-        override fun setIntVec(v: IVec2<Int>) {
-            glUniform2i(location, v.x, v.y)
-        }
-
-        override fun setIntVecs(array: Array<IVec2<Int>>) {
-            glUniform2iv(location, array.flat().toIntArray())
-        }
-
-        override fun setIntVec(v: IVec3<Int>) {
-            glUniform3i(location, v.x, v.y, v.z)
-        }
-
-        override fun setIntVecs(array: Array<IVec3<Int>>) {
-            glUniform3iv(location, array.flat().toIntArray())
-        }
-
-        override fun setIntVec(v: IVec4<Int>) {
-            glUniform4i(location, v.x, v.y, v.z, v.w)
-        }
-
-        override fun setIntVecs(array: Array<IVec4<Int>>) {
-            glUniform4iv(location, array.flat().toIntArray())
-        }
-
-        override fun setFloatVec(v: IVec2<Float>) {
-            glUniform2f(location, v.x, v.y)
-        }
-
-        override fun setFloatVecs(array: Array<IVec2<Float>>) {
-            glUniform2fv(location, array.flat().toFloatArray())
-        }
-
-        override fun setFloatVec(v: IVec3<Float>) {
-            glUniform3f(location, v.x, v.y, v.z)
-        }
-
-        override fun setFloatVecs(array: Array<IVec3<Float>>) {
-            glUniform3fv(location, array.flat().toFloatArray())
-        }
-
-        override fun setFloatVec(v: IVec4<Float>) {
-            glUniform4f(location, v.x, v.y, v.z, v.w)
-        }
-
-        override fun setFloatVecs(array: Array<IVec4<Float>>) {
-            glUniform4fv(location, array.flat().toFloatArray())
-        }
-
-        override fun setDoubleVec(v: IVec2<Double>) {
-            glUniform2d(location, v.x, v.y)
-        }
-
-        override fun setDoubleVecs(array: Array<IVec2<Double>>) {
-            glUniform2dv(location, array.flat().toDoubleArray())
-        }
-
-        override fun setDoubleVec(v: IVec3<Double>) {
-            glUniform3d(location, v.x, v.y, v.z)
-        }
-
-        override fun setDoubleVecs(array: Array<IVec3<Double>>) {
-            glUniform3dv(location, array.flat().toDoubleArray())
-        }
-
-        override fun setDoubleVec(v: IVec4<Double>) {
-            glUniform4d(location, v.x, v.y, v.z, v.w)
-        }
-
-        override fun setDoubleVecs(array: Array<IVec4<Double>>) {
-            glUniform4dv(location, array.flat().toDoubleArray())
         }
 
         override fun set(mat: Matrix2f, transpose: Boolean) {

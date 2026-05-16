@@ -15,11 +15,11 @@ sealed interface GlBlendShard : GlDrawStateShard {
         val color: NeoColor? = null
     ) : GlBlendShard {
         override fun bind(): BoundResource {
-            val flag = NeoGlStateManager.CURRENT.blendEnabled.push(true)
+            val flag = NeoGlStateManager.MAIN.blendEnabled.push(true)
 
-            val function = NeoGlStateManager.CURRENT.blendFunction.push(function)
-            val equation = NeoGlStateManager.CURRENT.blendEquation.push(equation)
-            val color = color?.let { NeoGlStateManager.CURRENT.blendColor.push(it) }
+            val function = NeoGlStateManager.MAIN.blendFunction.push(function)
+            val equation = NeoGlStateManager.MAIN.blendEquation.push(equation)
+            val color = color?.let { NeoGlStateManager.MAIN.blendColor.push(it) }
 
             return BoundResource.all(flag, function, equation, color)
         }
@@ -27,7 +27,7 @@ sealed interface GlBlendShard : GlDrawStateShard {
 
     object Disabled : GlBlendShard {
         override fun bind(): BoundResource {
-            return NeoGlStateManager.CURRENT.blendEnabled.push(false)
+            return NeoGlStateManager.MAIN.blendEnabled.push(false)
         }
     }
 }

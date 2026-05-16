@@ -12,13 +12,13 @@ import kotlin.collections.forEachIndexed
 interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
     val program: GlProgram
     val uniforms: GlBoundProgram.() -> Unit
-    val textures: List<GlTextureBinding>
+    val textures: Map<String, GlTextureBinding>
 
     override fun bind(): GlBoundProgram {
         val program = program.use()
 
-        textures.forEachIndexed { unit, binding ->
-            program.setTexture(unit, binding)
+        textures.forEach { (name, binding) ->
+            program.setTexture(name, binding)
         }
 
         uniforms(program)
@@ -27,11 +27,11 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
     }
 
     data class NoShader(
-        override val textures: List<GlTextureBinding>
+        override val textures: Map<String, GlTextureBinding>
     ) : GlShaderShard {
         constructor(
-            vararg textures: GlTextureBinding
-        ) : this(listOf(*textures))
+            vararg textures: Pair<String, GlTextureBinding>
+        ) : this(mapOf(*textures))
 
         override val program: GlProgram
             get() = throw NullPointerException("No shader")
@@ -42,13 +42,13 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
     data class FromLocation(
         override val location: NeoIdentifier,
         override val uniforms: GlBoundProgram.() -> Unit,
-        override val textures: List<GlTextureBinding>
+        override val textures: Map<String, GlTextureBinding>
     ) : GlShaderShard {
         constructor(
             location: NeoIdentifier,
             uniforms: GlBoundProgram.() -> Unit,
-            vararg textures: GlTextureBinding
-        ) : this(location, uniforms, listOf(*textures))
+            vararg textures: Pair<String, GlTextureBinding>
+        ) : this(location, uniforms, mapOf(*textures))
 
         override val program: GlProgram
             get() = NeoShaderLoader[location] ?: throw FileNotFoundException("Couldn't find shader program $location")
@@ -57,13 +57,13 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
     data class FromInstance(
         override val program: GlProgram,
         override val uniforms: GlBoundProgram.() -> Unit,
-        override val textures: List<GlTextureBinding>
+        override val textures: Map<String, GlTextureBinding>
     ) : GlShaderShard {
         constructor(
             program: GlProgram,
             uniforms: GlBoundProgram.() -> Unit,
-            vararg textures: GlTextureBinding
-        ) : this(program, uniforms, listOf(*textures))
+            vararg textures: Pair<String, GlTextureBinding>
+        ) : this(program, uniforms, mapOf(*textures))
 
         override val location: NeoIdentifier = program.location
     }

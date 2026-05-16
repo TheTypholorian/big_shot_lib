@@ -83,7 +83,7 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
         @Override
         @NotNull
         public NeoAtlasSprite getSprite() {
-            return ImmutableExtensionKt.getExtensionValue(sprite);
+            return ImmutableExtensionKt.getExtensionValue(sprite, NeoAtlasSprite.class);
         }
 
         @Override

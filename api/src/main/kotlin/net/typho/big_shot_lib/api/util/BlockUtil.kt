@@ -45,6 +45,7 @@ interface BlockUtil {
     )
 
     companion object {
+        @JvmStatic
         val INSTANCE by lazy { BlockUtil::class.loadService() }
     }
 }

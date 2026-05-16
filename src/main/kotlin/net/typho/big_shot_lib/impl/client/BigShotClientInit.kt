@@ -15,14 +15,18 @@ import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
-import net.neoforged.neoforge.common.NeoForge
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 
 @Mod(value = BigShotApi.MOD_ID, dist = [Dist.CLIENT])
 class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
+        for (entrypoint in BigShotClientEntrypoint.entrypoints) {
+            entrypoint.onInitializeClient()
+        }
+
         BigShotClientEvents.init()
-        NeoForge.EVENT_BUS.register(BigShotClientEvents.ScrewYouNeoforge())
+        //eventBus.register(BigShotClientEvents.ScrewYouNeoforge())
     }
 }
 //? }

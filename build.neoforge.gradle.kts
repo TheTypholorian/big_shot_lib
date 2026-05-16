@@ -78,7 +78,7 @@ val processResources = tasks.named<ProcessResources>("processResources") {
 
     inputs.properties(props)
 
-    filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml", "**/*.mixins.json")) {
+    filesMatching(listOf("big_shot_lib.mod.json", "fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml", "**/*.mixins.json")) {
         expand(props)
     }
 }

@@ -33,6 +33,7 @@ public class LevelChunkMixin {
             @Local(argsOnly = true) BlockPos pos,
             @Local(ordinal = 1) BlockState oldState
     ) {
-        BigShotCommonEvents.INSTANCE.getBlockChanged().forEach(event -> event.invoke(level, new NeoVec3i(pos), oldState, state));
+        // TODO
+        //BigShotCommonEvents.INSTANCE.getBlockChanged().forEach(event -> event.invoke(level, new NeoVec3i(pos), oldState, state));
     }
 }

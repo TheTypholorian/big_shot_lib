@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.impl
 
+import com.mojang.blaze3d.shaders.Program
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
@@ -9,7 +10,10 @@ import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
@@ -17,6 +21,7 @@ import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
+import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexFormatImpl
 import net.typho.big_shot_lib.impl.util.getExtensionValue
 import net.typho.big_shot_lib.impl.util.setExtensionValue
@@ -162,5 +167,23 @@ object InternalUtilImpl : InternalUtil {
 
     override fun onUnbind(program: GlProgram) {
         RenderSystem.setShader { null }
+    }
+
+    override fun createShader(location: NeoIdentifier, type: GlShaderType, glId: Int): GlShader {
+        return when (type) {
+            GlShaderType.VERTEX -> Program(Program.Type.VERTEX, glId, location.toShortString()).getExtensionValue()
+            GlShaderType.FRAGMENT -> Program(Program.Type.VERTEX, glId, location.toShortString()).getExtensionValue()
+            else -> NeoGlShader(location, type, glId)
+        }
+    }
+
+    override fun createProgram(
+        location: NeoIdentifier,
+        format: NeoVertexFormat,
+        glId: Int
+    ): GlProgram {
+        val shader = UNSAFE.allocateInstance(ShaderInstance::class.java) as ShaderInstance
+        (shader as ShaderInstanceExtension).`big_shot_lib$init`(location, format, glId)
+        return shader.getExtensionValue<GlProgram>()
     }
 }

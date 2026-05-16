@@ -31,7 +31,8 @@ public class MinecraftMixin {
             at = @At("HEAD")
     )
     private void setLevel(CallbackInfo ci, @Local(argsOnly = true) ClientLevel newLevel) {
-        BigShotClientEvents.INSTANCE.getLevelChanged().forEach(event -> event.invoke(level, newLevel));
+        // TODO
+        //BigShotClientEvents.INSTANCE.getLevelChanged().forEach(event -> event.invoke(level, newLevel));
     }
 
     @Inject(
@@ -42,6 +43,8 @@ public class MinecraftMixin {
             )
     )
     private void addInitialScreens(List<Function<Runnable, Screen>> list, CallbackInfo ci) {
+        // TODO
+        /*
         BigShotClientEntrypoint.Companion.displayInitialScreens((text, onClose) -> {
             list.add(onClose1 -> new InitialScreen(text, () -> {
                 onClose.invoke();
@@ -49,5 +52,6 @@ public class MinecraftMixin {
                 return Unit.INSTANCE;
             }, new LogoRenderer(true)));
         });
+         */
     }
 }

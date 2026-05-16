@@ -51,6 +51,7 @@ interface WrapperUtil {
     fun unwrap(source: NeoMultiBufferSource): MultiBufferSource
 
     companion object {
+        @JvmStatic
         val INSTANCE by lazy { WrapperUtil::class.loadService() }
     }
 }

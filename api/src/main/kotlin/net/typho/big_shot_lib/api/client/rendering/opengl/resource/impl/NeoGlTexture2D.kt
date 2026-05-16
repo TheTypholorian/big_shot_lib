@@ -6,7 +6,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBound
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
-import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext
 import org.lwjgl.opengl.GL11.GL_TEXTURE_HEIGHT
 import org.lwjgl.opengl.GL11.GL_TEXTURE_INTERNAL_FORMAT
 import org.lwjgl.opengl.GL11.GL_TEXTURE_WIDTH
@@ -14,13 +13,11 @@ import org.lwjgl.opengl.GL11.glGetTexLevelParameteri
 
 open class NeoGlTexture2D(
     glId: Int,
-    autoFree: Boolean,
     format: GlTextureFormat?,
     width: Int,
-    height: Int,
-    context: RenderingContext = RenderingContext.get()
-) : NeoGlResource(GlResourceType.TEXTURE, glId, autoFree, context), GlTexture2D {
-    constructor() : this(GlResourceType.TEXTURE.create(), true, null, -1, -1)
+    height: Int
+) : NeoGlResource(GlResourceType.TEXTURE, glId), GlTexture2D {
+    constructor() : this(GlResourceType.TEXTURE.create(), null, -1, -1)
 
     override var format: GlTextureFormat? = format
         protected set
@@ -35,7 +32,7 @@ open class NeoGlTexture2D(
             throw IllegalArgumentException("Non-2D texture target $target")
         }
 
-        return object : GlBoundTexture2D.Basic(this, target, NeoGlStateManager.CURRENT.textures[target].push(glId)) {
+        return object : GlBoundTexture2D.Basic(this, target, NeoGlStateManager.MAIN.textures[target].push(glId)) {
             override fun resize(width: Int, height: Int, format: GlTextureFormat) {
                 this@NeoGlTexture2D.format = format
                 this@NeoGlTexture2D.width = width
@@ -50,10 +47,9 @@ open class NeoGlTexture2D(
             glId: Int,
             target: GlTextureTarget
         ): NeoGlTexture2D {
-            NeoGlStateManager.CURRENT.textures[target].push(glId).use {
+            NeoGlStateManager.MAIN.textures[target].push(glId).use {
                 return NeoGlTexture2D(
                     glId,
-                    false,
                     GlTextureFormat.fromInternalId(glGetTexLevelParameteri(target.glId, 0, GL_TEXTURE_INTERNAL_FORMAT)),
                     glGetTexLevelParameteri(target.glId, 0, GL_TEXTURE_WIDTH),
                     glGetTexLevelParameteri(target.glId, 0, GL_TEXTURE_HEIGHT)

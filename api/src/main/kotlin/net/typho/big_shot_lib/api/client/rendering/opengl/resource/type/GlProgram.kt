@@ -1,12 +1,14 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
 
+import net.minecraft.client.renderer.ShaderInstance
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.error.ShaderLinkException
 import net.typho.big_shot_lib.api.error.ShaderValidationException
 import net.typho.big_shot_lib.api.util.resource.NamedResource
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
+import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
+import net.typho.big_shot_lib.impl.util.ImmutableExtension
 
 interface GlProgram : NamedResource, GlResource {
     val format: NeoVertexFormat
@@ -34,4 +36,16 @@ interface GlProgram : NamedResource, GlResource {
             onError(getInfoLog())
         }
     }
+
+    companion object {
+        @JvmStatic
+        @JvmOverloads
+        fun create(location: NeoIdentifier, format: NeoVertexFormat, glId: Int = GlResourceType.PROGRAM.create()): GlProgram = InternalUtil.INSTANCE.createProgram(
+            location,
+            format,
+            glId,
+        )
+    }
+
+    interface ExtensionValue : GlProgram, ImmutableExtension<ShaderInstance>
 }

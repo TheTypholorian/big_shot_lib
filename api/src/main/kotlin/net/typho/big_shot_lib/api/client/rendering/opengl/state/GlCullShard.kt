@@ -9,8 +9,8 @@ sealed interface GlCullShard : GlDrawStateShard {
         val face: GlCullFace
     ) : GlCullShard {
         override fun bind(): BoundResource {
-            val flag = NeoGlStateManager.CURRENT.cullFaceEnabled.push(true)
-            val face = NeoGlStateManager.CURRENT.cullFace.push(face)
+            val flag = NeoGlStateManager.MAIN.cullFaceEnabled.push(true)
+            val face = NeoGlStateManager.MAIN.cullFace.push(face)
 
             return BoundResource.all(flag, face)
         }
@@ -18,7 +18,7 @@ sealed interface GlCullShard : GlDrawStateShard {
 
     object Disabled : GlCullShard {
         override fun bind(): BoundResource {
-            return NeoGlStateManager.CURRENT.cullFaceEnabled.push(false)
+            return NeoGlStateManager.MAIN.cullFaceEnabled.push(false)
         }
     }
 }
