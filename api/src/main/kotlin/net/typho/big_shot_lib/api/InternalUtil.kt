@@ -46,10 +46,6 @@ interface InternalUtil {
 
     fun mainWindowHandle(): Long
 
-    fun onBind(program: GlProgram)
-
-    fun onUnbind(program: GlProgram)
-
     fun createShader(location: NeoIdentifier, type: GlShaderType, glId: Int): GlShader
 
     fun createProgram(location: NeoIdentifier, format: NeoVertexFormat, glId: Int): GlProgram
