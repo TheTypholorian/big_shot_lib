@@ -1,5 +1,8 @@
 package net.typho.big_shot_lib.plugin
 
+import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.ClassRename
+import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.FieldRename
+import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.MethodRename
 import net.typho.big_shot_lib.plugin.transform.DependencyRemapper
 import net.typho.big_shot_lib.plugin.transform.DependencyTransformer
 import org.gradle.api.artifacts.transform.InputArtifact
@@ -7,7 +10,10 @@ import org.gradle.api.artifacts.transform.TransformAction
 import org.gradle.api.artifacts.transform.TransformOutputs
 import org.gradle.api.artifacts.transform.TransformParameters
 import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Input
 import org.gradle.internal.file.impl.DefaultFileMetadata.file
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
@@ -28,7 +34,7 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
         val inFile = input.get().asFile
         val outFile = outputs.file(inFile.name.replace(".jar", "-neo-tweaked.jar"))
 
-        val remapper = DependencyRemapper(Opcodes.ASM9)
+        val remapper = DependencyRemapper(parameters, Opcodes.ASM9)
 
         JarFile(inFile, false).use { jar ->
             JarOutputStream(FileOutputStream(outFile)).use { out ->
@@ -84,5 +90,12 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
         }
     }
 
-    interface Parameters : TransformParameters
+    interface Parameters : TransformParameters {
+        @get:Input
+        val classRenames: ListProperty<ClassRename>
+        @get:Input
+        val methodRenames: ListProperty<MethodRename>
+        @get:Input
+        val fieldRenames: ListProperty<FieldRename>
+    }
 }

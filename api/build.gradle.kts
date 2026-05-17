@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.loom)
-    id("net.typho.big_shot_lib.plugin") version "1.0.0"
+    id("net.typho.big_shot_lib.plugin")
 }
 
 val version: String by project
@@ -16,8 +16,19 @@ kotlin {
     }
 }
 
-tasks.named("revertBigShotTransforms") {
-    enabled = false
+//tasks.named("revertBigShotTransforms") {
+//    enabled = false
+//}
+
+bigShotLib {
+    transformInfo {
+        renameMethod(
+            "net/minecraft/resources/Identifier",
+            "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
+            "withDefaultNamespace",
+            "minecraft"
+        )
+    }
 }
 
 repositories {

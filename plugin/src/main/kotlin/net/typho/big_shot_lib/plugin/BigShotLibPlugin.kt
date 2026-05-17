@@ -1,16 +1,20 @@
 package net.typho.big_shot_lib.plugin
 
 import net.typho.big_shot_lib.plugin.task.GenerateModMetadataTask
-import net.typho.big_shot_lib.plugin.task.RevertTransformsTask
 import net.typho.big_shot_lib.plugin.transform.ProjectRemapper
 import net.typho.big_shot_lib.plugin.transform.ProjectTransformer
+import net.typho.big_shot_lib.plugin.transform.util.AnnotationField
+import net.typho.big_shot_lib.plugin.transform.util.AnnotationScanner
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
+import org.gradle.api.tasks.bundling.Jar
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.ClassRemapper
+import java.util.jar.JarFile
+import kotlin.jvm.java
 
 class BigShotLibPlugin : Plugin<Project> {
     override fun apply(project: Project) {
@@ -20,10 +24,6 @@ class BigShotLibPlugin : Plugin<Project> {
             it.group = "big_shot_lib"
             it.metadata.set(ext.metadata)
             it.destination.set(project.layout.buildDirectory.dir("generated/bigShotLib"))
-        }
-
-        val revertTransformsTask = project.tasks.register("revertBigShotTransforms", RevertTransformsTask::class.java) {
-            it.group = "big_shot_lib"
         }
 
         project.pluginManager.withPlugin("java") {
@@ -41,14 +41,70 @@ class BigShotLibPlugin : Plugin<Project> {
             project.dependencies.registerTransform(DependencyTransformAction::class.java) {
                 it.from.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "jar")
                 it.to.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "big-shot-jar")
+                it.parameters.classRenames.set(ext.transformInfo.classRenames)
+                it.parameters.methodRenames.set(ext.transformInfo.methodRenames)
+                it.parameters.fieldRenames.set(ext.transformInfo.fieldRenames)
             }
 
             //project.tasks.getByName("processResources") {
             //    it.dependsOn(modMetadataTask)
             //}
 
-            project.tasks.named("classes") {
-                it.dependsOn(revertTransformsTask)
+            project.tasks.withType(Jar::class.java) { task ->
+                val out = project.layout.buildDirectory.dir("big_shot_classes").get().asFile
+                val inputs = task.inputs.files
+
+                task.inputs.dir(out)
+
+                task.doFirst {
+                    out.deleteRecursively()
+                    out.mkdirs()
+
+                    val annotations = AnnotationScanner(setOf(
+                        AnnotationField.NAMESPACE
+                    ))
+                    var visited = 0
+
+                    for (file in project.configurations.getByName("compileClasspath").resolve()) {
+                        if (file.extension == "jar") {
+                            JarFile(file, false).use { jar ->
+                                for (entry in jar.stream()) {
+                                    if (entry.name.endsWith(".class")) {
+                                        visited++
+                                        ClassReader(jar.getInputStream(entry)).accept(annotations.createVisitor(), ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    inputs.forEach {
+                        it.walkTopDown().forEach { file ->
+                            if (file.extension == "class") {
+                                visited++
+                                ClassReader(file.readBytes()).accept(annotations.createVisitor(), ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
+                            }
+                        }
+                    }
+
+                    println("Visited $visited files")
+
+                    inputs.forEach { file ->
+                        if (file.extension == "class") {
+                            val bytes = file.readBytes()
+                            val reader = ClassReader(bytes)
+                            val writer = ClassWriter(0)
+                            val remapper = ProjectRemapper(ext.transformInfo, Opcodes.ASM9, annotations)
+                            val transformer = ProjectTransformer(Opcodes.ASM9, null) // ClassRemapper(writer, remapper),
+                            reader.accept(ClassRemapper(writer, remapper), 0)
+                            reader.accept(transformer, 0)
+
+                            val target = out.resolve("${transformer.desc!!.name}.class")
+                            target.parentFile.mkdirs()
+                            target.writeBytes(writer.toByteArray())
+                        }
+                    }
+                }
             }
         }
     }

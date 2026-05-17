@@ -73,13 +73,13 @@ class AnnotationScanner(
         }
 
         override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {
+            val descriptor = descriptor.removePrefix("L").removeSuffix(";")
+
             if (annotations.contains(descriptor)) {
-                println("Found annotation $descriptor on $desc")
                 val values = classes.computeIfAbsent(descriptor) { hashMapOf() }
 
                 return object : AnnotationVisitor(api, super.visitAnnotation(descriptor, visible)) {
                     override fun visit(name: String, value: Any?) {
-                        println("\tfound value $name $value")
                         values[name] = value
                     }
                 }
