@@ -10,6 +10,8 @@ class BigShotLibPluginTest {
     fun test() {
         val projectDir = createTempDirectory().toFile()
 
+        println(projectDir)
+
         File(projectDir, "settings.gradle.kts").writeText("")
         File(projectDir, "build.gradle.kts").writeText("""
             plugins {
@@ -41,23 +43,36 @@ class BigShotLibPluginTest {
         File(projectDir, "src/main/kotlin/Main.kt").apply {
             parentFile.mkdirs()
             writeText("""
-                //import org.objectweb.asm.ClassReader
+                import org.objectweb.asm.ClassReader
 
                 fun main() {
                     println("this should never run")
 
-                    //val reader = ClassReader("")
-                    //reader.test_accept(null, 0)
+                    val reader = ClassReader("")
+                    reader.test_accept(null, 0)
+                }
+            """.trimIndent())
+        }
+        File(projectDir, "src/main/java/Java.java").apply {
+            parentFile.mkdirs()
+            writeText("""
+                import org.objectweb.asm.ClassReader;
+                import java.io.IOException;
+                
+                class Java {
+                    public static void main() throws IOException {
+                        ClassReader reader = new ClassReader("");
+                        reader.test_accept(null, 0);
+                    }
                 }
             """.trimIndent())
         }
 
-        val result = GradleRunner.create()
+        GradleRunner.create()
             .withProjectDir(projectDir)
             .withPluginClasspath()
-            .withArguments("generateModMetadata")
+            .withArguments("build")
+            .forwardOutput()
             .build()
-
-        println(result.output)
     }
 }

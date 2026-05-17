@@ -57,7 +57,29 @@ abstract class DependencyTransform : TransformAction<DependencyTransform.Paramet
             signature: String?,
             exceptions: Array<out String?>?
         ): MethodVisitor? {
-            return super.visitMethod(access, "test_$name", descriptor, signature, exceptions)
+            return super.visitMethod(access, if (name == "accept") "test_accept" else name, descriptor, signature, exceptions)
+        }
+    }
+
+    class ReverseVisitor(visitor: ClassVisitor) : ClassVisitor(Opcodes.ASM9, visitor) {
+        override fun visitMethod(
+            access: Int,
+            name: String?,
+            descriptor: String?,
+            signature: String?,
+            exceptions: Array<out String?>?
+        ): MethodVisitor {
+            return object : MethodVisitor(Opcodes.ASM9, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+                override fun visitMethodInsn(
+                    opcode: Int,
+                    owner: String?,
+                    name: String?,
+                    descriptor: String?,
+                    isInterface: Boolean
+                ) {
+                    super.visitMethodInsn(opcode, owner, if (name == "test_accept") "accept" else name, descriptor, isInterface)
+                }
+            }
         }
     }
 
