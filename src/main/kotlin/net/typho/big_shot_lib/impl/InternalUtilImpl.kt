@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.impl
 
-import com.google.common.collect.ImmutableList
 import com.mojang.blaze3d.shaders.Program
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat

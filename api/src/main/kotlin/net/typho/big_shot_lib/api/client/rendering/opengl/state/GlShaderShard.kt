@@ -7,21 +7,24 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUnifor
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.FileNotFoundException
+import java.util.function.Consumer
 
 interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
     val program: GlProgram?
-    val uniforms: GlBoundProgram.() -> Unit
-    val textures: Map<String, GlTextureBinding>
+    val uniforms: Consumer<GlBoundProgram>
+    val textures: Array<GlTextureBinding?>
 
     override fun bind(): GlBoundProgram {
         program?.let {
             val program = it.use()
 
-            textures.forEach { (name, binding) ->
-                program.setTexture(name, binding)
+            textures.forEachIndexed { index, binding ->
+                if (binding != null) {
+                    program.setTexture(index, binding)
+                }
             }
 
-            uniforms(program)
+            uniforms.accept(program)
 
             return program
         }
@@ -29,18 +32,18 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
         return object : GlBoundProgram {
             override fun setUniform(
                 name: String,
-                value: GlUniform.() -> Unit
+                value: Consumer<GlUniform>
             ) {
             }
 
             override fun setTexture(
-                name: String,
+                index: Int,
                 binding: GlTextureBinding
             ) {
             }
 
             override fun setTextureArray(
-                name: String,
+                index: Int,
                 vararg bindings: GlTextureBinding
             ) {
             }
@@ -52,81 +55,120 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
         }
     }
 
-    fun texture(name: String, binding: GlTextureBinding): GlShaderShard {
-        (textures as MutableMap<String, GlTextureBinding>)[name] = binding
+    fun texture(index: Int, binding: GlTextureBinding): GlShaderShard {
+        textures[index] = binding
         return this
     }
 
-    data class NoShader(
-        override val textures: Map<String, GlTextureBinding>
+    data class NoShader @JvmOverloads constructor(
+        override val textures: Array<GlTextureBinding?> = Array(12) { null }
     ) : GlShaderShard {
-        @SafeVarargs
-        constructor(
-            vararg textures: Pair<String, GlTextureBinding>
-        ) : this(mutableMapOf(*textures))
-
         override val program: GlProgram
             get() = throw NullPointerException("No shader")
-        override val uniforms: GlBoundProgram.() -> Unit = {}
+        override val uniforms: Consumer<GlBoundProgram> = Consumer { }
         override val location: NeoIdentifier? = null
 
-        override fun texture(name: String, binding: GlTextureBinding): NoShader {
-            (textures as MutableMap<String, GlTextureBinding>)[name] = binding
+        override fun texture(index: Int, binding: GlTextureBinding): GlShaderShard {
+            textures[index] = binding
             return this
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is NoShader) return false
+
+            if (!textures.contentEquals(other.textures)) return false
+            if (uniforms != other.uniforms) return false
+            if (location != other.location) return false
+            if (program != other.program) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = textures.contentHashCode()
+            result = 31 * result + uniforms.hashCode()
+            result = 31 * result + (location?.hashCode() ?: 0)
+            result = 31 * result + program.hashCode()
+            return result
         }
     }
 
     data class FromLocation @JvmOverloads constructor(
         override val location: NeoIdentifier,
-        override val uniforms: GlBoundProgram.() -> Unit = { },
-        override val textures: Map<String, GlTextureBinding>
+        override val uniforms: Consumer<GlBoundProgram> = Consumer { },
+        override val textures: Array<GlTextureBinding?> = Array(12) { null }
     ) : GlShaderShard {
-        @SafeVarargs
-        @JvmOverloads
-        constructor(
-            location: NeoIdentifier,
-            uniforms: GlBoundProgram.() -> Unit = { },
-            vararg textures: Pair<String, GlTextureBinding>
-        ) : this(location, uniforms, mutableMapOf(*textures))
-
         override val program: GlProgram
             // TODO
             get() = NeoShaderLoader[location] ?: throw FileNotFoundException("Couldn't find shader program $location")
 
-        override fun texture(name: String, binding: GlTextureBinding): FromLocation {
-            (textures as MutableMap<String, GlTextureBinding>)[name] = binding
+        override fun texture(index: Int, binding: GlTextureBinding): FromLocation {
+            textures[index] = binding
             return this
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is FromLocation) return false
+
+            if (location != other.location) return false
+            if (uniforms != other.uniforms) return false
+            if (!textures.contentEquals(other.textures)) return false
+            if (program != other.program) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = location.hashCode()
+            result = 31 * result + uniforms.hashCode()
+            result = 31 * result + textures.contentHashCode()
+            result = 31 * result + program.hashCode()
+            return result
         }
     }
 
     data class FromInstance @JvmOverloads constructor(
         private val getter: () -> GlProgram?,
-        override val uniforms: GlBoundProgram.() -> Unit = { },
-        override val textures: Map<String, GlTextureBinding>
+        override val uniforms: Consumer<GlBoundProgram> = Consumer { },
+        override val textures: Array<GlTextureBinding?> = Array(12) { null }
     ) : GlShaderShard {
-        @SafeVarargs
-        @JvmOverloads
-        constructor(
-            getter: () -> GlProgram?,
-            uniforms: GlBoundProgram.() -> Unit = { },
-            vararg textures: Pair<String, GlTextureBinding>
-        ) : this(getter, uniforms, mutableMapOf(*textures))
-
         override val program: GlProgram?
             get() = getter()
         override val location: NeoIdentifier?
             get() = program?.location
 
-        override fun texture(name: String, binding: GlTextureBinding): FromInstance {
-            (textures as MutableMap<String, GlTextureBinding>)[name] = binding
+        override fun texture(index: Int, binding: GlTextureBinding): FromInstance {
+            textures[index] = binding
             return this
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is FromLocation) return false
+
+            if (location != other.location) return false
+            if (uniforms != other.uniforms) return false
+            if (!textures.contentEquals(other.textures)) return false
+            if (program != other.program) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = location.hashCode()
+            result = 31 * result + uniforms.hashCode()
+            result = 31 * result + textures.contentHashCode()
+            result = 31 * result + program.hashCode()
+            return result
         }
     }
 
     object Disabled : GlShaderShard {
         override val program: GlProgram? = null
-        override val uniforms: GlBoundProgram.() -> Unit = { }
-        override val textures: Map<String, GlTextureBinding> = mapOf()
+        override val uniforms: Consumer<GlBoundProgram> = Consumer { }
+        override val textures: Array<GlTextureBinding?> = Array(12) { null }
         override val location: NeoIdentifier? = null
     }
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.Pair;
 import kotlin.Unit;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode;
@@ -117,23 +118,23 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public @NotNull GlShaderShard getShader() {
-            Pair<String, GlTextureBinding>[] textures = state.textureState.cutoutTexture()
-                    .map(texture -> (Pair<String, GlTextureBinding>[]) new Pair[]{
-                            new Pair<>(
-                                    "Sampler0",
-                                    new GlTextureBinding.FromLocation(
-                                            IdentifierUtilKt.getNeo(texture),
-                                            GlTextureTarget.TEXTURE_2D
-                                    )
-                            )
-                    })
-                    .orElseGet(() -> new Pair[0]);
+            GlTextureBinding[] textures = new GlTextureBinding[12];
+            GlTextureBinding[] from = ImmutableExtensionKt.getExtensionValueNullable(state.textureState, GlTextureBinding[].class);
+
+            if (from == null) {
+                state.textureState.cutoutTexture().ifPresent(texture -> textures[0] = new GlTextureBinding.FromLocation(
+                        IdentifierUtilKt.getNeo(texture),
+                        GlTextureTarget.TEXTURE_2D
+                ));
+            } else {
+                System.arraycopy(from, 0, textures, 0, from.length);
+            }
+
             return state.shaderState.shader.<GlShaderShard>map(shader ->
                     new GlShaderShard.FromInstance(
                             () -> ImmutableExtensionKt.getExtensionValue(shader.get(), GlProgram.class),
-                            program -> Unit.INSTANCE,
+                            program -> { },
                             textures
                     )
             ).orElseGet(() -> new GlShaderShard.NoShader(textures));

@@ -7,12 +7,14 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import org.lwjgl.opengl.GL33.glBindSampler
+import java.util.function.BiConsumer
+import java.util.function.Consumer
 
 class BoundMinecraftProgram(
     override val resource: GlProgram,
-    private val setUniform: (name: String, value: GlUniform.() -> Unit) -> Unit,
-    private val setTexture: (name: String, binding: GlTextureBinding) -> Unit,
-    private val setTextureArray: (name: String, bindings: Array<out GlTextureBinding>) -> Unit,
+    private val setUniform: BiConsumer<String, Consumer<GlUniform>>,
+    private val setTexture: BiConsumer<Int, GlTextureBinding>,
+    private val setTextureArray: BiConsumer<Int, Array<out GlTextureBinding>>,
 ) : GlBoundProgram {
     override val handle: GlStateStack.Handle<Int> = NeoGlStateManager.MAIN.program.push(resource.glId)
     val initialTextureUnit = NeoGlStateManager.MAIN.activeTexture
@@ -20,23 +22,23 @@ class BoundMinecraftProgram(
 
     override fun setUniform(
         name: String,
-        value: GlUniform.() -> Unit
+        value: Consumer<GlUniform>
     ) {
-        setUniform.invoke(name, value)
+        setUniform.accept(name, value)
     }
 
     override fun setTexture(
-        name: String,
+        index: Int,
         binding: GlTextureBinding
     ) {
-        setTexture.invoke(name, binding)
+        setTexture.accept(index, binding)
     }
 
     override fun setTextureArray(
-        name: String,
+        index: Int,
         vararg bindings: GlTextureBinding
     ) {
-        setTextureArray.invoke(name, bindings)
+        setTextureArray.accept(index, bindings)
     }
 
     override fun unbind() {

@@ -6,12 +6,12 @@ interface GlQueue {
     /**
      * Queue the task to be run at the end of the frame
      */
-    fun queue(task: () -> Unit)
+    fun queue(task: Runnable)
 
     /**
      * Run the task immediately if on the render thread, otherwise queue it
      */
-    fun runOrQueue(task: () -> Unit)
+    fun runOrQueue(task: Runnable)
 
     companion object {
         @JvmStatic

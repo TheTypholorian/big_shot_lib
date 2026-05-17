@@ -12,6 +12,7 @@ import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.blaze3d.shaders.Program;
 import com.mojang.blaze3d.shaders.Shader;
 import com.mojang.blaze3d.shaders.Uniform;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import kotlin.Unit;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -268,20 +269,15 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
                                 Uniform uniform = getUniform(name);
 
                                 if (uniform != null) {
-                                    value.invoke(ImmutableExtensionKt.getExtensionValue(uniform, GlUniform.class));
+                                    value.accept(ImmutableExtensionKt.getExtensionValue(uniform, GlUniform.class));
                                 }
-
-                                return Unit.INSTANCE;
                             },
-                            (name, binding) -> {
-                                setSampler(name, binding);
-
-                                return Unit.INSTANCE;
+                            (index, binding) -> {
+                                RenderSystem._setShaderTexture(index, binding.getTexture().getGlId());
                             },
-                            (name, bindings) -> {
-                                setSampler(name, bindings);
-
-                                return Unit.INSTANCE;
+                            (index, bindings) -> {
+                                throw new UnsupportedOperationException();
+                                //setSampler("Sampler" + name, bindings);
                             }
                     );
                 }

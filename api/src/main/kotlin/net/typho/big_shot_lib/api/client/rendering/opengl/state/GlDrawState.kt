@@ -153,13 +153,13 @@ interface GlDrawState {
         @JvmOverloads
         fun shader(
             location: NeoIdentifier,
-            uniforms: GlBoundProgram.() -> Unit = { }
+            uniforms: Consumer<GlBoundProgram> = { }
         ) = shader(GlShaderShard.FromLocation(location, uniforms))
 
         @JvmOverloads
         fun shader(
             getter: () -> GlProgram?,
-            uniforms: GlBoundProgram.() -> Unit = { }
+            uniforms: Consumer<GlBoundProgram> = { }
         ) = shader(GlShaderShard.FromInstance(getter, uniforms))
 
         fun texture(name: String, binding: GlTextureBinding): Builder {
