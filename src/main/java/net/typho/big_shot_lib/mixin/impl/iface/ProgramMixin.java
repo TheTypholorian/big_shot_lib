@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.shaders.Program;
+import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType;
-import net.typho.big_shot_lib.api.util.resource.Identifier;
+import net.typho.big_shot_lib.impl.client.rendering.opengl.GlShaderExtensionValue;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -89,7 +89,7 @@ public abstract class ProgramMixin implements ImmutableExtension<GlShaderExtensi
         @Override
         @NotNull
         public Identifier getLocation() {
-            return new Identifier(name);
+            return Identifier.parse(name);
         }
 
         @Override

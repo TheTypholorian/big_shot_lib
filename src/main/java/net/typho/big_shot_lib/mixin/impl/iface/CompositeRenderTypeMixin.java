@@ -3,19 +3,16 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.Pair;
-import kotlin.Unit;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode;
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlPolygonMode;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
-import net.typho.big_shot_lib.api.util.resource.Identifier;
-import net.typho.big_shot_lib.impl.IdentifierUtilKt;
+import net.typho.big_shot_lib.impl.client.rendering.opengl.NeoRenderTypeExtensionValue;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
@@ -124,7 +121,7 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
 
             if (from == null) {
                 state.textureState.cutoutTexture().ifPresent(texture -> textures[0] = new GlTextureBinding.FromLocation(
-                        IdentifierUtilKt.getNeo(texture),
+                        texture,
                         GlTextureTarget.TEXTURE_2D
                 ));
             } else {

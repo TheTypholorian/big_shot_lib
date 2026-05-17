@@ -30,7 +30,7 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
 
         val remapper = DependencyRemapper(Opcodes.ASM9)
 
-        JarFile(inFile).use { jar ->
+        JarFile(inFile, false).use { jar ->
             JarOutputStream(FileOutputStream(outFile)).use { out ->
                 for (entry in jar.stream()) {
                     jar.getInputStream(entry).use { stream ->

@@ -8,8 +8,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgra
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats;
-import net.typho.big_shot_lib.api.util.resource.Identifier;
-import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,23 +24,20 @@ public abstract class RenderTypeMixin {
     public static BiFunction<Identifier, Boolean, RenderType> ENTITY_TRANSLUCENT;
 
     static {
-        ENTITY_TRANSLUCENT = Util.memoize((texture, affectsOutline) -> {
-            Identifier neoTexture = IdentifierUtilKt.getNeo(texture);
-            return ImmutableExtensionKt.getExtensionValue(
-                    NeoRenderType.create(
-                            new Identifier("minecraft", "entity_translucent"),
-                            NeoVertexFormats.NEW_ENTITY,
-                            new GlDrawState.Builder()
-                                    .cull(GlCullFace.FRONT)
-                                    .lightmap()
-                                    .overlay()
-                                    .shader(GlProgram.BUILTINS::getEntityTranslucent)
-                                    .texture("Sampler0", neoTexture)
-                                    .build(),
-                            1536
-                    ),
-                    RenderType.class
-            );
-        });
+        ENTITY_TRANSLUCENT = Util.memoize((texture, affectsOutline) -> ImmutableExtensionKt.getExtensionValue(
+                NeoRenderType.create(
+                        Identifier.withDefaultNamespace("entity_translucent"),
+                        NeoVertexFormats.NEW_ENTITY,
+                        new GlDrawState.Builder()
+                                .cull(GlCullFace.FRONT)
+                                .lightmap()
+                                .overlay()
+                                .shader(GlProgram.BUILTINS::getEntityTranslucent)
+                                .texture("Sampler0", texture)
+                                .build(),
+                        1536
+                ),
+                RenderType.class
+        ));
     }
 }

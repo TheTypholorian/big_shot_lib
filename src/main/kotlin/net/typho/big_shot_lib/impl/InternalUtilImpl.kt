@@ -250,6 +250,8 @@ object InternalUtilImpl : InternalUtil {
         val lightmap = RenderStateShard.LightmapStateShard(drawState.lightmap.enabled)
         val overlay = RenderStateShard.OverlayStateShard(drawState.overlay.enabled)
 
+        // TODO
+        /*
         val textures = when (drawState.shader.textures.size) {
             0 -> RenderStateShard.NO_TEXTURE
             1 -> {
@@ -307,6 +309,7 @@ object InternalUtilImpl : InternalUtil {
                 }
             }
         }
+         */
         val shader = RenderStateShard.ShaderStateShard { drawState.shader.program?.getExtensionValue() }
 
         return RenderType.create(
@@ -333,7 +336,7 @@ object InternalUtilImpl : InternalUtil {
                 .setLayeringState(layering)
                 .setLightmapState(lightmap)
                 .setOverlayState(overlay)
-                .setTextureState(textures)
+                //.setTextureState(textures)
                 .setShaderState(shader)
                 .createCompositeState(isOutline)
         ).getExtensionValue()

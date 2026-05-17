@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import kotlin.collections.CollectionsKt;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
+import net.typho.big_shot_lib.impl.client.rendering.opengl.NeoVertexFormatExtensionValue;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;

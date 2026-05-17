@@ -13,8 +13,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResour
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite;
-import net.typho.big_shot_lib.api.util.resource.Identifier;
-import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
@@ -52,7 +50,7 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
         return new NeoAtlas() {
             @Override
             public @NotNull Identifier getLocation() {
-                return IdentifierUtilKt.getNeo(location());
+                return location();
             }
 
             @Override
@@ -100,10 +98,7 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
             @Override
             public @NotNull Map<Identifier, NeoAtlasSprite> getSprites() {
                 return MapsKt.mapValues(
-                        MapsKt.mapKeys(
-                                texturesByName,
-                                id -> IdentifierUtilKt.getNeo(id.getKey())
-                        ),
+                        texturesByName,
                         sprite -> ImmutableExtensionKt.getExtensionValue(sprite.getValue(), NeoAtlasSprite.class)
                 );
             }

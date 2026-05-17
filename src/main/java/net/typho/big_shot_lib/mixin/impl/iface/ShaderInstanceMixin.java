@@ -14,16 +14,17 @@ import com.mojang.blaze3d.shaders.Shader;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import kotlin.Unit;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.resources.Identifier;
+import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.*;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
-import net.typho.big_shot_lib.api.util.resource.Identifier;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.BoundMinecraftProgram;
+import net.typho.big_shot_lib.impl.client.rendering.opengl.GlProgramExtensionValue;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
@@ -202,7 +203,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
 
                 @Override
                 public @NotNull Identifier getLocation() {
-                    return new Identifier(name);
+                    return Identifier.parse(name);
                 }
 
                 @Override
@@ -300,7 +301,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
         uniforms = Lists.newArrayList();
         uniformLocations = Lists.newArrayList();
         uniformMap = Maps.newHashMap();
-        name = location.toShortString();
+        name = BigShotApi.toShortString(location);
         vertexFormat = ImmutableExtensionKt.getExtensionValue(format, VertexFormat.class);
         programId = glId;
     }

@@ -5,6 +5,7 @@ import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.GlQueueImpl;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,8 +20,8 @@ public class RenderSystemMixin {
     )
     private static void flipFrame(CallbackInfo ci) {
         synchronized (GlQueueImpl.queue) {
-            for (Function0<Unit> task : GlQueueImpl.queue) {
-                task.invoke();
+            for (Runnable task : GlQueueImpl.queue) {
+                task.run();
             }
 
             GlQueueImpl.queue.clear();

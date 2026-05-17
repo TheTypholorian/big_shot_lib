@@ -11,13 +11,14 @@ import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite;
-import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+
+import java.util.Objects;
 
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(TextureAtlasSprite.class)
@@ -54,7 +55,7 @@ public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprit
     private final NeoAtlasSprite big_shot_lib$extension_value = new NeoAtlasSprite() {
         @Override
         public @NotNull NeoAtlas getAtlas() {
-            return NeoAtlas.get(IdentifierUtilKt.getNeo(atlasLocation));
+            return Objects.requireNonNull(NeoAtlas.get(atlasLocation));
         }
 
         @Override

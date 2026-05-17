@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.plugin
 
 import net.typho.big_shot_lib.plugin.task.GenerateModMetadataTask
+import net.typho.big_shot_lib.plugin.task.RevertTransformsTask
 import net.typho.big_shot_lib.plugin.transform.ProjectRemapper
 import net.typho.big_shot_lib.plugin.transform.ProjectTransformer
 import org.gradle.api.Plugin
@@ -21,22 +22,8 @@ class BigShotLibPlugin : Plugin<Project> {
             it.destination.set(project.layout.buildDirectory.dir("generated/bigShotLib"))
         }
 
-        val revertTransformsTask = project.tasks.register("revertBigShotTransforms") {
+        val revertTransformsTask = project.tasks.register("revertBigShotTransforms", RevertTransformsTask::class.java) {
             it.group = "big_shot_lib"
-            val srcDir = project.layout.buildDirectory.dir("classes").get().asFile
-
-            srcDir.walkTopDown().forEach { file ->
-                if (file.extension == "class") {
-                    val bytes = file.readBytes()
-                    val reader = ClassReader(bytes)
-                    val writer = ClassWriter(0)
-                    val remapper = ProjectRemapper(Opcodes.ASM9)
-                    val transformer = ProjectTransformer(Opcodes.ASM9, ClassRemapper(writer, remapper))
-                    reader.accept(transformer, 0)
-
-                    file.writeBytes(writer.toByteArray())
-                }
-            }
         }
 
         project.pluginManager.withPlugin("java") {
