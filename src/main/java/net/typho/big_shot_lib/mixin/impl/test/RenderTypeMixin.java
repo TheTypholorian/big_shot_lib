@@ -1,7 +1,5 @@
 package net.typho.big_shot_lib.mixin.impl.test;
 
-import kotlin.Pair;
-import kotlin.Unit;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +16,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 
-import java.util.Objects;
 import java.util.function.BiFunction;
 
 @Mixin(RenderType.class)
@@ -29,24 +26,23 @@ public abstract class RenderTypeMixin {
     public static BiFunction<ResourceLocation, Boolean, RenderType> ENTITY_TRANSLUCENT;
 
     static {
-        ENTITY_TRANSLUCENT = Util.memoize((texture, affectsOutline) -> ImmutableExtensionKt.getExtensionValue(
-                NeoRenderType.create(
-                        new NeoIdentifier("minecraft", "entity_translucent"),
-                        NeoVertexFormat.getNEW_ENTITY(),
-                        new GlDrawState.Builder(
-                                new GlShaderShard.FromInstance(
-                                        () -> Objects.requireNonNull(GlProgram.getBUILTINS().getEntityTranslucent()),
-                                        program -> Unit.INSTANCE,
-                                        new Pair<>("Sampler0", new GlTextureBinding.FromLocation(IdentifierUtilKt.getNeo(texture)))
-                                )
-                        )
-                                .cull(new GlCullShard.Enabled(GlCullFace.FRONT))
-                                .lightmap(new GlLightmapShard(true))
-                                .overlay(new GlOverlayShard(true))
-                                .build(),
-                        1536
-                ),
-                RenderType.class
-        ));
+        ENTITY_TRANSLUCENT = Util.memoize((texture, affectsOutline) -> {
+            NeoIdentifier neoTexture = IdentifierUtilKt.getNeo(texture);
+            return ImmutableExtensionKt.getExtensionValue(
+                    NeoRenderType.create(
+                            new NeoIdentifier("minecraft", "entity_translucent"),
+                            NeoVertexFormat.NEW_ENTITY,
+                            new GlDrawState.Builder()
+                                    .cull(GlCullFace.FRONT)
+                                    .lightmap()
+                                    .overlay()
+                                    .shader(GlProgram.BUILTINS::getEntityTranslucent)
+                                    .texture("Sampler0", neoTexture)
+                                    .build(),
+                            1536
+                    ),
+                    RenderType.class
+            );
+        });
     }
 }

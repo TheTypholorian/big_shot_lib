@@ -27,7 +27,7 @@ interface NeoRenderType : MaybeNamedResource {
     interface ExtensionValue : NeoRenderType, ImmutableExtension<RenderType>
 
     companion object {
-        @JvmStatic
+        @JvmField
         val BUILTINS = Builtins::class.loadService()
 
         @JvmStatic

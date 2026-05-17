@@ -47,7 +47,7 @@ interface GlProgram : NamedResource, GlResource {
             glId,
         )
 
-        @JvmStatic
+        @JvmField
         val BUILTINS = Builtins::class.loadService()
     }
 

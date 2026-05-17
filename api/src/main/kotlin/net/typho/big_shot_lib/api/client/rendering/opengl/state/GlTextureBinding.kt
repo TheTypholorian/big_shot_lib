@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.FileNotFoundException
 
-interface GlTextureBinding : MaybeNamedResource {
+sealed interface GlTextureBinding : MaybeNamedResource {
     val texture: GlTexture2D
     val target: GlTextureTarget
     val sampler: GlSampler?
@@ -22,10 +22,12 @@ interface GlTextureBinding : MaybeNamedResource {
     }
 
     data class FromInstance @JvmOverloads constructor(
-        override val texture: GlTexture2D,
+        private val getter: () -> GlTexture2D,
         override val target: GlTextureTarget = GlTextureTarget.TEXTURE_2D,
         override val sampler: GlSampler? = null
     ) : GlTextureBinding {
-        override val location: NeoIdentifier? = if (texture is MaybeNamedResource) texture.location else null
+        override val texture: GlTexture2D
+            get() = getter()
+        override val location: NeoIdentifier? = texture.let { if (it is MaybeNamedResource) it.location else null }
     }
 }
