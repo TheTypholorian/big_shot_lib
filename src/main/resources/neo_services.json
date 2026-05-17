@@ -3,7 +3,7 @@
     "net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader$ClientInit"
   ],
   "net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint": [
-    "net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat$Companion",
+    "net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat$Entrypoint",
     "net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader$CommonInit"
   ],
   "net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue": [

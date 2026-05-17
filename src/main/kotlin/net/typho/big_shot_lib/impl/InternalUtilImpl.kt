@@ -1,6 +1,8 @@
 package net.typho.big_shot_lib.impl
 
+import com.google.common.collect.ImmutableList
 import com.mojang.blaze3d.shaders.Program
+import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormat
@@ -11,6 +13,7 @@ import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.ResourceLocation
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
@@ -23,6 +26,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlCullShard
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDepthShard
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlLayeringShard
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
@@ -37,6 +41,7 @@ import net.typho.big_shot_lib.impl.util.setExtensionValue
 import org.joml.Vector3f
 import sun.misc.Unsafe
 import java.lang.reflect.Modifier
+import java.util.Optional
 
 object InternalUtilImpl : InternalUtil {
     @JvmField
@@ -245,7 +250,65 @@ object InternalUtilImpl : InternalUtil {
         layering.setExtensionValue(drawState.layering)
         val lightmap = RenderStateShard.LightmapStateShard(drawState.lightmap.enabled)
         val overlay = RenderStateShard.OverlayStateShard(drawState.overlay.enabled)
-        val shader = RenderStateShard.ShaderStateShard { drawState.shader.program.getExtensionValue() }
+
+        val textures = when (drawState.shader.textures.size) {
+            0 -> RenderStateShard.NO_TEXTURE
+            1 -> {
+                val texture = drawState.shader.textures.values.first()
+
+                if (texture is GlTextureBinding.FromLocation) {
+                    RenderStateShard.TextureStateShard(
+                        texture.location.mojang,
+                        false,
+                        true
+                    )
+                } else {
+                    object : RenderStateShard.EmptyTextureStateShard(
+                        {
+                            RenderSystem._setShaderTexture(0, texture.texture.glId)
+                        },
+                        {
+                        }
+                    ) {
+                        override fun cutoutTexture(): Optional<ResourceLocation> {
+                            return Optional.ofNullable(texture.location?.mojang)
+                        }
+                    }
+                }
+            }
+            else -> {
+                if (drawState.shader.textures.values.all { it is GlTextureBinding.FromLocation }) {
+                    val builder = RenderStateShard.MultiTextureStateShard.builder()
+
+                    for (entry in drawState.shader.textures) {
+                        builder.add(
+                            entry.value.location!!.mojang,
+                            false,
+                            true
+                        )
+                    }
+
+                    builder.build()
+                } else {
+                    object : RenderStateShard.EmptyTextureStateShard(
+                        {
+                            var i = 0 // TODO
+
+                            for (entry in drawState.shader.textures) {
+                                RenderSystem._setShaderTexture(i++, entry.value.texture.glId)
+                            }
+                        },
+                        {
+                        }
+                    ) {
+                        override fun cutoutTexture(): Optional<ResourceLocation> {
+                            return Optional.ofNullable(drawState.shader.textures.values.firstOrNull { it.location != null }?.location?.mojang)
+                        }
+                    }
+                }
+            }
+        }
+        val shader = RenderStateShard.ShaderStateShard { drawState.shader.program?.getExtensionValue() }
 
         return RenderType.create(
             location.toShortString(),
@@ -271,6 +334,7 @@ object InternalUtilImpl : InternalUtil {
                 .setLayeringState(layering)
                 .setLightmapState(lightmap)
                 .setOverlayState(overlay)
+                .setTextureState(textures)
                 .setShaderState(shader)
                 .createCompositeState(isOutline)
         ).getExtensionValue()

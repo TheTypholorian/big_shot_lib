@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
-import net.minecraft.client.renderer.RenderStateShard
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendEquation
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlCullFace

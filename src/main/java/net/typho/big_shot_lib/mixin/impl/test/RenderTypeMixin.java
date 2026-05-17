@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlCullFace;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
-import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats;
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier;
 import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
@@ -31,7 +31,7 @@ public abstract class RenderTypeMixin {
             return ImmutableExtensionKt.getExtensionValue(
                     NeoRenderType.create(
                             new NeoIdentifier("minecraft", "entity_translucent"),
-                            NeoVertexFormat.NEW_ENTITY,
+                            NeoVertexFormats.NEW_ENTITY,
                             new GlDrawState.Builder()
                                     .cull(GlCullFace.FRONT)
                                     .lightmap()

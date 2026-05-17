@@ -8,6 +8,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgra
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
@@ -101,7 +102,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
     override fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): DataResult<GlProgram> {
         val json = JsonParser.parseReader(reader).asJsonObject
         val formatKey = NeoIdentifier(json.getAsJsonPrimitive("format").asString)
-        val program = GlProgram.create(location, NeoVertexFormat.REGISTRY.lookupOrThrow().get(formatKey) ?: return DataResult.error { "Nonexistent vertex format $formatKey" })
+        val program = GlProgram.create(location, NeoVertexFormats.REGISTRY.lookupOrThrow().get(formatKey) ?: return DataResult.error { "Nonexistent vertex format $formatKey" })
         val sources = json.getAsJsonObject("sources")
 
         for (entry in sources.asMap()) {

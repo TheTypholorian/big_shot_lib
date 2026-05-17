@@ -34,7 +34,7 @@ open class Mesh(
         @JvmStatic
         val SCREEN_MESH by lazy {
             Mesh(
-                NeoVertexFormat.POSITION_TEX,
+                NeoVertexFormats.POSITION_TEX,
                 GlBeginMode.QUADS,
                 GlBufferWriter.Mode.REGULAR,
                 GlBufferUsage.STATIC_DRAW
