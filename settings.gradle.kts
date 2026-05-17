@@ -7,6 +7,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+        mavenLocal()
         maven {
             name = "Fabric"
             url = uri("https://maven.fabricmc.net")
@@ -25,10 +26,12 @@ dependencyResolutionManagement {
 }
 
 plugins {
+    kotlin("jvm") version "2.2.0" apply false
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
     id("dev.kikugie.stonecutter") version "0.9"
 }
 include("api")
+include("plugin")
 
 stonecutter {
     create(rootProject) {
@@ -44,4 +47,3 @@ stonecutter {
         vcsVersion = "mc1_21_fabric"
     }
 }
-include("plugin")

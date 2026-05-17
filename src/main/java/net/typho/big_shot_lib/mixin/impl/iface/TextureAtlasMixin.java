@@ -1,16 +1,11 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
-//? if <1.21.11 {
-import net.minecraft.resources.ResourceLocation;
-//? } else {
-/*import net.minecraft.resources.Identifier;
-*///? }
-
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.collections.MapsKt;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundTexture2D;
@@ -39,10 +34,10 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
 
     //? if <1.21.11 {
     @Shadow
-    private Map<ResourceLocation, TextureAtlasSprite> texturesByName;
+    private Map<Identifier, TextureAtlasSprite> texturesByName;
 
     @Shadow
-    public abstract ResourceLocation location();
+    public abstract Identifier location();
     //? } else {
     
     /*@Shadow

@@ -5,6 +5,7 @@ plugins {
     //id("me.modmuss50.mod-publish-plugin")
     id("com.google.devtools.ksp") version "2.2.0-2.0.2"
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
+    id("net.typho.big_shot_lib.plugin") version "1.0.0"
 }
 
 kotlin {

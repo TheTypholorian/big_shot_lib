@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
+import net.typho.big_shot_lib.impl.client.rendering.opengl.NeoVertexFormatElementExtensionValue;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(VertexFormatElement.class)
-public abstract class VertexFormatElementMixin implements ImmutableExtension<NeoVertexFormat.Element.ExtensionValue> {
+public abstract class VertexFormatElementMixin implements ImmutableExtension<NeoVertexFormatElementExtensionValue> {
     @Shadow
     @Final
     private int index;
@@ -30,7 +31,7 @@ public abstract class VertexFormatElementMixin implements ImmutableExtension<Neo
     public abstract int byteSize();
 
     @Unique
-    private final NeoVertexFormat.Element.ExtensionValue big_shot_lib$extension_value = new NeoVertexFormat.Element.ExtensionValue() {
+    private final NeoVertexFormatElementExtensionValue big_shot_lib$extension_value = new NeoVertexFormatElementExtensionValue() {
         @Override
         public int getIndex() {
             return index;
@@ -83,7 +84,7 @@ public abstract class VertexFormatElementMixin implements ImmutableExtension<Neo
     };
 
     @Override
-    public NeoVertexFormat.Element.ExtensionValue getBig_shot_lib$extension_value() {
+    public NeoVertexFormatElementExtensionValue getBig_shot_lib$extension_value() {
         return big_shot_lib$extension_value;
     }
 }

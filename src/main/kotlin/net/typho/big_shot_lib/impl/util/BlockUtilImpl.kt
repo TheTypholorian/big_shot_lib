@@ -127,11 +127,11 @@ object BlockUtilImpl : BlockUtil {
         fun face(face: NeoDirection?, random: RandomSource) {
             random.setSeed(seed)
             //? fabric {
-            /*val quads = model.getQuads(state, face?.mojang, random)
-            *///? } neoforge {
-            val modelData = model.getModelData(level, pos.blockPos, state, level.getModelData(pos.blockPos))
+            val quads = model.getQuads(state, face?.mojang, random)
+            //? } neoforge {
+            /*val modelData = model.getModelData(level, pos.blockPos, state, level.getModelData(pos.blockPos))
             val quads = model.getRenderTypes(state, random, modelData).flatMap { model.getQuads(state, face?.mojang, random, modelData, it) }
-            //? }
+            *///? }
             out(
                 face,
                 quads.mapTo(ArrayList(quads.size)) { WrapperUtil.INSTANCE.wrap(it) }
@@ -141,11 +141,11 @@ object BlockUtilImpl : BlockUtil {
         fun faceWithOffset(face: NeoDirection?, random: RandomSource) {
             random.setSeed(seed)
             //? fabric {
-            /*val quads = model.getQuads(state, face?.mojang, random)
-            *///? } neoforge {
-            val modelData = model.getModelData(level, pos.blockPos, state, level.getModelData(pos.blockPos))
+            val quads = model.getQuads(state, face?.mojang, random)
+            //? } neoforge {
+            /*val modelData = model.getModelData(level, pos.blockPos, state, level.getModelData(pos.blockPos))
             val quads = model.getRenderTypes(state, random, modelData).flatMap { model.getQuads(state, face?.mojang, random, modelData, it) }
-            //? }
+            *///? }
             out(
                 face,
                 quads.mapTo(ArrayList(quads.size)) {

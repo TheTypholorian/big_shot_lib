@@ -17,7 +17,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 
 @Mixin(VertexFormat.class)
-public abstract class VertexFormatMixin implements ImmutableExtension<NeoVertexFormat.ExtensionValue> {
+public abstract class VertexFormatMixin implements ImmutableExtension<NeoVertexFormatExtensionValue> {
     @Shadow
     @Final
     private int vertexSize;
@@ -35,7 +35,7 @@ public abstract class VertexFormatMixin implements ImmutableExtension<NeoVertexF
     public abstract int getOffset(VertexFormatElement vertexFormatElement);
 
     @Unique
-    private final NeoVertexFormat.ExtensionValue big_shot_lib$extension_value = new NeoVertexFormat.ExtensionValue() {
+    private final NeoVertexFormatExtensionValue big_shot_lib$extension_value = new NeoVertexFormatExtensionValue() {
         @Override
         public int getVertexSizeBytes() {
             return vertexSize;
@@ -83,7 +83,7 @@ public abstract class VertexFormatMixin implements ImmutableExtension<NeoVertexF
     };
 
     @Override
-    public NeoVertexFormat.ExtensionValue getBig_shot_lib$extension_value() {
+    public NeoVertexFormatExtensionValue getBig_shot_lib$extension_value() {
         return big_shot_lib$extension_value;
     }
 }

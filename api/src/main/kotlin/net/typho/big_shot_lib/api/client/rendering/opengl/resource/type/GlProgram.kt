@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
 
-import net.minecraft.client.renderer.ShaderInstance
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
@@ -9,7 +8,6 @@ import net.typho.big_shot_lib.api.error.ShaderValidationException
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.util.resource.NamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.impl.util.ImmutableExtension
 
 interface GlProgram : NamedResource, GlResource {
     val format: NeoVertexFormat
@@ -110,6 +108,4 @@ interface GlProgram : NamedResource, GlResource {
         val guiTextHighlight: GlProgram?
         val guiGhostRecipeOverlay: GlProgram?
     }
-
-    interface ExtensionValue : GlProgram, ImmutableExtension<ShaderInstance>
 }

@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.mixin.impl;
 
 //? if <1.21.11 {
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 //? } else {
 /*import net.minecraft.resources.Identifier;
 *///? }
@@ -46,7 +46,7 @@ public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprit
     @Shadow
     @Final
     //? if <1.21.11 {
-    private ResourceLocation atlasLocation;
+    private Identifier atlasLocation;
     //? } else {
     /*private Identifier atlasLocation;
     *///? }

@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL11.GL_TRUE;
 import static org.lwjgl.opengl.GL20.*;
 
 @Mixin(Program.class)
-public abstract class ProgramMixin implements ImmutableExtension<GlShader.ExtensionValue> {
+public abstract class ProgramMixin implements ImmutableExtension<GlShaderExtensionValue> {
     @Shadow
     @Final
     private Program.Type type;
@@ -30,7 +30,7 @@ public abstract class ProgramMixin implements ImmutableExtension<GlShader.Extens
     public abstract void close();
 
     @Unique
-    private final GlShader.ExtensionValue big_shot_lib$extension_value = new GlShader.ExtensionValue() {
+    private final GlShaderExtensionValue big_shot_lib$extension_value = new GlShaderExtensionValue() {
         @Override
         @NotNull
         public Program getBig_shot_lib$extension_value() {
@@ -99,7 +99,7 @@ public abstract class ProgramMixin implements ImmutableExtension<GlShader.Extens
     };
 
     @Override
-    public GlShader.ExtensionValue getBig_shot_lib$extension_value() {
+    public GlShaderExtensionValue getBig_shot_lib$extension_value() {
         return big_shot_lib$extension_value;
     }
 }

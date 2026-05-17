@@ -34,7 +34,7 @@ import java.util.Optional;
 *///? }
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(RenderType.CompositeRenderType.class)
-public abstract class CompositeRenderTypeMixin extends RenderType implements ImmutableExtension<NeoRenderType.ExtensionValue> {
+public abstract class CompositeRenderTypeMixin extends RenderType implements ImmutableExtension<NeoRenderTypeExtensionValue> {
     //? if >=1.21.5 {
     /*@Shadow
     @Final
@@ -141,7 +141,7 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         }
     };
     @Unique
-    private final NeoRenderType.ExtensionValue big_shot_lib$extension_value = new NeoRenderType.ExtensionValue() {
+    private final NeoRenderTypeExtensionValue big_shot_lib$extension_value = new NeoRenderTypeExtensionValue() {
         @Override
         @NotNull
         public NeoVertexFormat getFormat() {
@@ -207,7 +207,7 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
     };
 
     @Override
-    public NeoRenderType.ExtensionValue getBig_shot_lib$extension_value() {
+    public NeoRenderTypeExtensionValue getBig_shot_lib$extension_value() {
         return big_shot_lib$extension_value;
     }
 }

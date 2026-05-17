@@ -15,6 +15,7 @@ import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
+import java.util.function.Consumer
 
 interface GlDrawState {
     val blend: GlBlendShard
@@ -153,13 +154,13 @@ interface GlDrawState {
         @JvmOverloads
         fun shader(
             location: NeoIdentifier,
-            uniforms: Consumer<GlBoundProgram> = { }
+            uniforms: Consumer<GlBoundProgram> = Consumer { }
         ) = shader(GlShaderShard.FromLocation(location, uniforms))
 
         @JvmOverloads
         fun shader(
             getter: () -> GlProgram?,
-            uniforms: Consumer<GlBoundProgram> = { }
+            uniforms: Consumer<GlBoundProgram> = Consumer { }
         ) = shader(GlShaderShard.FromInstance(getter, uniforms))
 
         fun texture(name: String, binding: GlTextureBinding): Builder {

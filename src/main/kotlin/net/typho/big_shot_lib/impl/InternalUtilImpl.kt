@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
@@ -269,7 +269,7 @@ object InternalUtilImpl : InternalUtil {
                         {
                         }
                     ) {
-                        override fun cutoutTexture(): Optional<ResourceLocation> {
+                        override fun cutoutTexture(): Optional<Identifier> {
                             return Optional.ofNullable(texture.location?.mojang)
                         }
                     }
@@ -300,7 +300,7 @@ object InternalUtilImpl : InternalUtil {
                         {
                         }
                     ) {
-                        override fun cutoutTexture(): Optional<ResourceLocation> {
+                        override fun cutoutTexture(): Optional<Identifier> {
                             return Optional.ofNullable(drawState.shader.textures.values.firstOrNull { it.location != null }?.location?.mojang)
                         }
                     }

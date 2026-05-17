@@ -1,6 +1,7 @@
 plugins {
-    kotlin("jvm") version "2.2.0"
+    kotlin("jvm")
     `java-gradle-plugin`
+    `maven-publish`
 }
 
 group = "net.typho.big_shot_lib"
@@ -13,6 +14,8 @@ repositories {
 
 dependencies {
     implementation("org.ow2.asm:asm:9.10")
+    implementation("org.ow2.asm:asm-commons:9.10")
+    implementation("org.ow2.asm:asm-tree:9.10")
     implementation("com.google.code.gson:gson:2.13.1")
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))

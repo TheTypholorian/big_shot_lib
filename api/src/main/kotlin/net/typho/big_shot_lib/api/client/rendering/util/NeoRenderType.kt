@@ -1,13 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
-import net.minecraft.client.renderer.RenderType
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.impl.util.ImmutableExtension
 
 interface NeoRenderType : MaybeNamedResource {
     val format: NeoVertexFormat
@@ -23,8 +21,6 @@ interface NeoRenderType : MaybeNamedResource {
     val drawState: GlDrawState
 
     fun bind(): BoundResource = drawState.bind()
-
-    interface ExtensionValue : NeoRenderType, ImmutableExtension<RenderType>
 
     companion object {
         @JvmField

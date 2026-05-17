@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.test;
 
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlCullFace;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
@@ -23,7 +23,7 @@ public abstract class RenderTypeMixin {
     @Shadow
     @Final
     @Mutable
-    public static BiFunction<ResourceLocation, Boolean, RenderType> ENTITY_TRANSLUCENT;
+    public static BiFunction<Identifier, Boolean, RenderType> ENTITY_TRANSLUCENT;
 
     static {
         ENTITY_TRANSLUCENT = Util.memoize((texture, affectsOutline) -> {

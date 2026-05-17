@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.loom)
+    id("net.typho.big_shot_lib.plugin") version "1.0.0"
 }
 
 val version: String by project
@@ -13,6 +14,10 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xjvm-default=all")
     }
+}
+
+tasks.named("revertBigShotTransforms") {
+    enabled = false
 }
 
 repositories {

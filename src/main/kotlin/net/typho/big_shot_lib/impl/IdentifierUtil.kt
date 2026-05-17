@@ -1,34 +1,21 @@
 package net.typho.big_shot_lib.impl
 
-//? if <1.21.11 {
-import net.minecraft.resources.ResourceLocation
-//? } else {
-/*import net.minecraft.resources.Identifier
-*///? }
-
+import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.api.util.resource.NeoTagKey
 
-//? if <1.21.11 {
-val ResourceLocation.neo: NeoIdentifier
+val Identifier.neo: NeoIdentifier
     get() = NeoIdentifier(namespace, path)
-//? } else {
-/*val Identifier.neo: NeoIdentifier
-    get() = NeoIdentifier(namespace, path)
-*///? }
 
-//? if >=1.21.11 {
-/*val NeoIdentifier.mojang: Identifier
+//? if >=1.21 {
+val NeoIdentifier.mojang: Identifier
     get() = Identifier.fromNamespaceAndPath(namespace, path)
-*///? } else if >=1.21 {
-val NeoIdentifier.mojang: ResourceLocation
-    get() = ResourceLocation.fromNamespaceAndPath(namespace, path)
 //? } else {
-/*val NeoIdentifier.mojang: ResourceLocation
-    get() = ResourceLocation(namespace, path)
+/*val NeoIdentifier.mojang: Identifier
+    get() = Identifier(namespace, path)
 *///? }
 
 val <T : Any> ResourceKey<T>.neo: NeoResourceKey<T>

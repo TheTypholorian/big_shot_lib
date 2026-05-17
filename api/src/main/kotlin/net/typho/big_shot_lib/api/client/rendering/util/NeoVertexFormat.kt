@@ -1,16 +1,10 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
-import com.mojang.blaze3d.vertex.VertexFormat
-import com.mojang.blaze3d.vertex.VertexFormatElement
-import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
 import net.typho.big_shot_lib.api.util.*
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey.Companion.lookupOrThrow
-import net.typho.big_shot_lib.impl.util.ImmutableExtension
 
 interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     val vertexSizeBytes: Int
@@ -24,8 +18,6 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     fun initVertexArrayState()
 
     override fun iterator() = elements.iterator()
-
-    interface ExtensionValue : NeoVertexFormat, ImmutableExtension<VertexFormat>
 
     object Entrypoint : BigShotCommonEntrypoint(BigShotApi.MOD_ID) {
         internal val REGISTRY = createRegistry<NeoVertexFormat>(BigShotApi.id("vertex_formats"))
@@ -60,8 +52,6 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
         val sizeBytes: Int
 
         fun vertexAttribPointer(index: Int, offset: Long, stride: Int)
-
-        interface ExtensionValue : Element, ImmutableExtension<VertexFormatElement>
 
         companion object {
             /**
@@ -151,7 +141,5 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
         fun padding(bytes: Int): Builder
 
         fun build(): NeoVertexFormat
-
-        interface ExtensionValue : Builder, ImmutableExtension<VertexFormat.Builder>
     }
 }

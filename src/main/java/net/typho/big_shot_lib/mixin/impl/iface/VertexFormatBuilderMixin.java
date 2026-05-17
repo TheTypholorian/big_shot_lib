@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(VertexFormat.Builder.class)
-public abstract class VertexFormatBuilderMixin implements ImmutableExtension<NeoVertexFormat.Builder.ExtensionValue> {
+public abstract class VertexFormatBuilderMixin implements ImmutableExtension<NeoVertexFormatBuilderExtensionValue> {
     @Shadow
     public abstract VertexFormat.Builder add(String string, VertexFormatElement vertexFormatElement);
 
@@ -22,7 +22,7 @@ public abstract class VertexFormatBuilderMixin implements ImmutableExtension<Neo
     public abstract VertexFormat build();
 
     @Unique
-    private final NeoVertexFormat.Builder.ExtensionValue big_shot_lib$extension_value = new NeoVertexFormat.Builder.ExtensionValue() {
+    private final NeoVertexFormatBuilderExtensionValue big_shot_lib$extension_value = new NeoVertexFormatBuilderExtensionValue() {
         @Override
         public NeoVertexFormat.Builder add(@NotNull String name, @NotNull NeoVertexFormat.Element element) {
             VertexFormatBuilderMixin.this.add(name, ImmutableExtensionKt.getExtensionValue(element, VertexFormatElement.class));
@@ -48,7 +48,7 @@ public abstract class VertexFormatBuilderMixin implements ImmutableExtension<Neo
     };
 
     @Override
-    public NeoVertexFormat.Builder.ExtensionValue getBig_shot_lib$extension_value() {
+    public NeoVertexFormatBuilderExtensionValue getBig_shot_lib$extension_value() {
         return big_shot_lib$extension_value;
     }
 }

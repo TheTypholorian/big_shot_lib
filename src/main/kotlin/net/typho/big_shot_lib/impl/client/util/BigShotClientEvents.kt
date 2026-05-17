@@ -27,7 +27,7 @@ object BigShotClientEvents {
     }
 
     //? neoforge {
-    init {
+    /*init {
         NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             for (entrypoint in BigShotClientEntrypoint.entrypoints) {
                 entrypoint.renderLevel(
@@ -109,5 +109,5 @@ object BigShotClientEvents {
         }
         *///? }
     }
-    //? }
+    *///? }
 }

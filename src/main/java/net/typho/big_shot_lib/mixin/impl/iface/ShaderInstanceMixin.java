@@ -43,7 +43,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL33.glBindSampler;
 
 @Mixin(ShaderInstance.class)
-public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgram.ExtensionValue>, ShaderInstanceExtension {
+public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgramExtensionValue>, ShaderInstanceExtension {
     @Shadow
     @Final
     @Mutable
@@ -183,12 +183,12 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
     @Unique
     private boolean big_shot_lib$freed = false;
     @Unique
-    private GlProgram.ExtensionValue big_shot_lib$extension_value;
+    private GlProgramExtensionValue big_shot_lib$extension_value;
 
     @Override
-    public GlProgram.ExtensionValue getBig_shot_lib$extension_value() {
+    public GlProgramExtensionValue getBig_shot_lib$extension_value() {
         if (big_shot_lib$extension_value == null) {
-            big_shot_lib$extension_value = new GlProgram.ExtensionValue() {
+            big_shot_lib$extension_value = new GlProgramExtensionValue() {
                 @Override
                 @NotNull
                 public ShaderInstance getBig_shot_lib$extension_value() {
