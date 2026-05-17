@@ -27,7 +27,7 @@ object BigShotClientEvents {
     }
 
     //? neoforge {
-    /*init {
+    init {
         NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             for (entrypoint in BigShotClientEntrypoint.entrypoints) {
                 entrypoint.renderLevel(
@@ -64,11 +64,7 @@ object BigShotClientEvents {
         NeoForge.EVENT_BUS.addListener { event: AddReloadListenerEvent ->
             for (entrypoint in BigShotClientEntrypoint.entrypoints) {
                 entrypoint.addReloadListeners { listener ->
-                    event.addListener(object : ResourceManagerReloadListener {
-                        override fun onResourceManagerReload(manager: ResourceManager) {
-                            listener.onResourceManagerReload(WrapperUtil.INSTANCE.wrap(Minecraft.getInstance().resourceManager))
-                        }
-                    })
+                    event.addListener(listener)
                 }
             }
         }
@@ -109,5 +105,5 @@ object BigShotClientEvents {
         }
         *///? }
     }
-    *///? }
+    //? }
 }

@@ -1,11 +1,11 @@
 package net.typho.big_shot_lib.impl.client.rendering.opengl
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface ShaderInstanceExtension {
     fun `big_shot_lib$init`(
-        location: NeoIdentifier,
+        location: Identifier,
         format: NeoVertexFormat,
         glId: Int
     )

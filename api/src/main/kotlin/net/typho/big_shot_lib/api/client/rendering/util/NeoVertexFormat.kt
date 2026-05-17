@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
 import net.typho.big_shot_lib.api.util.*
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     val vertexSizeBytes: Int
@@ -23,19 +23,19 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
         internal val REGISTRY = createRegistry<NeoVertexFormat>(BigShotApi.id("vertex_formats"))
 
         override fun onInitialize() {
-            register(REGISTRY, NeoIdentifier("blit_screen"), InternalUtil.INSTANCE.blitScreenVertexFormat)
-            register(REGISTRY, NeoIdentifier("block"), InternalUtil.INSTANCE.blockVertexFormat)
-            register(REGISTRY, NeoIdentifier("new_entity"), InternalUtil.INSTANCE.newEntityVertexFormat)
-            register(REGISTRY, NeoIdentifier("particle"), InternalUtil.INSTANCE.particleVertexFormat)
-            register(REGISTRY, NeoIdentifier("position"), InternalUtil.INSTANCE.positionVertexFormat)
-            register(REGISTRY, NeoIdentifier("position_color"), InternalUtil.INSTANCE.positionColorVertexFormat)
-            register(REGISTRY, NeoIdentifier("position_color_normal"), InternalUtil.INSTANCE.positionColorNormalVertexFormat)
-            register(REGISTRY, NeoIdentifier("position_color_lightmap"), InternalUtil.INSTANCE.positionColorLightVertexFormat)
-            register(REGISTRY, NeoIdentifier("position_tex"), InternalUtil.INSTANCE.positionTexVertexFormat)
-            register(REGISTRY, NeoIdentifier("position_tex_color"), InternalUtil.INSTANCE.positionTexColorVertexFormat)
-            register(REGISTRY, NeoIdentifier("position_color_tex_lightmap"), InternalUtil.INSTANCE.positionColorTexLightVertexFormat)
-            register(REGISTRY, NeoIdentifier("position_tex_lightmap_color"), InternalUtil.INSTANCE.positionTexLightColorVertexFormat)
-            register(REGISTRY, NeoIdentifier("position_tex_color_normal"), InternalUtil.INSTANCE.positionTexColorNormalVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("blit_screen"), InternalUtil.INSTANCE.blitScreenVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("block"), InternalUtil.INSTANCE.blockVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("new_entity"), InternalUtil.INSTANCE.newEntityVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("particle"), InternalUtil.INSTANCE.particleVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("position"), InternalUtil.INSTANCE.positionVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("position_color"), InternalUtil.INSTANCE.positionColorVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("position_color_normal"), InternalUtil.INSTANCE.positionColorNormalVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("position_color_lightmap"), InternalUtil.INSTANCE.positionColorLightVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("position_tex"), InternalUtil.INSTANCE.positionTexVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("position_tex_color"), InternalUtil.INSTANCE.positionTexColorVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("position_color_tex_lightmap"), InternalUtil.INSTANCE.positionColorTexLightVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("position_tex_lightmap_color"), InternalUtil.INSTANCE.positionTexLightColorVertexFormat)
+            register(REGISTRY, Identifier.withDefaultNamespace("position_tex_color_normal"), InternalUtil.INSTANCE.positionTexColorNormalVertexFormat)
         }
     }
 

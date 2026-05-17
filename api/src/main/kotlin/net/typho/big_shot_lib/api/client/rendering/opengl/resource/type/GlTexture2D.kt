@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundTexture2D
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 import org.lwjgl.opengl.GL30.glFramebufferTexture2D
 
@@ -19,6 +19,6 @@ interface GlTexture2D : GlResource, GlFramebufferAttachment {
 
     companion object {
         @JvmStatic
-        operator fun get(location: NeoIdentifier) = InternalUtil.INSTANCE.getTexture(location)
+        operator fun get(location: Identifier) = InternalUtil.INSTANCE.getTexture(location)
     }
 }

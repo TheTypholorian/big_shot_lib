@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
@@ -7,7 +8,6 @@ import net.typho.big_shot_lib.api.error.ShaderLinkException
 import net.typho.big_shot_lib.api.error.ShaderValidationException
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.util.resource.NamedResource
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface GlProgram : NamedResource, GlResource {
     val format: NeoVertexFormat
@@ -39,7 +39,7 @@ interface GlProgram : NamedResource, GlResource {
     companion object {
         @JvmStatic
         @JvmOverloads
-        fun create(location: NeoIdentifier, format: NeoVertexFormat, glId: Int = GlResourceType.PROGRAM.create()): GlProgram = InternalUtil.INSTANCE.createProgram(
+        fun create(location: Identifier, format: NeoVertexFormat, glId: Int = GlResourceType.PROGRAM.create()): GlProgram = InternalUtil.INSTANCE.createProgram(
             location,
             format,
             glId,

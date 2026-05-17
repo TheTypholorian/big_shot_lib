@@ -2,37 +2,36 @@ package net.typho.big_shot_lib.api.util
 
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
-import net.typho.big_shot_lib.api.InternalUtil
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
-import net.typho.big_shot_lib.api.util.resource.NeoTagKey
+import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
+import net.minecraft.tags.TagKey
 
 interface NeoRegistry<T : Any> {
-    val key: NeoResourceKey<out Registry<T>>
+    val key: ResourceKey<out Registry<T>>
 
-    fun get(value: NeoIdentifier): T?
+    fun get(value: Identifier): T?
 
-    fun get(value: NeoResourceKey<T>) = get(value.location)
+    fun get(value: ResourceKey<T>) = get(value.location())
 
-    fun getKey(value: T): NeoResourceKey<T>
+    fun getKey(value: T): ResourceKey<T>
 
-    fun contains(value: NeoIdentifier): Boolean
+    fun contains(value: Identifier): Boolean
 
-    fun contains(value: NeoResourceKey<T>) = contains(value.location)
+    fun contains(value: ResourceKey<T>) = contains(value.location())
 
-    fun keys(): Set<NeoResourceKey<T>>
+    fun keys(): Set<ResourceKey<T>>
 
-    fun entries(): Set<Pair<NeoResourceKey<T>, T>>
+    fun entries(): Set<Pair<ResourceKey<T>, T>>
 
     fun values(): Collection<T>
 
-    fun getTag(key: NeoTagKey<T>): Set<T>?
+    fun getTag(key: TagKey<T>): Set<T>?
 
-    fun tags(): Set<NeoTagKey<T>>
+    fun tags(): Set<TagKey<T>>
 
     fun addAlias(
-        old: NeoIdentifier,
-        new: NeoIdentifier
+        old: Identifier,
+        new: Identifier
     )
 
     companion object {

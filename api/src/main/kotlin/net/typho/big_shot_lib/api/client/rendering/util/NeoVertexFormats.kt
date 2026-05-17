@@ -1,15 +1,15 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
 import com.mojang.serialization.Codec
+import net.minecraft.resources.ResourceKey
+import net.typho.big_shot_lib.api.BigShotApi.lookupOrThrow
 import net.typho.big_shot_lib.api.InternalUtil
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey.Companion.lookupOrThrow
 
 object NeoVertexFormats {
     @JvmField
     val REGISTRY = NeoVertexFormat.Entrypoint.REGISTRY
     @JvmField
-    val CODEC: Codec<NeoVertexFormat> = NeoResourceKey.codec(REGISTRY).xmap(
+    val CODEC: Codec<NeoVertexFormat> = ResourceKey.codec(REGISTRY).xmap(
         { REGISTRY.lookupOrThrow().get(it) },
         { REGISTRY.lookupOrThrow().getKey(it) }
     )

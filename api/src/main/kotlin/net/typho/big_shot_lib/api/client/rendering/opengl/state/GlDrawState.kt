@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendEquation
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlCullFace
@@ -14,7 +15,6 @@ import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.NeoColor
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.util.function.Consumer
 
 interface GlDrawState {
@@ -153,7 +153,7 @@ interface GlDrawState {
 
         @JvmOverloads
         fun shader(
-            location: NeoIdentifier,
+            location: Identifier,
             uniforms: Consumer<GlBoundProgram> = Consumer { }
         ) = shader(GlShaderShard.FromLocation(location, uniforms))
 
@@ -169,7 +169,7 @@ interface GlDrawState {
         }
 
         @JvmOverloads
-        fun texture(name: String, location: NeoIdentifier, target: GlTextureTarget = GlTextureTarget.TEXTURE_2D, sampler: GlSampler? = null) = texture(name, GlTextureBinding.FromLocation(location, target, sampler))
+        fun texture(name: String, location: Identifier, target: GlTextureTarget = GlTextureTarget.TEXTURE_2D, sampler: GlSampler? = null) = texture(name, GlTextureBinding.FromLocation(location, target, sampler))
 
         @JvmOverloads
         fun texture(name: String, texture: () -> GlTexture2D, target: GlTextureTarget = GlTextureTarget.TEXTURE_2D, sampler: GlSampler? = null) = texture(name, GlTextureBinding.FromInstance(texture, target, sampler))

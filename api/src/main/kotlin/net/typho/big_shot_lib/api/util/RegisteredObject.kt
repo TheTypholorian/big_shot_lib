@@ -1,13 +1,13 @@
 package net.typho.big_shot_lib.api.util
 
 import net.minecraft.core.Registry
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
+import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import kotlin.reflect.KProperty
 
 interface RegisteredObject<T : Any> {
-    val registry: NeoResourceKey<out Registry<T>>
-    val key: NeoIdentifier
+    val registry: ResourceKey<out Registry<T>>
+    val key: Identifier
     val value: T
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T = value

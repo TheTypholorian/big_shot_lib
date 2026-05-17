@@ -2,21 +2,20 @@ package net.typho.big_shot_lib.api.client.rendering
 
 import com.google.gson.JsonParser
 import com.mojang.serialization.DataResult
+import net.minecraft.resources.FileToIdConverter
+import net.minecraft.resources.Identifier
+import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.BigShotApi.lookupOrThrow
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
-import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
-import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
-import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
+import net.typho.big_shot_lib.api.client.util.resource.ResourceManagerReloadListener
 import net.typho.big_shot_lib.api.client.util.resource.ResourceRegistry
 import net.typho.big_shot_lib.api.util.*
-import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey.Companion.lookupOrThrow
 import java.io.BufferedReader
 
 @JvmField
@@ -24,14 +23,14 @@ val shaderIncludes = object : ResourceRegistry<String>(
     BigShotApi.id("shaders/include"),
     mutableListOf(),
     mutableListOf(
-        NeoFileToIdConverter("neo/shaders/include", "glsl"),
-        NeoFileToIdConverter("shaders/include", "glsl")
+        FileToIdConverter("neo/shaders/include", ".glsl"),
+        FileToIdConverter("shaders/include", ".glsl")
     )
 ) {
     override fun decode(
-        location: NeoIdentifier,
+        location: Identifier,
         reader: BufferedReader,
-        manager: NeoResourceManager
+        manager: ResourceManager
     ): DataResult<String> {
         var text = reader.readText().trim()
 
@@ -48,18 +47,18 @@ val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> 
     object : ResourceRegistry<GlShader>(
         BigShotApi.id("shaders/${shaderType.name.lowercase()}"),
         mutableListOf(),
-        mutableListOf(NeoFileToIdConverter.shader("neo/shaders", shaderType))
+        mutableListOf(FileToIdConverter("neo/shaders", shaderType.extension))
     ) {
-        override fun onResourceManagerReload(manager: NeoResourceManager) {
+        override fun onResourceManagerReload(manager: ResourceManager) {
             GlQueue.INSTANCE.runOrQueue {
                 super.onResourceManagerReload(manager)
             }
         }
 
         override fun decode(
-            location: NeoIdentifier,
+            location: Identifier,
             reader: BufferedReader,
-            manager: NeoResourceManager
+            manager: ResourceManager
         ): DataResult<GlShader> {
             val shader = GlShader.create(location, shaderType)
             shader.source = NeoShaderLoader.CommonInit.preprocessors.lookupOrThrow().values().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
@@ -78,14 +77,14 @@ val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> 
 object NeoShaderLoader : ResourceRegistry<GlProgram>(
     BigShotApi.id("shaders"),
     mutableListOf<ResourceRegistry<*>>(shaderIncludes).also { it.addAll(shaderRegistries.values) },
-    mutableListOf(NeoFileToIdConverter.json("neo/shaders"))
+    mutableListOf(FileToIdConverter.json("neo/shaders"))
 ) {
     // TODO unfuck this
     object ClientInit : BigShotClientEntrypoint(BigShotApi.MOD_ID) {
         override fun onInitializeClient() {
         }
 
-        override fun addReloadListeners(out: (listener: NeoResourceManagerReloadListener) -> Unit) {
+        override fun addReloadListeners(out: (listener: ResourceManagerReloadListener) -> Unit) {
             out(NeoShaderLoader)
         }
     }
@@ -99,14 +98,14 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
         }
     }
 
-    override fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): DataResult<GlProgram> {
+    override fun decode(location: Identifier, reader: BufferedReader, manager: ResourceManager): DataResult<GlProgram> {
         val json = JsonParser.parseReader(reader).asJsonObject
-        val formatKey = NeoIdentifier(json.getAsJsonPrimitive("format").asString)
+        val formatKey = Identifier.parse(json.getAsJsonPrimitive("format").asString)
         val program = GlProgram.create(location, NeoVertexFormats.REGISTRY.lookupOrThrow().get(formatKey) ?: return DataResult.error { "Nonexistent vertex format $formatKey" })
         val sources = json.getAsJsonObject("sources")
 
         for (entry in sources.asMap()) {
-            val shaderKey = NeoIdentifier(entry.value.asString)
+            val shaderKey = Identifier.parse(entry.value.asString)
             val shader = shaderRegistries[GlShaderType.valueOf(entry.key.uppercase())][shaderKey]
 
             if (shader == null) {

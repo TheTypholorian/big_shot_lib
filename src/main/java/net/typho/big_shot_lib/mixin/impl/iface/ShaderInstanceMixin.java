@@ -22,7 +22,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.*;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier;
+import net.typho.big_shot_lib.api.util.resource.Identifier;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.BoundMinecraftProgram;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
@@ -201,8 +201,8 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
                 }
 
                 @Override
-                public @NotNull NeoIdentifier getLocation() {
-                    return new NeoIdentifier(name);
+                public @NotNull Identifier getLocation() {
+                    return new Identifier(name);
                 }
 
                 @Override
@@ -293,7 +293,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
     }
 
     @Override
-    public void big_shot_lib$init(@NotNull NeoIdentifier location, @NotNull NeoVertexFormat format, int glId) {
+    public void big_shot_lib$init(@NotNull Identifier location, @NotNull NeoVertexFormat format, int glId) {
         samplerMap = Maps.newHashMap();
         samplerNames = Lists.newArrayList();
         samplerLocations = Lists.newArrayList();

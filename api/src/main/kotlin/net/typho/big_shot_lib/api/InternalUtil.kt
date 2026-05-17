@@ -2,6 +2,8 @@ package net.typho.big_shot_lib.api
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.core.Registry
+import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
@@ -13,8 +15,6 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 
 interface InternalUtil {
     val positionVertexElement: NeoVertexFormat.Element
@@ -39,22 +39,22 @@ interface InternalUtil {
 
     fun createVertexFormatBuilder(): NeoVertexFormat.Builder
 
-    fun getTexture(location: NeoIdentifier): GlTexture2D?
+    fun getTexture(location: Identifier): GlTexture2D?
 
-    fun getAtlas(location: NeoIdentifier): NeoAtlas?
+    fun getAtlas(location: Identifier): NeoAtlas?
 
     fun transformNormal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): IVec3<Float>
 
-    fun <T : Any> getRegistry(key: NeoResourceKey<Registry<T>>): Registry<T>?
+    fun <T : Any> getRegistry(key: ResourceKey<Registry<T>>): Registry<T>?
 
     fun mainWindowHandle(): Long
 
-    fun createShader(location: NeoIdentifier, type: GlShaderType, glId: Int): GlShader
+    fun createShader(location: Identifier, type: GlShaderType, glId: Int): GlShader
 
-    fun createProgram(location: NeoIdentifier, format: NeoVertexFormat, glId: Int): GlProgram
+    fun createProgram(location: Identifier, format: NeoVertexFormat, glId: Int): GlProgram
 
     fun createRenderType(
-        location: NeoIdentifier,
+        location: Identifier,
         format: NeoVertexFormat,
         drawState: GlDrawState,
         defaultBufferSize: Int,

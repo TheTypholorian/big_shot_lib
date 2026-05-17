@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlSampler
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.FileNotFoundException
 
 sealed interface GlTextureBinding : MaybeNamedResource {
@@ -13,7 +13,7 @@ sealed interface GlTextureBinding : MaybeNamedResource {
     val sampler: GlSampler?
 
     data class FromLocation @JvmOverloads constructor(
-        override val location: NeoIdentifier,
+        override val location: Identifier,
         override val target: GlTextureTarget = GlTextureTarget.TEXTURE_2D,
         override val sampler: GlSampler? = null,
     ) : GlTextureBinding {
@@ -28,6 +28,6 @@ sealed interface GlTextureBinding : MaybeNamedResource {
     ) : GlTextureBinding {
         override val texture: GlTexture2D
             get() = getter()
-        override val location: NeoIdentifier? = texture.let { if (it is MaybeNamedResource) it.location else null }
+        override val location: Identifier? = texture.let { if (it is MaybeNamedResource) it.location else null }
     }
 }

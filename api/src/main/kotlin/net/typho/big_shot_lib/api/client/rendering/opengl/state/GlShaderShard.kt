@@ -1,11 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUniform
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.FileNotFoundException
 import java.util.function.Consumer
 
@@ -66,7 +66,7 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
         override val program: GlProgram
             get() = throw NullPointerException("No shader")
         override val uniforms: Consumer<GlBoundProgram> = Consumer { }
-        override val location: NeoIdentifier? = null
+        override val location: Identifier? = null
 
         override fun texture(index: Int, binding: GlTextureBinding): GlShaderShard {
             textures[index] = binding
@@ -95,7 +95,7 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
     }
 
     data class FromLocation @JvmOverloads constructor(
-        override val location: NeoIdentifier,
+        override val location: Identifier,
         override val uniforms: Consumer<GlBoundProgram> = Consumer { },
         override val textures: Array<GlTextureBinding?> = Array(12) { null }
     ) : GlShaderShard {
@@ -136,7 +136,7 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
     ) : GlShaderShard {
         override val program: GlProgram?
             get() = getter()
-        override val location: NeoIdentifier?
+        override val location: Identifier?
             get() = program?.location
 
         override fun texture(index: Int, binding: GlTextureBinding): FromInstance {
@@ -169,6 +169,6 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
         override val program: GlProgram? = null
         override val uniforms: Consumer<GlBoundProgram> = Consumer { }
         override val textures: Array<GlTextureBinding?> = Array(12) { null }
-        override val location: NeoIdentifier? = null
+        override val location: Identifier? = null
     }
 }

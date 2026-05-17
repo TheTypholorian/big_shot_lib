@@ -1,12 +1,12 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.util.resource.NamedResource
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 abstract class NeoAtlas : NamedResource, GlTexture2D {
-    abstract val sprites: Map<NeoIdentifier, NeoAtlasSprite>
+    abstract val sprites: Map<Identifier, NeoAtlasSprite>
     abstract override val width: Int
     abstract override val height: Int
 
@@ -25,33 +25,33 @@ abstract class NeoAtlas : NamedResource, GlTexture2D {
 
     companion object {
         val blocks: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "blocks"))!!
+            get() = get(Identifier.withDefaultNamespace("blocks"))!!
         val signs: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "signs"))!!
+            get() = get(Identifier.withDefaultNamespace("signs"))!!
         val bannerPatterns: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "banner_patterns"))!!
+            get() = get(Identifier.withDefaultNamespace("banner_patterns"))!!
         val shieldPatterns: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "shield_patterns"))!!
+            get() = get(Identifier.withDefaultNamespace("shield_patterns"))!!
         val chest: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "chest"))!!
+            get() = get(Identifier.withDefaultNamespace("chest"))!!
         val decoratedPot: NeoAtlas?
-            get() = get(NeoIdentifier("minecraft", "decorated_pot"))
+            get() = get(Identifier.withDefaultNamespace("decorated_pot"))
         val shulkerBoxes: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "shulker_boxes"))!!
+            get() = get(Identifier.withDefaultNamespace("shulker_boxes"))!!
         val beds: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "beds"))!!
+            get() = get(Identifier.withDefaultNamespace("beds"))!!
         val particles: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "particles"))!!
+            get() = get(Identifier.withDefaultNamespace("particles"))!!
         val paintings: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "paintings"))!!
+            get() = get(Identifier.withDefaultNamespace("paintings"))!!
         val mobEffects: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "mob_effects"))!!
+            get() = get(Identifier.withDefaultNamespace("mob_effects"))!!
         val mapDecorations: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "map_decorations"))!!
+            get() = get(Identifier.withDefaultNamespace("map_decorations"))!!
         val gui: NeoAtlas
-            get() = get(NeoIdentifier("minecraft", "gui"))!!
+            get() = get(Identifier.withDefaultNamespace("gui"))!!
 
         @JvmStatic
-        operator fun get(location: NeoIdentifier) = InternalUtil.INSTANCE.getAtlas(location)
+        operator fun get(location: Identifier) = InternalUtil.INSTANCE.getAtlas(location)
     }
 }

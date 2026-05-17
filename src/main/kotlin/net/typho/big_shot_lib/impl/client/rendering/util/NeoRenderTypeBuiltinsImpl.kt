@@ -1,9 +1,8 @@
 package net.typho.big_shot_lib.impl.client.rendering.util
 
 import net.minecraft.client.renderer.RenderType
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.impl.mojang
 import net.typho.big_shot_lib.impl.util.getExtensionValue
 
 object NeoRenderTypeBuiltinsImpl : NeoRenderType.Builtins {
@@ -30,107 +29,107 @@ object NeoRenderTypeBuiltinsImpl : NeoRenderType.Builtins {
     override val debugQuads: NeoRenderType = RenderType.debugQuads().getExtensionValue()
     override val debugSectionQuads: NeoRenderType = RenderType.debugSectionQuads().getExtensionValue()
 
-    override fun armorCutoutNoCull(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.armorCutoutNoCull(texture.mojang).getExtensionValue()
+    override fun armorCutoutNoCull(texture: Identifier): NeoRenderType {
+        return RenderType.armorCutoutNoCull(texture).getExtensionValue()
     }
 
-    override fun entitySolid(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.entitySolid(texture.mojang).getExtensionValue()
+    override fun entitySolid(texture: Identifier): NeoRenderType {
+        return RenderType.entitySolid(texture).getExtensionValue()
     }
 
-    override fun entityCutout(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.entityCutout(texture.mojang).getExtensionValue()
+    override fun entityCutout(texture: Identifier): NeoRenderType {
+        return RenderType.entityCutout(texture).getExtensionValue()
     }
 
     override fun entityCutoutNoCull(
-        texture: NeoIdentifier,
+        texture: Identifier,
         affectsOutline: Boolean
     ): NeoRenderType {
-        return RenderType.entityCutoutNoCull(texture.mojang, affectsOutline).getExtensionValue()
+        return RenderType.entityCutoutNoCull(texture, affectsOutline).getExtensionValue()
     }
 
     override fun entityCutoutNoCullZOffset(
-        texture: NeoIdentifier,
+        texture: Identifier,
         affectsOutline: Boolean
     ): NeoRenderType {
-        return RenderType.entityCutoutNoCullZOffset(texture.mojang, affectsOutline).getExtensionValue()
+        return RenderType.entityCutoutNoCullZOffset(texture, affectsOutline).getExtensionValue()
     }
 
-    override fun itemEntityTranslucentCull(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.itemEntityTranslucentCull(texture.mojang).getExtensionValue()
+    override fun itemEntityTranslucentCull(texture: Identifier): NeoRenderType {
+        return RenderType.itemEntityTranslucentCull(texture).getExtensionValue()
     }
 
     override fun entityTranslucent(
-        texture: NeoIdentifier,
+        texture: Identifier,
         affectsOutline: Boolean
     ): NeoRenderType {
-        return RenderType.entityTranslucent(texture.mojang, affectsOutline).getExtensionValue()
+        return RenderType.entityTranslucent(texture, affectsOutline).getExtensionValue()
     }
 
     override fun entityTranslucentEmissive(
-        texture: NeoIdentifier,
+        texture: Identifier,
         affectsOutline: Boolean
     ): NeoRenderType {
-        return RenderType.entityTranslucentEmissive(texture.mojang, affectsOutline).getExtensionValue()
+        return RenderType.entityTranslucentEmissive(texture, affectsOutline).getExtensionValue()
     }
 
-    override fun entitySmoothCutout(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.entitySmoothCutout(texture.mojang).getExtensionValue()
+    override fun entitySmoothCutout(texture: Identifier): NeoRenderType {
+        return RenderType.entitySmoothCutout(texture).getExtensionValue()
     }
 
     override fun beaconBeam(
-        texture: NeoIdentifier,
+        texture: Identifier,
         affectsOutline: Boolean
     ): NeoRenderType {
-        return RenderType.beaconBeam(texture.mojang, affectsOutline).getExtensionValue()
+        return RenderType.beaconBeam(texture, affectsOutline).getExtensionValue()
     }
 
-    override fun entityDecal(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.entityDecal(texture.mojang).getExtensionValue()
+    override fun entityDecal(texture: Identifier): NeoRenderType {
+        return RenderType.entityDecal(texture).getExtensionValue()
     }
 
-    override fun entityNoOutline(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.entityNoOutline(texture.mojang).getExtensionValue()
+    override fun entityNoOutline(texture: Identifier): NeoRenderType {
+        return RenderType.entityNoOutline(texture).getExtensionValue()
     }
 
-    override fun entityShadow(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.entityShadow(texture.mojang).getExtensionValue()
+    override fun entityShadow(texture: Identifier): NeoRenderType {
+        return RenderType.entityShadow(texture).getExtensionValue()
     }
 
-    override fun dragonExplosionAlpha(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.dragonExplosionAlpha(texture.mojang).getExtensionValue()
+    override fun dragonExplosionAlpha(texture: Identifier): NeoRenderType {
+        return RenderType.dragonExplosionAlpha(texture).getExtensionValue()
     }
 
-    override fun eyes(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.eyes(texture.mojang).getExtensionValue()
+    override fun eyes(texture: Identifier): NeoRenderType {
+        return RenderType.eyes(texture).getExtensionValue()
     }
 
-    override fun crumbling(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.crumbling(texture.mojang).getExtensionValue()
+    override fun crumbling(texture: Identifier): NeoRenderType {
+        return RenderType.crumbling(texture).getExtensionValue()
     }
 
-    override fun text(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.text(texture.mojang).getExtensionValue()
+    override fun text(texture: Identifier): NeoRenderType {
+        return RenderType.text(texture).getExtensionValue()
     }
 
-    override fun textIntensity(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.textIntensity(texture.mojang).getExtensionValue()
+    override fun textIntensity(texture: Identifier): NeoRenderType {
+        return RenderType.textIntensity(texture).getExtensionValue()
     }
 
-    override fun textPolygonOffset(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.textPolygonOffset(texture.mojang).getExtensionValue()
+    override fun textPolygonOffset(texture: Identifier): NeoRenderType {
+        return RenderType.textPolygonOffset(texture).getExtensionValue()
     }
 
-    override fun textIntensityPolygonOffset(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.textIntensityPolygonOffset(texture.mojang).getExtensionValue()
+    override fun textIntensityPolygonOffset(texture: Identifier): NeoRenderType {
+        return RenderType.textIntensityPolygonOffset(texture).getExtensionValue()
     }
 
-    override fun textSeeThrough(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.textSeeThrough(texture.mojang).getExtensionValue()
+    override fun textSeeThrough(texture: Identifier): NeoRenderType {
+        return RenderType.textSeeThrough(texture).getExtensionValue()
     }
 
-    override fun textIntensitySeeThrough(texture: NeoIdentifier): NeoRenderType {
-        return RenderType.textIntensitySeeThrough(texture.mojang).getExtensionValue()
+    override fun textIntensitySeeThrough(texture: Identifier): NeoRenderType {
+        return RenderType.textIntensitySeeThrough(texture).getExtensionValue()
     }
 
     override fun debugLineStrip(lineWidth: Double): NeoRenderType {

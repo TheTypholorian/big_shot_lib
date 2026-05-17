@@ -8,7 +8,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgra
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats;
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier;
+import net.typho.big_shot_lib.api.util.resource.Identifier;
 import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.spongepowered.asm.mixin.Final;
@@ -27,10 +27,10 @@ public abstract class RenderTypeMixin {
 
     static {
         ENTITY_TRANSLUCENT = Util.memoize((texture, affectsOutline) -> {
-            NeoIdentifier neoTexture = IdentifierUtilKt.getNeo(texture);
+            Identifier neoTexture = IdentifierUtilKt.getNeo(texture);
             return ImmutableExtensionKt.getExtensionValue(
                     NeoRenderType.create(
-                            new NeoIdentifier("minecraft", "entity_translucent"),
+                            new Identifier("minecraft", "entity_translucent"),
                             NeoVertexFormats.NEW_ENTITY,
                             new GlDrawState.Builder()
                                     .cull(GlCullFace.FRONT)

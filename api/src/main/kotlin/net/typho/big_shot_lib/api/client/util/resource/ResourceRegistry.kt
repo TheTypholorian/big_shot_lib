@@ -6,29 +6,30 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
+import net.minecraft.resources.Identifier
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.FileToIdConverter
+import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.util.resource.NeoFileToIdConverter
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.BufferedReader
 import java.util.*
 
 abstract class ResourceRegistry<T>(
-    override val location: NeoIdentifier,
+    override val location: Identifier,
     @JvmField
     val dependencies: MutableList<ResourceRegistry<*>>,
     @JvmField
-    val paths: MutableList<NeoFileToIdConverter>,
-) : NeoResourceManagerReloadListener {
+    val paths: MutableList<FileToIdConverter>,
+) : ResourceManagerReloadListener {
     companion object {
         @JvmField
         val registries = LinkedList<ResourceRegistry<*>>()
     }
 
-    var map: BiMap<NeoIdentifier, T> = HashBiMap.create()
+    var map: BiMap<Identifier, T> = HashBiMap.create()
         protected set
     @JvmField
-    val lookupCodec: Codec<T> = NeoIdentifier.CODEC.xmap(this::get, this::getKey)
+    val lookupCodec: Codec<T> = Identifier.CODEC.xmap(this::get, this::getKey)
 
     init {
         registries.add(this)
@@ -36,11 +37,11 @@ abstract class ResourceRegistry<T>(
 
     fun getKey(t: T) = map.inverse()[t]
 
-    operator fun get(location: NeoIdentifier) = map[location]
+    operator fun get(location: Identifier) = map[location]
 
-    abstract fun decode(location: NeoIdentifier, reader: BufferedReader, manager: NeoResourceManager): DataResult<T>
+    abstract fun decode(location: Identifier, reader: BufferedReader, manager: ResourceManager): DataResult<T>
 
-    override fun onResourceManagerReload(manager: NeoResourceManager) {
+    override fun onResourceManagerReload(manager: ResourceManager) {
         for (registry in dependencies) {
             registry.onResourceManagerReload(manager)
         }

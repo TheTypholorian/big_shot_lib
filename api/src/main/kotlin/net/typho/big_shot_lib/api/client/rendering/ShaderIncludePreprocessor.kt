@@ -1,17 +1,17 @@
 package net.typho.big_shot_lib.api.client.rendering
 
+import net.minecraft.resources.Identifier
+import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManager
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import java.io.FileNotFoundException
 
 object ShaderIncludePreprocessor : ShaderPreprocessor {
-    override val location: NeoIdentifier = BigShotApi.id("shader_includes")
+    override val location: Identifier = BigShotApi.id("shader_includes")
 
     override fun apply(
-        location: NeoIdentifier,
+        location: Identifier,
         code: String,
-        manager: NeoResourceManager
+        manager: ResourceManager
     ): String {
         var code = code
         var index: Int = -1
@@ -56,7 +56,7 @@ object ShaderIncludePreprocessor : ShaderPreprocessor {
                 contents = contents.substring(1, contents.length - 1)
             }
 
-            val includePath = NeoIdentifier(contents)
+            val includePath = Identifier.parse(contents)
 
             code = code.substring(0, index) +
                     (shaderIncludes[includePath] ?: throw FileNotFoundException("Could not find include file '$includePath' requested by $location")) +

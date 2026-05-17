@@ -11,16 +11,16 @@ import net.minecraft.client.renderer.LevelRenderer
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.commands.CommandBuildContext
 import net.minecraft.commands.CommandSourceStack
+import net.minecraft.resources.Identifier
 import net.minecraft.network.chat.ChatType
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.item.ItemStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
-import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
+import net.typho.big_shot_lib.api.client.util.resource.ResourceManagerReloadListener
 import net.typho.big_shot_lib.api.util.ModEntrypoint
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import org.joml.FrustumIntersection
 import org.joml.Matrix4f
 import java.util.UUID
@@ -29,12 +29,12 @@ abstract class BigShotClientEntrypoint(modId: String) : ModEntrypoint(modId) {
     abstract fun onInitializeClient()
 
     open fun addReloadListeners(
-        out: (listener: NeoResourceManagerReloadListener) -> Unit
+        out: (listener: ResourceManagerReloadListener) -> Unit
     ) {
     }
 
     open fun addF3Info(
-        out: (location: NeoIdentifier, allowedWithReducedDebugInfo: Boolean, text: (out: (line: String) -> Unit) -> Unit) -> Unit
+        out: (location: Identifier, allowedWithReducedDebugInfo: Boolean, text: (out: (line: String) -> Unit) -> Unit) -> Unit
     ) {
     }
 

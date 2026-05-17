@@ -6,7 +6,9 @@ import net.minecraft.commands.CommandSourceStack
 import net.minecraft.commands.Commands
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Registry
+import net.minecraft.resources.Identifier
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceKey
 import net.minecraft.server.MinecraftServer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.ItemInteractionResult
@@ -21,19 +23,17 @@ import net.typho.big_shot_lib.api.client.util.Registrar
 import net.typho.big_shot_lib.api.math.NeoDirection
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 
 abstract class BigShotCommonEntrypoint(modId: String) : ModEntrypoint(modId), Registrar {
     private val registrar = PlatformUtil.INSTANCE.createRegistrar(container)
 
     abstract fun onInitialize()
 
-    override fun <T : Any> createRegistry(id: NeoIdentifier): NeoResourceKey<out Registry<T>> {
+    override fun <T : Any> createRegistry(id: Identifier): ResourceKey<out Registry<T>> {
         return registrar.createRegistry(id)
     }
 
-    override fun <T : Any> register(registry: NeoResourceKey<out Registry<T>>, id: NeoIdentifier, value: T): RegisteredObject<T> {
+    override fun <T : Any> register(registry: ResourceKey<out Registry<T>>, id: Identifier, value: T): RegisteredObject<T> {
         return registrar.register(registry, id, value)
     }
 

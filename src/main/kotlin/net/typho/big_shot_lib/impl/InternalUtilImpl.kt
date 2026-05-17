@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
+import net.typho.big_shot_lib.api.BigShotApi.toShortString
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
@@ -32,8 +34,6 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
-import net.typho.big_shot_lib.api.util.resource.NeoResourceKey
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
 import net.typho.big_shot_lib.impl.util.getExtensionValue
 import net.typho.big_shot_lib.impl.util.setExtensionValue
@@ -128,13 +128,13 @@ object InternalUtilImpl : InternalUtil {
     override val positionTexLightColorVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR.getExtensionValue()
     override val positionTexColorNormalVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL.getExtensionValue()
 
-    override fun getTexture(location: NeoIdentifier): GlTexture2D {
-        return Minecraft.getInstance().textureManager.getTexture(location.mojang).getExtensionValue()
+    override fun getTexture(location: Identifier): GlTexture2D {
+        return Minecraft.getInstance().textureManager.getTexture(location).getExtensionValue()
     }
 
-    override fun getAtlas(location: NeoIdentifier): NeoAtlas {
+    override fun getAtlas(location: Identifier): NeoAtlas {
         //? if <1.21.9 {
-        return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png").mojang).getExtensionValue()
+        return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png")).getExtensionValue()
         //? } else {
         /*return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
         *///? }
@@ -154,9 +154,9 @@ object InternalUtilImpl : InternalUtil {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> getRegistry(key: NeoResourceKey<Registry<T>>): Registry<T>? {
+    override fun <T : Any> getRegistry(key: ResourceKey<Registry<T>>): Registry<T>? {
         //? if <1.21.2 {
-        return BuiltInRegistries.REGISTRY.get(key.location.mojang) as? Registry<T>
+        return BuiltInRegistries.REGISTRY.get(key.location()) as? Registry<T>
         //? } else {
         /*return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
         *///? }
@@ -170,7 +170,7 @@ object InternalUtilImpl : InternalUtil {
         *///? }
     }
 
-    override fun createShader(location: NeoIdentifier, type: GlShaderType, glId: Int): GlShader {
+    override fun createShader(location: Identifier, type: GlShaderType, glId: Int): GlShader {
         return when (type) {
             GlShaderType.VERTEX -> Program(Program.Type.VERTEX, glId, location.toShortString()).getExtensionValue()
             GlShaderType.FRAGMENT -> Program(Program.Type.VERTEX, glId, location.toShortString()).getExtensionValue()
@@ -179,7 +179,7 @@ object InternalUtilImpl : InternalUtil {
     }
 
     override fun createProgram(
-        location: NeoIdentifier,
+        location: Identifier,
         format: NeoVertexFormat,
         glId: Int
     ): GlProgram {
@@ -189,7 +189,7 @@ object InternalUtilImpl : InternalUtil {
     }
 
     override fun createRenderType(
-        location: NeoIdentifier,
+        location: Identifier,
         format: NeoVertexFormat,
         drawState: GlDrawState,
         defaultBufferSize: Int,
@@ -253,11 +253,11 @@ object InternalUtilImpl : InternalUtil {
         val textures = when (drawState.shader.textures.size) {
             0 -> RenderStateShard.NO_TEXTURE
             1 -> {
-                val texture = drawState.shader.textures.values.first()
+                val texture = drawState.shader.textures.first() // TODO
 
                 if (texture is GlTextureBinding.FromLocation) {
                     RenderStateShard.TextureStateShard(
-                        texture.location.mojang,
+                        texture.location,
                         false,
                         true
                     )
@@ -270,7 +270,7 @@ object InternalUtilImpl : InternalUtil {
                         }
                     ) {
                         override fun cutoutTexture(): Optional<Identifier> {
-                            return Optional.ofNullable(texture.location?.mojang)
+                            return Optional.ofNullable(texture.location)
                         }
                     }
                 }
@@ -281,7 +281,7 @@ object InternalUtilImpl : InternalUtil {
 
                     for (entry in drawState.shader.textures) {
                         builder.add(
-                            entry.value.location!!.mojang,
+                            entry.value.location!!,
                             false,
                             true
                         )
@@ -301,7 +301,7 @@ object InternalUtilImpl : InternalUtil {
                         }
                     ) {
                         override fun cutoutTexture(): Optional<Identifier> {
-                            return Optional.ofNullable(drawState.shader.textures.values.firstOrNull { it.location != null }?.location?.mojang)
+                            return Optional.ofNullable(drawState.shader.textures.values.firstOrNull { it.location != null }?.location)
                         }
                     }
                 }

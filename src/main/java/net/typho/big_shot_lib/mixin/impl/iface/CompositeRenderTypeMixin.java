@@ -14,7 +14,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgra
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier;
+import net.typho.big_shot_lib.api.util.resource.Identifier;
 import net.typho.big_shot_lib.impl.IdentifierUtilKt;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
@@ -195,8 +195,8 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
 
         @Override
         @Nullable
-        public NeoIdentifier getLocation() {
-            return NeoIdentifier.tryParse(name);
+        public Identifier getLocation() {
+            return Identifier.tryParse(name);
         }
 
         @Override

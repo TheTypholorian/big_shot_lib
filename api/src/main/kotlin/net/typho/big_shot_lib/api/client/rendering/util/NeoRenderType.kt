@@ -1,11 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
-import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 
 interface NeoRenderType : MaybeNamedResource {
     val format: NeoVertexFormat
@@ -29,7 +29,7 @@ interface NeoRenderType : MaybeNamedResource {
         @JvmStatic
         @JvmOverloads
         fun create(
-            location: NeoIdentifier,
+            location: Identifier,
             format: NeoVertexFormat,
             drawState: GlDrawState,
             defaultBufferSize: Int = 786432,
@@ -73,49 +73,49 @@ interface NeoRenderType : MaybeNamedResource {
         val debugQuads: NeoRenderType
         val debugSectionQuads: NeoRenderType
 
-        fun armorCutoutNoCull(texture: NeoIdentifier): NeoRenderType
+        fun armorCutoutNoCull(texture: Identifier): NeoRenderType
 
-        fun entitySolid(texture: NeoIdentifier): NeoRenderType
+        fun entitySolid(texture: Identifier): NeoRenderType
 
-        fun entityCutout(texture: NeoIdentifier): NeoRenderType
+        fun entityCutout(texture: Identifier): NeoRenderType
 
-        fun entityCutoutNoCull(texture: NeoIdentifier, affectsOutline: Boolean): NeoRenderType
+        fun entityCutoutNoCull(texture: Identifier, affectsOutline: Boolean): NeoRenderType
 
-        fun entityCutoutNoCullZOffset(texture: NeoIdentifier, affectsOutline: Boolean): NeoRenderType
+        fun entityCutoutNoCullZOffset(texture: Identifier, affectsOutline: Boolean): NeoRenderType
 
-        fun itemEntityTranslucentCull(texture: NeoIdentifier): NeoRenderType
+        fun itemEntityTranslucentCull(texture: Identifier): NeoRenderType
 
-        fun entityTranslucent(texture: NeoIdentifier, affectsOutline: Boolean): NeoRenderType
+        fun entityTranslucent(texture: Identifier, affectsOutline: Boolean): NeoRenderType
 
-        fun entityTranslucentEmissive(texture: NeoIdentifier, affectsOutline: Boolean): NeoRenderType
+        fun entityTranslucentEmissive(texture: Identifier, affectsOutline: Boolean): NeoRenderType
 
-        fun entitySmoothCutout(texture: NeoIdentifier): NeoRenderType
+        fun entitySmoothCutout(texture: Identifier): NeoRenderType
 
-        fun beaconBeam(texture: NeoIdentifier, affectsOutline: Boolean): NeoRenderType
+        fun beaconBeam(texture: Identifier, affectsOutline: Boolean): NeoRenderType
 
-        fun entityDecal(texture: NeoIdentifier): NeoRenderType
+        fun entityDecal(texture: Identifier): NeoRenderType
 
-        fun entityNoOutline(texture: NeoIdentifier): NeoRenderType
+        fun entityNoOutline(texture: Identifier): NeoRenderType
 
-        fun entityShadow(texture: NeoIdentifier): NeoRenderType
+        fun entityShadow(texture: Identifier): NeoRenderType
 
-        fun dragonExplosionAlpha(texture: NeoIdentifier): NeoRenderType
+        fun dragonExplosionAlpha(texture: Identifier): NeoRenderType
 
-        fun eyes(texture: NeoIdentifier): NeoRenderType
+        fun eyes(texture: Identifier): NeoRenderType
 
-        fun crumbling(texture: NeoIdentifier): NeoRenderType
+        fun crumbling(texture: Identifier): NeoRenderType
 
-        fun text(texture: NeoIdentifier): NeoRenderType
+        fun text(texture: Identifier): NeoRenderType
 
-        fun textIntensity(texture: NeoIdentifier): NeoRenderType
+        fun textIntensity(texture: Identifier): NeoRenderType
 
-        fun textPolygonOffset(texture: NeoIdentifier): NeoRenderType
+        fun textPolygonOffset(texture: Identifier): NeoRenderType
 
-        fun textIntensityPolygonOffset(texture: NeoIdentifier): NeoRenderType
+        fun textIntensityPolygonOffset(texture: Identifier): NeoRenderType
 
-        fun textSeeThrough(texture: NeoIdentifier): NeoRenderType
+        fun textSeeThrough(texture: Identifier): NeoRenderType
 
-        fun textIntensitySeeThrough(texture: NeoIdentifier): NeoRenderType
+        fun textIntensitySeeThrough(texture: Identifier): NeoRenderType
 
         fun debugLineStrip(lineWidth: Double): NeoRenderType
     }
