@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     implementation("org.ow2.asm:asm:9.1")
+    implementation("com.google.code.gson:gson:2.13.1")
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))
 }

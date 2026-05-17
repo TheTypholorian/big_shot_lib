@@ -14,6 +14,11 @@ class BigShotLibPlugin : Plugin<Project> {
         val modMetadataTask = project.tasks.register("generateModMetadata", GenerateModMetadataTask::class.java) {
             it.group = "bigShotLib"
             it.metadata.set(ext.metadata)
+            it.destination.set(project.layout.buildDirectory.dir("generated/bigShotLib"))
         }
+
+        //project.tasks.getByName("processResources") {
+        //    it.dependsOn(modMetadataTask)
+        //}
     }
 }

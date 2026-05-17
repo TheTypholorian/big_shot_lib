@@ -28,6 +28,13 @@ class BigShotLibPluginTest {
             bigShotLib {
                 metadata {
                     modId.set("test_mod")
+                    modName.set("Test Mod")
+                    description.set("A mod for testing")
+                    authors.set(arrayOf("The Typhothanian", "Apple", "Banana"))
+                    homePage.set("https://github.com/TheTypholorian")
+                    issuesPage.set("https://github.com/TheTypholorian/testMod/issues")
+                    sourcesPage.set("https://github.com/TheTypholorian/testMod")
+                    license.set("MIT")
                 }
             }
         """.trimIndent())
