@@ -51,21 +51,25 @@ interface GlShaderShard : MaybeNamedResource, GlDrawStateShard {
         ) : this(location, uniforms, mapOf(*textures))
 
         override val program: GlProgram
+            // TODO
             get() = NeoShaderLoader[location] ?: throw FileNotFoundException("Couldn't find shader program $location")
     }
 
     data class FromInstance(
-        override val program: GlProgram,
+        private val getter: () -> GlProgram,
         override val uniforms: GlBoundProgram.() -> Unit,
         override val textures: Map<String, GlTextureBinding>
     ) : GlShaderShard {
         @SafeVarargs
         constructor(
-            program: GlProgram,
+            getter: () -> GlProgram,
             uniforms: GlBoundProgram.() -> Unit,
             vararg textures: Pair<String, GlTextureBinding>
-        ) : this(program, uniforms, mapOf(*textures))
+        ) : this(getter, uniforms, mapOf(*textures))
 
-        override val location: NeoIdentifier = program.location
+        override val program: GlProgram
+            get() = getter()
+        override val location: NeoIdentifier
+            get() = program.location
     }
 }

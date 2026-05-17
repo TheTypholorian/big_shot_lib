@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.impl.client.rendering.opengl
 
-import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUniform

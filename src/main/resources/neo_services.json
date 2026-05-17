@@ -26,5 +26,8 @@
   ],
   "net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType$Builtins": [
     "net.typho.big_shot_lib.impl.client.rendering.util.NeoRenderTypeBuiltinsImpl"
+  ],
+  "net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram$Builtins": [
+    "net.typho.big_shot_lib.impl.client.rendering.util.GlProgramBuiltinsImpl"
   ]
 }

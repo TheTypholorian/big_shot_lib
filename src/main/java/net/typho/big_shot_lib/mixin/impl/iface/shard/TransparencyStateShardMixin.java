@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl.iface;
+package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.BigShotApi;

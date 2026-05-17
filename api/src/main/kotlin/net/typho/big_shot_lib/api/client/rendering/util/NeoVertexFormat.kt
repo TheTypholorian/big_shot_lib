@@ -40,6 +40,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
         /**
          * - Position
          */
+        @JvmStatic
         val BLIT_SCREEN by register(REGISTRY, NeoIdentifier("blit_screen"), InternalUtil.INSTANCE.blitScreenVertexFormat)
         /**
          * - Position
@@ -49,6 +50,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
+        @JvmStatic
         val BLOCK by register(REGISTRY, NeoIdentifier("block"), InternalUtil.INSTANCE.blockVertexFormat)
         /**
          * - Position
@@ -59,6 +61,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
+        @JvmStatic
         val NEW_ENTITY by register(REGISTRY, NeoIdentifier("new_entity"), InternalUtil.INSTANCE.newEntityVertexFormat)
         /**
          * - Position
@@ -66,15 +69,18 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Color
          * - Light UV
          */
+        @JvmStatic
         val PARTICLE by register(REGISTRY, NeoIdentifier("particle"), InternalUtil.INSTANCE.particleVertexFormat)
         /**
          * - Position
          */
+        @JvmStatic
         val POSITION by register(REGISTRY, NeoIdentifier("position"), InternalUtil.INSTANCE.positionVertexFormat)
         /**
          * - Position
          * - Color
          */
+        @JvmStatic
         val POSITION_COLOR by register(REGISTRY, NeoIdentifier("position_color"), InternalUtil.INSTANCE.positionColorVertexFormat)
         /**
          * - Position
@@ -82,23 +88,27 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
+        @JvmStatic
         val POSITION_COLOR_NORMAL by register(REGISTRY, NeoIdentifier("position_color_normal"), InternalUtil.INSTANCE.positionColorNormalVertexFormat)
         /**
          * - Position
          * - Color
          * - Light UV
          */
+        @JvmStatic
         val POSITION_COLOR_LIGHTMAP by register(REGISTRY, NeoIdentifier("position_color_lightmap"), InternalUtil.INSTANCE.positionColorLightVertexFormat)
         /**
          * - Position
          * - Texture UV
          */
+        @JvmStatic
         val POSITION_TEX by register(REGISTRY, NeoIdentifier("position_tex"), InternalUtil.INSTANCE.positionTexVertexFormat)
         /**
          * - Position
          * - Texture UV
          * - Color
          */
+        @JvmStatic
         val POSITION_TEX_COLOR by register(REGISTRY, NeoIdentifier("position_tex_color"), InternalUtil.INSTANCE.positionTexColorVertexFormat)
         /**
          * - Position
@@ -106,6 +116,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Texture UV
          * - Light UV
          */
+        @JvmStatic
         val POSITION_COLOR_TEX_LIGHTMAP by register(REGISTRY, NeoIdentifier("position_color_tex_lightmap"), InternalUtil.INSTANCE.positionColorTexLightVertexFormat)
         /**
          * - Position
@@ -113,6 +124,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Light UV
          * - Color
          */
+        @JvmStatic
         val POSITION_TEX_LIGHTMAP_COLOR by register(REGISTRY, NeoIdentifier("position_tex_lightmap_color"), InternalUtil.INSTANCE.positionTexLightColorVertexFormat)
         /**
          * - Position
@@ -121,6 +133,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
          * - Normal
          * - 1 byte padding
          */
+        @JvmStatic
         val POSITION_TEX_COLOR_NORMAL by register(REGISTRY, NeoIdentifier("position_tex_color_normal"), InternalUtil.INSTANCE.positionTexColorNormalVertexFormat)
 
         override fun onInitialize() {

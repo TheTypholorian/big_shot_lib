@@ -3,11 +3,13 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.Pair;
+import kotlin.Unit;
 import net.minecraft.client.renderer.RenderType;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlPolygonMode;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
@@ -77,7 +79,7 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
 
         @Override
         public @NotNull GlColorMaskShard getColorMask() {
-            return (GlColorMaskShard) ImmutableExtensionKt.getExtensionValue(state.writeMaskState, Pair.class).getFirst(); // TODO
+            return new GlColorMaskShard((boolean) ImmutableExtensionKt.getExtensionValue(state.writeMaskState, Pair.class).getFirst()); // TODO
         }
 
         @Override
@@ -100,33 +102,41 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         }
 
         @Override
-        public @NotNull GlPolygonModeShard getPolygonMode() {
-            return new GlPolygonModeShard(GlPolygonMode.FILL); // TODO
-        }
-
-        @Override
         public @NotNull GlLayeringShard getLayering() {
             return ImmutableExtensionKt.getExtensionValue(state.layeringState, GlLayeringShard.class);
         }
 
         @Override
+        public @NotNull GlLightmapShard getLightmap() {
+            return ImmutableExtensionKt.getExtensionValue(state.lightmapState, GlLightmapShard.class);
+        }
+
+        @Override
+        public @NotNull GlOverlayShard getOverlay() {
+            return ImmutableExtensionKt.getExtensionValue(state.overlayState, GlOverlayShard.class);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
         public @NotNull GlShaderShard getShader() {
-            return state.textureState.cutoutTexture().map(texture ->
-                    new GlShaderShard.NoShader(
+            Pair<String, GlTextureBinding>[] textures = state.textureState.cutoutTexture()
+                    .map(texture -> (Pair<String, GlTextureBinding>[]) new Pair[]{
                             new Pair<>(
-                                    "Sampler0", // TODO
+                                    "Sampler0",
                                     new GlTextureBinding.FromLocation(
                                             IdentifierUtilKt.getNeo(texture),
                                             GlTextureTarget.TEXTURE_2D
                                     )
                             )
+                    })
+                    .orElseGet(() -> new Pair[0]);
+            return state.shaderState.shader.<GlShaderShard>map(shader ->
+                    new GlShaderShard.FromInstance(
+                            () -> ImmutableExtensionKt.getExtensionValue(shader.get(), GlProgram.class),
+                            program -> Unit.INSTANCE,
+                            textures
                     )
-            ).orElseGet(GlShaderShard.NoShader::new);
-        }
-
-        @Override
-        public @NotNull GlStencilShard getStencil() {
-            return GlStencilShard.Disabled.INSTANCE; // TODO
+            ).orElseGet(() -> new GlShaderShard.NoShader(textures));
         }
     };
     @Unique

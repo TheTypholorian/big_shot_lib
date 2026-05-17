@@ -5,9 +5,9 @@ import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 
 data class GlColorMaskShard(
     @JvmField
-    val mask: ColorMask
+    val mask: Boolean
 ) : GlDrawStateShard {
     override fun bind(): BoundResource {
-        return NeoGlStateManager.MAIN.colorMask.push(mask)
+        return NeoGlStateManager.MAIN.colorMask.push(ColorMask(mask))
     }
 }

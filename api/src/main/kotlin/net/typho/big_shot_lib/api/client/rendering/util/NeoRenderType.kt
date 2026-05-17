@@ -1,11 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
 import net.minecraft.client.renderer.RenderType
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
-import net.typho.big_shot_lib.api.util.resource.NamedResource
 import net.typho.big_shot_lib.api.util.resource.NeoIdentifier
 import net.typho.big_shot_lib.impl.util.ImmutableExtension
 
@@ -24,23 +24,33 @@ interface NeoRenderType : MaybeNamedResource {
 
     fun bind(): BoundResource = drawState.bind()
 
-    data class Basic(
-        override val location: NeoIdentifier,
-        override val format: NeoVertexFormat,
-        override val mode: GlBeginMode = GlBeginMode.QUADS,
-        override val defaultBufferSize: Int = 786432,
-        override val affectsCrumbling: Boolean = true,
-        override val sortOnUpload: Boolean = false,
-        override val outlineSettings: NeoRenderType? = null,
-        override val isOutline: Boolean = false,
-        override val drawState: GlDrawState
-    ) : NeoRenderType
-
     interface ExtensionValue : NeoRenderType, ImmutableExtension<RenderType>
 
     companion object {
         @JvmStatic
         val BUILTINS = Builtins::class.loadService()
+
+        @JvmStatic
+        @JvmOverloads
+        fun create(
+            location: NeoIdentifier,
+            format: NeoVertexFormat,
+            drawState: GlDrawState,
+            defaultBufferSize: Int = 786432,
+            mode: GlBeginMode = GlBeginMode.QUADS,
+            affectsCrumbling: Boolean = true,
+            sortOnUpload: Boolean = false,
+            isOutline: Boolean = false
+        ): NeoRenderType = InternalUtil.INSTANCE.createRenderType(
+            location,
+            format,
+            drawState,
+            defaultBufferSize,
+            mode,
+            affectsCrumbling,
+            sortOnUpload,
+            isOutline
+        )
     }
 
     interface Builtins {

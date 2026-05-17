@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.util.NeoColor
 
 sealed interface GlBlendShard : GlDrawStateShard {
-    data class Enabled @JvmOverloads constructor(
+    open class Enabled @JvmOverloads constructor(
         @JvmField
         val function: BlendFunction,
         @JvmField

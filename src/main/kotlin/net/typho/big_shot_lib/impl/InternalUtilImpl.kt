@@ -1,22 +1,31 @@
 package net.typho.big_shot_lib.impl
 
 import com.mojang.blaze3d.shaders.Program
-import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.RenderStateShard
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlBlendShard
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlCullShard
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDepthShard
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlLayeringShard
+import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
@@ -173,5 +182,97 @@ object InternalUtilImpl : InternalUtil {
         val shader = UNSAFE.allocateInstance(ShaderInstance::class.java) as ShaderInstance
         (shader as ShaderInstanceExtension).`big_shot_lib$init`(location, format, glId)
         return shader.getExtensionValue<GlProgram>()
+    }
+
+    override fun createRenderType(
+        location: NeoIdentifier,
+        format: NeoVertexFormat,
+        drawState: GlDrawState,
+        defaultBufferSize: Int,
+        mode: GlBeginMode,
+        affectsCrumbling: Boolean,
+        sortOnUpload: Boolean,
+        isOutline: Boolean
+    ): NeoRenderType {
+        // TODO
+        val blendStack = arrayListOf<BoundResource>()
+        val layeringStack = arrayListOf<BoundResource>()
+
+        val blend = drawState.blend.let {
+            if (it is GlBlendShard.Enabled) {
+                RenderStateShard.TransparencyStateShard(
+                    "${it.function} ${it.equation} ${it.color}",
+                    { blendStack.add(it.bind()) },
+                    { blendStack.removeLast().unbind() }
+                )
+            } else {
+                RenderStateShard.NO_TRANSPARENCY
+            }
+        }
+        blend.setExtensionValue(drawState.blend)
+        val mask = RenderStateShard.WriteMaskStateShard(
+            drawState.colorMask.mask,
+            drawState.depth.let { if (it is GlDepthShard.Enabled) it.mask else false }
+        )
+        val cull = if (drawState.cull is GlCullShard.Enabled) RenderStateShard.CULL else RenderStateShard.NO_CULL
+        val depthTest = drawState.depth.let {
+            if (it is GlDepthShard.Enabled) {
+                RenderStateShard.DepthTestStateShard(
+                    it.func.toString(),
+                    it.func.glId
+                )
+            } else {
+                RenderStateShard.NO_DEPTH_TEST
+            }
+        }
+        val layering = drawState.layering.let {
+            when (it) {
+                is GlLayeringShard.EnabledPolygonOffset -> RenderStateShard.LayeringStateShard(
+                    it.offset.toString(),
+                    { layeringStack.add(it.bind()) },
+                    { layeringStack.removeLast().unbind() }
+                )
+
+                is GlLayeringShard.EnabledViewOffset -> RenderStateShard.LayeringStateShard(
+                    it.scale.toString(),
+                    { layeringStack.add(it.bind()) },
+                    { layeringStack.removeLast().unbind() }
+                )
+
+                else -> RenderStateShard.NO_LAYERING
+            }
+        }
+        layering.setExtensionValue(drawState.layering)
+        val lightmap = RenderStateShard.LightmapStateShard(drawState.lightmap.enabled)
+        val overlay = RenderStateShard.OverlayStateShard(drawState.overlay.enabled)
+        val shader = RenderStateShard.ShaderStateShard { drawState.shader.program.getExtensionValue() }
+
+        return RenderType.create(
+            location.toShortString(),
+            format.getExtensionValue<VertexFormat>(),
+            when (mode) {
+                GlBeginMode.POINTS -> throw UnsupportedOperationException(mode.toString())
+                GlBeginMode.LINES -> VertexFormat.Mode.LINES
+                GlBeginMode.LINE_LOOP -> throw UnsupportedOperationException(mode.toString())
+                GlBeginMode.LINE_STRIP -> VertexFormat.Mode.LINE_STRIP
+                GlBeginMode.TRIANGLES -> VertexFormat.Mode.TRIANGLES
+                GlBeginMode.TRIANGLE_STRIP -> VertexFormat.Mode.TRIANGLE_STRIP
+                GlBeginMode.TRIANGLE_FAN -> VertexFormat.Mode.TRIANGLE_FAN
+                GlBeginMode.QUADS -> VertexFormat.Mode.QUADS
+            },
+            defaultBufferSize,
+            affectsCrumbling,
+            sortOnUpload,
+            RenderType.CompositeState.builder()
+                .setTransparencyState(blend)
+                .setWriteMaskState(mask)
+                .setCullState(cull)
+                .setDepthTestState(depthTest)
+                .setLayeringState(layering)
+                .setLightmapState(lightmap)
+                .setOverlayState(overlay)
+                .setShaderState(shader)
+                .createCompositeState(isOutline)
+        ).getExtensionValue()
     }
 }

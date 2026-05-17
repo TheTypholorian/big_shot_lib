@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl.iface;
+package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import kotlin.Pair;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -45,18 +45,6 @@ public class RenderStateShardMixin {
     @Shadow
     @Final
     public static RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY;
-
-    @Shadow
-    @Final
-    public static RenderStateShard.WriteMaskStateShard COLOR_DEPTH_WRITE;
-
-    @Shadow
-    @Final
-    public static RenderStateShard.WriteMaskStateShard COLOR_WRITE;
-
-    @Shadow
-    @Final
-    public static RenderStateShard.WriteMaskStateShard DEPTH_WRITE;
 
     @Shadow
     @Final
@@ -108,10 +96,6 @@ public class RenderStateShardMixin {
                         GlBlendingFactor.ONE_MINUS_SRC_ALPHA
                 )
         ));
-
-        MutableExtensionKt.setExtensionValue(COLOR_DEPTH_WRITE, new Pair<>(new GlColorMaskShard(ColorMask.ENABLED), true));
-        MutableExtensionKt.setExtensionValue(COLOR_WRITE, new Pair<>(new GlColorMaskShard(ColorMask.ENABLED), false));
-        MutableExtensionKt.setExtensionValue(DEPTH_WRITE, new Pair<>(new GlColorMaskShard(ColorMask.DISABLED), true));
 
         MutableExtensionKt.setExtensionValue(NO_LAYERING, GlLayeringShard.Disabled.INSTANCE);
         MutableExtensionKt.setExtensionValue(POLYGON_OFFSET_LAYERING, new GlLayeringShard.EnabledPolygonOffset(new PolygonOffset(-1, -10)));

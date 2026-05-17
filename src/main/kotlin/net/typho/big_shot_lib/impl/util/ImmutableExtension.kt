@@ -20,6 +20,26 @@ fun <V> Any.getExtensionValue(cls: Class<V>): V {
     }
 }
 
+@Suppress("UNCHECKED_CAST")
+inline fun <reified V> Any.getExtensionValueNullable(): V? {
+    return when (this) {
+        is V -> this
+        is ImmutableExtension<*> -> `big_shot_lib$extension_value` as? V
+        else -> null
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <V> Any.getExtensionValueNullable(cls: Class<V>): V? {
+    return if (cls.isInstance(this)) {
+        this as V
+    } else if (this is ImmutableExtension<*>) {
+        `big_shot_lib$extension_value` as? V
+    } else {
+        null
+    }
+}
+
 interface ImmutableExtension<V> {
     val `big_shot_lib$extension_value`: V
 }
