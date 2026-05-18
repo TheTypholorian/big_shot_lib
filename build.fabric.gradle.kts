@@ -127,12 +127,14 @@ dependencies {
     modImplementation(libs.flk)
 }
 
+/*
 fabricApi {
     configureDataGeneration() {
         outputDirectory = file("$rootDir/src/main/generated")
         //client = true
     }
 }
+ */
 
 tasks {
     processResources {

@@ -40,7 +40,7 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
             JarOutputStream(FileOutputStream(outFile)).use { out ->
                 for (entry in jar.stream()) {
                     jar.getInputStream(entry).use { stream ->
-                        if (entry.name.endsWith(".class")) {
+                        if (entry.name.endsWith(".class") && !entry.name.endsWith("-info.class")) {
                             val reader = ClassReader(stream)
                             val writer = ClassWriter(0)
                             val transformer = DependencyTransformer(Opcodes.ASM9, ClassRemapper(writer, remapper))
