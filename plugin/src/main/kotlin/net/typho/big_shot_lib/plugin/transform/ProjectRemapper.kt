@@ -29,7 +29,17 @@ class ProjectRemapper(
         var name = info.methodRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.desc.get() == descriptor } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
 
         annotations.getClasses(AnnotationField.NAMESPACE) { cls, values ->
-            if (cls.name == owner) {
+            if (cls.name.get() == owner) {
+                values[AnnotationField.NAMESPACE_VALUE]?.let {
+                    if (!name.startsWith("$it$")) {
+                        name = "$it$$name"
+                    }
+                }
+            }
+        }
+
+        annotations.getMethods(AnnotationField.NAMESPACE) { method, values ->
+            if (method.cls.get() == owner && method.name.get() == name && method.desc.get() == descriptor) {
                 values[AnnotationField.NAMESPACE_VALUE]?.let {
                     if (!name.startsWith("$it$")) {
                         name = "$it$$name"
@@ -45,9 +55,19 @@ class ProjectRemapper(
         var name = info.fieldRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.desc.get() == descriptor } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
 
         annotations.getClasses(AnnotationField.NAMESPACE) { cls, values ->
-            if (cls.name == owner) {
+            if (cls.name.get() == owner) {
                 values[AnnotationField.NAMESPACE_VALUE]?.let {
                     name = "$it$$name"
+                }
+            }
+        }
+
+        annotations.getFields(AnnotationField.NAMESPACE) { field, values ->
+            if (field.cls.get() == owner && field.name.get() == name && field.desc.get() == descriptor) {
+                values[AnnotationField.NAMESPACE_VALUE]?.let {
+                    if (!name.startsWith("$it$")) {
+                        name = "$it$$name"
+                    }
                 }
             }
         }

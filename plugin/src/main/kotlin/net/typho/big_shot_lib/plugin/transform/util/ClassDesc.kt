@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.plugin.transform.util
 
-data class ClassDesc(
-    @JvmField
-    val name: String
-)
+import org.gradle.api.provider.Property
+
+interface ClassDesc {
+    val name: Property<String>
+}

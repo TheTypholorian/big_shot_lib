@@ -25,7 +25,7 @@ class BigShotLibPlugin : Plugin<Project> {
         out.deleteRecursively()
         out.mkdirs()
 
-        val annotations = AnnotationScanner(setOf(
+        val annotations = AnnotationScanner(project.objects, setOf(
             AnnotationField.NAMESPACE
         ))
         var visited = 0
@@ -52,7 +52,10 @@ class BigShotLibPlugin : Plugin<Project> {
             }
         }
 
-        println("\tLoaded annotations from $visited jar files")
+        println("\tLoaded annotations from $visited class files:")
+        println("\t\t${annotations.classes.values.sumOf { it.size }} class annotations")
+        println("\t\t${annotations.methods.values.sumOf { it.size }} method annotations")
+        println("\t\t${annotations.fields.values.sumOf { it.size }} field annotations")
         visited = 0
 
         inputs.forEach { file ->
@@ -61,10 +64,10 @@ class BigShotLibPlugin : Plugin<Project> {
                 val reader = ClassReader(bytes)
                 val writer = ClassWriter(0)
                 val remapper = ProjectRemapper(ext.transformInfo, Opcodes.ASM9, annotations)
-                val transformer = ProjectTransformer(Opcodes.ASM9, ClassRemapper(writer, remapper))
+                val transformer = ProjectTransformer(project.objects, Opcodes.ASM9, ClassRemapper(writer, remapper))
                 reader.accept(transformer, 0)
 
-                val target = out.resolve("${transformer.desc!!.name}.class")
+                val target = out.resolve("${transformer.desc!!.name.get()}.class")
                 target.parentFile.mkdirs()
                 target.writeBytes(writer.toByteArray())
                 visited++
