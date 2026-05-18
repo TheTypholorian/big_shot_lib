@@ -30,7 +30,7 @@ class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
         BigShotClientEvents.init()
         //eventBus.register(BigShotClientEvents.ScrewYouNeoforge())
 
-        val type = NeoRenderType.BUILTINS.entityTranslucent(Identifier.fromNamespaceAndPath("test", "dummy"), true)
+        val type = NeoRenderType.BUILTINS.entityTranslucent(Identifier.of("test", "dummy"), true)
         BigShotApi.LOGGER.info("Entity Translucent: ${type.format} ${type.drawState.blend} ${type.drawState.colorMask} ${type.drawState.cull} ${type.drawState.depth} ${type.drawState.layering} ${type.drawState.lightmap} ${type.drawState.overlay} ${type.drawState.shader} ${type.defaultBufferSize}")
     }
 }

@@ -26,6 +26,15 @@ class BigShotLibPlugin : Plugin<Project> {
             it.destination.set(project.layout.buildDirectory.dir("generated/bigShotLib"))
         }
 
+        project.afterEvaluate {
+            println("[Big Shot Lib] Class Renames:")
+            ext.transformInfo.classRenames.get().forEach { println("\t${it.from.get()} to '${it.to.get()}'") }
+            println("[Big Shot Lib] Method Renames:")
+            ext.transformInfo.methodRenames.get().forEach { println("\t${it.from.get().cls.get()}.${it.from.get().name.get()} ${it.from.get().desc.get()} to '${it.to.get()}'") }
+            println("[Big Shot Lib] Field Renames:")
+            ext.transformInfo.fieldRenames.get().forEach { println("\t${it.from.get().cls.get()}.${it.from.get().name.get()} ${it.from.get().desc.get()} to '${it.to.get()}'") }
+        }
+
         project.pluginManager.withPlugin("java") {
             project.configurations.named("compileClasspath") {
                 it.attributes {

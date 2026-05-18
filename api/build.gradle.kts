@@ -22,12 +22,7 @@ kotlin {
 
 bigShotLib {
     transformInfo {
-        renameMethod(
-            "net/minecraft/resources/Identifier",
-            "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
-            "withDefaultNamespace",
-            "minecraft"
-        )
+        shortIdentifierMethods()
     }
 }
 

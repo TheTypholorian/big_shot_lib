@@ -105,5 +105,26 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 it.desc.set(desc)
             }, to)
         }
+
+        fun shortIdentifierMethods() {
+            renameMethod(
+                "net/minecraft/resources/Identifier",
+                "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
+                "createUntrusted",
+                "untrusted"
+            )
+            renameMethod(
+                "net/minecraft/resources/Identifier",
+                "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
+                "fromNamespaceAndPath",
+                "of"
+            )
+            renameMethod(
+                "net/minecraft/resources/Identifier",
+                "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
+                "withDefaultNamespace",
+                "minecraft"
+            )
+        }
     }
 }

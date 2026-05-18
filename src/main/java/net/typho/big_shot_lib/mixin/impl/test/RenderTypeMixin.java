@@ -26,7 +26,7 @@ public abstract class RenderTypeMixin {
     static {
         ENTITY_TRANSLUCENT = Util.memoize((texture, affectsOutline) -> ImmutableExtensionKt.getExtensionValue(
                 NeoRenderType.create(
-                        Identifier.withDefaultNamespace("entity_translucent"),
+                        Identifier.minecraft("entity_translucent"),
                         NeoVertexFormats.NEW_ENTITY,
                         new GlDrawState.Builder()
                                 .cull(GlCullFace.FRONT)

@@ -8,5 +8,5 @@ abstract class ModEntrypoint(
 ) {
     val container = PlatformUtil.INSTANCE.getMod(modId)!!
 
-    fun id(path: String): Identifier = Identifier.fromNamespaceAndPath(container.id, path)
+    fun id(path: String): Identifier = Identifier.of(container.id, path)
 }

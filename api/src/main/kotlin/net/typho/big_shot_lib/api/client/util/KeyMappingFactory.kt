@@ -6,23 +6,23 @@ import net.minecraft.client.KeyMapping
 
 interface KeyMappingFactory {
     val movement: KeyMappingCategory
-        get() = getOrCreateCategory(Identifier.withDefaultNamespace("movement"))
+        get() = getOrCreateCategory(Identifier.minecraft("movement"))
     val gameplay: KeyMappingCategory
-        get() = getOrCreateCategory(Identifier.withDefaultNamespace("gameplay"))
+        get() = getOrCreateCategory(Identifier.minecraft("gameplay"))
     val inventory : KeyMappingCategory
-        get() = getOrCreateCategory(Identifier.withDefaultNamespace("inventory"))
+        get() = getOrCreateCategory(Identifier.minecraft("inventory"))
     val multiplayer : KeyMappingCategory
-        get() = getOrCreateCategory(Identifier.withDefaultNamespace("multiplayer"))
+        get() = getOrCreateCategory(Identifier.minecraft("multiplayer"))
     val ui : KeyMappingCategory
-        get() = getOrCreateCategory(Identifier.withDefaultNamespace("ui"))
+        get() = getOrCreateCategory(Identifier.minecraft("ui"))
     val creative : KeyMappingCategory
-        get() = getOrCreateCategory(Identifier.withDefaultNamespace("creative"))
+        get() = getOrCreateCategory(Identifier.minecraft("creative"))
     val spectator : KeyMappingCategory
-        get() = getOrCreateCategory(Identifier.withDefaultNamespace("spectator"))
+        get() = getOrCreateCategory(Identifier.minecraft("spectator"))
     val misc : KeyMappingCategory
-        get() = getOrCreateCategory(Identifier.withDefaultNamespace("misc"))
+        get() = getOrCreateCategory(Identifier.minecraft("misc"))
     val debug : KeyMappingCategory
-        get() = getOrCreateCategory(Identifier.withDefaultNamespace("debug"))
+        get() = getOrCreateCategory(Identifier.minecraft("debug"))
     
     fun getOrCreateCategory(location: Identifier): KeyMappingCategory
 

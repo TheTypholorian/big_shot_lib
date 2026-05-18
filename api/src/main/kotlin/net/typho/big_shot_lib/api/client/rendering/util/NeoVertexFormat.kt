@@ -23,19 +23,19 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
         internal val REGISTRY = createRegistry<NeoVertexFormat>(BigShotApi.id("vertex_formats"))
 
         override fun onInitialize() {
-            register(REGISTRY, Identifier.withDefaultNamespace("blit_screen"), InternalUtil.INSTANCE.blitScreenVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("block"), InternalUtil.INSTANCE.blockVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("new_entity"), InternalUtil.INSTANCE.newEntityVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("particle"), InternalUtil.INSTANCE.particleVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("position"), InternalUtil.INSTANCE.positionVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("position_color"), InternalUtil.INSTANCE.positionColorVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("position_color_normal"), InternalUtil.INSTANCE.positionColorNormalVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("position_color_lightmap"), InternalUtil.INSTANCE.positionColorLightVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("position_tex"), InternalUtil.INSTANCE.positionTexVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("position_tex_color"), InternalUtil.INSTANCE.positionTexColorVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("position_color_tex_lightmap"), InternalUtil.INSTANCE.positionColorTexLightVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("position_tex_lightmap_color"), InternalUtil.INSTANCE.positionTexLightColorVertexFormat)
-            register(REGISTRY, Identifier.withDefaultNamespace("position_tex_color_normal"), InternalUtil.INSTANCE.positionTexColorNormalVertexFormat)
+            register(REGISTRY, Identifier.minecraft("blit_screen"), InternalUtil.INSTANCE.blitScreenVertexFormat)
+            register(REGISTRY, Identifier.minecraft("block"), InternalUtil.INSTANCE.blockVertexFormat)
+            register(REGISTRY, Identifier.minecraft("new_entity"), InternalUtil.INSTANCE.newEntityVertexFormat)
+            register(REGISTRY, Identifier.minecraft("particle"), InternalUtil.INSTANCE.particleVertexFormat)
+            register(REGISTRY, Identifier.minecraft("position"), InternalUtil.INSTANCE.positionVertexFormat)
+            register(REGISTRY, Identifier.minecraft("position_color"), InternalUtil.INSTANCE.positionColorVertexFormat)
+            register(REGISTRY, Identifier.minecraft("position_color_normal"), InternalUtil.INSTANCE.positionColorNormalVertexFormat)
+            register(REGISTRY, Identifier.minecraft("position_color_lightmap"), InternalUtil.INSTANCE.positionColorLightVertexFormat)
+            register(REGISTRY, Identifier.minecraft("position_tex"), InternalUtil.INSTANCE.positionTexVertexFormat)
+            register(REGISTRY, Identifier.minecraft("position_tex_color"), InternalUtil.INSTANCE.positionTexColorVertexFormat)
+            register(REGISTRY, Identifier.minecraft("position_color_tex_lightmap"), InternalUtil.INSTANCE.positionColorTexLightVertexFormat)
+            register(REGISTRY, Identifier.minecraft("position_tex_lightmap_color"), InternalUtil.INSTANCE.positionTexLightColorVertexFormat)
+            register(REGISTRY, Identifier.minecraft("position_tex_color_normal"), InternalUtil.INSTANCE.positionTexColorNormalVertexFormat)
         }
     }
 

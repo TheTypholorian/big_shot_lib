@@ -21,5 +21,5 @@ object BigShotApi {
     fun Identifier.toShortString() = if (namespace == Identifier.DEFAULT_NAMESPACE) path else toString()
 
     @JvmStatic
-    fun id(path: String): Identifier = Identifier.fromNamespaceAndPath(MOD_ID, path)
+    fun id(path: String): Identifier = Identifier.of(MOD_ID, path)
 }
