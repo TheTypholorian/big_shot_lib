@@ -67,7 +67,7 @@ class BigShotLibPlugin : Plugin<Project> {
                 val transformer = ProjectTransformer(project.objects, Opcodes.ASM9, ClassRemapper(writer, remapper))
                 reader.accept(transformer, 0)
 
-                val target = out.resolve("${transformer.desc!!.name.get()}.class")
+                val target = out.resolve("${transformer.desc!!}.class")
                 target.parentFile.mkdirs()
                 target.writeBytes(writer.toByteArray())
                 visited++

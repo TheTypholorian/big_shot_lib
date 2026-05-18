@@ -16,13 +16,13 @@ class AnnotationScanner(
     val annotations: Set<String>
 ) {
     @JvmField
-    val classes = hashMapOf<String, MutableMap<ClassDesc, MutableMap<String, Any?>>>()
+    val classes = hashMapOf<String, MutableMap<String, MutableMap<String, Any?>>>()
     @JvmField
     val methods = hashMapOf<String, MutableMap<MethodDesc, MutableMap<String, Any?>>>()
     @JvmField
     val fields = hashMapOf<String, MutableMap<FieldDesc, MutableMap<String, Any?>>>()
 
-    fun getClasses(annotation: String, out: (cls: ClassDesc, values: ValueSupplier) -> Unit) {
+    fun getClasses(annotation: String, out: (cls: String, values: ValueSupplier) -> Unit) {
         val info = classes[annotation] ?: return
 
         for ((cls, values) in info) {
@@ -60,7 +60,7 @@ class AnnotationScanner(
 
     fun createVisitor() = object : ClassVisitor(Opcodes.ASM9) {
         @JvmField
-        var desc: ClassDesc? = null
+        var desc: String? = null
         @JvmField
         val classes = hashMapOf<String, MutableMap<String, Any?>>()
 
@@ -72,7 +72,7 @@ class AnnotationScanner(
             superName: String?,
             interfaces: Array<String>?
         ) {
-            desc = objects.newInstance(ClassDesc::class.java).also { it.name.set(name) }
+            desc = name
 
             super.visit(version, access, name, signature, superName, interfaces)
         }
@@ -99,7 +99,7 @@ class AnnotationScanner(
             exceptions: Array<out String?>?
         ): MethodVisitor {
             val desc = objects.newInstance(MethodDesc::class.java)
-            desc.cls.set(this.desc!!.name)
+            desc.cls.set(this.desc!!)
             desc.name.set(name)
             desc.desc.set(descriptor)
 
@@ -139,7 +139,7 @@ class AnnotationScanner(
             value: Any?
         ): FieldVisitor {
             val desc = objects.newInstance(FieldDesc::class.java)
-            desc.cls.set(this.desc!!.name)
+            desc.cls.set(this.desc!!)
             desc.name.set(name)
             desc.desc.set(descriptor)
 
