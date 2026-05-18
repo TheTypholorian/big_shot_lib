@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension
 import net.typho.big_shot_lib.plugin.MCVersion
 import net.typho.big_shot_lib.plugin.transform.util.AnnotationField
 import net.typho.big_shot_lib.plugin.transform.util.AnnotationScanner
+import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.objectweb.asm.commons.Remapper
 
 class ProjectRemapper(
@@ -28,9 +29,9 @@ class ProjectRemapper(
 
         var name = info.methodRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.desc.get() == descriptor } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
 
-        annotations.getClasses(AnnotationField.NAMESPACE) { cls, values ->
+        annotations.getClasses(Annotations.NAMESPACE) { cls, values ->
             if (cls == owner) {
-                values[AnnotationField.NAMESPACE_VALUE]?.let {
+                values[Annotations.NAMESPACE_VALUE]?.let {
                     if (!name.startsWith("$it$")) {
                         name = "$it$$name"
                     }
@@ -38,9 +39,9 @@ class ProjectRemapper(
             }
         }
 
-        annotations.getMethods(AnnotationField.NAMESPACE) { method, values ->
+        annotations.getMethods(Annotations.NAMESPACE) { method, values ->
             if (method.cls.get() == owner && method.name.get() == name && method.desc.get() == descriptor) {
-                values[AnnotationField.NAMESPACE_VALUE]?.let {
+                values[Annotations.NAMESPACE_VALUE]?.let {
                     if (!name.startsWith("$it$")) {
                         name = "$it$$name"
                     }
@@ -54,17 +55,17 @@ class ProjectRemapper(
     override fun mapFieldName(owner: String, name: String, descriptor: String): String {
         var name = info.fieldRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.desc.get() == descriptor } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
 
-        annotations.getClasses(AnnotationField.NAMESPACE) { cls, values ->
+        annotations.getClasses(Annotations.NAMESPACE) { cls, values ->
             if (cls == owner) {
-                values[AnnotationField.NAMESPACE_VALUE]?.let {
+                values[Annotations.NAMESPACE_VALUE]?.let {
                     name = "$it$$name"
                 }
             }
         }
 
-        annotations.getFields(AnnotationField.NAMESPACE) { field, values ->
+        annotations.getFields(Annotations.NAMESPACE) { field, values ->
             if (field.cls.get() == owner && field.name.get() == name && field.desc.get() == descriptor) {
-                values[AnnotationField.NAMESPACE_VALUE]?.let {
+                values[Annotations.NAMESPACE_VALUE]?.let {
                     if (!name.startsWith("$it$")) {
                         name = "$it$$name"
                     }

@@ -1,7 +1,3 @@
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension
-import net.typho.big_shot_lib.plugin.transform.util.ClassDesc
-import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 // This should match the folder name of the project, or else IDEA may complain (see https://youtrack.jetbrains.com/issue/IDEA-317606)

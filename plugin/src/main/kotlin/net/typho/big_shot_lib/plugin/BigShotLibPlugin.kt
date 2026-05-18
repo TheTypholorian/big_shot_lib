@@ -5,6 +5,7 @@ import net.typho.big_shot_lib.plugin.transform.ProjectRemapper
 import net.typho.big_shot_lib.plugin.transform.ProjectTransformer
 import net.typho.big_shot_lib.plugin.transform.util.AnnotationField
 import net.typho.big_shot_lib.plugin.transform.util.AnnotationScanner
+import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
@@ -26,7 +27,7 @@ class BigShotLibPlugin : Plugin<Project> {
         out.mkdirs()
 
         val annotations = AnnotationScanner(project.objects, setOf(
-            AnnotationField.NAMESPACE
+            Annotations.NAMESPACE
         ))
         var visited = 0
 
