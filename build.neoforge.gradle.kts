@@ -17,6 +17,11 @@ kotlin {
 bigShotLib {
     transformInfo {
         shortIdentifierMethods()
+
+        injectInterface(
+            "net/typho/big_shot_lib/TestInterface",
+            "net/minecraft/resources/Identifier"
+        )
     }
 }
 

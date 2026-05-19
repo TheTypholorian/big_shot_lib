@@ -8,7 +8,7 @@ import net.typho.big_shot_lib.api.plugin.OnlyIn;
 @OnlyIn(Environment.CLIENT)
 public class TestT {
     @Namespace("big_shot_lib")
-    public static void testMethod(Identifier id) {
+    public static void testMethod(TestInterface id) {
     }
 
     static {

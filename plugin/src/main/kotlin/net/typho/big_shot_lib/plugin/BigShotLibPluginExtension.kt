@@ -59,14 +59,21 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             val to: Property<String>
         }
 
+        interface InterfaceInjection {
+            val iface: Property<String>
+            val target: Property<String>
+        }
+
         abstract val classRenames: ListProperty<ClassRename>
         abstract val methodRenames: ListProperty<MethodRename>
         abstract val fieldRenames: ListProperty<FieldRename>
+        abstract val interfaceInjections: ListProperty<InterfaceInjection>
 
         init {
             classRenames.convention(listOf())
             methodRenames.convention(listOf())
             fieldRenames.convention(listOf())
+            interfaceInjections.convention(listOf())
         }
 
         fun renameClass(from: String, to: String) {
@@ -104,6 +111,13 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 it.name.set(from)
                 it.desc.set(desc)
             }, to)
+        }
+
+        fun injectInterface(iface: String, target: String) {
+            interfaceInjections.add(objects.newInstance(InterfaceInjection::class.java).also {
+                it.iface.set(iface)
+                it.target.set(target)
+            })
         }
 
         fun shortIdentifierMethods() {

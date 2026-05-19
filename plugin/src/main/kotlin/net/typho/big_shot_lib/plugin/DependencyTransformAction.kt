@@ -1,8 +1,6 @@
 package net.typho.big_shot_lib.plugin
 
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.ClassRename
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.FieldRename
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.MethodRename
+import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.*
 import net.typho.big_shot_lib.plugin.transform.DependencyRemapper
 import net.typho.big_shot_lib.plugin.transform.DependencyTransformer
 import org.gradle.api.artifacts.transform.InputArtifact
@@ -11,17 +9,15 @@ import org.gradle.api.artifacts.transform.TransformOutputs
 import org.gradle.api.artifacts.transform.TransformParameters
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
-import org.gradle.internal.file.impl.DefaultFileMetadata.file
 import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.ClassRemapper
+import org.objectweb.asm.util.TraceClassVisitor
 import java.io.FileOutputStream
+import java.io.PrintWriter
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
@@ -38,13 +34,13 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
 
         JarFile(inFile, false).use { jar ->
             JarOutputStream(FileOutputStream(outFile)).use { out ->
-                for (entry in jar.stream()) {
+                jar.entries().asIterator().forEach { entry ->
                     jar.getInputStream(entry).use { stream ->
                         if (entry.name.endsWith(".class") && !entry.name.endsWith("-info.class")) {
                             val reader = ClassReader(stream)
-                            val writer = ClassWriter(0)
-                            val transformer = DependencyTransformer(Opcodes.ASM9, ClassRemapper(writer, remapper))
-                            reader.accept(transformer, 0)
+                            val writer = ClassWriter(reader, ClassWriter.COMPUTE_FRAMES or ClassWriter.COMPUTE_MAXS)
+                            val transformer = ClassRemapper(DependencyTransformer(parameters, remapper, Opcodes.ASM9, writer), remapper)
+                            reader.accept(transformer, ClassReader.EXPAND_FRAMES)
 
                             val className = entry.name.removeSuffix(".class")
                             val newName = remapper.map(className)
@@ -55,7 +51,20 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                                 out.putNextEntry(JarEntry("$newName.class"))
                             }
 
-                            out.write(writer.toByteArray())
+                            val bytes = writer.toByteArray()
+
+                            if (newName.contains("ResourceLocation") || className.contains("ResourceLocation") || newName.contains("Identifier") || className.contains("Identifier")) {
+                                println("visit")
+                                ClassReader(bytes).accept(
+                                    TraceClassVisitor(
+                                        null,
+                                        PrintWriter(System.out)
+                                    ),
+                                    0
+                                )
+                            }
+
+                            out.write(bytes)
                         } else if (entry.name.endsWith(".java")) {
                             val className = entry.name.removeSuffix(".java")
                             val newName = remapper.map(className)
@@ -97,5 +106,7 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
         val methodRenames: ListProperty<MethodRename>
         @get:Input
         val fieldRenames: ListProperty<FieldRename>
+        @get:Input
+        val interfaceInjections: ListProperty<InterfaceInjection>
     }
 }

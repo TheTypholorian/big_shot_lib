@@ -15,6 +15,7 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.ClassRemapper
+import sun.security.krb5.Confounder.bytes
 import java.io.File
 import java.util.jar.JarFile
 import kotlin.jvm.java
@@ -27,14 +28,14 @@ class BigShotLibPlugin : Plugin<Project> {
         out.mkdirs()
 
         val annotations = AnnotationScanner(project.objects, setOf(
-            Annotations.NAMESPACE
+            Annotations.NAMESPACE,
         ))
         var visited = 0
 
         for (file in project.configurations.getByName("compileClasspath").resolve()) {
             if (file.extension == "jar") {
                 JarFile(file, false).use { jar ->
-                    for (entry in jar.stream()) {
+                    jar.entries().asIterator().forEach { entry ->
                         if (entry.name.endsWith(".class") && !entry.name.endsWith("-info.class")) {
                             visited++
                             ClassReader(jar.getInputStream(entry)).accept(annotations.createVisitor(), ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
@@ -48,7 +49,9 @@ class BigShotLibPlugin : Plugin<Project> {
             it.walkTopDown().forEach { file ->
                 if (file.extension == "class" && !file.endsWith("-info.class")) {
                     visited++
-                    ClassReader(file.readBytes()).accept(annotations.createVisitor(), ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
+                    file.inputStream().use { stream ->
+                        ClassReader(stream).accept(annotations.createVisitor(), ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
+                    }
                 }
             }
         }
@@ -61,17 +64,20 @@ class BigShotLibPlugin : Plugin<Project> {
 
         inputs.forEach { file ->
             if (file.extension == "class" && !file.endsWith("-info.class")) {
-                val bytes = file.readBytes()
-                val reader = ClassReader(bytes)
-                val writer = ClassWriter(0)
-                val remapper = ProjectRemapper(ext.transformInfo, Opcodes.ASM9, annotations)
-                val transformer = ProjectTransformer(project.objects, Opcodes.ASM9, ClassRemapper(writer, remapper))
-                reader.accept(transformer, 0)
+                file.inputStream().use { stream ->
+                    val reader = ClassReader(stream)
+                    val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES or ClassWriter.COMPUTE_MAXS)
+                    val remapper = ProjectRemapper(ext.transformInfo, Opcodes.ASM9, annotations)
+                    val transformer = ProjectTransformer(project.objects, Opcodes.ASM9, ClassRemapper(writer, remapper))
+                    reader.accept(transformer, ClassReader.EXPAND_FRAMES)
 
-                val target = out.resolve("${transformer.desc!!}.class")
-                target.parentFile.mkdirs()
-                target.writeBytes(writer.toByteArray())
-                visited++
+                    if (ModLoader.CURRENT.mappedOnlyInAnnotationName != transformer.desc!!) {
+                        val target = out.resolve("${transformer.desc!!}.class")
+                        target.parentFile.mkdirs()
+                        target.writeBytes(writer.toByteArray())
+                        visited++
+                    }
+                }
             }
         }
 
@@ -94,6 +100,8 @@ class BigShotLibPlugin : Plugin<Project> {
             ext.transformInfo.methodRenames.get().forEach { println("\t${it.from.get().cls.get()}.${it.from.get().name.get()} ${it.from.get().desc.get()} to '${it.to.get()}'") }
             println("[Big Shot Lib] Field Renames:")
             ext.transformInfo.fieldRenames.get().forEach { println("\t${it.from.get().cls.get()}.${it.from.get().name.get()} ${it.from.get().desc.get()} to '${it.to.get()}'") }
+            println("[Big Shot Lib] Interface Injections:")
+            ext.transformInfo.interfaceInjections.get().forEach { println("\t${it.iface.get()} to ${it.target.get()}") }
         }
 
         project.pluginManager.withPlugin("java") {
@@ -114,6 +122,7 @@ class BigShotLibPlugin : Plugin<Project> {
                 it.parameters.classRenames.set(ext.transformInfo.classRenames)
                 it.parameters.methodRenames.set(ext.transformInfo.methodRenames)
                 it.parameters.fieldRenames.set(ext.transformInfo.fieldRenames)
+                it.parameters.interfaceInjections.set(ext.transformInfo.interfaceInjections)
             }
 
             //project.tasks.getByName("processResources") {
