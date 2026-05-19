@@ -62,6 +62,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         interface InterfaceInjection {
             val iface: Property<String>
             val target: Property<String>
+            val typeParams: ListProperty<String>
         }
 
         abstract val classRenames: ListProperty<ClassRename>
@@ -113,10 +114,11 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             }, to)
         }
 
-        fun injectInterface(iface: String, target: String) {
+        fun injectInterface(iface: String, target: String, vararg typeParams: String) {
             interfaceInjections.add(objects.newInstance(InterfaceInjection::class.java).also {
                 it.iface.set(iface)
                 it.target.set(target)
+                it.typeParams.set(typeParams.toList())
             })
         }
 

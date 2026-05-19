@@ -15,9 +15,7 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.ClassRemapper
-import org.objectweb.asm.util.TraceClassVisitor
 import java.io.FileOutputStream
-import java.io.PrintWriter
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
@@ -38,9 +36,9 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                     jar.getInputStream(entry).use { stream ->
                         if (entry.name.endsWith(".class") && !entry.name.endsWith("-info.class")) {
                             val reader = ClassReader(stream)
-                            val writer = ClassWriter(reader, ClassWriter.COMPUTE_FRAMES or ClassWriter.COMPUTE_MAXS)
+                            val writer = ClassWriter(reader, 0)
                             val transformer = ClassRemapper(DependencyTransformer(parameters, remapper, Opcodes.ASM9, writer), remapper)
-                            reader.accept(transformer, ClassReader.EXPAND_FRAMES)
+                            reader.accept(transformer, 0)
 
                             val className = entry.name.removeSuffix(".class")
                             val newName = remapper.map(className)
@@ -51,20 +49,7 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                                 out.putNextEntry(JarEntry("$newName.class"))
                             }
 
-                            val bytes = writer.toByteArray()
-
-                            if (newName.contains("ResourceLocation") || className.contains("ResourceLocation") || newName.contains("Identifier") || className.contains("Identifier")) {
-                                println("visit")
-                                ClassReader(bytes).accept(
-                                    TraceClassVisitor(
-                                        null,
-                                        PrintWriter(System.out)
-                                    ),
-                                    0
-                                )
-                            }
-
-                            out.write(bytes)
+                            out.write(writer.toByteArray())
                         } else if (entry.name.endsWith(".java")) {
                             val className = entry.name.removeSuffix(".java")
                             val newName = remapper.map(className)
