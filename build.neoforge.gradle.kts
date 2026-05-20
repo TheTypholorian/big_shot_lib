@@ -30,8 +30,7 @@ bigShotLib {
             "net/minecraft/resources/Identifier",
             "id",
             "bigShot",
-            "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
-            "big_shot_lib"
+            "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;"
         )
     }
 }

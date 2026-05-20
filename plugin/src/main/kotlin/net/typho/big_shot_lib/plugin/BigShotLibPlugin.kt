@@ -66,10 +66,10 @@ class BigShotLibPlugin : Plugin<Project> {
             if (file.extension == "class" && !file.endsWith("-info.class")) {
                 file.inputStream().use { stream ->
                     val reader = ClassReader(stream)
-                    val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES or ClassWriter.COMPUTE_MAXS)
+                    val writer = ClassWriter(0)
                     val remapper = ProjectRemapper(ext, Opcodes.ASM9, annotations)
                     val transformer = ProjectTransformer(ext, project.objects, Opcodes.ASM9, ClassRemapper(writer, remapper))
-                    reader.accept(transformer, ClassReader.EXPAND_FRAMES)
+                    reader.accept(transformer, 0)
 
                     if (ext.loader.get().mappedOnlyInAnnotationName != transformer.desc!!) {
                         val target = out.resolve("${transformer.desc!!}.class")
@@ -103,7 +103,7 @@ class BigShotLibPlugin : Plugin<Project> {
             println("[Big Shot Lib] Interface Injections:")
             ext.transformInfo.interfaceInjections.get().forEach { println("\t${it.iface.get()} to ${it.target.get()}") }
             println("[Big Shot Lib] Static Method Injections:")
-            ext.transformInfo.staticMethodInjections.get().forEach { println("\t${it.targetClass.get()}.${it.targetMethodName.get()} ${it.redirectTo.get().cls.get()}.${it.namespace.get()}$${it.redirectTo.get().name.get()} ${it.redirectTo.get().desc.get()}") }
+            ext.transformInfo.staticMethodInjections.get().forEach { println("\t${it.targetClass.get()}.${it.targetMethodName.get()} ${it.redirectTo.get().cls.get()}.${it.redirectTo.get().name.get()} ${it.redirectTo.get().desc.get()}") }
         }
 
         project.pluginManager.withPlugin("java") {

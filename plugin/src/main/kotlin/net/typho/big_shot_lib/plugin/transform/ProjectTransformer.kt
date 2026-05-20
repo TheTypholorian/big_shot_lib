@@ -6,6 +6,7 @@ import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.gradle.api.model.ObjectFactory
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.MethodVisitor
 
 class ProjectTransformer(
     @JvmField
@@ -47,6 +48,33 @@ class ProjectTransformer(
             }
         } else {
             return super.visitAnnotation(descriptor, visible)
+        }
+    }
+
+    override fun visitMethod(
+        access: Int,
+        name: String,
+        descriptor: String?,
+        signature: String?,
+        exceptions: Array<out String?>?
+    ): MethodVisitor {
+        return object : MethodVisitor(api, super.visitMethod(access, name, descriptor, signature, exceptions)) {
+            override fun visitMethodInsn(
+                opcode: Int,
+                owner: String,
+                name: String,
+                descriptor: String,
+                isInterface: Boolean
+            ) {
+                for (injection in ext.transformInfo.staticMethodInjections.get()) {
+                    if (injection.targetClass.get() == owner && injection.targetMethodName.get() == name && injection.redirectTo.get().desc.get() == descriptor) {
+                        super.visitMethodInsn(opcode, injection.redirectTo.get().cls.get(), injection.redirectTo.get().name.get(), descriptor, false)
+                        return
+                    }
+                }
+
+                super.visitMethodInsn(opcode, owner, name, descriptor, isInterface)
+            }
         }
     }
 }

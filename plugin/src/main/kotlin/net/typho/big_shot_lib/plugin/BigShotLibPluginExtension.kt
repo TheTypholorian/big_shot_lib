@@ -80,7 +80,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             val targetMethodName: Property<String>
             val signature: Property<String>
             val exceptions: ListProperty<String>
-            val namespace: Property<String>
         }
 
         abstract val classRenames: ListProperty<ClassRename>
@@ -143,7 +142,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         }
 
         @JvmOverloads
-        fun injectStaticMethod(fromCls: String, toCls: String, fromName: String, toName: String, methodDesc: String, namespace: String, signature: String? = null, exceptions: List<String> = listOf()) {
+        fun injectStaticMethod(fromCls: String, toCls: String, fromName: String, toName: String, methodDesc: String, signature: String? = null, exceptions: List<String> = listOf()) {
             staticMethodInjections.add(objects.newInstance(StaticMethodInjection::class.java).also {
                 it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
                     it.cls.set(fromCls)
@@ -152,7 +151,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 })
                 it.targetClass.set(toCls)
                 it.targetMethodName.set(toName)
-                it.namespace.set(namespace)
                 it.exceptions.set(exceptions)
                 it.signature.set(signature)
             })

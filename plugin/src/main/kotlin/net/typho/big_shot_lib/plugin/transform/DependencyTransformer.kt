@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.plugin.DependencyTransformAction
 import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 import org.objectweb.asm.commons.Remapper
@@ -66,10 +67,6 @@ class DependencyTransformer(
                     injection.signature.orNull,
                     injection.exceptions.get().toTypedArray()
                 )
-
-                val namespaceAnno = method.visitAnnotation(Annotations.NAMESPACE, true)
-                namespaceAnno.visit("value", injection.namespace.get())
-                namespaceAnno.visitEnd()
 
                 val args = Type.getArgumentTypes(injection.redirectTo.get().desc.get())
                 val ret = Type.getReturnType(injection.redirectTo.get().desc.get())
