@@ -35,21 +35,24 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                 jar.entries().asIterator().forEach { entry ->
                     jar.getInputStream(entry).use { stream ->
                         if (entry.name.endsWith(".class") && !entry.name.endsWith("-info.class")) {
-                            val reader = ClassReader(stream)
-                            val writer = ClassWriter(reader, 0)
-                            val transformer = ClassRemapper(DependencyTransformer(parameters, remapper, Opcodes.ASM9, writer), remapper)
-                            reader.accept(transformer, 0)
-
                             val className = entry.name.removeSuffix(".class")
-                            val newName = remapper.map(className)
 
-                            if (className == newName) {
-                                out.putNextEntry(JarEntry(entry))
-                            } else {
-                                out.putNextEntry(JarEntry("$newName.class"))
+                            if (className != ModLoader.CURRENT.mappedOnlyInAnnotationName) {
+                                val reader = ClassReader(stream)
+                                val writer = ClassWriter(reader, 0)
+                                val transformer = ClassRemapper(DependencyTransformer(parameters, remapper, Opcodes.ASM9, writer), remapper)
+                                reader.accept(transformer, 0)
+
+                                val newName = remapper.map(className)
+
+                                if (className == newName) {
+                                    out.putNextEntry(JarEntry(entry))
+                                } else {
+                                    out.putNextEntry(JarEntry("$newName.class"))
+                                }
+
+                                out.write(writer.toByteArray())
                             }
-
-                            out.write(writer.toByteArray())
                         } else if (entry.name.endsWith(".java")) {
                             val className = entry.name.removeSuffix(".java")
                             val newName = remapper.map(className)

@@ -1,9 +1,10 @@
 package net.typho.big_shot_lib.plugin.transform
 
 import net.typho.big_shot_lib.plugin.DependencyTransformAction
+import net.typho.big_shot_lib.plugin.ModLoader
+import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.commons.Remapper
-import kotlin.math.sign
 
 class DependencyTransformer(
     @JvmField
@@ -49,11 +50,15 @@ class DependencyTransformer(
                 interfaces.add(remapper.map(it.iface.get()))
             }
         }
-Z
+
         if (interfaceInjections.isNotEmpty()) {
             println("[Big Shot Lib] Injected interfaces ${interfaceInjections.map { it.iface.get() }} to $name, old signature: $oldSignature, new signature: $signature")
         }
 
         super.visit(version, access, name, signature, superName, interfaces.toTypedArray())
+    }
+
+    override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {
+        return ModLoader.CURRENT.unmapOnlyInAnnotation(this, descriptor, api) ?: super.visitAnnotation(descriptor, visible)
     }
 }
