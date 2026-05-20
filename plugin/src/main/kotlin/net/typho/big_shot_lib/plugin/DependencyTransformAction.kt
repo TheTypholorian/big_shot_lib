@@ -9,12 +9,10 @@ import org.gradle.api.artifacts.transform.TransformAction
 import org.gradle.api.artifacts.transform.TransformOutputs
 import org.gradle.api.artifacts.transform.TransformParameters
 import org.gradle.api.file.FileSystemLocation
-import org.gradle.api.internal.lambdas.SerializableLambdas.transformer
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
-import org.gradle.internal.impldep.org.bouncycastle.asn1.x500.style.RFC4519Style.owner
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
@@ -45,7 +43,7 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                                 val reader = ClassReader(stream)
                                 val writer = ClassWriter(reader, 0)
                                                                                                     // TODO
-                                val transformer = ClassRemapper(DependencyTransformer(parameters, { owner, newDesc, oldDesc, argumentConverters, returnConverter -> }, remapper, Opcodes.ASM9, writer), remapper)
+                                val transformer = ClassRemapper(DependencyTransformer(parameters, { newDesc, oldDesc, argumentConverters -> }, remapper, Opcodes.ASM9, writer), remapper)
                                 reader.accept(transformer, 0)
 
                                 val newName = remapper.map(className)

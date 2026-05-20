@@ -8,17 +8,23 @@ import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 import org.objectweb.asm.commons.Remapper
+import org.objectweb.asm.signature.SignatureReader
+import org.objectweb.asm.signature.SignatureVisitor
+import org.objectweb.asm.signature.SignatureWriter
 
 class DependencyTransformer(
     @JvmField
     val info: DependencyTransformAction.Parameters,
     @JvmField
-    val overloads: (owner: String, newDesc: String, oldDesc: String, argumentConverters: Array<ArgumentOverloadConverter>, returnConverter: ArgumentOverloadConverter) -> Unit,
+    val overloads: (newDesc: String, oldDesc: String, argumentConverters: List<ArgumentOverloadConverter?>) -> Unit,
     @JvmField
     val remapper: Remapper,
     api: Int,
     visitor: ClassVisitor
 ) : ClassVisitor(api, visitor) {
+    @JvmField
+    var name: String? = null
+
     override fun visit(
         version: Int,
         access: Int,
@@ -27,6 +33,8 @@ class DependencyTransformer(
         superName: String?,
         interfaces: Array<String>?
     ) {
+        this.name = name
+
         val interfaces = interfaces?.toMutableList() ?: mutableListOf()
         val oldSignature = signature
         var signature = signature
@@ -108,25 +116,119 @@ class DependencyTransformer(
         if (access and Opcodes.ACC_SYNTHETIC == 0) {
             val args = Type.getArgumentTypes(descriptor)
             val ret = Type.getReturnType(descriptor)
-            val all = arrayListOf(ret).let {
-                it.addAll(args)
-                it.toTypedArray()
-            }
             val argumentConverterCache = hashMapOf<Type, List<ArgumentOverloadConverter>>()
 
             fun getConverter(type: Type) = argumentConverterCache.computeIfAbsent(type) { key ->
                 info.argumentOverloadConverters.get().filter { it.to.get() == type.internalName }
             }
 
-            val permutationArray = all.map { getConverter(it).size }.toIntArray()
+            val permutationArray = args.map { getConverter(it).size }.toIntArray()
             val temp = IntArray(permutationArray.size) { 0 }
 
             fun permutate() {
                 if (temp.sum() > 0) {
-                    val newTypes = temp.mapIndexed { index, i -> if (i == 0) all[index] else Type.getType("L${argumentConverterCache[all[index]]!![i - 1].from.get()};") }
-                    val desc = Type.getMethodDescriptor(newTypes.first(), *newTypes.subList(1, newTypes.size).toTypedArray())
-                    //println("Creating permutation of $name $descriptor with $desc")
-                    super.visitMethod(access, name, desc, signature, exceptions).visitEnd() // TODO ?
+                    val newArgConverters = temp.mapIndexed { index, i -> if (i == 0) null else argumentConverterCache[args[index]]!![i - 1] }
+                    val newTypes = temp.mapIndexed { index, i -> if (i == 0) args[index] else Type.getType("L${argumentConverterCache[args[index]]!![i - 1].from.get()};") }
+                    val desc = Type.getMethodDescriptor(ret, *newTypes.toTypedArray())
+                    overloads(desc, descriptor, newArgConverters)
+                    var signature = signature
+
+                    if (signature != null) {
+                        val map = args.indices.associate {
+                            args[it].descriptor to newTypes[it].descriptor
+                        }
+                        val writer = SignatureWriter()
+
+                        // ASM WHY DO YOU NOT FOLLOW THE PATTERN FOR SIGNATURES THAT YOU DO FOR EVERY OTHER TYPE OF VISITOR (a forward argument to another visitor)
+                        SignatureReader(signature).accept(object : SignatureVisitor(Opcodes.ASM9) {
+                            override fun visitParameterType(): SignatureVisitor {
+                                writer.visitParameterType()
+                                return this
+                            }
+
+                            override fun visitReturnType(): SignatureVisitor {
+                                writer.visitReturnType()
+                                return this
+                            }
+
+                            override fun visitClassType(name: String) {
+                                val desc = "L$name;"
+                                val rep = map[desc]
+
+                                if (rep != null) {
+                                    writer.visitClassType(Type.getType(rep).internalName)
+                                } else {
+                                    writer.visitClassType(name)
+                                }
+                            }
+
+                            override fun visitBaseType(descriptor: Char) {
+                                writer.visitBaseType(descriptor)
+                            }
+
+                            override fun visitTypeVariable(name: String) {
+                                writer.visitTypeVariable(name)
+                            }
+
+                            override fun visitTypeArgument() {
+                                writer.visitTypeArgument()
+                            }
+
+                            override fun visitTypeArgument(wildcard: Char): SignatureVisitor {
+                                writer.visitTypeArgument(wildcard)
+                                return this
+                            }
+
+                            override fun visitEnd() {
+                                writer.visitEnd()
+                            }
+                        })
+
+                        signature = writer.toString()
+                    }
+
+                    val method = super.visitMethod(access, name, desc, signature, exceptions)
+
+                    method.visitCode()
+
+                    val static = access and Opcodes.ACC_STATIC != 0
+
+                    if (!static) {
+                        method.visitVarInsn(Opcodes.ALOAD, 0)
+                    }
+
+                    var slot = if (static) 0 else 1
+
+                    args.forEachIndexed { index, arg ->
+                        val converter = newArgConverters[index]
+
+                        if (converter == null) {
+                            method.visitVarInsn(arg.getOpcode(Opcodes.ILOAD), slot)
+                        } else {
+                            method.visitVarInsn(Type.getObjectType(converter.from.get()).getOpcode(Opcodes.ILOAD), slot)
+                            method.visitMethodInsn(
+                                Opcodes.INVOKESTATIC,
+                                converter.converter.get().cls.get(),
+                                converter.converter.get().name.get(),
+                                converter.converter.get().desc.get(),
+                                false
+                            )
+                        }
+
+                        slot += args[index].size
+                    }
+
+                    method.visitMethodInsn(
+                        if (static) Opcodes.INVOKESTATIC else Opcodes.INVOKEVIRTUAL,
+                        this.name!!,
+                        name,
+                        descriptor,
+                        false
+                    )
+
+                    method.visitInsn(ret.getOpcode(Opcodes.IRETURN))
+                    method.visitMaxs(0, 0)
+                    method.visitEnd()
                 }
             }
 
