@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.plugin.transform
 
+import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.*
 import net.typho.big_shot_lib.plugin.DependencyTransformAction
-import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
@@ -12,6 +12,8 @@ import org.objectweb.asm.commons.Remapper
 class DependencyTransformer(
     @JvmField
     val info: DependencyTransformAction.Parameters,
+    @JvmField
+    val overloads: (owner: String, newDesc: String, oldDesc: String, argumentConverters: Array<ArgumentOverloadConverter>, returnConverter: ArgumentOverloadConverter) -> Unit,
     @JvmField
     val remapper: Remapper,
     api: Int,
@@ -60,7 +62,7 @@ class DependencyTransformer(
 
         for (injection in info.staticMethodInjections.get()) {
             if (injection.targetClass.get() == name) {
-                val method = visitMethod(
+                val method = super.visitMethod(
                     Opcodes.ACC_PUBLIC or Opcodes.ACC_STATIC,
                     injection.targetMethodName.get(),
                     injection.redirectTo.get().desc.get(),
@@ -94,6 +96,55 @@ class DependencyTransformer(
         }
 
         super.visit(version, access, name, signature, superName, interfaces.toTypedArray())
+    }
+
+    override fun visitMethod(
+        access: Int,
+        name: String,
+        descriptor: String,
+        signature: String?,
+        exceptions: Array<String>?
+    ): MethodVisitor {
+        if (access and Opcodes.ACC_SYNTHETIC == 0) {
+            val args = Type.getArgumentTypes(descriptor)
+            val ret = Type.getReturnType(descriptor)
+            val all = arrayListOf(ret).let {
+                it.addAll(args)
+                it.toTypedArray()
+            }
+            val argumentConverterCache = hashMapOf<Type, List<ArgumentOverloadConverter>>()
+
+            fun getConverter(type: Type) = argumentConverterCache.computeIfAbsent(type) { key ->
+                info.argumentOverloadConverters.get().filter { it.to.get() == type.internalName }
+            }
+
+            val permutationArray = all.map { getConverter(it).size }.toIntArray()
+            val temp = IntArray(permutationArray.size) { 0 }
+
+            fun permutate() {
+                if (temp.sum() > 0) {
+                    val newTypes = temp.mapIndexed { index, i -> if (i == 0) all[index] else Type.getType("L${argumentConverterCache[all[index]]!![i - 1].from.get()};") }
+                    val desc = Type.getMethodDescriptor(newTypes.first(), *newTypes.subList(1, newTypes.size).toTypedArray())
+                    //println("Creating permutation of $name $descriptor with $desc")
+                    super.visitMethod(access, name, desc, signature, exceptions).visitEnd() // TODO ?
+                }
+            }
+
+            fun step(index: Int) {
+                if (index == temp.size) {
+                    permutate()
+                } else {
+                    for (num in 0..permutationArray[index]) {
+                        temp[index] = num
+                        step(index + 1)
+                    }
+                }
+            }
+
+            step(0)
+        }
+
+        return super.visitMethod(access, name, descriptor, signature, exceptions)
     }
 
     override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {

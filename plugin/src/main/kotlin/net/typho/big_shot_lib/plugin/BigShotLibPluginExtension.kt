@@ -82,11 +82,19 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             val exceptions: ListProperty<String>
         }
 
+        interface ArgumentOverloadConverter {
+            val from: Property<String>
+            val to: Property<String>
+            val converter: Property<MethodDesc>
+            val permutate: Property<Boolean>
+        }
+
         abstract val classRenames: ListProperty<ClassRename>
         abstract val methodRenames: ListProperty<MethodRename>
         abstract val fieldRenames: ListProperty<FieldRename>
         abstract val interfaceInjections: ListProperty<InterfaceInjection>
         abstract val staticMethodInjections: ListProperty<StaticMethodInjection>
+        abstract val argumentOverloadConverters: ListProperty<ArgumentOverloadConverter>
 
         init {
             classRenames.convention(listOf())
@@ -94,6 +102,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             fieldRenames.convention(listOf())
             interfaceInjections.convention(listOf())
             staticMethodInjections.convention(listOf())
+            argumentOverloadConverters.convention(listOf())
         }
 
         fun renameClass(from: String, to: String) {
@@ -153,6 +162,20 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 it.targetMethodName.set(toName)
                 it.exceptions.set(exceptions)
                 it.signature.set(signature)
+            })
+        }
+
+        @JvmOverloads
+        fun overloadArguments(from: String, to: String, converterOwner: String, converterName: String, permutate: Boolean = false) {
+            argumentOverloadConverters.add(objects.newInstance(ArgumentOverloadConverter::class.java).also {
+                it.from.set(from)
+                it.to.set(to)
+                it.converter.set(objects.newInstance(MethodDesc::class.java).also {
+                    it.cls.set(converterOwner)
+                    it.name.set(converterName)
+                    it.desc.set("(L$from;)L$to;")
+                })
+                it.permutate.set(permutate)
             })
         }
 

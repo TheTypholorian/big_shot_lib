@@ -126,6 +126,7 @@ class BigShotLibPlugin : Plugin<Project> {
                 it.parameters.fieldRenames.set(ext.transformInfo.fieldRenames)
                 it.parameters.interfaceInjections.set(ext.transformInfo.interfaceInjections)
                 it.parameters.staticMethodInjections.set(ext.transformInfo.staticMethodInjections)
+                it.parameters.argumentOverloadConverters.set(ext.transformInfo.argumentOverloadConverters)
                 it.parameters.version.set(ext.version)
                 it.parameters.loader.set(ext.loader)
             }

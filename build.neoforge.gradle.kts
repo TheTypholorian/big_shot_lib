@@ -32,6 +32,12 @@ bigShotLib {
             "bigShot",
             "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;"
         )
+        overloadArguments(
+            "java/lang/String",
+            "net/minecraft/resources/Identifier",
+            "net/minecraft/resources/Identifier",
+            "of"
+        )
     }
 }
 
