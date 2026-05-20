@@ -102,6 +102,8 @@ class BigShotLibPlugin : Plugin<Project> {
             ext.transformInfo.fieldRenames.get().forEach { println("\t${it.from.get().cls.get()}.${it.from.get().name.get()} ${it.from.get().desc.get()} to '${it.to.get()}'") }
             println("[Big Shot Lib] Interface Injections:")
             ext.transformInfo.interfaceInjections.get().forEach { println("\t${it.iface.get()} to ${it.target.get()}") }
+            println("[Big Shot Lib] Static Method Injections:")
+            ext.transformInfo.staticMethodInjections.get().forEach { println("\t${it.targetClass.get()}.${it.targetMethodName.get()} ${it.redirectTo.get().cls.get()}.${it.namespace.get()}$${it.redirectTo.get().name.get()} ${it.redirectTo.get().desc.get()}") }
         }
 
         project.pluginManager.withPlugin("java") {
@@ -123,6 +125,7 @@ class BigShotLibPlugin : Plugin<Project> {
                 it.parameters.methodRenames.set(ext.transformInfo.methodRenames)
                 it.parameters.fieldRenames.set(ext.transformInfo.fieldRenames)
                 it.parameters.interfaceInjections.set(ext.transformInfo.interfaceInjections)
+                it.parameters.staticMethodInjections.set(ext.transformInfo.staticMethodInjections)
                 it.parameters.version.set(ext.version)
                 it.parameters.loader.set(ext.loader)
             }

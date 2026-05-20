@@ -11,7 +11,11 @@ public class TestT {
     public static void testMethod(TestInterface id) {
     }
 
+    public static Identifier id(String path) {
+        return Identifier.of("big_shot_lib", path);
+    }
+
     static {
-        testMethod(Identifier.minecraft("test"));
+        testMethod(Identifier.bigShot("test"));
     }
 }

@@ -98,6 +98,8 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
         @get:Input
         val interfaceInjections: ListProperty<InterfaceInjection>
         @get:Input
+        val staticMethodInjections: ListProperty<StaticMethodInjection>
+        @get:Input
         val version: Property<MCVersion>
         @get:Input
         val loader: Property<ModLoader>

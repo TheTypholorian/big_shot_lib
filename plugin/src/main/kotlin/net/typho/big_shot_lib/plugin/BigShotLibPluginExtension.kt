@@ -74,16 +74,27 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             val typeParams: ListProperty<String>
         }
 
+        interface StaticMethodInjection {
+            val redirectTo: Property<MethodDesc>
+            val targetClass: Property<String>
+            val targetMethodName: Property<String>
+            val signature: Property<String>
+            val exceptions: ListProperty<String>
+            val namespace: Property<String>
+        }
+
         abstract val classRenames: ListProperty<ClassRename>
         abstract val methodRenames: ListProperty<MethodRename>
         abstract val fieldRenames: ListProperty<FieldRename>
         abstract val interfaceInjections: ListProperty<InterfaceInjection>
+        abstract val staticMethodInjections: ListProperty<StaticMethodInjection>
 
         init {
             classRenames.convention(listOf())
             methodRenames.convention(listOf())
             fieldRenames.convention(listOf())
             interfaceInjections.convention(listOf())
+            staticMethodInjections.convention(listOf())
         }
 
         fun renameClass(from: String, to: String) {
@@ -128,6 +139,22 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 it.iface.set(iface)
                 it.target.set(target)
                 it.typeParams.set(typeParams.toList())
+            })
+        }
+
+        @JvmOverloads
+        fun injectStaticMethod(fromCls: String, toCls: String, fromName: String, toName: String, methodDesc: String, namespace: String, signature: String? = null, exceptions: List<String> = listOf()) {
+            staticMethodInjections.add(objects.newInstance(StaticMethodInjection::class.java).also {
+                it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
+                    it.cls.set(fromCls)
+                    it.name.set(fromName)
+                    it.desc.set(methodDesc)
+                })
+                it.targetClass.set(toCls)
+                it.targetMethodName.set(toName)
+                it.namespace.set(namespace)
+                it.exceptions.set(exceptions)
+                it.signature.set(signature)
             })
         }
 

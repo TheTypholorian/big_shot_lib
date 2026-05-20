@@ -25,6 +25,14 @@ bigShotLib {
             "net/typho/big_shot_lib/TestInterface",
             "net/minecraft/resources/Identifier"
         )
+        injectStaticMethod(
+            "net/typho/big_shot_lib/TestT",
+            "net/minecraft/resources/Identifier",
+            "id",
+            "bigShot",
+            "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
+            "big_shot_lib"
+        )
     }
 }
 

@@ -1,9 +1,11 @@
 package net.typho.big_shot_lib.plugin.transform
 
 import net.typho.big_shot_lib.plugin.DependencyTransformAction
-import net.typho.big_shot_lib.plugin.ModLoader
+import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.Type
 import org.objectweb.asm.commons.Remapper
 
 class DependencyTransformer(
@@ -53,6 +55,45 @@ class DependencyTransformer(
 
         if (interfaceInjections.isNotEmpty()) {
             println("[Big Shot Lib] Injected interfaces ${interfaceInjections.map { it.iface.get() }} to $name, old signature: $oldSignature, new signature: $signature")
+        }
+
+        for (injection in info.staticMethodInjections.get()) {
+            if (injection.targetClass.get() == name) {
+                val method = visitMethod(
+                    Opcodes.ACC_PUBLIC or Opcodes.ACC_STATIC,
+                    injection.targetMethodName.get(),
+                    injection.redirectTo.get().desc.get(),
+                    injection.signature.orNull,
+                    injection.exceptions.get().toTypedArray()
+                )
+
+                val namespaceAnno = method.visitAnnotation(Annotations.NAMESPACE, true)
+                namespaceAnno.visit("value", injection.namespace.get())
+                namespaceAnno.visitEnd()
+
+                val args = Type.getArgumentTypes(injection.redirectTo.get().desc.get())
+                val ret = Type.getReturnType(injection.redirectTo.get().desc.get())
+
+                var slot = 0
+
+                for (arg in args) {
+                    method.visitVarInsn(arg.getOpcode(Opcodes.ILOAD), slot)
+                    slot += arg.size
+                }
+
+                method.visitMethodInsn(
+                    Opcodes.INVOKESTATIC,
+                    injection.redirectTo.get().cls.get(),
+                    injection.redirectTo.get().name.get(),
+                    injection.redirectTo.get().desc.get(),
+                    false
+                )
+
+                method.visitInsn(ret.getOpcode(Opcodes.IRETURN))
+
+                method.visitMaxs(0, 0)
+                method.visitEnd()
+            }
         }
 
         super.visit(version, access, name, signature, superName, interfaces.toTypedArray())
