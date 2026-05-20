@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.plugin.transform
 
+import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension
 import net.typho.big_shot_lib.plugin.ModLoader
 import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.gradle.api.model.ObjectFactory
@@ -7,6 +8,8 @@ import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 
 class ProjectTransformer(
+    @JvmField
+    val ext: BigShotLibPluginExtension,
     @JvmField
     val objects: ObjectFactory,
     api: Int,
@@ -39,7 +42,7 @@ class ProjectTransformer(
                 }
 
                 override fun visitEnd() {
-                    ModLoader.CURRENT.mapOnlyInAnnotation(this@ProjectTransformer, client)
+                    ext.loader.get().mapOnlyInAnnotation(this@ProjectTransformer, client)
                 }
             }
         } else {

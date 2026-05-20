@@ -9,6 +9,7 @@ import org.gradle.api.artifacts.transform.TransformOutputs
 import org.gradle.api.artifacts.transform.TransformParameters
 import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.objectweb.asm.ClassReader
@@ -37,7 +38,7 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                         if (entry.name.endsWith(".class") && !entry.name.endsWith("-info.class")) {
                             val className = entry.name.removeSuffix(".class")
 
-                            if (className != ModLoader.CURRENT.mappedOnlyInAnnotationName) {
+                            if (className != parameters.loader.get().mappedOnlyInAnnotationName) {
                                 val reader = ClassReader(stream)
                                 val writer = ClassWriter(reader, 0)
                                 val transformer = ClassRemapper(DependencyTransformer(parameters, remapper, Opcodes.ASM9, writer), remapper)
@@ -96,5 +97,9 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
         val fieldRenames: ListProperty<FieldRename>
         @get:Input
         val interfaceInjections: ListProperty<InterfaceInjection>
+        @get:Input
+        val version: Property<MCVersion>
+        @get:Input
+        val loader: Property<ModLoader>
     }
 }

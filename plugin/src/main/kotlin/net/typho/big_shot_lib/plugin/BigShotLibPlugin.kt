@@ -67,11 +67,11 @@ class BigShotLibPlugin : Plugin<Project> {
                 file.inputStream().use { stream ->
                     val reader = ClassReader(stream)
                     val writer = ClassWriter(ClassWriter.COMPUTE_FRAMES or ClassWriter.COMPUTE_MAXS)
-                    val remapper = ProjectRemapper(ext.transformInfo, Opcodes.ASM9, annotations)
-                    val transformer = ProjectTransformer(project.objects, Opcodes.ASM9, ClassRemapper(writer, remapper))
+                    val remapper = ProjectRemapper(ext, Opcodes.ASM9, annotations)
+                    val transformer = ProjectTransformer(ext, project.objects, Opcodes.ASM9, ClassRemapper(writer, remapper))
                     reader.accept(transformer, ClassReader.EXPAND_FRAMES)
 
-                    if (ModLoader.CURRENT.mappedOnlyInAnnotationName != transformer.desc!!) {
+                    if (ext.loader.get().mappedOnlyInAnnotationName != transformer.desc!!) {
                         val target = out.resolve("${transformer.desc!!}.class")
                         target.parentFile.mkdirs()
                         target.writeBytes(writer.toByteArray())
@@ -123,6 +123,8 @@ class BigShotLibPlugin : Plugin<Project> {
                 it.parameters.methodRenames.set(ext.transformInfo.methodRenames)
                 it.parameters.fieldRenames.set(ext.transformInfo.fieldRenames)
                 it.parameters.interfaceInjections.set(ext.transformInfo.interfaceInjections)
+                it.parameters.version.set(ext.version)
+                it.parameters.loader.set(ext.loader)
             }
 
             //project.tasks.getByName("processResources") {

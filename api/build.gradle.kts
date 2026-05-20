@@ -21,6 +21,9 @@ kotlin {
 //}
 
 bigShotLib {
+    version("1.21")
+    loader("fabric")
+
     transformInfo {
         shortIdentifierMethods()
     }

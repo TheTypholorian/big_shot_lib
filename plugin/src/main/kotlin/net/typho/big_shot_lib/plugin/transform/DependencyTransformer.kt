@@ -59,6 +59,6 @@ class DependencyTransformer(
     }
 
     override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {
-        return ModLoader.CURRENT.unmapOnlyInAnnotation(this, descriptor, api) ?: super.visitAnnotation(descriptor, visible)
+        return info.loader.get().unmapOnlyInAnnotation(this, descriptor, api) ?: super.visitAnnotation(descriptor, visible)
     }
 }

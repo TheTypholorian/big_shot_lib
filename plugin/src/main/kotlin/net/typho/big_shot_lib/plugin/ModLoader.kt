@@ -66,6 +66,6 @@ enum class ModLoader {
 
     companion object {
         @JvmStatic
-        val CURRENT = NEOFORGE
+        operator fun get(key: String) = enumValueOf<ModLoader>(key.uppercase())
     }
 }

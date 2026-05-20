@@ -15,6 +15,9 @@ kotlin {
 }
 
 bigShotLib {
+    version(sc.current.version)
+    loader("neoforge")
+
     transformInfo {
         shortIdentifierMethods()
 

@@ -20,8 +20,5 @@ enum class MCVersion(
     companion object {
         @JvmStatic
         operator fun get(key: String) = MCVersion.entries.firstOrNull { it.matches.contains(key) }
-
-        @JvmField
-        val CURRENT = MC1_21
     }
 }

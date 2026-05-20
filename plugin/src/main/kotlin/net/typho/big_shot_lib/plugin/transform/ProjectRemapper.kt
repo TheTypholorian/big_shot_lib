@@ -9,17 +9,17 @@ import org.objectweb.asm.commons.Remapper
 
 class ProjectRemapper(
     @JvmField
-    val info: BigShotLibPluginExtension.TransformInfo,
+    val ext: BigShotLibPluginExtension,
     api: Int,
     @JvmField
     val annotations: AnnotationScanner
 ) : Remapper(api) {
     override fun map(internalName: String): String {
-        if (MCVersion.CURRENT < MCVersion.MC1_21_11 && internalName == "net/minecraft/resources/Identifier") {
+        if (ext.version.get() < MCVersion.MC1_21_11 && internalName == "net/minecraft/resources/Identifier") {
             return "net/minecraft/resources/ResourceLocation"
         }
 
-        return info.classRenames.get().lastOrNull { it.to.get() == internalName }?.from?.get() ?: internalName
+        return ext.transformInfo.classRenames.get().lastOrNull { it.to.get() == internalName }?.from?.get() ?: internalName
     }
 
     override fun mapMethodName(owner: String, name: String, descriptor: String): String {
@@ -27,7 +27,7 @@ class ProjectRemapper(
             return name
         }
 
-        var name = info.methodRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.desc.get() == descriptor } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
+        var name = ext.transformInfo.methodRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.desc.get() == descriptor } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
 
         annotations.getClasses(Annotations.NAMESPACE) { cls, values ->
             if (cls == owner) {
@@ -53,7 +53,7 @@ class ProjectRemapper(
     }
 
     override fun mapFieldName(owner: String, name: String, descriptor: String): String {
-        var name = info.fieldRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.desc.get() == descriptor } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
+        var name = ext.transformInfo.fieldRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.desc.get() == descriptor } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
 
         annotations.getClasses(Annotations.NAMESPACE) { cls, values ->
             if (cls == owner) {

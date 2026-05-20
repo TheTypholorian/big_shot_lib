@@ -20,6 +20,9 @@ kotlin {
 }
 
 bigShotLib {
+    version(sc.current.version)
+    loader("fabric")
+
     transformInfo {
         shortIdentifierMethods()
     }

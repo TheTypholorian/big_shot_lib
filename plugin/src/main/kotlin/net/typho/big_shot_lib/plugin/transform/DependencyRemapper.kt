@@ -10,7 +10,7 @@ class DependencyRemapper(
     api: Int
 ) : Remapper(api) {
     override fun map(internalName: String): String {
-        if (MCVersion.CURRENT < MCVersion.MC1_21_11 && internalName == "net/minecraft/resources/ResourceLocation") {
+        if (info.version.get() < MCVersion.MC1_21_11 && internalName == "net/minecraft/resources/ResourceLocation") {
             return "net/minecraft/resources/Identifier"
         }
 
