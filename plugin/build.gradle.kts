@@ -17,7 +17,11 @@ dependencies {
     implementation("org.ow2.asm:asm-commons:9.10")
     implementation("org.ow2.asm:asm-tree:9.10")
     implementation("org.ow2.asm:asm-util:9.10")
+
     implementation("com.google.code.gson:gson:2.13.1")
+
+    implementation("org.jetbrains.kotlin:kotlin-metadata-jvm:2.0.21")
+
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))
 }

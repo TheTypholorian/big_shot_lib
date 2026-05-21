@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.*
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.ArgumentOverloadConverter
 import net.typho.big_shot_lib.plugin.transform.DependencyRemapper
 import net.typho.big_shot_lib.plugin.transform.DependencyTransformer
+import net.typho.big_shot_lib.plugin.transform.util.KotlinSupportingClassRemapper
 import org.gradle.api.artifacts.transform.InputArtifact
 import org.gradle.api.artifacts.transform.TransformAction
 import org.gradle.api.artifacts.transform.TransformOutputs
@@ -43,7 +44,7 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                                 val reader = ClassReader(stream)
                                 val writer = ClassWriter(reader, 0)
                                                                                                     // TODO
-                                val transformer = ClassRemapper(DependencyTransformer(parameters, { newDesc, oldDesc, argumentConverters -> }, remapper, Opcodes.ASM9, writer), remapper)
+                                val transformer = KotlinSupportingClassRemapper(Opcodes.ASM9, DependencyTransformer(parameters, { newDesc, oldDesc, argumentConverters -> }, remapper, Opcodes.ASM9, writer), remapper)
                                 reader.accept(transformer, 0)
 
                                 val newName = remapper.map(className)

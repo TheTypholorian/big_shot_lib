@@ -6,6 +6,7 @@ import net.typho.big_shot_lib.plugin.transform.ProjectTransformer
 import net.typho.big_shot_lib.plugin.transform.util.AnnotationField
 import net.typho.big_shot_lib.plugin.transform.util.AnnotationScanner
 import net.typho.big_shot_lib.plugin.transform.util.Annotations
+import net.typho.big_shot_lib.plugin.transform.util.KotlinSupportingClassRemapper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
@@ -66,13 +67,14 @@ class BigShotLibPlugin : Plugin<Project> {
         println("\t\t${annotations.fields.values.sumOf { it.size }} field annotations")
         visited = 0
 
+        val remapper = ProjectRemapper(ext, Opcodes.ASM9, annotations)
+
         inputs.forEach { file ->
             if (file.extension == "class" && !file.endsWith("-info.class")) {
                 file.inputStream().use { stream ->
                     val reader = ClassReader(stream)
                     val writer = ClassWriter(0)
-                    val remapper = ProjectRemapper(ext, Opcodes.ASM9, annotations)
-                    val transformer = ProjectTransformer(ext, Opcodes.ASM9, ClassRemapper(writer, remapper))
+                    val transformer = ProjectTransformer(ext, Opcodes.ASM9, KotlinSupportingClassRemapper(Opcodes.ASM9, writer, remapper))
                     reader.accept(transformer, 0)
 
                     if (ext.loader.get().mappedOnlyInAnnotationName != transformer.desc!!) {
