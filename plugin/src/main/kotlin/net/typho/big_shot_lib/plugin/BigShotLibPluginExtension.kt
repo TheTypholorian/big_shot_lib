@@ -12,7 +12,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
     abstract val version: Property<MCVersion>
     abstract val loader: Property<ModLoader>
     val metadata: Metadata = objects.newInstance(Metadata::class.java)
-    val transformInfo: TransformInfo = objects.newInstance(TransformInfo::class.java)
+    val transformInfo: TransformInfo = objects.newInstance(TransformInfo::class.java, version)
 
     fun metadata(action: Action<in Metadata>) {
         action.execute(metadata)
@@ -51,7 +51,9 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
 
     abstract class TransformInfo @Inject constructor(
         @JvmField
-        val objects: ObjectFactory
+        val objects: ObjectFactory,
+        @JvmField
+        val version: Property<MCVersion>
     ) {
         interface ClassRename {
             val from: Property<String>
@@ -98,7 +100,16 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         abstract val applyPostCompileTransforms: Property<Boolean>
 
         init {
-            classRenames.convention(listOf())
+            classRenames.convention(version.map {
+                if (it < MCVersion.MC1_21_11) {
+                    listOf(objects.newInstance(ClassRename::class.java).also {
+                        it.from.set("net/minecraft/resources/ResourceLocation")
+                        it.to.set("net/minecraft/resources/Identifier")
+                    })
+                } else {
+                    listOf()
+                }
+            })
             methodRenames.convention(listOf())
             fieldRenames.convention(listOf())
             interfaceInjections.convention(listOf())

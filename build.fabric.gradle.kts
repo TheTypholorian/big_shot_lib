@@ -25,6 +25,17 @@ bigShotLib {
 
     transformInfo {
         shortIdentifierMethods()
+        injectInterface(
+            "net/typho/big_shot_lib/api/ext/IdentifierExtension",
+            "net/minecraft/resources/Identifier"
+        )
+        injectStaticMethod(
+            "net/typho/big_shot_lib/api/BigShotApi",
+            "net/minecraft/resources/Identifier",
+            "id",
+            "bigShot",
+            "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;"
+        )
     }
 }
 

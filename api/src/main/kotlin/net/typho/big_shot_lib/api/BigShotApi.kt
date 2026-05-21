@@ -17,9 +17,9 @@ object BigShotApi {
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> ResourceKey<out Registry<T>>.lookupOrThrow(error: String = "Couldn't find registry ${location()}") = NeoRegistry.REGISTRY.get(location())?.let { WrapperUtil.INSTANCE.wrap(it) as NeoRegistry<T> } ?: throw NullPointerException(error)
 
+    /**
+     * Injected as `Identifier.bigShot()`
+     */
     @JvmStatic
-    fun Identifier.toShortString() = if (namespace == Identifier.DEFAULT_NAMESPACE) path else toString()
-
-    @JvmStatic
-    fun id(path: String): Identifier = Identifier.of(MOD_ID, path)
+    private fun id(path: String): Identifier = Identifier.of(MOD_ID, path)
 }

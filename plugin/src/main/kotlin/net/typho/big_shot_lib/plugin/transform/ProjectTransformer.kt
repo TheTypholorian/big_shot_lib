@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.plugin.transform
 
+import groovyjarjarasm.asm.Opcodes
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension
 import net.typho.big_shot_lib.plugin.ModLoader
 import net.typho.big_shot_lib.plugin.transform.util.Annotations
@@ -56,6 +57,12 @@ class ProjectTransformer(
         signature: String?,
         exceptions: Array<out String?>?
     ): MethodVisitor {
+        var access = access
+
+        if (ext.transformInfo.staticMethodInjections.get().any { it.redirectTo.get().cls.get() == desc && it.redirectTo.get().name.get() == name && it.redirectTo.get().desc.get() == descriptor }) {
+            access = access and Opcodes.ACC_PUBLIC and Opcodes.ACC_PRIVATE.inv()
+        }
+
         return object : MethodVisitor(api, super.visitMethod(access, name, descriptor, signature, exceptions)) {
             override fun visitMethodInsn(
                 opcode: Int,

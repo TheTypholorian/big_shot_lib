@@ -15,10 +15,6 @@ class ProjectRemapper(
     val annotations: AnnotationScanner
 ) : Remapper(api) {
     override fun map(internalName: String): String {
-        if (ext.version.get() < MCVersion.MC1_21_11 && internalName == "net/minecraft/resources/Identifier") {
-            return "net/minecraft/resources/ResourceLocation"
-        }
-
         return ext.transformInfo.classRenames.get().lastOrNull { it.to.get() == internalName }?.from?.get() ?: internalName
     }
 

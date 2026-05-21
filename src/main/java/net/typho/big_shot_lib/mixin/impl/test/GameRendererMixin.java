@@ -20,6 +20,6 @@ public class GameRendererMixin {
             cancellable = true
     )
     private static void getRendertypeSolidShader(CallbackInfoReturnable<ShaderInstance> cir) {
-        cir.setReturnValue(ImmutableExtensionKt.getExtensionValue(Objects.requireNonNull(NeoShaderLoader.INSTANCE.get(BigShotApi.id("solid"))), ShaderInstance.class));
+        cir.setReturnValue(ImmutableExtensionKt.getExtensionValue(Objects.requireNonNull(NeoShaderLoader.INSTANCE.get(Identifier.bigShot("solid"))), ShaderInstance.class));
     }
 }
