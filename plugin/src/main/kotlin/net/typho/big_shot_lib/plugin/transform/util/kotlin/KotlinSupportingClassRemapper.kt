@@ -14,7 +14,7 @@ class KotlinSupportingClassRemapper(
     visitor: ClassVisitor,
     remapper: Remapper
 ) : ClassRemapper(api, visitor, remapper) {
-    fun remapKtType(type: KmType) {
+    fun mapKtType(type: KmType) {
         val cls = type.classifier
 
         if (cls is KmClassifier.Class) {
@@ -25,16 +25,16 @@ class KotlinSupportingClassRemapper(
 
         for (arg in type.arguments) {
             arg.type?.let {
-                remapKtType(it)
+                mapKtType(it)
             }
         }
 
         type.outerType?.let {
-            remapKtType(it)
+            mapKtType(it)
         }
 
         type.abbreviatedType?.let {
-            remapKtType(it)
+            mapKtType(it)
         }
     }
 
@@ -52,8 +52,8 @@ class KotlinSupportingClassRemapper(
 
                         for (function in classMetadata.kmClass.functions) {
                             function.signature?.let { function.name = remapper.mapMethodName(owner, function.name, it.descriptor) }
-                            remapKtType(function.returnType)
-                            function.valueParameters.forEach { remapKtType(it.type) }
+                            mapKtType(function.returnType)
+                            function.valueParameters.forEach { mapKtType(it.type) }
                         }
 
                         classMetadata.kmClass.nestedClasses.replaceAll { remapper.mapType(it) }
