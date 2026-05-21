@@ -26,6 +26,7 @@ bigShotLib {
 
     transformInfo {
         shortIdentifierMethods()
+        applyPostCompileTransforms.set(false)
     }
 }
 

@@ -11,8 +11,6 @@ import org.objectweb.asm.MethodVisitor
 class ProjectTransformer(
     @JvmField
     val ext: BigShotLibPluginExtension,
-    @JvmField
-    val objects: ObjectFactory,
     api: Int,
     visitor: ClassVisitor?
 ) : ClassVisitor(api, visitor) {

@@ -95,6 +95,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         abstract val interfaceInjections: ListProperty<InterfaceInjection>
         abstract val staticMethodInjections: ListProperty<StaticMethodInjection>
         abstract val argumentOverloadConverters: ListProperty<ArgumentOverloadConverter>
+        abstract val applyPostCompileTransforms: Property<Boolean>
 
         init {
             classRenames.convention(listOf())
@@ -103,6 +104,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             interfaceInjections.convention(listOf())
             staticMethodInjections.convention(listOf())
             argumentOverloadConverters.convention(listOf())
+            applyPostCompileTransforms.convention(true)
         }
 
         fun renameClass(from: String, to: String) {

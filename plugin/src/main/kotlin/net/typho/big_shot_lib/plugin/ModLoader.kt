@@ -5,6 +5,13 @@ import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 
 enum class ModLoader {
+    NONE {
+        override val mappedOnlyInAnnotationName = null
+
+        override fun mapOnlyInAnnotation(visitor: ClassVisitor, client: Boolean) {
+        }
+
+    },
     QUILT {
         override val mappedOnlyInAnnotationName = null
 
@@ -41,7 +48,7 @@ enum class ModLoader {
     abstract val mappedOnlyInAnnotationName: String?
 
     open fun unmapOnlyInAnnotation(visitor: ClassVisitor, descriptor: String, api: Int): AnnotationVisitor? {
-        return if (descriptor == "L$mappedOnlyInAnnotationName;") {
+        return if (mappedOnlyInAnnotationName != null && descriptor == "L$mappedOnlyInAnnotationName;") {
             object : AnnotationVisitor(api) {
                 var client = false
 

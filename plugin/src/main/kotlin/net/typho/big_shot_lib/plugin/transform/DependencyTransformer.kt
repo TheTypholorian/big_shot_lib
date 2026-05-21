@@ -24,6 +24,8 @@ class DependencyTransformer(
 ) : ClassVisitor(api, visitor) {
     @JvmField
     var name: String? = null
+    @JvmField
+    var isInterface = false
 
     override fun visit(
         version: Int,
@@ -34,6 +36,7 @@ class DependencyTransformer(
         interfaces: Array<String>?
     ) {
         this.name = name
+        isInterface = access and Opcodes.ACC_INTERFACE != 0
 
         val interfaces = interfaces?.toMutableList() ?: mutableListOf()
         val oldSignature = signature
@@ -134,60 +137,146 @@ class DependencyTransformer(
                     var signature = signature
 
                     if (signature != null) {
-                        val map = args.indices.associate {
-                            args[it].descriptor to newTypes[it].descriptor
-                        }
                         val writer = SignatureWriter()
+                        var parameter = -1
+                        var skip = false
 
                         // ASM WHY DO YOU NOT FOLLOW THE PATTERN FOR SIGNATURES THAT YOU DO FOR EVERY OTHER TYPE OF VISITOR (a forward argument to another visitor)
                         SignatureReader(signature).accept(object : SignatureVisitor(Opcodes.ASM9) {
+                            override fun visitFormalTypeParameter(name: String) {
+                                writer.visitFormalTypeParameter(name)
+                            }
+
+                            override fun visitClassBound(): SignatureVisitor {
+                                return writer.visitClassBound()
+                            }
+
+                            override fun visitInterfaceBound(): SignatureVisitor {
+                                return writer.visitInterfaceBound()
+                            }
+
                             override fun visitParameterType(): SignatureVisitor {
+                                parameter++
+                                skip = temp[parameter] != 0
+
                                 writer.visitParameterType()
+
+                                if (skip) {
+                                    val type = newTypes[parameter]
+
+                                    when (type.sort) {
+                                        Type.OBJECT -> {
+                                            writer.visitClassType(type.internalName)
+                                            writer.visitEnd()
+                                        }
+
+                                        Type.ARRAY -> {
+                                            repeat(type.dimensions) {
+                                                writer.visitArrayType()
+                                            }
+
+                                            val element = type.elementType
+
+                                            if (element.sort == Type.OBJECT) {
+                                                writer.visitClassType(element.internalName)
+                                                writer.visitEnd()
+                                            } else {
+                                                writer.visitBaseType(element.descriptor[0])
+                                            }
+                                        }
+
+                                        else -> {
+                                            writer.visitBaseType(type.descriptor[0])
+                                        }
+                                    }
+
+                                    return object : SignatureVisitor(Opcodes.ASM9) {}
+                                }
+
                                 return this
                             }
 
                             override fun visitReturnType(): SignatureVisitor {
+                                skip = false
                                 writer.visitReturnType()
                                 return this
                             }
 
-                            override fun visitClassType(name: String) {
-                                val desc = "L$name;"
-                                val rep = map[desc]
+                            override fun visitExceptionType(): SignatureVisitor {
+                                skip = false
+                                writer.visitExceptionType()
+                                return this
+                            }
 
-                                if (rep != null) {
-                                    writer.visitClassType(Type.getType(rep).internalName)
+                            override fun visitBaseType(descriptor: Char) {
+                                if (!skip) {
+                                    writer.visitBaseType(descriptor)
+                                }
+                            }
+
+                            override fun visitTypeVariable(name: String) {
+                                if (!skip) {
+                                    writer.visitTypeVariable(name)
+                                }
+                            }
+
+                            override fun visitArrayType(): SignatureVisitor {
+                                return if (skip) {
+                                    object : SignatureVisitor(Opcodes.ASM9) {}
                                 } else {
+                                    writer.visitArrayType()
+                                    this
+                                }
+                            }
+
+                            override fun visitClassType(name: String) {
+                                if (!skip) {
                                     writer.visitClassType(name)
                                 }
                             }
 
-                            override fun visitBaseType(descriptor: Char) {
-                                writer.visitBaseType(descriptor)
-                            }
-
-                            override fun visitTypeVariable(name: String) {
-                                writer.visitTypeVariable(name)
+                            override fun visitInnerClassType(name: String) {
+                                if (!skip) {
+                                    writer.visitInnerClassType(name)
+                                }
                             }
 
                             override fun visitTypeArgument() {
-                                writer.visitTypeArgument()
+                                if (!skip) {
+                                    writer.visitTypeArgument()
+                                }
                             }
 
                             override fun visitTypeArgument(wildcard: Char): SignatureVisitor {
-                                writer.visitTypeArgument(wildcard)
-                                return this
+                                return if (skip) {
+                                    object : SignatureVisitor(Opcodes.ASM9) {}
+                                } else {
+                                    writer.visitTypeArgument(wildcard)
+                                    this
+                                }
                             }
 
                             override fun visitEnd() {
-                                writer.visitEnd()
+                                if (!skip) {
+                                    writer.visitEnd()
+                                }
                             }
                         })
 
                         signature = writer.toString()
                     }
 
-                    val method = super.visitMethod(access, name, desc, signature, exceptions)
+                    val method = super.visitMethod(
+                        if (isInterface) {
+                            access and Opcodes.ACC_ABSTRACT.inv() and Opcodes.ACC_NATIVE.inv()
+                        } else {
+                            access
+                        },
+                        name,
+                        desc,
+                        signature,
+                        exceptions
+                    )
 
                     method.visitCode()
 

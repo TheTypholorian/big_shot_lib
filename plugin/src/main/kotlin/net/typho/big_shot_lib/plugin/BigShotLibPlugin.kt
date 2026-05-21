@@ -22,6 +22,10 @@ import kotlin.jvm.java
 
 class BigShotLibPlugin : Plugin<Project> {
     fun applyProjectTransforms(project: Project, inputs: FileCollection, out: File, ext: BigShotLibPluginExtension) {
+        if (!ext.transformInfo.applyPostCompileTransforms.get()) {
+            return
+        }
+
         println("[Big Shot Lib] Applying project transforms")
 
         out.deleteRecursively()
@@ -68,7 +72,7 @@ class BigShotLibPlugin : Plugin<Project> {
                     val reader = ClassReader(stream)
                     val writer = ClassWriter(0)
                     val remapper = ProjectRemapper(ext, Opcodes.ASM9, annotations)
-                    val transformer = ProjectTransformer(ext, project.objects, Opcodes.ASM9, ClassRemapper(writer, remapper))
+                    val transformer = ProjectTransformer(ext, Opcodes.ASM9, ClassRemapper(writer, remapper))
                     reader.accept(transformer, 0)
 
                     if (ext.loader.get().mappedOnlyInAnnotationName != transformer.desc!!) {
