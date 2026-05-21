@@ -3,10 +3,9 @@ package net.typho.big_shot_lib.plugin
 import net.typho.big_shot_lib.plugin.task.GenerateModMetadataTask
 import net.typho.big_shot_lib.plugin.transform.ProjectRemapper
 import net.typho.big_shot_lib.plugin.transform.ProjectTransformer
-import net.typho.big_shot_lib.plugin.transform.util.AnnotationField
 import net.typho.big_shot_lib.plugin.transform.util.AnnotationScanner
 import net.typho.big_shot_lib.plugin.transform.util.Annotations
-import net.typho.big_shot_lib.plugin.transform.util.KotlinSupportingClassRemapper
+import net.typho.big_shot_lib.plugin.transform.util.kotlin.KotlinSupportingClassRemapper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
@@ -15,8 +14,6 @@ import org.gradle.api.tasks.bundling.Jar
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.commons.ClassRemapper
-import sun.security.krb5.Confounder.bytes
 import java.io.File
 import java.util.jar.JarFile
 import kotlin.jvm.java

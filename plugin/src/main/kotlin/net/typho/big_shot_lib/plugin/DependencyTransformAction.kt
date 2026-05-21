@@ -4,7 +4,7 @@ import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.*
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.ArgumentOverloadConverter
 import net.typho.big_shot_lib.plugin.transform.DependencyRemapper
 import net.typho.big_shot_lib.plugin.transform.DependencyTransformer
-import net.typho.big_shot_lib.plugin.transform.util.KotlinSupportingClassRemapper
+import net.typho.big_shot_lib.plugin.transform.util.kotlin.KotlinSupportingClassRemapper
 import org.gradle.api.artifacts.transform.InputArtifact
 import org.gradle.api.artifacts.transform.TransformAction
 import org.gradle.api.artifacts.transform.TransformOutputs
@@ -17,7 +17,6 @@ import org.gradle.api.tasks.Input
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.commons.ClassRemapper
 import java.io.FileOutputStream
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
