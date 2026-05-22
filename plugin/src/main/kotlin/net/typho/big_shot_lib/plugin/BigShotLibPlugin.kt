@@ -98,7 +98,7 @@ class BigShotLibPlugin : Plugin<Project> {
 
         project.afterEvaluate {
             println("[Big Shot Lib] Class Renames:")
-            ext.transformInfo.classRenames.get().forEach { println("\t${it.from.get()} to '${it.to.get()}'") }
+            ext.transformInfo.classRenames.get().forEach { println("\t${it.from.get()} to ${it.to.get()}") }
             println("[Big Shot Lib] Method Renames:")
             ext.transformInfo.methodRenames.get().forEach { println("\t${it.from.get().cls.get()}.${it.from.get().name.get()} ${it.from.get().desc.get()} to '${it.to.get()}'") }
             println("[Big Shot Lib] Field Renames:")

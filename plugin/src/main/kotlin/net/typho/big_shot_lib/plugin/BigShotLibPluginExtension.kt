@@ -101,18 +101,12 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         abstract val applyPostCompileTransforms: Property<Boolean>
 
         init {
-            classRenames.convention(version.map {
-                if (it < MCVersion.MC1_21_11) {
-                    listOf(
-                        objects.newInstance(ClassRename::class.java).also {
-                            it.from.set("net/minecraft/resources/ResourceLocation")
-                            it.to.set("net/minecraft/resources/Identifier")
-                        }
-                    )
-                } else {
-                    listOf()
+            classRenames.convention(listOf(
+                objects.newInstance(ClassRename::class.java).also {
+                    it.from.set("net/minecraft/resources/ResourceLocation")
+                    it.to.set("net/minecraft/resources/Identifier")
                 }
-            })
+            ))
             methodRenames.convention(listOf())
             fieldRenames.convention(listOf())
             interfaceInjections.convention(listOf())
@@ -132,45 +126,45 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                             it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
                                 it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
                                 it.name.set("fromNamespaceAndPath")
-                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/ResourceLocation;")
+                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                             })
-                            it.targetClass.set("net/minecraft/resources/ResourceLocation")
+                            it.targetClass.set("net/minecraft/resources/Identifier")
                             it.targetMethodName.set("createUntrusted")
                         },
                         objects.newInstance(StaticMethodInjection::class.java).also {
                             it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
                                 it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
                                 it.name.set("parse")
-                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/ResourceLocation;")
+                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                             })
-                            it.targetClass.set("net/minecraft/resources/ResourceLocation")
+                            it.targetClass.set("net/minecraft/resources/Identifier")
                             it.targetMethodName.set("parse")
                         },
                         objects.newInstance(StaticMethodInjection::class.java).also {
                             it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
                                 it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
                                 it.name.set("withDefaultNamespace")
-                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/ResourceLocation;")
+                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                             })
-                            it.targetClass.set("net/minecraft/resources/ResourceLocation")
+                            it.targetClass.set("net/minecraft/resources/Identifier")
                             it.targetMethodName.set("withDefaultNamespace")
                         },
                         objects.newInstance(StaticMethodInjection::class.java).also {
                             it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
                                 it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
                                 it.name.set("bySeparator")
-                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/ResourceLocation;")
+                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                             })
-                            it.targetClass.set("net/minecraft/resources/ResourceLocation")
+                            it.targetClass.set("net/minecraft/resources/Identifier")
                             it.targetMethodName.set("bySeparator")
                         },
                         objects.newInstance(StaticMethodInjection::class.java).also {
                             it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
                                 it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
                                 it.name.set("tryBySeparator")
-                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/ResourceLocation;")
+                                it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                             })
-                            it.targetClass.set("net/minecraft/resources/ResourceLocation")
+                            it.targetClass.set("net/minecraft/resources/Identifier")
                             it.targetMethodName.set("tryBySeparator")
                         }
                     )
