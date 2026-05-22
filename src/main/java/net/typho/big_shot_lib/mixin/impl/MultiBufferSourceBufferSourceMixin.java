@@ -27,7 +27,7 @@ public class MultiBufferSourceBufferSourceMixin implements ImmutableExtension<Li
     private final List<MultiBufferSourceInjection> big_shot_lib$injections = new ArrayList<>();
 
     @Override
-    public List<MultiBufferSourceInjection> getBig_shot_lib$extension_value() {
+    public List<MultiBufferSourceInjection> getExtensionValue() {
         return big_shot_lib$injections;
     }
 

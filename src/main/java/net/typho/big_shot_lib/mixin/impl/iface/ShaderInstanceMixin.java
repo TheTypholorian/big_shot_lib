@@ -184,15 +184,15 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
     @Unique
     private boolean big_shot_lib$freed = false;
     @Unique
-    private GlProgramExtensionValue big_shot_lib$extension_value;
+    private GlProgramExtensionValue extensionValue;
 
     @Override
-    public GlProgramExtensionValue getBig_shot_lib$extension_value() {
-        if (big_shot_lib$extension_value == null) {
-            big_shot_lib$extension_value = new GlProgramExtensionValue() {
+    public GlProgramExtensionValue getExtensionValue() {
+        if (extensionValue == null) {
+            extensionValue = new GlProgramExtensionValue() {
                 @Override
                 @NotNull
-                public ShaderInstance getBig_shot_lib$extension_value() {
+                public ShaderInstance getExtensionValue() {
                     return (ShaderInstance) (Object) ShaderInstanceMixin.this;
                 }
 
@@ -290,7 +290,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
             };
         }
 
-        return big_shot_lib$extension_value;
+        return extensionValue;
     }
 
     @Override

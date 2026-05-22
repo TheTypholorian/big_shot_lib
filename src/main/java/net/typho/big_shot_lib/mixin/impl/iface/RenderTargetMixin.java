@@ -63,7 +63,7 @@ public abstract class RenderTargetMixin implements ImmutableExtension<GlFramebuf
     private final Thread big_shot_lib$thread = Thread.currentThread();
 
     @Override
-    public GlFramebuffer getBig_shot_lib$extension_value() {
+    public GlFramebuffer getExtensionValue() {
         return new GlFramebuffer() {
             @Override
             public int getGlId() {

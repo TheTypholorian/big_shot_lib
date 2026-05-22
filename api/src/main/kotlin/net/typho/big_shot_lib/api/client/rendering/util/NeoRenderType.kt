@@ -1,13 +1,16 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
 import net.minecraft.resources.Identifier
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
+import net.typho.big_shot_lib.api.plugin.Namespace
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
 
-interface NeoRenderType : MaybeNamedResource {
+@Namespace(BigShotApi.MOD_ID)
+interface NeoRenderType : GlDrawState, MaybeNamedResource {
     val format: NeoVertexFormat
     val mode: GlBeginMode
     val defaultBufferSize: Int
@@ -18,9 +21,6 @@ interface NeoRenderType : MaybeNamedResource {
     val sortOnUpload: Boolean
     val outlineSettings: NeoRenderType?
     val isOutline: Boolean
-    val drawState: GlDrawState
-
-    fun bind(): BoundResource = drawState.bind()
 
     companion object {
         @JvmField

@@ -20,7 +20,7 @@ public class LayeringStateShardMixin implements MutableExtension<GlLayeringShard
     private GlLayeringShard big_shot_lib$layering = null;
 
     @Override
-    public GlLayeringShard getBig_shot_lib$extension_value() {
+    public GlLayeringShard getExtensionValue() {
         if (big_shot_lib$layering == null) {
             if (!big_shot_lib$warned) {
                 big_shot_lib$warned = true;
@@ -33,7 +33,7 @@ public class LayeringStateShardMixin implements MutableExtension<GlLayeringShard
     }
 
     @Override
-    public void setBig_shot_lib$extension_value(GlLayeringShard glLayeringShard) {
+    public void setExtensionValue(GlLayeringShard glLayeringShard) {
         big_shot_lib$layering = glLayeringShard;
     }
 }

@@ -1,23 +1,29 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
 import net.minecraft.resources.Identifier
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendEquation
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlCullFace
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlSampler
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
-import net.typho.big_shot_lib.api.math.vec.IVec3
-import net.typho.big_shot_lib.api.math.vec.NeoVec3f
-import net.typho.big_shot_lib.api.util.NeoColor
-import java.util.function.Consumer
+import net.typho.big_shot_lib.api.plugin.Namespace
 
+@Namespace(BigShotApi.MOD_ID)
 interface GlDrawState {
+    val blend: BlendFunction?
+    val shader: (() -> GlProgram)?
+    val texture: GlTextureBinding?
+    val lightmap: Boolean
+    val overlay: Boolean
+    val cull: Boolean
+    val depth: GlAlphaFunction?
+    val writeColor: Boolean
+    val writeDepth: Boolean
+    val colorLogic: GlLogicOp?
+
+    /*
     val blend: GlBlendShard
     val colorMask: GlColorMaskShard
     val cull: GlCullShard
@@ -26,179 +32,90 @@ interface GlDrawState {
     val lightmap: GlLightmapShard
     val overlay: GlOverlayShard
     val shader: GlShaderShard
+     */
 
-    fun bind(): Bound {
-        val blend = blend.bind()
-        val colorMask = colorMask.bind()
-        val cull = cull.bind()
-        val depth = depth.bind()
-        val layering = this@GlDrawState.layering.bind()
-        val shader = shader.bind()
-
-        return object : Bound {
-            override val parent: GlDrawState = this@GlDrawState
-            override val shader: GlBoundProgram = shader
-
-            override fun unbind() {
-                blend.unbind()
-                colorMask.unbind()
-                cull.unbind()
-                depth.unbind()
-                layering.unbind()
-                shader.unbind()
-            }
-        }
-    }
+    fun bind(): BoundResource
 
     open class Builder {
         @JvmField
-        var blend: GlBlendShard = GlBlendShard.Disabled
+        var blend: BlendFunction? = null
         @JvmField
-        var colorMask: GlColorMaskShard = GlColorMaskShard(true)
+        var shader: (() -> GlProgram)? = null
         @JvmField
-        var cull: GlCullShard = GlCullShard.Disabled
+        var texture: GlTextureBinding? = null
         @JvmField
-        var depth: GlDepthShard = GlDepthShard.Disabled
+        var lightmap: Boolean = false
         @JvmField
-        var layering: GlLayeringShard = GlLayeringShard.Disabled
+        var overlay: Boolean = false
         @JvmField
-        var lightmap: GlLightmapShard = GlLightmapShard(false)
+        var cull: Boolean = false
         @JvmField
-        var shader: GlShaderShard = GlShaderShard.Disabled
+        var depth: GlAlphaFunction? = null
         @JvmField
-        var overlay: GlOverlayShard = GlOverlayShard(false)
+        var writeColor: Boolean = false
+        @JvmField
+        var writeDepth: Boolean = false
+        @JvmField
+        var colorLogic: GlLogicOp? = null
 
-        fun blend(shard: GlBlendShard): Builder {
-            blend = shard
+        @JvmOverloads
+        fun blend(blend: BlendFunction? = BlendFunction.TRANSLUCENT): Builder {
+            this.blend = blend
+            return this
+        }
+
+        fun shader(shader: (() -> GlProgram)?): Builder {
+            this.shader = shader
+            return this
+        }
+
+        fun shader(shader: Identifier) = shader { GlProgram[shader] }
+
+        fun texture(texture: GlTextureBinding?): Builder {
+            this.texture = texture
             return this
         }
 
         @JvmOverloads
-        fun blend(
-            function: BlendFunction,
-            equation: GlBlendEquation = GlBlendEquation.ADD,
-            color: NeoColor? = null
-        ) = blend(GlBlendShard.Enabled(function, equation, color))
+        fun texture(texture: Identifier, blur: Boolean = false, mipmap: Boolean = true) = texture(GlTextureBinding.FromLocation(texture, blur, mipmap))
 
-        fun colorMask(shard: GlColorMaskShard): Builder {
-            colorMask = shard
-            return this
-        }
+        @JvmOverloads
+        fun texture(texture: () -> GlTexture2D, blur: Boolean = false, mipmap: Boolean = true) = texture(GlTextureBinding.FromSupplier(texture, blur, mipmap))
 
-        fun colorMask(
-            mask: Boolean
-        ) = colorMask(GlColorMaskShard(mask))
-
-        fun cull(shard: GlCullShard): Builder {
-            cull = shard
+        @JvmOverloads
+        fun lightmap(lightmap: Boolean = true): Builder {
+            this.lightmap = lightmap
             return this
         }
 
         @JvmOverloads
-        fun cull(
-            face: GlCullFace = GlCullFace.BACK
-        ) = cull(GlCullShard.Enabled(face))
-
-        fun depth(shard: GlDepthShard): Builder {
-            depth = shard
+        fun overlay(overlay: Boolean = true): Builder {
+            this.overlay = overlay
             return this
         }
 
         @JvmOverloads
-        fun depth(
-            face: GlAlphaFunction = GlAlphaFunction.LEQUAL
-        ) = depth(GlDepthShard.Enabled(face))
-
-        fun layering(shard: GlLayeringShard): Builder {
-            layering = shard
-            return this
-        }
-
-        fun layering(
-            offset: PolygonOffset
-        ) = layering(GlLayeringShard.EnabledPolygonOffset(offset))
-
-        fun polygonOffsetLayering() = layering(PolygonOffset(-1f, -10f))
-
-        fun layering(
-            scale: IVec3<Float>
-        ) = layering(GlLayeringShard.EnabledViewOffset(scale))
-
-        fun viewOffsetLayering() = layering(NeoVec3f(0.99975586f, 0.99975586f, 0.99975586f))
-
-        fun lightmap(shard: GlLightmapShard): Builder {
-            lightmap = shard
+        fun cull(cull: Boolean = true): Builder {
+            this.cull = cull
             return this
         }
 
         @JvmOverloads
-        fun lightmap(
-            enabled: Boolean = true
-        ) = lightmap(GlLightmapShard(enabled))
-
-        fun overlay(shard: GlOverlayShard): Builder {
-            overlay = shard
+        fun depth(depth: GlAlphaFunction? = GlAlphaFunction.LEQUAL): Builder {
+            this.depth = depth
             return this
         }
 
         @JvmOverloads
-        fun overlay(
-            enabled: Boolean = true
-        ) = overlay(GlOverlayShard(enabled))
-
-        fun shader(shard: GlShaderShard): Builder {
-            shader = shard
+        fun writeMask(writeColor: Boolean = true, writeDepth: Boolean = true): Builder {
+            this.writeColor = writeColor
+            this.writeDepth = writeDepth
             return this
         }
 
-        @JvmOverloads
-        fun shader(
-            location: Identifier,
-            uniforms: Consumer<GlBoundProgram> = Consumer { }
-        ) = shader(GlShaderShard.FromLocation(location, uniforms))
-
-        @JvmOverloads
-        fun shader(
-            getter: () -> GlProgram?,
-            uniforms: Consumer<GlBoundProgram> = Consumer { }
-        ) = shader(GlShaderShard.FromInstance(getter, uniforms))
-
-        fun texture(name: String, binding: GlTextureBinding): Builder {
-            (shader.textures as MutableMap<String, GlTextureBinding>)[name] = binding
+        fun colorLogic(colorLogic: GlLogicOp): Builder {
+            this.colorLogic = colorLogic
             return this
         }
-
-        @JvmOverloads
-        fun texture(name: String, location: Identifier, target: GlTextureTarget = GlTextureTarget.TEXTURE_2D, sampler: GlSampler? = null) = texture(name, GlTextureBinding.FromLocation(location, target, sampler))
-
-        @JvmOverloads
-        fun texture(name: String, texture: () -> GlTexture2D, target: GlTextureTarget = GlTextureTarget.TEXTURE_2D, sampler: GlSampler? = null) = texture(name, GlTextureBinding.FromInstance(texture, target, sampler))
-
-        fun build() = Basic(
-            blend,
-            colorMask,
-            cull,
-            depth,
-            layering,
-            lightmap,
-            overlay,
-            shader
-        )
     }
-
-    interface Bound : BoundResource {
-        val parent: GlDrawState
-        val shader: GlBoundProgram
-    }
-
-    open class Basic(
-        override val blend: GlBlendShard = GlBlendShard.Disabled,
-        override val colorMask: GlColorMaskShard = GlColorMaskShard(true),
-        override val cull: GlCullShard = GlCullShard.Disabled,
-        override val depth: GlDepthShard = GlDepthShard.Disabled,
-        override val layering: GlLayeringShard = GlLayeringShard.Disabled,
-        override val lightmap: GlLightmapShard = GlLightmapShard(false),
-        override val overlay: GlOverlayShard = GlOverlayShard(false),
-        override val shader: GlShaderShard
-    ) : GlDrawState
 }

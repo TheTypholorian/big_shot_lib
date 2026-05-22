@@ -31,7 +31,7 @@ public class LightmapStateShardMixin implements MutableExtension<GlLightmapShard
     }
 
     @Override
-    public GlLightmapShard getBig_shot_lib$extension_value() {
+    public GlLightmapShard getExtensionValue() {
         if (big_shot_lib$lightmap == null) {
             if (!big_shot_lib$warned) {
                 big_shot_lib$warned = true;
@@ -44,7 +44,7 @@ public class LightmapStateShardMixin implements MutableExtension<GlLightmapShard
     }
 
     @Override
-    public void setBig_shot_lib$extension_value(GlLightmapShard glLightmapShard) {
+    public void setExtensionValue(GlLightmapShard glLightmapShard) {
         big_shot_lib$lightmap = glLightmapShard;
     }
 }

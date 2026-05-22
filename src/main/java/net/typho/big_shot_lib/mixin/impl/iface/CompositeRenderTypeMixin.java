@@ -138,7 +138,7 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         }
     };
     @Unique
-    private final NeoRenderTypeExtensionValue big_shot_lib$extension_value = new NeoRenderTypeExtensionValue() {
+    private final NeoRenderTypeExtensionValue extensionValue = new NeoRenderTypeExtensionValue() {
         @Override
         @NotNull
         public NeoVertexFormat getFormat() {
@@ -198,13 +198,13 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
 
         @Override
         @NotNull
-        public RenderType getBig_shot_lib$extension_value() {
+        public RenderType getExtensionValue() {
             return CompositeRenderTypeMixin.this;
         }
     };
 
     @Override
-    public NeoRenderTypeExtensionValue getBig_shot_lib$extension_value() {
-        return big_shot_lib$extension_value;
+    public NeoRenderTypeExtensionValue getExtensionValue() {
+        return extensionValue;
     }
 }

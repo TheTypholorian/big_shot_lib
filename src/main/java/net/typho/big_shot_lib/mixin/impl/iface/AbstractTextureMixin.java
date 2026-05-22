@@ -30,7 +30,7 @@ public class AbstractTextureMixin implements ImmutableExtension<GlTexture2D> {
     *///? }
 
     @Override
-    public GlTexture2D getBig_shot_lib$extension_value() {
+    public GlTexture2D getExtensionValue() {
         //? if <1.21.5 {
         return id == -1 ? null : NeoGlTexture2D.ofExisting(id, GlTextureTarget.TEXTURE_2D);
         //? } else {

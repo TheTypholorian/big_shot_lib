@@ -36,7 +36,7 @@ public abstract class VertexFormatMixin implements ImmutableExtension<NeoVertexF
     public abstract int getOffset(VertexFormatElement vertexFormatElement);
 
     @Unique
-    private final NeoVertexFormatExtensionValue big_shot_lib$extension_value = new NeoVertexFormatExtensionValue() {
+    private final NeoVertexFormatExtensionValue extensionValue = new NeoVertexFormatExtensionValue() {
         @Override
         public int getVertexSizeBytes() {
             return vertexSize;
@@ -78,13 +78,13 @@ public abstract class VertexFormatMixin implements ImmutableExtension<NeoVertexF
 
         @Override
         @NotNull
-        public VertexFormat getBig_shot_lib$extension_value() {
+        public VertexFormat getExtensionValue() {
             return (VertexFormat) (Object) VertexFormatMixin.this;
         }
     };
 
     @Override
-    public NeoVertexFormatExtensionValue getBig_shot_lib$extension_value() {
-        return big_shot_lib$extension_value;
+    public NeoVertexFormatExtensionValue getExtensionValue() {
+        return extensionValue;
     }
 }

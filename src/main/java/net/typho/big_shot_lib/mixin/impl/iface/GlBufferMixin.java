@@ -51,7 +51,7 @@ public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtens
     protected int handle;
 
     @Override
-    public net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer getBig_shot_lib$extension_value() {
+    public net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer getExtensionValue() {
         return new net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer() {
             @Override
             public RenderingContext getContext() {

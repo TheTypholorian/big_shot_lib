@@ -9,7 +9,7 @@ import net.typho.big_shot_lib.api.error.ShaderValidationException
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.util.resource.NamedResource
 
-interface GlProgram : NamedResource, GlResource {
+interface GlProgram : NamedResource, GlResource, UniformOutput {
     val format: NeoVertexFormat
 
     fun use(): GlBoundProgram
@@ -44,6 +44,10 @@ interface GlProgram : NamedResource, GlResource {
             format,
             glId,
         )
+
+        operator fun get(location: Identifier): GlProgram {
+            TODO()
+        }
 
         @JvmField
         val BUILTINS = Builtins::class.loadService()

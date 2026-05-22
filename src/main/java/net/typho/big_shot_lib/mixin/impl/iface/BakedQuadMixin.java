@@ -49,7 +49,7 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
     @Final
     private boolean shade;
     @Unique
-    private final NeoBakedQuad big_shot_lib$extension_value = new NeoBakedQuad() {
+    private final NeoBakedQuad extensionValue = new NeoBakedQuad() {
         private NeoVertexData[] vertices;
 
         @Override
@@ -134,7 +134,7 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
     private long packedUV3;
 
     @Unique
-    private final NeoBakedQuad big_shot_lib$extension_value = new NeoBakedQuad() {
+    private final NeoBakedQuad extensionValue = new NeoBakedQuad() {
         @Override
         @NotNull
         @SuppressWarnings("NullableProblems")
@@ -173,7 +173,7 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
     *///? }
 
     @Override
-    public NeoBakedQuad getBig_shot_lib$extension_value() {
-        return big_shot_lib$extension_value;
+    public NeoBakedQuad getExtensionValue() {
+        return extensionValue;
     }
 }

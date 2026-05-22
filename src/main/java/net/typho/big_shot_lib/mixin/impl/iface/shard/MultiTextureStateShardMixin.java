@@ -17,12 +17,12 @@ public class MultiTextureStateShardMixin implements MutableExtension<GlTextureBi
     private GlTextureBinding[] big_shot_lib$textures = null; // TODO
 
     @Override
-    public GlTextureBinding[] getBig_shot_lib$extension_value() {
+    public GlTextureBinding[] getExtensionValue() {
         return new GlTextureBinding[0];
     }
 
     @Override
-    public void setBig_shot_lib$extension_value(GlTextureBinding[] glTextureBindings) {
+    public void setExtensionValue(GlTextureBinding[] glTextureBindings) {
 
     }
 }

@@ -30,10 +30,10 @@ public abstract class ProgramMixin implements ImmutableExtension<GlShaderExtensi
     public abstract void close();
 
     @Unique
-    private final GlShaderExtensionValue big_shot_lib$extension_value = new GlShaderExtensionValue() {
+    private final GlShaderExtensionValue extensionValue = new GlShaderExtensionValue() {
         @Override
         @NotNull
-        public Program getBig_shot_lib$extension_value() {
+        public Program getExtensionValue() {
             return (Program) (Object) ProgramMixin.this;
         }
 
@@ -99,7 +99,7 @@ public abstract class ProgramMixin implements ImmutableExtension<GlShaderExtensi
     };
 
     @Override
-    public GlShaderExtensionValue getBig_shot_lib$extension_value() {
-        return big_shot_lib$extension_value;
+    public GlShaderExtensionValue getExtensionValue() {
+        return extensionValue;
     }
 }

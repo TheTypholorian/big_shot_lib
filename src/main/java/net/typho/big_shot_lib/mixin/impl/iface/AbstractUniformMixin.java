@@ -45,7 +45,7 @@ public abstract class AbstractUniformMixin implements ImmutableExtension<GlUnifo
     public abstract void set(float f, float g, float h, float i);
 
     @Unique
-    private final GlUniform big_shot_lib$extension_value = new GlUniform() {
+    private final GlUniform extensionValue = new GlUniform() {
         @Override
         public void set(float f1) {
             AbstractUniformMixin.this.set(f1);
@@ -156,7 +156,7 @@ public abstract class AbstractUniformMixin implements ImmutableExtension<GlUnifo
     };
 
     @Override
-    public GlUniform getBig_shot_lib$extension_value() {
-        return big_shot_lib$extension_value;
+    public GlUniform getExtensionValue() {
+        return extensionValue;
     }
 }

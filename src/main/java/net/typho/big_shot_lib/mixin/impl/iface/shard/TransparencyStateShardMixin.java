@@ -20,7 +20,7 @@ public class TransparencyStateShardMixin implements MutableExtension<GlBlendShar
     private GlBlendShard big_shot_lib$blend = null;
 
     @Override
-    public GlBlendShard getBig_shot_lib$extension_value() {
+    public GlBlendShard getExtensionValue() {
         if (big_shot_lib$blend == null) {
             if (!big_shot_lib$warned) {
                 big_shot_lib$warned = true;
@@ -33,7 +33,7 @@ public class TransparencyStateShardMixin implements MutableExtension<GlBlendShar
     }
 
     @Override
-    public void setBig_shot_lib$extension_value(GlBlendShard glBlendShard) {
+    public void setExtensionValue(GlBlendShard glBlendShard) {
         big_shot_lib$blend = glBlendShard;
     }
 }

@@ -31,7 +31,7 @@ public class WriteMaskStateShardMixin implements MutableExtension<Pair<Boolean, 
     }
 
     @Override
-    public Pair<Boolean, Boolean> getBig_shot_lib$extension_value() {
+    public Pair<Boolean, Boolean> getExtensionValue() {
         if (big_shot_lib$mask == null) {
             if (!big_shot_lib$warned) {
                 big_shot_lib$warned = true;
@@ -44,7 +44,7 @@ public class WriteMaskStateShardMixin implements MutableExtension<Pair<Boolean, 
     }
 
     @Override
-    public void setBig_shot_lib$extension_value(Pair<Boolean, Boolean> mask) {
+    public void setExtensionValue(Pair<Boolean, Boolean> mask) {
         big_shot_lib$mask = mask;
     }
 }

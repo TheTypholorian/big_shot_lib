@@ -52,7 +52,7 @@ public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprit
     /*private Identifier atlasLocation;
     *///? }
     @Unique
-    private final NeoAtlasSprite big_shot_lib$extension_value = new NeoAtlasSprite() {
+    private final NeoAtlasSprite extensionValue = new NeoAtlasSprite() {
         @Override
         public @NotNull NeoAtlas getAtlas() {
             return Objects.requireNonNull(NeoAtlas.get(atlasLocation));
@@ -100,7 +100,7 @@ public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprit
     };
 
     @Override
-    public NeoAtlasSprite getBig_shot_lib$extension_value() {
-        return big_shot_lib$extension_value;
+    public NeoAtlasSprite getExtensionValue() {
+        return extensionValue;
     }
 }

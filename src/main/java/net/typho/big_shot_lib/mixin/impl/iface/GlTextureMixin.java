@@ -41,7 +41,7 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
     public abstract int glId();
 
     @Override
-    public GlTexture2D getBig_shot_lib$extension_value() {
+    public GlTexture2D getExtensionValue() {
         return new GlTexture2D() {
             @Override
             public RenderingContext getContext() {

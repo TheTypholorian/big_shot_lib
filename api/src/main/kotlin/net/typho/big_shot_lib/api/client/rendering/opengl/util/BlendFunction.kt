@@ -13,7 +13,17 @@ sealed interface BlendFunction {
         @JvmField
         val CODEC: Codec<out BlendFunction> = NeoCodecs.anySubclass(Basic.CODEC.codec(), Separate.CODEC.codec())
         @JvmField
-        val DEFAULT = Basic(GlBlendingFactor.ONE, GlBlendingFactor.ZERO)
+        val NONE = Basic(GlBlendingFactor.ONE, GlBlendingFactor.ZERO)
+        @JvmField
+        val ADDITIVE = Basic(GlBlendingFactor.ONE, GlBlendingFactor.ONE)
+        @JvmField
+        val LIGHTNING = Basic(GlBlendingFactor.SRC_ALPHA, GlBlendingFactor.ONE)
+        @JvmField
+        val GLINT = Separate(GlBlendingFactor.SRC_COLOR, GlBlendingFactor.ONE, GlBlendingFactor.ZERO, GlBlendingFactor.ONE)
+        @JvmField
+        val BLOCK_BREAKING = Separate(GlBlendingFactor.DST_COLOR, GlBlendingFactor.SRC_COLOR, GlBlendingFactor.ONE, GlBlendingFactor.ZERO)
+        @JvmField
+        val TRANSLUCENT = Separate(GlBlendingFactor.SRC_ALPHA, GlBlendingFactor.ONE_MINUS_SRC_ALPHA, GlBlendingFactor.ONE, GlBlendingFactor.ONE_MINUS_SRC_ALPHA)
     }
 
     fun bind()
@@ -37,6 +47,24 @@ sealed interface BlendFunction {
 
         override fun bind() {
             glBlendFunc(src.glId, dest.glId)
+        }
+
+        override fun hashCode(): Int {
+            var result = src.hashCode()
+            result = 31 * result + dest.hashCode()
+            return result
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+
+            if (other is Basic) {
+                return src == other.src && dest == other.dest
+            } else if (other is Separate) {
+                return src == other.src && src == other.srcA && dest == other.dest && dest == other.destA
+            }
+
+            return false
         }
     }
 
@@ -65,6 +93,24 @@ sealed interface BlendFunction {
 
         override fun bind() {
             glBlendFuncSeparate(src.glId, dest.glId, srcA.glId, destA.glId)
+        }
+
+        override fun hashCode(): Int {
+            var result = src.hashCode()
+            result = 31 * result + dest.hashCode()
+            return result
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+
+            if (other is Basic) {
+                return src == other.src && srcA == other.src && dest == other.dest && destA == other.dest
+            } else if (other is Separate) {
+                return src == other.src && dest == other.dest && srcA == other.srcA && destA == other.destA
+            }
+
+            return false
         }
     }
 }

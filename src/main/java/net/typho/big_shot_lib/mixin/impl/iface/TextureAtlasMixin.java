@@ -46,7 +46,7 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
     *///? }
 
     @Override
-    public NeoAtlas getBig_shot_lib$extension_value() {
+    public NeoAtlas getExtensionValue() {
         return new NeoAtlas() {
             @Override
             public @NotNull Identifier getLocation() {

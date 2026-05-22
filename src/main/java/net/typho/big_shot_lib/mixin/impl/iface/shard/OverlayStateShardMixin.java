@@ -31,7 +31,7 @@ public class OverlayStateShardMixin implements MutableExtension<GlOverlayShard> 
     }
 
     @Override
-    public GlOverlayShard getBig_shot_lib$extension_value() {
+    public GlOverlayShard getExtensionValue() {
         if (big_shot_lib$overlay == null) {
             if (!big_shot_lib$warned) {
                 big_shot_lib$warned = true;
@@ -44,7 +44,7 @@ public class OverlayStateShardMixin implements MutableExtension<GlOverlayShard> 
     }
 
     @Override
-    public void setBig_shot_lib$extension_value(GlOverlayShard glOverlayShard) {
+    public void setExtensionValue(GlOverlayShard glOverlayShard) {
         big_shot_lib$overlay = glOverlayShard;
     }
 }

@@ -1,11 +1,14 @@
 package net.typho.big_shot_lib.impl.util
 
+import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.plugin.Namespace
+
 @Suppress("UNCHECKED_CAST")
 inline fun <reified V> Any.getExtensionValue(): V {
     return if (this is V) {
         this
     } else {
-        val value = (this as ImmutableExtension<*>).`big_shot_lib$extension_value`
+        val value = (this as ImmutableExtension<*>).extensionValue
         value as? V ?: throw ClassCastException("Casting $this.$value to ${V::class.simpleName}")
     }
 }
@@ -15,7 +18,7 @@ fun <V> Any.getExtensionValue(cls: Class<V>): V {
     return if (cls.isInstance(this)) {
         this as V
     } else {
-        val value = (this as ImmutableExtension<*>).`big_shot_lib$extension_value`
+        val value = (this as ImmutableExtension<*>).extensionValue
         value as? V ?: throw ClassCastException("Casting $this.$value to ${cls.simpleName}")
     }
 }
@@ -24,7 +27,7 @@ fun <V> Any.getExtensionValue(cls: Class<V>): V {
 inline fun <reified V> Any.getExtensionValueNullable(): V? {
     return when (this) {
         is V -> this
-        is ImmutableExtension<*> -> `big_shot_lib$extension_value` as? V
+        is ImmutableExtension<*> -> extensionValue as? V
         else -> null
     }
 }
@@ -34,12 +37,13 @@ fun <V> Any.getExtensionValueNullable(cls: Class<V>): V? {
     return if (cls.isInstance(this)) {
         this as V
     } else if (this is ImmutableExtension<*>) {
-        `big_shot_lib$extension_value` as? V
+        extensionValue as? V
     } else {
         null
     }
 }
 
+@Namespace(BigShotApi.MOD_ID)
 interface ImmutableExtension<V> {
-    val `big_shot_lib$extension_value`: V
+    val extensionValue: V
 }

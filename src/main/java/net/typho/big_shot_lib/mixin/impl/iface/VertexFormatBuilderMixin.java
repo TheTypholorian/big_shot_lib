@@ -23,7 +23,7 @@ public abstract class VertexFormatBuilderMixin implements ImmutableExtension<Neo
     public abstract VertexFormat build();
 
     @Unique
-    private final NeoVertexFormatBuilderExtensionValue big_shot_lib$extension_value = new NeoVertexFormatBuilderExtensionValue() {
+    private final NeoVertexFormatBuilderExtensionValue extensionValue = new NeoVertexFormatBuilderExtensionValue() {
         @Override
         public NeoVertexFormat.Builder add(@NotNull String name, @NotNull NeoVertexFormat.Element element) {
             VertexFormatBuilderMixin.this.add(name, ImmutableExtensionKt.getExtensionValue(element, VertexFormatElement.class));
@@ -43,13 +43,13 @@ public abstract class VertexFormatBuilderMixin implements ImmutableExtension<Neo
         }
 
         @Override
-        public VertexFormat.Builder getBig_shot_lib$extension_value() {
+        public VertexFormat.Builder getExtensionValue() {
             return (VertexFormat.Builder) (Object) VertexFormatBuilderMixin.this;
         }
     };
 
     @Override
-    public NeoVertexFormatBuilderExtensionValue getBig_shot_lib$extension_value() {
-        return big_shot_lib$extension_value;
+    public NeoVertexFormatBuilderExtensionValue getExtensionValue() {
+        return extensionValue;
     }
 }
