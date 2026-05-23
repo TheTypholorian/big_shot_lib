@@ -13,7 +13,9 @@ interface PlatformUtil {
 
     fun createRegistrar(mod: ModContainer): Registrar
 
-    fun getMod(id: String): ModContainer?
+    fun getMod(id: String): ModContainer? {
+        return mods.firstOrNull { it.id == id }
+    }
 
     companion object {
         @JvmStatic

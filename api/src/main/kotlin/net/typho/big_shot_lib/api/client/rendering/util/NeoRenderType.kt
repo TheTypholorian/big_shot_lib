@@ -1,15 +1,12 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
-import net.typho.big_shot_lib.api.plugin.Namespace
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
 
-@Namespace(BigShotApi.MOD_ID)
 interface NeoRenderType : GlDrawState, MaybeNamedResource {
     val format: NeoVertexFormat
     val mode: GlBeginMode

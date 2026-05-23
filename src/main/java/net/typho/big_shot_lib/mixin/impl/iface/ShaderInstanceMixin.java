@@ -13,6 +13,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.Identifier;
+import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.*;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
@@ -293,7 +294,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
         uniforms = Lists.newArrayList();
         uniformLocations = Lists.newArrayList();
         uniformMap = Maps.newHashMap();
-        name = location.toShortString();
+        name = BigShotApi.toShortString(location);
         vertexFormat = ImmutableExtensionKt.getExtensionValue(format, VertexFormat.class);
         programId = glId;
     }

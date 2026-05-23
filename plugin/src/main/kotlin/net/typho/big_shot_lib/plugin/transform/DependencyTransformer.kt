@@ -43,29 +43,87 @@ class DependencyTransformer(
         var signature = signature
         val interfaceInjections = info.interfaceInjections.get().filter { it.target.get() == name }
 
-        if (interfaceInjections.any { it.typeParams.get().isNotEmpty() } && signature == null) {
-            signature = "L$superName;"
-
-            for (injection in interfaceInjections) {
-                signature += "L${injection.iface.get()};${interfaces.joinToString(separator = "") { "L$it;" }}"
-            }
-        }
-
         if (signature != null) {
-            for (injection in interfaceInjections) {
-                signature += if (injection.typeParams.get().isEmpty()) {
-                    "L${injection.iface.get()};"
-                } else {
-                    "L${injection.iface.get()}<${injection.typeParams.get().joinToString(separator = "") { "L$it;" }}>;"
+            val writer = SignatureWriter()
+            val reader = SignatureReader(signature)
+
+            reader.accept(object : SignatureVisitor(Opcodes.ASM9) {
+                override fun visitSuperclass(): SignatureVisitor {
+                    return writer.visitSuperclass()
+                }
+
+                override fun visitInterface(): SignatureVisitor {
+                    return writer.visitInterface()
+                }
+
+                override fun visitFormalTypeParameter(name: String) {
+                    writer.visitFormalTypeParameter(name)
+                }
+
+                override fun visitClassBound(): SignatureVisitor {
+                    return writer.visitClassBound()
+                }
+
+                override fun visitInterfaceBound(): SignatureVisitor {
+                    return writer.visitInterfaceBound()
+                }
+
+                override fun visitParameterType(): SignatureVisitor {
+                    return writer.visitParameterType()
+                }
+
+                override fun visitReturnType(): SignatureVisitor {
+                    return writer.visitReturnType()
+                }
+
+                override fun visitExceptionType(): SignatureVisitor {
+                    return writer.visitExceptionType()
+                }
+
+                override fun visitBaseType(descriptor: Char) {
+                    writer.visitBaseType(descriptor)
+                }
+
+                override fun visitTypeVariable(name: String) {
+                    writer.visitTypeVariable(name)
+                }
+
+                override fun visitArrayType(): SignatureVisitor {
+                    return writer.visitArrayType()
+                }
+
+                override fun visitClassType(name: String) {
+                    writer.visitClassType(name)
+                }
+
+                override fun visitInnerClassType(name: String) {
+                    writer.visitInnerClassType(name)
+                }
+
+                override fun visitTypeArgument() {
+                    writer.visitTypeArgument()
+                }
+
+                override fun visitTypeArgument(wildcard: Char): SignatureVisitor {
+                    return writer.visitTypeArgument(wildcard)
+                }
+
+                override fun visitEnd() {
+                    writer.visitEnd()
+                }
+            })
+
+            interfaceInjections.forEach { injection ->
+                writer.visitInterface().apply {
+                    visitClassType(remapper.map(injection.iface.get()))
+                    visitEnd()
                 }
             }
+
+            signature = writer.toString()
         }
 
-        interfaceInjections.forEach {
-            if (it.target.get() == name) {
-                interfaces.add(remapper.map(it.iface.get()))
-            }
-        }
+        interfaceInjections.mapTo(interfaces) { remapper.map(it.iface.get()) }
 
         if (interfaceInjections.isNotEmpty()) {
             println("[Big Shot Lib] Injected interfaces ${interfaceInjections.map { it.iface.get() }} to $name, old signature: $oldSignature, new signature: $signature")
@@ -346,5 +404,37 @@ class DependencyTransformer(
 
     override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {
         return info.loader.get().unmapOnlyInAnnotation(this, descriptor, api) ?: super.visitAnnotation(descriptor, visible)
+    }
+
+    override fun visitEnd() {
+        for (injection in info.interfaceInjections.get()) {
+            if (injection.target.get() == name) {
+                for (method in injection.methods.get()) {
+                    val visitor = visitMethod(
+                        Opcodes.ACC_PUBLIC,
+                        method.first,
+                        method.second,
+                        null,
+                        null
+                    )
+                    visitor.visitTypeInsn(Opcodes.NEW, "java/lang/IllegalStateException")
+                    visitor.visitInsn(Opcodes.DUP)
+                    visitor.visitLdcInsn("Implemented via mixin")
+                    visitor.visitMethodInsn(
+                        Opcodes.INVOKESPECIAL,
+                        "java/lang/IllegalStateException",
+                        "<init>",
+                        "(Ljava/lang/String;)V",
+                        false
+                    )
+                    visitor.visitInsn(Opcodes.ATHROW)
+
+                    visitor.visitMaxs(3, 1)
+                    visitor.visitEnd()
+                }
+            }
+        }
+
+        super.visitEnd()
     }
 }

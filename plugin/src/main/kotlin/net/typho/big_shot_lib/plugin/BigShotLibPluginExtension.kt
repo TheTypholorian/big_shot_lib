@@ -75,6 +75,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             val iface: Property<String>
             val target: Property<String>
             val typeParams: ListProperty<String>
+            val methods: ListProperty<Pair<String, String>>
         }
 
         interface StaticMethodInjection {
@@ -213,11 +214,13 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             }, to)
         }
 
-        fun injectInterface(iface: String, target: String, vararg typeParams: String) {
+        @JvmOverloads
+        fun injectInterface(iface: String, target: String, typeParams: Array<String> = arrayOf(), vararg methods: Pair<String, String>) {
             interfaceInjections.add(objects.newInstance(InterfaceInjection::class.java).also {
                 it.iface.set(iface)
                 it.target.set(target)
                 it.typeParams.set(typeParams.toList())
+                it.methods.set(methods.toList())
             })
         }
 

@@ -4,7 +4,7 @@ import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.*
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.ArgumentOverloadConverter
 import net.typho.big_shot_lib.plugin.transform.DependencyRemapper
 import net.typho.big_shot_lib.plugin.transform.DependencyTransformer
-import net.typho.big_shot_lib.plugin.transform.util.kotlin.KotlinSupportingClassRemapper
+import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
 import org.gradle.api.artifacts.transform.InputArtifact
 import org.gradle.api.artifacts.transform.TransformAction
 import org.gradle.api.artifacts.transform.TransformOutputs
@@ -36,14 +36,23 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
             JarOutputStream(FileOutputStream(outFile)).use { out ->
                 jar.entries().asIterator().forEach { entry ->
                     jar.getInputStream(entry).use { stream ->
-                        if (entry.name.endsWith(".class") && !entry.name.endsWith("-info.class")) {
-                            val className = entry.name.removeSuffix(".class")
+                        if (!(entry.name.startsWith("META-INF/") && (entry.name.endsWith(".SF") || entry.name.endsWith(".RSA") || entry.name.endsWith(".DSA")))) {
+                            if (entry.name.endsWith(".class") && !entry.name.endsWith("-info.class")) {
+                                val className = entry.name.removeSuffix(".class")
 
-                            if (className != parameters.loader.get().mappedOnlyInAnnotationName) {
                                 val reader = ClassReader(stream)
                                 val writer = ClassWriter(reader, 0)
-                                                                                                                                // TODO
-                                val transformer = KotlinSupportingClassRemapper(Opcodes.ASM9, DependencyTransformer(parameters, { newDesc, oldDesc, argumentConverters -> }, remapper, Opcodes.ASM9, writer), remapper)
+                                val transformer = KotlinAndMixinSupportingClassRemapper(
+                                    Opcodes.ASM9,
+                                    DependencyTransformer(
+                                        parameters,
+                                        { newDesc, oldDesc, argumentConverters -> }, // TODO
+                                        remapper,
+                                        Opcodes.ASM9,
+                                        writer
+                                    ),
+                                    remapper
+                                )
                                 reader.accept(transformer, 0)
 
                                 val newName = remapper.map(className)
@@ -55,32 +64,32 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                                 }
 
                                 out.write(writer.toByteArray())
-                            }
-                        } else if (entry.name.endsWith(".java")) {
-                            val className = entry.name.removeSuffix(".java")
-                            val newName = remapper.map(className)
+                            } else if (entry.name.endsWith(".java")) {
+                                val className = entry.name.removeSuffix(".java")
+                                val newName = remapper.map(className)
 
-                            if (className == newName) {
-                                out.putNextEntry(JarEntry(entry))
+                                if (className == newName) {
+                                    out.putNextEntry(JarEntry(entry))
+                                } else {
+                                    out.putNextEntry(JarEntry("$newName.java"))
+                                }
+
+                                stream.transferTo(out)
+                            } else if (entry.name.endsWith(".kt")) {
+                                val className = entry.name.removeSuffix(".kt")
+                                val newName = remapper.map(className)
+
+                                if (className == newName) {
+                                    out.putNextEntry(JarEntry(entry))
+                                } else {
+                                    out.putNextEntry(JarEntry("$newName.kt"))
+                                }
+
+                                stream.transferTo(out)
                             } else {
-                                out.putNextEntry(JarEntry("$newName.java"))
-                            }
-
-                            stream.transferTo(out)
-                        } else if (entry.name.endsWith(".kt")) {
-                            val className = entry.name.removeSuffix(".kt")
-                            val newName = remapper.map(className)
-
-                            if (className == newName) {
                                 out.putNextEntry(JarEntry(entry))
-                            } else {
-                                out.putNextEntry(JarEntry("$newName.kt"))
+                                stream.transferTo(out)
                             }
-
-                            stream.transferTo(out)
-                        } else {
-                            out.putNextEntry(JarEntry(entry))
-                            stream.transferTo(out)
                         }
 
                         out.closeEntry()

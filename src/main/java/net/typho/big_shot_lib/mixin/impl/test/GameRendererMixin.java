@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.test;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.Identifier;
+import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,6 +20,6 @@ public class GameRendererMixin {
             cancellable = true
     )
     private static void getRendertypeSolidShader(CallbackInfoReturnable<ShaderInstance> cir) {
-        cir.setReturnValue(ImmutableExtensionKt.getExtensionValue(Objects.requireNonNull(NeoShaderLoader.INSTANCE.get(Identifier.bigShot("solid"))), ShaderInstance.class));
+        cir.setReturnValue(ImmutableExtensionKt.getExtensionValue(Objects.requireNonNull(NeoShaderLoader.INSTANCE.get(BigShotApi.id("solid"))), ShaderInstance.class));
     }
 }

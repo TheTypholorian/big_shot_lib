@@ -1,21 +1,24 @@
 package net.typho.big_shot_lib.impl.util.platform
 
-//? fabric {
-/*import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.loader.api.metadata.CustomValue
-*///? } neoforge {
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import net.neoforged.fml.ModList
+import net.typho.big_shot_lib.api.client.util.Registrar
+import net.typho.big_shot_lib.api.util.RegisteredObject
+
+//? fabric {
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
+import net.fabricmc.loader.api.FabricLoader
+import net.fabricmc.loader.api.metadata.CustomValue
+import net.minecraft.core.registries.BuiltInRegistries
+//? } neoforge {
+/*import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
 import net.neoforged.neoforge.registries.NewRegistryEvent
 import net.neoforged.neoforge.registries.RegisterEvent
 import net.neoforged.neoforge.registries.RegistryBuilder
-import net.typho.big_shot_lib.api.client.util.Registrar
-import net.typho.big_shot_lib.api.util.RegisteredObject
-//? }
+*///? }
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
 import net.typho.big_shot_lib.api.util.platform.ModLoader
@@ -24,7 +27,7 @@ import java.nio.file.Path
 
 object PlatformUtilImpl : PlatformUtil {
     //? fabric {
-    /*override val loader = ModLoader.FABRIC
+    override val loader = ModLoader.FABRIC
     override val mods: Collection<ModContainer>
         get() = FabricLoader.getInstance().allMods.map { ModContainerImpl(it) }
     override val configPath: Path
@@ -67,8 +70,40 @@ object PlatformUtilImpl : PlatformUtil {
             }
         }
     }
-    *///? } neoforge {
-    override val loader = ModLoader.NEOFORGE
+
+    class FabricRegisteredObject<T : Any>(
+        override val registry: ResourceKey<out Registry<T>>,
+        override val key: Identifier,
+        override val value: T
+    ) : RegisteredObject<T> {
+        override val registered = true
+    }
+
+    override fun createRegistrar(mod: ModContainer): Registrar {
+        return object : Registrar {
+            override fun <T : Any> createRegistry(id: Identifier): ResourceKey<out Registry<T>> {
+                val key = ResourceKey.createRegistryKey<T>(id)
+                FabricRegistryBuilder.createSimple(key).buildAndRegister()
+                return key // TODO
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : Any> register(
+                registry: ResourceKey<out Registry<T>>,
+                id: Identifier,
+                value: T
+            ): RegisteredObject<T> {
+                return FabricRegisteredObject(
+                    registry,
+                    id,
+                    Registry.register(BuiltInRegistries.REGISTRY.get(registry.location()) as Registry<T>, id, value)
+                )
+            }
+        }
+    }
+
+    //? } neoforge {
+    /*override val loader = ModLoader.NEOFORGE
     override val mods: Collection<ModContainer>
         get() = ModList.get().sortedMods.map { ModContainerImpl(it) }
     override val configPath: Path
@@ -101,19 +136,12 @@ object PlatformUtilImpl : PlatformUtil {
         return NeoForgeRegistrar(mod)
     }
 
-    override fun getMod(id: String): ModContainer? {
-        return mods.firstOrNull { it.id == id }
-    }
-
     class NeoForgeRegisteredObject<T : Any>(
         override val registry: ResourceKey<out Registry<T>>,
         override val key: Identifier,
         override val value: T
     ) : RegisteredObject<T> {
-        @JvmField
-        var registered = false
-
-        override fun isRegistered() = registered
+        override var registered = false
 
         fun register(event: RegisterEvent) {
             if (event.registryKey == registry) {
@@ -184,5 +212,5 @@ object PlatformUtilImpl : PlatformUtil {
             return (queue.firstOrNull { it.registry == registry } ?: RegistryPair(registry, arrayListOf()).also { queue.add(it) }).register(id, value) as RegisteredObject<T>
         }
     }
-    //? }
+    *///? }
 }

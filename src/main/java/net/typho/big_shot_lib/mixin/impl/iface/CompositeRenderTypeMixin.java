@@ -61,13 +61,13 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         @Override
         @NotNull
         public NeoVertexFormat getFormat() {
-            return ImmutableExtensionKt.getExtensionValue(format, NeoVertexFormat.class);
+            return ImmutableExtensionKt.getExtensionValue(format(), NeoVertexFormat.class);
         }
 
         @Override
         @NotNull
         public GlBeginMode getMode() {
-            return switch (mode) {
+            return switch (mode()) {
                 case LINES, DEBUG_LINES -> GlBeginMode.LINES;
                 case LINE_STRIP, DEBUG_LINE_STRIP -> GlBeginMode.LINE_STRIP;
                 case TRIANGLES -> GlBeginMode.TRIANGLES;
@@ -79,17 +79,17 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
 
         @Override
         public int getDefaultBufferSize() {
-            return bufferSize;
+            return bufferSize();
         }
 
         @Override
         public boolean getAffectsCrumbling() {
-            return affectsCrumbling;
+            return affectsCrumbling();
         }
 
         @Override
         public boolean getSortOnUpload() {
-            return sortOnUpload;
+            return sortOnUpload();
         }
 
         @Override

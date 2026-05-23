@@ -13,6 +13,7 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import net.typho.big_shot_lib.api.BigShotApi.toShortString
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode

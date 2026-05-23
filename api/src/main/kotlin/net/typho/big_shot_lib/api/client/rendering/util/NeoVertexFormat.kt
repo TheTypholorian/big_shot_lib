@@ -20,7 +20,7 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     override fun iterator() = elements.iterator()
 
     object Entrypoint : BigShotCommonEntrypoint(BigShotApi.MOD_ID) {
-        internal val REGISTRY = createRegistry<NeoVertexFormat>(Identifier.bigShot("vertex_formats"))
+        internal val REGISTRY = createRegistry<NeoVertexFormat>(BigShotApi.id("vertex_formats"))
 
         override fun onInitialize() {
             register(REGISTRY, Identifier.minecraft("blit_screen"), InternalUtil.INSTANCE.blitScreenVertexFormat)

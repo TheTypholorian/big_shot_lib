@@ -20,7 +20,7 @@ import java.io.BufferedReader
 
 @JvmField
 val shaderIncludes = object : ResourceRegistry<String>(
-    Identifier.bigShot("shaders/include"),
+    BigShotApi.id("shaders/include"),
     mutableListOf(),
     mutableListOf(
         FileToIdConverter("neo/shaders/include", ".glsl"),
@@ -45,7 +45,7 @@ val shaderIncludes = object : ResourceRegistry<String>(
 @JvmField
 val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> { shaderType ->
     object : ResourceRegistry<GlShader>(
-        Identifier.bigShot("shaders/${shaderType.name.lowercase()}"),
+        BigShotApi.id("shaders/${shaderType.name.lowercase()}"),
         mutableListOf(),
         mutableListOf(FileToIdConverter("neo/shaders", shaderType.extension))
     ) {
@@ -75,7 +75,7 @@ val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> 
 }
 
 object NeoShaderLoader : ResourceRegistry<GlProgram>(
-    Identifier.bigShot("shaders"),
+    BigShotApi.id("shaders"),
     mutableListOf<ResourceRegistry<*>>(shaderIncludes).also { it.addAll(shaderRegistries.values) },
     mutableListOf(FileToIdConverter.json("neo/shaders"))
 ) {
@@ -91,7 +91,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
 
     object CommonInit : BigShotCommonEntrypoint(BigShotApi.MOD_ID) {
         @JvmField
-        val preprocessors = createRegistry<ShaderPreprocessor>(Identifier.bigShot("shader_preprocessors"))
+        val preprocessors = createRegistry<ShaderPreprocessor>(BigShotApi.id("shader_preprocessors"))
         val shaderIncludePreprocessor by register(preprocessors, ShaderIncludePreprocessor)
 
         override fun onInitialize() {

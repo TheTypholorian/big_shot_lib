@@ -9,10 +9,9 @@ interface RegisteredObject<T : Any> {
     val registry: ResourceKey<out Registry<T>>
     val key: Identifier
     val value: T
+    val registered: Boolean
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T = value
 
     operator fun invoke() = value
-
-    fun isRegistered(): Boolean
 }

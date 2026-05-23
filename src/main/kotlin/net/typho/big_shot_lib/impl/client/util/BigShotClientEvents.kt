@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.client.util
 
-import net.minecraft.client.Minecraft
+//? neoforge {
+/*import net.minecraft.client.Minecraft
 import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener
 import net.neoforged.neoforge.client.event.ClientTickEvent
@@ -15,6 +16,7 @@ import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl
 import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
+*///? }
 
 object BigShotClientEvents {
     //? if <1.21.9 {
@@ -25,8 +27,12 @@ object BigShotClientEvents {
     internal fun init() {
     }
 
-    //? neoforge {
+    //? fabric {
     init {
+        // TODO
+    }
+    //? } neoforge {
+    /*init {
         NeoForge.EVENT_BUS.addListener { event: RenderLevelStageEvent ->
             for (entrypoint in BigShotClientEntrypoint.entrypoints) {
                 entrypoint.renderLevel(
@@ -105,5 +111,5 @@ object BigShotClientEvents {
         }
         *///? }
     }
-    //? }
+    *///? }
 }

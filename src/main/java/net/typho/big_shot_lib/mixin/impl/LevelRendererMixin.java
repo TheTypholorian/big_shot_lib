@@ -73,7 +73,7 @@ public class LevelRendererMixin {
             @Local Frustum frustum
     ) {
         if (!BigShotClientEvents.INSTANCE.getLevelRenderEnd().isEmpty()) {
-            FramePass pass = graph.addPass(Identifier.bigShot("post").toString());
+            FramePass pass = graph.addPass(BigShotApi.id("post").toString());
 
             targets.main = pass.readsAndWrites(targets.main);
 

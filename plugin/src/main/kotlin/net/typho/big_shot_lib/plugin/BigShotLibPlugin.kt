@@ -5,10 +5,11 @@ import net.typho.big_shot_lib.plugin.transform.ProjectRemapper
 import net.typho.big_shot_lib.plugin.transform.ProjectTransformer
 import net.typho.big_shot_lib.plugin.transform.util.AnnotationScanner
 import net.typho.big_shot_lib.plugin.transform.util.Annotations
-import net.typho.big_shot_lib.plugin.transform.util.kotlin.KotlinSupportingClassRemapper
+import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
+import org.gradle.api.attributes.Attribute
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.bundling.Jar
 import org.objectweb.asm.ClassReader
@@ -71,7 +72,7 @@ class BigShotLibPlugin : Plugin<Project> {
                 file.inputStream().use { stream ->
                     val reader = ClassReader(stream)
                     val writer = ClassWriter(0)
-                    val transformer = ProjectTransformer(ext, Opcodes.ASM9, KotlinSupportingClassRemapper(Opcodes.ASM9, writer, remapper))
+                    val transformer = ProjectTransformer(ext, Opcodes.ASM9, KotlinAndMixinSupportingClassRemapper(Opcodes.ASM9, writer, remapper))
                     reader.accept(transformer, 0)
 
                     if (ext.loader.get().mappedOnlyInAnnotationName != transformer.desc!!) {
@@ -86,6 +87,12 @@ class BigShotLibPlugin : Plugin<Project> {
 
         println("\tProcessed $visited class files")
     }
+
+    @JvmField
+    val neoTweakedAttrib: Attribute<Boolean> = Attribute.of(
+        "big_shot_lib:tweaked",
+        Boolean::class.javaObjectType
+    )
 
     override fun apply(project: Project) {
         val ext = project.extensions.create("bigShotLib", BigShotLibPluginExtension::class.java)
@@ -110,28 +117,30 @@ class BigShotLibPlugin : Plugin<Project> {
         }
 
         project.pluginManager.withPlugin("java") {
-            project.configurations.named("compileClasspath") {
-                it.attributes {
-                    it.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "big-shot-jar")
+            project.dependencies.attributesSchema.attribute(neoTweakedAttrib)
+            project.dependencies.artifactTypes.getByName("jar").attributes.attribute(neoTweakedAttrib, false)
+
+            project.configurations.configureEach {
+                if (it.isCanBeResolved) {
+                    it.attributes.attribute(neoTweakedAttrib, true)
                 }
             }
-            /*
-            project.configurations.named("runtimeClasspath") {
-                it.attributes {
-                    it.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "big-shot-jar")
-                }
-            }
-             */
 
             project.dependencies.registerTransform(DependencyTransformAction::class.java) {
                 it.from.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "jar")
-                it.to.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "big-shot-jar")
+                it.from.attribute(neoTweakedAttrib, false)
+
+                it.to.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "jar")
+                it.to.attribute(neoTweakedAttrib, true)
+
                 it.parameters.classRenames.set(ext.transformInfo.classRenames)
                 it.parameters.methodRenames.set(ext.transformInfo.methodRenames)
                 it.parameters.fieldRenames.set(ext.transformInfo.fieldRenames)
+
                 it.parameters.interfaceInjections.set(ext.transformInfo.interfaceInjections)
                 it.parameters.staticMethodInjections.set(ext.transformInfo.staticMethodInjections)
                 it.parameters.argumentOverloadConverters.set(ext.transformInfo.argumentOverloadConverters)
+
                 it.parameters.version.set(ext.version)
                 it.parameters.loader.set(ext.loader)
             }

@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.plugin.transform.util.kotlin
+package net.typho.big_shot_lib.plugin.transform.util
 
 import org.objectweb.asm.AnnotationVisitor
 
