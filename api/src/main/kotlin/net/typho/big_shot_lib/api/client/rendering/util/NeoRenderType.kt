@@ -31,7 +31,7 @@ interface NeoRenderType : GlDrawState, MaybeNamedResource {
         fun create(
             location: Identifier,
             format: NeoVertexFormat,
-            drawState: GlDrawState,
+            drawState: GlDrawState.Builder,
             defaultBufferSize: Int = 786432,
             mode: GlBeginMode = GlBeginMode.QUADS,
             affectsCrumbling: Boolean = true,

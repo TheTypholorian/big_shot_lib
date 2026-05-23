@@ -115,11 +115,13 @@ class BigShotLibPlugin : Plugin<Project> {
                     it.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "big-shot-jar")
                 }
             }
+            /*
             project.configurations.named("runtimeClasspath") {
                 it.attributes {
                     it.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "big-shot-jar")
                 }
             }
+             */
 
             project.dependencies.registerTransform(DependencyTransformAction::class.java) {
                 it.from.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "jar")

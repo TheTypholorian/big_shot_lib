@@ -3,13 +3,11 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.Pair;
-import kotlin.jvm.functions.Function0;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp;
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
@@ -59,74 +57,6 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
     }
 
     @Unique
-    private final GlDrawState big_shot_lib$drawState = new GlDrawState() {
-        @Override
-        public @NotNull GlBlendShard getBlend() {
-        }
-
-        @Override
-        public @NotNull GlColorMaskShard getColorMask() {
-            return new GlColorMaskShard((boolean) ImmutableExtensionKt.getExtensionValue(state.writeMaskState, Pair.class).getFirst()); // TODO
-        }
-
-        @Override
-        public @NotNull GlCullShard getCull() {
-            return ImmutableExtensionKt.getExtensionValue(state.cullState, GlCullShard.class);
-        }
-
-        @Override
-        public @NotNull GlDepthShard getDepth() {
-            GlAlphaFunction function = ImmutableExtensionKt.getExtensionValue(state.depthTestState, GlAlphaFunction.class);
-
-            if (function == null) {
-                return GlDepthShard.Disabled.INSTANCE;
-            } else {
-                return new GlDepthShard.Enabled(
-                        function,
-                        (boolean) ImmutableExtensionKt.getExtensionValue(state.writeMaskState, Pair.class).getSecond()
-                );
-            }
-        }
-
-        @Override
-        public @NotNull GlLayeringShard getLayering() {
-            return ImmutableExtensionKt.getExtensionValue(state.layeringState, GlLayeringShard.class);
-        }
-
-        @Override
-        public @NotNull GlLightmapShard getLightmap() {
-            return ImmutableExtensionKt.getExtensionValue(state.lightmapState, GlLightmapShard.class);
-        }
-
-        @Override
-        public @NotNull GlOverlayShard getOverlay() {
-            return ImmutableExtensionKt.getExtensionValue(state.overlayState, GlOverlayShard.class);
-        }
-
-        @Override
-        public @NotNull GlShaderShard getShader() {
-            GlTextureBinding[] textures = new GlTextureBinding[12];
-            GlTextureBinding[] from = ImmutableExtensionKt.getExtensionValueNullable(state.textureState, GlTextureBinding[].class);
-
-            if (from == null) {
-                state.textureState.cutoutTexture().ifPresent(texture -> textures[0] = new GlTextureBinding.FromLocation(
-                        texture,
-                        GlTextureTarget.TEXTURE_2D
-                ));
-            } else {
-                System.arraycopy(from, 0, textures, 0, from.length);
-            }
-
-            return state.shaderState.shader.<GlShaderShard>map(shader ->
-                    new GlShaderShard.FromInstance(
-                            () -> ImmutableExtensionKt.getExtensionValue(shader.get(), GlProgram.class),
-                            program -> { },
-                            textures
-                    )
-            ).orElseGet(() -> new GlShaderShard.NoShader(textures));
-        }
-    };
-    @Unique
     private final NeoRenderTypeExtensionValue extensionValue = new NeoRenderTypeExtensionValue() {
         @Override
         @NotNull
@@ -171,6 +101,16 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         @Override
         public boolean isOutline() {
             return isOutline;
+        }
+
+        @Override
+        public void bind() {
+            setupRenderState();
+        }
+
+        @Override
+        public void unbind() {
+            clearRenderState();
         }
 
         @Override
@@ -237,19 +177,25 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         }
 
         @Override
-        public Boolean getWriteColor() {
+        public boolean getWriteColor() {
             return (boolean) ImmutableExtensionKt.getExtensionValue(state.writeMaskState, Pair.class).getFirst();
         }
 
         @Override
-        public Boolean getWriteDepth() {
+        public boolean getWriteDepth() {
             return (boolean) ImmutableExtensionKt.getExtensionValue(state.writeMaskState, Pair.class).getSecond();
         }
 
         @Override
         @Nullable
-        public GlLogicOp getCologLogic() {
+        public GlLogicOp getColorLogic() {
             return ImmutableExtensionKt.getExtensionValue(state.colorLogicState, GlLogicOp.class);
+        }
+
+        @Override
+        @Nullable
+        public LayeringState getLayering() {
+            return ImmutableExtensionKt.getExtensionValue(state.layeringState, LayeringState.class);
         }
     };
 

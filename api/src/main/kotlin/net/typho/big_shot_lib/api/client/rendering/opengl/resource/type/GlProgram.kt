@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
 
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.InternalUtil
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.error.ShaderLinkException
 import net.typho.big_shot_lib.api.error.ShaderValidationException
@@ -12,7 +12,9 @@ import net.typho.big_shot_lib.api.util.resource.NamedResource
 interface GlProgram : NamedResource, GlResource, UniformOutput {
     val format: NeoVertexFormat
 
-    fun use(): GlBoundProgram
+    fun use() {
+        NeoGlStateManager.INSTANCE.program = glId
+    }
 
     fun attach(shader: GlShader)
 
@@ -54,62 +56,62 @@ interface GlProgram : NamedResource, GlResource, UniformOutput {
     }
 
     interface Builtins {
-        val position: GlProgram?
-        val positionColor: GlProgram?
-        val positonTex: GlProgram?
-        val positonTexColor: GlProgram?
-        val particle: GlProgram?
-        val positionColorLightmap: GlProgram?
-        val positionColorTexLightmap: GlProgram?
-        val solid: GlProgram?
-        val cutoutMipped: GlProgram?
-        val cutout: GlProgram?
-        val translucent: GlProgram?
-        val translucentMovingBlock: GlProgram?
-        val armorCutoutNoCull: GlProgram?
-        val entitySolid: GlProgram?
-        val entityCutout: GlProgram?
-        val entityCutoutNoCull: GlProgram?
-        val entityCutoutNoCullZOffset: GlProgram?
-        val itemEntityTranslucentCull: GlProgram?
-        val entityTranslucentCull: GlProgram?
-        val entityTranslucent: GlProgram?
-        val entityTranslucentEmissive: GlProgram?
-        val entitySmoothCutout: GlProgram?
-        val beaconBeam: GlProgram?
-        val entityDecal: GlProgram?
-        val entityNoOutline: GlProgram?
-        val entityShadow: GlProgram?
-        val entityAlpha: GlProgram?
-        val eyes: GlProgram?
-        val energySwirl: GlProgram?
-        val breezeWind: GlProgram?
-        val leash: GlProgram?
-        val waterMask: GlProgram?
-        val outline: GlProgram?
-        val armorGlint: GlProgram?
-        val armorEntityGlint: GlProgram?
-        val glintTranslucent: GlProgram?
-        val glint: GlProgram?
-        val glintDirect: GlProgram?
-        val entityGlint: GlProgram?
-        val entityGlintDirect: GlProgram?
-        val text: GlProgram?
-        val textBackground: GlProgram?
-        val textIntensity: GlProgram?
-        val textSeeThrough: GlProgram?
-        val textBackgroundSeeThrough: GlProgram?
-        val textIntensitySeeThrough: GlProgram?
-        val lightning: GlProgram?
-        val tripwire: GlProgram?
-        val endPortal: GlProgram?
-        val endGateway: GlProgram?
-        val clouds: GlProgram?
-        val lines: GlProgram?
-        val crumbling: GlProgram?
-        val gui: GlProgram?
-        val guiOverlay: GlProgram?
-        val guiTextHighlight: GlProgram?
-        val guiGhostRecipeOverlay: GlProgram?
+        val position: GlProgram
+        val positionColor: GlProgram
+        val positonTex: GlProgram
+        val positonTexColor: GlProgram
+        val particle: GlProgram
+        val positionColorLightmap: GlProgram
+        val positionColorTexLightmap: GlProgram
+        val solid: GlProgram
+        val cutoutMipped: GlProgram
+        val cutout: GlProgram
+        val translucent: GlProgram
+        val translucentMovingBlock: GlProgram
+        val armorCutoutNoCull: GlProgram
+        val entitySolid: GlProgram
+        val entityCutout: GlProgram
+        val entityCutoutNoCull: GlProgram
+        val entityCutoutNoCullZOffset: GlProgram
+        val itemEntityTranslucentCull: GlProgram
+        val entityTranslucentCull: GlProgram
+        val entityTranslucent: GlProgram
+        val entityTranslucentEmissive: GlProgram
+        val entitySmoothCutout: GlProgram
+        val beaconBeam: GlProgram
+        val entityDecal: GlProgram
+        val entityNoOutline: GlProgram
+        val entityShadow: GlProgram
+        val entityAlpha: GlProgram
+        val eyes: GlProgram
+        val energySwirl: GlProgram
+        val breezeWind: GlProgram
+        val leash: GlProgram
+        val waterMask: GlProgram
+        val outline: GlProgram
+        val armorGlint: GlProgram
+        val armorEntityGlint: GlProgram
+        val glintTranslucent: GlProgram
+        val glint: GlProgram
+        val glintDirect: GlProgram
+        val entityGlint: GlProgram
+        val entityGlintDirect: GlProgram
+        val text: GlProgram
+        val textBackground: GlProgram
+        val textIntensity: GlProgram
+        val textSeeThrough: GlProgram
+        val textBackgroundSeeThrough: GlProgram
+        val textIntensitySeeThrough: GlProgram
+        val lightning: GlProgram
+        val tripwire: GlProgram
+        val endPortal: GlProgram
+        val endGateway: GlProgram
+        val clouds: GlProgram
+        val lines: GlProgram
+        val crumbling: GlProgram
+        val gui: GlProgram
+        val guiOverlay: GlProgram
+        val guiTextHighlight: GlProgram
+        val guiGhostRecipeOverlay: GlProgram
     }
 }

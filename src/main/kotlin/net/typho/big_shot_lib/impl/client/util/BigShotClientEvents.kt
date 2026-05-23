@@ -7,7 +7,6 @@ import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.AddReloadListenerEvent
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.NeoCamera
@@ -55,7 +54,8 @@ object BigShotClientEvents {
                     event.projectionMatrix,
                     event.modelViewMatrix,
                     (event.frustum as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
-                    NeoGlStateManagerImpl.currentTarget ?: GlFramebuffer.MAIN, // TODO
+                    // NeoGlStateManagerImpl.currentTarget ?:
+                    //GlFramebuffer.MAIN, // TODO
                     event.renderTick,
                     event.partialTick
                 )

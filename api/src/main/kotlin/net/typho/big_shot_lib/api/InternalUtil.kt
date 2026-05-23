@@ -56,7 +56,7 @@ interface InternalUtil {
     fun createRenderType(
         location: Identifier,
         format: NeoVertexFormat,
-        drawState: GlDrawState,
+        drawState: GlDrawState.Builder,
         defaultBufferSize: Int,
         mode: GlBeginMode,
         affectsCrumbling: Boolean,
@@ -66,6 +66,7 @@ interface InternalUtil {
 
     companion object {
         @JvmStatic
+        @get:JvmName("getInstance")
         val INSTANCE by lazy { InternalUtil::class.loadService() }
     }
 }

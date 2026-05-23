@@ -14,6 +14,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
@@ -21,13 +22,16 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
-import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.LayeringState
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
+import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoTextureStateShard
 import net.typho.big_shot_lib.impl.util.getExtensionValue
 import net.typho.big_shot_lib.impl.util.setExtensionValue
 import org.joml.Vector3f
@@ -183,126 +187,56 @@ object InternalUtilImpl : InternalUtil {
     override fun createRenderType(
         location: Identifier,
         format: NeoVertexFormat,
-        drawState: GlDrawState,
+        drawState: GlDrawState.Builder,
         defaultBufferSize: Int,
         mode: GlBeginMode,
         affectsCrumbling: Boolean,
         sortOnUpload: Boolean,
         isOutline: Boolean
     ): NeoRenderType {
-        // TODO
-        val blendStack = arrayListOf<BoundResource>()
-        val layeringStack = arrayListOf<BoundResource>()
-
-        val blend = drawState.blend.let {
-            if (it is GlBlendShard.Enabled) {
-                RenderStateShard.TransparencyStateShard(
-                    "${it.function} ${it.equation} ${it.color}",
-                    { blendStack.add(it.bind()) },
-                    { blendStack.removeLast().unbind() }
-                )
-            } else {
-                RenderStateShard.NO_TRANSPARENCY
-            }
-        }
-        blend.setExtensionValue(drawState.blend)
+        val blend = drawState.blend?.let { function ->
+            RenderStateShard.TransparencyStateShard(
+                "$function",
+                {
+                    NeoGlStateManager.INSTANCE.blendEnabled = true
+                    NeoGlStateManager.INSTANCE.blendFunction = function
+                },
+                {
+                    NeoGlStateManager.INSTANCE.blendEnabled = false
+                    NeoGlStateManager.INSTANCE.blendFunction = BlendFunction.DEFAULT
+                }
+            ).also { it.setExtensionValue(drawState.blend) }
+        } ?: RenderStateShard.NO_TRANSPARENCY
         val mask = RenderStateShard.WriteMaskStateShard(
-            drawState.colorMask.mask,
-            drawState.depth.let { if (it is GlDepthShard.Enabled) it.mask else false }
+            drawState.writeColor,
+            drawState.writeDepth
         )
-        val cull = if (drawState.cull is GlCullShard.Enabled) RenderStateShard.CULL else RenderStateShard.NO_CULL
-        val depthTest = drawState.depth.let {
-            if (it is GlDepthShard.Enabled) {
-                RenderStateShard.DepthTestStateShard(
-                    it.func.toString(),
-                    it.func.glId
+        val cull = if (drawState.cull) RenderStateShard.CULL else RenderStateShard.NO_CULL
+        val depthTest = drawState.depth?.let { function ->
+            when (function) {
+                GlAlphaFunction.EQUAL -> RenderStateShard.EQUAL_DEPTH_TEST
+                GlAlphaFunction.LEQUAL -> RenderStateShard.LEQUAL_DEPTH_TEST
+                GlAlphaFunction.GREATER -> RenderStateShard.GREATER_DEPTH_TEST
+                GlAlphaFunction.ALWAYS -> RenderStateShard.NO_DEPTH_TEST
+                else -> RenderStateShard.DepthTestStateShard(
+                    function.toString(),
+                    function.glId
                 )
-            } else {
-                RenderStateShard.NO_DEPTH_TEST
             }
+        } ?: RenderStateShard.NO_DEPTH_TEST
+        val layering = when (drawState.layering) {
+            LayeringState.DISABLED -> RenderStateShard.NO_LAYERING
+            LayeringState.POLYGON_OFFSET -> RenderStateShard.POLYGON_OFFSET_LAYERING
+            LayeringState.VIEW_OFFSET -> RenderStateShard.VIEW_OFFSET_Z_LAYERING
         }
-        val layering = drawState.layering.let {
-            when (it) {
-                is GlLayeringShard.EnabledPolygonOffset -> RenderStateShard.LayeringStateShard(
-                    it.offset.toString(),
-                    { layeringStack.add(it.bind()) },
-                    { layeringStack.removeLast().unbind() }
-                )
-
-                is GlLayeringShard.EnabledViewOffset -> RenderStateShard.LayeringStateShard(
-                    it.scale.toString(),
-                    { layeringStack.add(it.bind()) },
-                    { layeringStack.removeLast().unbind() }
-                )
-
-                else -> RenderStateShard.NO_LAYERING
-            }
-        }
-        layering.setExtensionValue(drawState.layering)
-        val lightmap = RenderStateShard.LightmapStateShard(drawState.lightmap.enabled)
-        val overlay = RenderStateShard.OverlayStateShard(drawState.overlay.enabled)
-
-        // TODO
-        /*
-        val textures = when (drawState.shader.textures.size) {
-            0 -> RenderStateShard.NO_TEXTURE
-            1 -> {
-                val texture = drawState.shader.textures.first() // TODO
-
-                if (texture is GlTextureBinding.FromLocation) {
-                    RenderStateShard.TextureStateShard(
-                        texture.location,
-                        false,
-                        true
-                    )
-                } else {
-                    object : RenderStateShard.EmptyTextureStateShard(
-                        {
-                            RenderSystem._setShaderTexture(0, texture.texture.glId)
-                        },
-                        {
-                        }
-                    ) {
-                        override fun cutoutTexture(): Optional<Identifier> {
-                            return Optional.ofNullable(texture.location)
-                        }
-                    }
-                }
-            }
-            else -> {
-                if (drawState.shader.textures.values.all { it is GlTextureBinding.FromLocation }) {
-                    val builder = RenderStateShard.MultiTextureStateShard.builder()
-
-                    for (entry in drawState.shader.textures) {
-                        builder.add(
-                            entry.value.location!!,
-                            false,
-                            true
-                        )
-                    }
-
-                    builder.build()
-                } else {
-                    object : RenderStateShard.EmptyTextureStateShard(
-                        {
-                            var i = 0 // TODO
-
-                            for (entry in drawState.shader.textures) {
-                                RenderSystem._setShaderTexture(i++, entry.value.texture.glId)
-                            }
-                        },
-                        {
-                        }
-                    ) {
-                        override fun cutoutTexture(): Optional<Identifier> {
-                            return Optional.ofNullable(drawState.shader.textures.values.firstOrNull { it.location != null }?.location)
-                        }
-                    }
-                }
-            }
-        }
-         */
-        val shader = RenderStateShard.ShaderStateShard { drawState.shader.program?.getExtensionValue() }
+        val lightmap = if (drawState.lightmap) RenderStateShard.LIGHTMAP else RenderStateShard.NO_LIGHTMAP
+        val overlay = if (drawState.overlay) RenderStateShard.OVERLAY else RenderStateShard.NO_OVERLAY
+        val texture = drawState.texture?.let { texture ->
+            NeoTextureStateShard(texture)
+        } ?: RenderStateShard.NO_TEXTURE
+        val shader = drawState.shader?.let { shader ->
+            RenderStateShard.ShaderStateShard { shader.get().getExtensionValue() }
+        } ?: RenderStateShard.NO_SHADER
 
         return RenderType.create(
             location.toShortString(),
@@ -328,7 +262,7 @@ object InternalUtilImpl : InternalUtil {
                 .setLayeringState(layering)
                 .setLightmapState(lightmap)
                 .setOverlayState(overlay)
-                //.setTextureState(textures)
+                .setTextureState(texture)
                 .setShaderState(shader)
                 .createCompositeState(isOutline)
         ).getExtensionValue()

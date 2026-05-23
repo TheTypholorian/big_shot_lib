@@ -24,9 +24,11 @@ sealed interface BlendFunction {
         val BLOCK_BREAKING = Separate(GlBlendingFactor.DST_COLOR, GlBlendingFactor.SRC_COLOR, GlBlendingFactor.ONE, GlBlendingFactor.ZERO)
         @JvmField
         val TRANSLUCENT = Separate(GlBlendingFactor.SRC_ALPHA, GlBlendingFactor.ONE_MINUS_SRC_ALPHA, GlBlendingFactor.ONE, GlBlendingFactor.ONE_MINUS_SRC_ALPHA)
+        @JvmField
+        val DEFAULT = Separate(GlBlendingFactor.SRC_ALPHA, GlBlendingFactor.ONE_MINUS_SRC_ALPHA, GlBlendingFactor.ONE, GlBlendingFactor.ZERO)
     }
 
-    fun bind()
+    fun rawBind()
 
     @JvmRecord
     data class Basic(
@@ -45,7 +47,7 @@ sealed interface BlendFunction {
             }
         }
 
-        override fun bind() {
+        override fun rawBind() {
             glBlendFunc(src.glId, dest.glId)
         }
 
@@ -65,6 +67,10 @@ sealed interface BlendFunction {
             }
 
             return false
+        }
+
+        override fun toString(): String {
+            return "Blend(src=$src, dest=$dest)"
         }
     }
 
@@ -91,7 +97,7 @@ sealed interface BlendFunction {
             }
         }
 
-        override fun bind() {
+        override fun rawBind() {
             glBlendFuncSeparate(src.glId, dest.glId, srcA.glId, destA.glId)
         }
 
@@ -111,6 +117,10 @@ sealed interface BlendFunction {
             }
 
             return false
+        }
+
+        override fun toString(): String {
+            return "Blend(src=$src, dest=$dest, srcA=$srcA, destA=$destA)"
         }
     }
 }

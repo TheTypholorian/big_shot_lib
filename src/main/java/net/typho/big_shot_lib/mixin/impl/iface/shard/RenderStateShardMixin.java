@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor;
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.LayeringState;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
 import net.typho.big_shot_lib.impl.util.MutableExtensionKt;
@@ -52,6 +53,14 @@ public class RenderStateShardMixin {
     @Final
     public static RenderStateShard.LayeringStateShard VIEW_OFFSET_Z_LAYERING;
 
+    @Shadow
+    @Final
+    protected static RenderStateShard.ColorLogicStateShard NO_COLOR_LOGIC;
+
+    @Shadow
+    @Final
+    protected static RenderStateShard.ColorLogicStateShard OR_REVERSE_COLOR_LOGIC;
+
     static {
         MutableExtensionKt.setExtensionValue(NO_TRANSPARENCY, null);
         MutableExtensionKt.setExtensionValue(ADDITIVE_TRANSPARENCY, new BlendFunction.Basic(
@@ -84,5 +93,8 @@ public class RenderStateShardMixin {
         MutableExtensionKt.setExtensionValue(NO_LAYERING, LayeringState.DISABLED);
         MutableExtensionKt.setExtensionValue(POLYGON_OFFSET_LAYERING, LayeringState.POLYGON_OFFSET);
         MutableExtensionKt.setExtensionValue(VIEW_OFFSET_Z_LAYERING, LayeringState.VIEW_OFFSET);
+
+        MutableExtensionKt.setExtensionValue(NO_COLOR_LOGIC, null);
+        MutableExtensionKt.setExtensionValue(OR_REVERSE_COLOR_LOGIC, GlLogicOp.OR_REVERSE);
     }
 }

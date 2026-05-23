@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.util
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlStateStack
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL43.*

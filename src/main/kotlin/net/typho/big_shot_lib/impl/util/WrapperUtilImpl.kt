@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.impl.util
 
-import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.block.model.BakedQuad
@@ -9,7 +8,6 @@ import net.minecraft.core.RegistryAccess
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection
 import net.typho.big_shot_lib.api.client.rendering.util.NeoMultiBufferSource
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
@@ -23,9 +21,11 @@ import java.util.stream.Collectors
 import kotlin.jvm.optionals.getOrNull
 
 object WrapperUtilImpl : WrapperUtil {
+    /*
     override fun wrap(target: RenderTarget): GlFramebuffer {
         return target.getExtensionValue()
     }
+     */
 
     override fun <T : Any> wrap(registry: Registry<T>): NeoRegistry<T> {
         return object : NeoRegistry<T> {

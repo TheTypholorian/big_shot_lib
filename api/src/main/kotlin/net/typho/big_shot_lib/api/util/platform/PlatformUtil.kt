@@ -17,6 +17,7 @@ interface PlatformUtil {
 
     companion object {
         @JvmStatic
+        @get:JvmName("getInstance")
         val INSTANCE by lazy { PlatformUtil::class.loadService() }
     }
 }

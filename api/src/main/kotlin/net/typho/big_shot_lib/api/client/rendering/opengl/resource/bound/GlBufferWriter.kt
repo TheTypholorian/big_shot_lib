@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound
 
+/*
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferAccess
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer
 import net.typho.big_shot_lib.api.util.buffer.NeoBuffer
 import org.lwjgl.system.NativeResource
 import java.io.DataOutput
@@ -109,3 +109,4 @@ sealed class GlBufferWriter(
         abstract fun create(glBuffer: GlBuffer, target: GlBufferTarget, length: Long, usage: GlBufferUsage): GlBufferWriter
     }
 }
+ */

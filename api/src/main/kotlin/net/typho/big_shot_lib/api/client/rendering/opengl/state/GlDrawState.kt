@@ -7,7 +7,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
-import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.plugin.Namespace
 import java.util.function.Supplier
 
@@ -25,20 +24,27 @@ interface GlDrawState {
     val colorLogic: GlLogicOp?
     val layering: LayeringState
 
-    /*
-    val blend: GlBlendShard
-    val colorMask: GlColorMaskShard
-    val cull: GlCullShard
-    val depth: GlDepthShard
-    val layering: GlLayeringShard
-    val lightmap: GlLightmapShard
-    val overlay: GlOverlayShard
-    val shader: GlShaderShard
-     */
+    fun bind()
 
-    fun bind(): BoundResource
+    fun unbind()
 
     open class Builder {
+        constructor()
+
+        constructor(state: GlDrawState) {
+            blend = state.blend
+            shader = state.shader
+            texture = state.texture
+            lightmap = state.lightmap
+            overlay = state.overlay
+            cull = state.cull
+            depth = state.depth
+            writeColor = state.writeColor
+            writeDepth = state.writeDepth
+            colorLogic = state.colorLogic
+            layering = state.layering
+        }
+
         @JvmField
         var blend: BlendFunction? = null
         @JvmField

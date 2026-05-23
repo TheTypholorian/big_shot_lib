@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.test;
 
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader;
 import net.typho.big_shot_lib.impl.util.ImmutableExtensionKt;
 import org.spongepowered.asm.mixin.Mixin;

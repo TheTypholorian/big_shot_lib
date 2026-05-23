@@ -11,13 +11,12 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection
 import net.typho.big_shot_lib.api.client.rendering.util.NeoMultiBufferSource
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 
 interface WrapperUtil {
-    fun wrap(target: RenderTarget): GlFramebuffer
+    //fun wrap(target: RenderTarget): GlFramebuffer
 
     fun <T : Any> wrap(registry: Registry<T>): NeoRegistry<T>
 
@@ -39,6 +38,7 @@ interface WrapperUtil {
 
     companion object {
         @JvmStatic
+        @get:JvmName("getInstance")
         val INSTANCE by lazy { WrapperUtil::class.loadService() }
     }
 }

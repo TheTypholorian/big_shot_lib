@@ -4,11 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
-import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.blaze3d.shaders.Program;
 import com.mojang.blaze3d.shaders.Shader;
 import com.mojang.blaze3d.shaders.Uniform;
@@ -16,14 +13,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.Identifier;
-import net.typho.big_shot_lib.api.BigShotApi;
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundProgram;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.*;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
-import net.typho.big_shot_lib.impl.client.rendering.opengl.BoundMinecraftProgram;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.GlProgramExtensionValue;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension;
 import net.typho.big_shot_lib.impl.util.ImmutableExtension;
@@ -39,9 +32,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.nio.IntBuffer;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL33.glBindSampler;
 
 @Mixin(ShaderInstance.class)
 public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgramExtensionValue>, ShaderInstanceExtension {
@@ -263,24 +256,23 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
                 }
 
                 @Override
-                public @NotNull GlBoundProgram use() {
-                    return new BoundMinecraftProgram(
-                            this,
-                            (name, value) -> {
-                                Uniform uniform = getUniform(name);
+                public void setUniform(String name, Consumer<GlUniform> value) {
+                    Uniform uniform = getUniform(name);
 
-                                if (uniform != null) {
-                                    value.accept(ImmutableExtensionKt.getExtensionValue(uniform, GlUniform.class));
-                                }
-                            },
-                            (index, binding) -> {
-                                RenderSystem._setShaderTexture(index, binding.getTexture().getGlId());
-                            },
-                            (index, bindings) -> {
-                                throw new UnsupportedOperationException();
-                                //setSampler("Sampler" + name, bindings);
-                            }
-                    );
+                    if (uniform != null) {
+                        value.accept(ImmutableExtensionKt.getExtensionValue(uniform, GlUniform.class));
+                    }
+                }
+
+                @Override
+                public void setTexture(int index, GlTextureBinding binding) {
+                    // TODO set filters
+                    RenderSystem._setShaderTexture(index, binding.getTexture().getGlId());
+                }
+
+                @Override
+                public void setTextureArray(int index, GlTextureBinding... bindings) {
+                    throw new UnsupportedOperationException("texture arrays");
                 }
 
                 @Override
@@ -301,7 +293,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
         uniforms = Lists.newArrayList();
         uniformLocations = Lists.newArrayList();
         uniformMap = Maps.newHashMap();
-        name = BigShotApi.toShortString(location);
+        name = location.toShortString();
         vertexFormat = ImmutableExtensionKt.getExtensionValue(format, VertexFormat.class);
         programId = glId;
     }
@@ -409,46 +401,14 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
                     args = "classValue=com/mojang/blaze3d/pipeline/RenderTarget"
             )
     )
-    private void apply(CallbackInfo ci, @Local Object value, @Local(ordinal = 1) int currentUnit, @Local(ordinal = 3) LocalIntRef textureId, @Share("target") LocalRef<GlTextureTarget> target) {
+    private void apply(CallbackInfo ci, @Local Object value, @Local(ordinal = 1) int currentUnit, @Local(ordinal = 3) LocalIntRef textureId) {
         if (value instanceof GlTextureBinding binding) {
             textureId.set(binding.getTexture().getGlId());
-            target.set(binding.getTarget());
-
-            GlSampler sampler = binding.getSampler();
-
-            if (sampler == null) {
-                glBindSampler(0, currentUnit);
-            } else {
-                sampler.bind(currentUnit);
-            }
         } else if (value instanceof GlTextureBinding[] bindings) {
             for (GlTextureBinding binding : bindings) {
-                NeoGlStateManager.getMAIN().setActiveTexture(currentUnit);
-                NeoGlStateManager.getMAIN().rawBindTexture(binding.getTarget(), binding.getTexture().getGlId());
-
-                GlSampler sampler = binding.getSampler();
-
-                if (sampler == null) {
-                    glBindSampler(0, currentUnit);
-                } else {
-                    sampler.bind(currentUnit);
-                }
+                NeoGlStateManager.getInstance().setActiveTexture(currentUnit);
+                NeoGlStateManager.getInstance().setTexture(binding.getTexture().getGlId());
             }
-        }
-    }
-
-    @WrapOperation(
-            method = "apply",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lcom/mojang/blaze3d/systems/RenderSystem;bindTexture(I)V"
-            )
-    )
-    private void apply(int i, Operation<Void> original, @Share("target") LocalRef<GlTextureTarget> target) {
-        if (target.get() != null && target.get() != GlTextureTarget.TEXTURE_2D) {
-            NeoGlStateManager.getMAIN().rawBindTexture(target.get(), i);
-        } else {
-            original.call(i);
         }
     }
 }

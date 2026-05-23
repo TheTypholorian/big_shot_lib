@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.plugin.transform
 
 import net.typho.big_shot_lib.plugin.DependencyTransformAction
-import net.typho.big_shot_lib.plugin.MCVersion
 import org.objectweb.asm.commons.Remapper
 
 class DependencyRemapper(

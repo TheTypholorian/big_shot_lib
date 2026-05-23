@@ -2,11 +2,11 @@ package net.typho.big_shot_lib.api.client.rendering.util
 
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlIndexDataType
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBufferWriter
 import net.typho.big_shot_lib.api.util.buffer.BYTE_MASK
 import net.typho.big_shot_lib.api.util.buffer.SHORT_MASK
 import java.io.DataOutput
 
+/*
 open class NeoBufferBuilder(
     @JvmField
     val format: NeoVertexFormat,
@@ -295,3 +295,4 @@ open class NeoBufferBuilder(
         val indexType: GlIndexDataType?
     )
 }
+ */

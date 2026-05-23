@@ -16,7 +16,6 @@ import net.minecraft.network.chat.ChatType
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.item.ItemStack
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
 import net.typho.big_shot_lib.api.client.util.resource.ResourceManagerReloadListener
 import net.typho.big_shot_lib.api.util.ModEntrypoint
@@ -70,7 +69,7 @@ abstract class BigShotClientEntrypoint(modId: String) : ModEntrypoint(modId) {
         projMat: Matrix4f,
         modelViewMat: Matrix4f,
         frustum: FrustumIntersection,
-        target: GlFramebuffer,
+        //target: GlFramebuffer,
         renderTick: Int,
         partialTick: DeltaTracker
     ) {
