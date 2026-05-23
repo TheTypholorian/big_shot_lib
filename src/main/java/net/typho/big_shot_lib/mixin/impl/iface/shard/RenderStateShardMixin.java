@@ -1,16 +1,9 @@
 package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
-import kotlin.Pair;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlBlendShard;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlColorMaskShard;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlLayeringShard;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.LayeringState;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask;
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset;
-import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
 import net.typho.big_shot_lib.impl.util.MutableExtensionKt;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

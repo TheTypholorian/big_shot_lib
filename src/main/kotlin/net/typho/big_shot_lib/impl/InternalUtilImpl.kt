@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.impl
 
 import com.mojang.blaze3d.shaders.Program
-import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormat
@@ -14,7 +13,6 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import net.typho.big_shot_lib.api.BigShotApi.toShortString
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
@@ -22,12 +20,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgra
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlBlendShard
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlCullShard
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDepthShard
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlLayeringShard
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
@@ -40,7 +33,6 @@ import net.typho.big_shot_lib.impl.util.setExtensionValue
 import org.joml.Vector3f
 import sun.misc.Unsafe
 import java.lang.reflect.Modifier
-import java.util.Optional
 
 object InternalUtilImpl : InternalUtil {
     @JvmField
