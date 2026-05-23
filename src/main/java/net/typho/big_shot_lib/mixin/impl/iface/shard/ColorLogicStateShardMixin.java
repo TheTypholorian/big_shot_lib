@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Unique;
 @MixinIgnore
 *///? }
 @Mixin(RenderStateShard.ColorLogicStateShard.class)
-public class CologLogicStateShardMixin implements MutableExtension<GlLogicOp> {
+public class ColorLogicStateShardMixin implements MutableExtension<GlLogicOp> {
     @Unique
     @Namespace(BigShotApi.MOD_ID)
     private GlLogicOp logic = null;
