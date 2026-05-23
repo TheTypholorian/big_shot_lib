@@ -16,6 +16,8 @@ accessible class net/minecraft/client/renderer/RenderStateShard$MultiTextureStat
 accessible method net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard cutoutTexture ()Ljava/util/Optional;
 accessible class net/minecraft/client/renderer/RenderStateShard$TextureStateShard
 accessible method net/minecraft/client/renderer/RenderStateShard$TextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard blur Z
+accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard mipmap Z
 accessible class net/minecraft/client/renderer/RenderStateShard$TexturingStateShard
 accessible class net/minecraft/client/renderer/RenderStateShard$OffsetTexturingStateShard
 accessible class net/minecraft/client/renderer/RenderStateShard$BooleanStateShard

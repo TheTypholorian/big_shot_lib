@@ -2,7 +2,8 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.BigShotApi;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlLayeringShard;
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.LayeringState;
+import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.impl.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,27 +14,29 @@ import org.spongepowered.asm.mixin.Unique;
 @MixinIgnore
 *///? }
 @Mixin(RenderStateShard.LayeringStateShard.class)
-public class LayeringStateShardMixin implements MutableExtension<GlLayeringShard> {
+public class LayeringStateShardMixin implements MutableExtension<LayeringState> {
     @Unique
-    private boolean big_shot_lib$warned = false;
+    @Namespace(BigShotApi.MOD_ID)
+    private boolean warned = false;
     @Unique
-    private GlLayeringShard big_shot_lib$layering = null;
+    @Namespace(BigShotApi.MOD_ID)
+    private LayeringState layering = null;
 
     @Override
-    public GlLayeringShard getExtensionValue() {
-        if (big_shot_lib$layering == null) {
-            if (!big_shot_lib$warned) {
-                big_shot_lib$warned = true;
-                BigShotApi.LOGGER.warn("Layering State Shard {} does not have a defined GlLayeringShard value, defaulting to disabled", this);
+    public LayeringState getExtensionValue() {
+        if (layering == null) {
+            if (!warned) {
+                warned = true;
+                BigShotApi.LOGGER.warn("Layering State Shard {} does not have a defined LayeringState value, defaulting to disabled", this);
             }
-            return GlLayeringShard.Disabled.INSTANCE;
+            return LayeringState.DISABLED;
         } else {
-            return big_shot_lib$layering;
+            return layering;
         }
     }
 
     @Override
-    public void setExtensionValue(GlLayeringShard glLayeringShard) {
-        big_shot_lib$layering = glLayeringShard;
+    public void setExtensionValue(LayeringState layeringState) {
+        layering = layeringState;
     }
 }

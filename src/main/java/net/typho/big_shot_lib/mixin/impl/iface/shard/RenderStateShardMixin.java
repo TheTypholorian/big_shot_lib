@@ -6,6 +6,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFac
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlBlendShard;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlColorMaskShard;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlLayeringShard;
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.LayeringState;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset;
@@ -59,46 +60,36 @@ public class RenderStateShardMixin {
     public static RenderStateShard.LayeringStateShard VIEW_OFFSET_Z_LAYERING;
 
     static {
-        MutableExtensionKt.setExtensionValue(NO_TRANSPARENCY, GlBlendShard.Disabled.INSTANCE);
-        MutableExtensionKt.setExtensionValue(ADDITIVE_TRANSPARENCY, new GlBlendShard.Enabled(
-                new BlendFunction.Basic(
-                        GlBlendingFactor.ONE,
-                        GlBlendingFactor.ONE
-                )
+        MutableExtensionKt.setExtensionValue(NO_TRANSPARENCY, null);
+        MutableExtensionKt.setExtensionValue(ADDITIVE_TRANSPARENCY, new BlendFunction.Basic(
+                GlBlendingFactor.ONE,
+                GlBlendingFactor.ONE
         ));
-        MutableExtensionKt.setExtensionValue(LIGHTNING_TRANSPARENCY, new GlBlendShard.Enabled(
-                new BlendFunction.Basic(
-                        GlBlendingFactor.SRC_ALPHA,
-                        GlBlendingFactor.ONE
-                )
+        MutableExtensionKt.setExtensionValue(LIGHTNING_TRANSPARENCY, new BlendFunction.Basic(
+                GlBlendingFactor.SRC_ALPHA,
+                GlBlendingFactor.ONE
         ));
-        MutableExtensionKt.setExtensionValue(GLINT_TRANSPARENCY, new GlBlendShard.Enabled(
-                new BlendFunction.Separate(
-                        GlBlendingFactor.SRC_ALPHA,
-                        GlBlendingFactor.ONE,
-                        GlBlendingFactor.ZERO,
-                        GlBlendingFactor.ONE
-                )
+        MutableExtensionKt.setExtensionValue(GLINT_TRANSPARENCY, new BlendFunction.Separate(
+                GlBlendingFactor.SRC_ALPHA,
+                GlBlendingFactor.ONE,
+                GlBlendingFactor.ZERO,
+                GlBlendingFactor.ONE
         ));
-        MutableExtensionKt.setExtensionValue(CRUMBLING_TRANSPARENCY, new GlBlendShard.Enabled(
-                new BlendFunction.Separate(
-                        GlBlendingFactor.DST_COLOR,
-                        GlBlendingFactor.SRC_COLOR,
-                        GlBlendingFactor.ONE,
-                        GlBlendingFactor.ZERO
-                )
+        MutableExtensionKt.setExtensionValue(CRUMBLING_TRANSPARENCY, new BlendFunction.Separate(
+                GlBlendingFactor.DST_COLOR,
+                GlBlendingFactor.SRC_COLOR,
+                GlBlendingFactor.ONE,
+                GlBlendingFactor.ZERO
         ));
-        MutableExtensionKt.setExtensionValue(TRANSLUCENT_TRANSPARENCY, new GlBlendShard.Enabled(
-                new BlendFunction.Separate(
-                        GlBlendingFactor.SRC_ALPHA,
-                        GlBlendingFactor.ONE_MINUS_SRC_ALPHA,
-                        GlBlendingFactor.ONE,
-                        GlBlendingFactor.ONE_MINUS_SRC_ALPHA
-                )
+        MutableExtensionKt.setExtensionValue(TRANSLUCENT_TRANSPARENCY, new BlendFunction.Separate(
+                GlBlendingFactor.SRC_ALPHA,
+                GlBlendingFactor.ONE_MINUS_SRC_ALPHA,
+                GlBlendingFactor.ONE,
+                GlBlendingFactor.ONE_MINUS_SRC_ALPHA
         ));
 
-        MutableExtensionKt.setExtensionValue(NO_LAYERING, GlLayeringShard.Disabled.INSTANCE);
-        MutableExtensionKt.setExtensionValue(POLYGON_OFFSET_LAYERING, new GlLayeringShard.EnabledPolygonOffset(new PolygonOffset(-1, -10)));
-        MutableExtensionKt.setExtensionValue(VIEW_OFFSET_Z_LAYERING, new GlLayeringShard.EnabledViewOffset(new NeoVec3f(0.99975586f, 0.99975586f, 0.99975586f)));
+        MutableExtensionKt.setExtensionValue(NO_LAYERING, LayeringState.DISABLED);
+        MutableExtensionKt.setExtensionValue(POLYGON_OFFSET_LAYERING, LayeringState.POLYGON_OFFSET);
+        MutableExtensionKt.setExtensionValue(VIEW_OFFSET_Z_LAYERING, LayeringState.VIEW_OFFSET);
     }
 }

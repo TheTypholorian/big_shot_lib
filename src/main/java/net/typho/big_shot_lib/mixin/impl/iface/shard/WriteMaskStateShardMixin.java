@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 import kotlin.Pair;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.impl.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -18,33 +19,35 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RenderStateShard.WriteMaskStateShard.class)
 public class WriteMaskStateShardMixin implements MutableExtension<Pair<Boolean, Boolean>> {
     @Unique
-    private boolean big_shot_lib$warned = false;
+    @Namespace(BigShotApi.MOD_ID)
+    private boolean warned = false;
     @Unique
-    private Pair<Boolean, Boolean> big_shot_lib$mask = null;
+    @Namespace(BigShotApi.MOD_ID)
+    private Pair<Boolean, Boolean> mask = null;
 
     @Inject(
             method = "<init>",
             at = @At("TAIL")
     )
     private void init(boolean color, boolean depth, CallbackInfo ci) {
-        big_shot_lib$mask = new Pair<>(color, depth);
+        mask = new Pair<>(color, depth);
     }
 
     @Override
     public Pair<Boolean, Boolean> getExtensionValue() {
-        if (big_shot_lib$mask == null) {
-            if (!big_shot_lib$warned) {
-                big_shot_lib$warned = true;
+        if (mask == null) {
+            if (!warned) {
+                warned = true;
                 BigShotApi.LOGGER.warn("Write Mask State Shard {} does not have defined mask values (this should NEVER happen), defaulting to disabled", this);
             }
             return null;
         } else {
-            return big_shot_lib$mask;
+            return mask;
         }
     }
 
     @Override
     public void setExtensionValue(Pair<Boolean, Boolean> mask) {
-        big_shot_lib$mask = mask;
+        this.mask = mask;
     }
 }

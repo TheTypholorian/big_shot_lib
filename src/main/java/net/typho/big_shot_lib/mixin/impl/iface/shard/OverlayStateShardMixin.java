@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.BigShotApi;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlOverlayShard;
+import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.impl.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,35 +16,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @MixinIgnore
 *///? }
 @Mixin(RenderStateShard.OverlayStateShard.class)
-public class OverlayStateShardMixin implements MutableExtension<GlOverlayShard> {
+public class OverlayStateShardMixin implements MutableExtension<Boolean> {
     @Unique
-    private boolean big_shot_lib$warned = false;
-    @Unique
-    private GlOverlayShard big_shot_lib$overlay = null;
+    @Namespace(BigShotApi.MOD_ID)
+    private boolean overlay = false;
 
     @Inject(
             method = "<init>",
             at = @At("TAIL")
     )
     private void init(boolean p_110238_, CallbackInfo ci) {
-        big_shot_lib$overlay = new GlOverlayShard(p_110238_);
+        overlay = p_110238_;
     }
 
     @Override
-    public GlOverlayShard getExtensionValue() {
-        if (big_shot_lib$overlay == null) {
-            if (!big_shot_lib$warned) {
-                big_shot_lib$warned = true;
-                BigShotApi.LOGGER.warn("Overlay State Shard {} does not have a defined GlOverlayShard value (this should NEVER happen), defaulting to disabled", this);
-            }
-            return null;
-        } else {
-            return big_shot_lib$overlay;
-        }
+    public Boolean getExtensionValue() {
+        return overlay;
     }
 
     @Override
-    public void setExtensionValue(GlOverlayShard glOverlayShard) {
-        big_shot_lib$overlay = glOverlayShard;
+    public void setExtensionValue(Boolean aBoolean) {
+        overlay = aBoolean;
     }
 }

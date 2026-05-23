@@ -9,11 +9,12 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTextur
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.util.BoundResource
 import net.typho.big_shot_lib.api.plugin.Namespace
+import java.util.function.Supplier
 
 @Namespace(BigShotApi.MOD_ID)
 interface GlDrawState {
     val blend: BlendFunction?
-    val shader: (() -> GlProgram)?
+    val shader: Supplier<GlProgram>?
     val texture: GlTextureBinding?
     val lightmap: Boolean
     val overlay: Boolean
@@ -22,6 +23,7 @@ interface GlDrawState {
     val writeColor: Boolean
     val writeDepth: Boolean
     val colorLogic: GlLogicOp?
+    val layering: LayeringState
 
     /*
     val blend: GlBlendShard
@@ -40,7 +42,7 @@ interface GlDrawState {
         @JvmField
         var blend: BlendFunction? = null
         @JvmField
-        var shader: (() -> GlProgram)? = null
+        var shader: Supplier<GlProgram>? = null
         @JvmField
         var texture: GlTextureBinding? = null
         @JvmField
@@ -57,6 +59,8 @@ interface GlDrawState {
         var writeDepth: Boolean = false
         @JvmField
         var colorLogic: GlLogicOp? = null
+        @JvmField
+        var layering: LayeringState = LayeringState.DISABLED
 
         @JvmOverloads
         fun blend(blend: BlendFunction? = BlendFunction.TRANSLUCENT): Builder {
@@ -64,7 +68,7 @@ interface GlDrawState {
             return this
         }
 
-        fun shader(shader: (() -> GlProgram)?): Builder {
+        fun shader(shader: Supplier<GlProgram>?): Builder {
             this.shader = shader
             return this
         }
@@ -117,5 +121,14 @@ interface GlDrawState {
             this.colorLogic = colorLogic
             return this
         }
+
+        fun layering(layering: LayeringState): Builder {
+            this.layering = layering
+            return this
+        }
+
+        fun polygonOffsetLayering() = layering(LayeringState.POLYGON_OFFSET)
+
+        fun viewOffsetLayering() = layering(LayeringState.VIEW_OFFSET)
     }
 }

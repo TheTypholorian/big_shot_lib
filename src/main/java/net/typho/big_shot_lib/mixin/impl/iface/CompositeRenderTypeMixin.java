@@ -3,13 +3,16 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.Pair;
+import kotlin.jvm.functions.Function0;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode;
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.NeoRenderTypeExtensionValue;
@@ -23,6 +26,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 //? if >=1.21.11 {
 /*import dev.kikugie.fletching_table.annotation.MixinIgnore;
@@ -58,21 +62,6 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
     private final GlDrawState big_shot_lib$drawState = new GlDrawState() {
         @Override
         public @NotNull GlBlendShard getBlend() {
-            //? if <1.21.5 {
-            return ImmutableExtensionKt.getExtensionValue(state.transparencyState, GlBlendShard.class);
-            //? } else {
-                /*return renderPipeline.getBlendFunction().<GlBlendShard>map(
-                        function ->
-                                new GlBlendShard.Enabled(
-                                        new BlendFunction.Separate(
-                                                WrapperUtilImplKt.getNeo(function.sourceColor()),
-                                                WrapperUtilImplKt.getNeo(function.destColor()),
-                                                WrapperUtilImplKt.getNeo(function.sourceAlpha()),
-                                                WrapperUtilImplKt.getNeo(function.destAlpha())
-                                        )
-                                )
-                ).orElse(GlBlendShard.Disabled.INSTANCE);
-                *///? }
         }
 
         @Override
@@ -185,12 +174,6 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         }
 
         @Override
-        @NotNull
-        public GlDrawState getDrawState() {
-            return big_shot_lib$drawState;
-        }
-
-        @Override
         @Nullable
         public Identifier getLocation() {
             return Identifier.tryParse(name);
@@ -200,6 +183,73 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         @NotNull
         public RenderType getExtensionValue() {
             return CompositeRenderTypeMixin.this;
+        }
+
+        @Override
+        @Nullable
+        public BlendFunction getBlend() {
+            //? if <1.21.5 {
+            return ImmutableExtensionKt.getExtensionValue(state.transparencyState, BlendFunction.class);
+            //? } else {
+            /*return renderPipeline.getBlendFunction().<GlBlendShard>map(
+                    function ->
+                            new BlendFunction.Separate(
+                                    WrapperUtilImplKt.getNeo(function.sourceColor()),
+                                    WrapperUtilImplKt.getNeo(function.destColor()),
+                                    WrapperUtilImplKt.getNeo(function.sourceAlpha()),
+                                    WrapperUtilImplKt.getNeo(function.destAlpha())
+                            )
+            ).orElse(null);
+            *///? }
+        }
+
+        @Override
+        @Nullable
+        public Supplier<GlProgram> getShader() {
+            return state.shaderState.shader.map(supplier -> (Supplier<GlProgram>) () -> ImmutableExtensionKt.getExtensionValue(supplier.get(), GlProgram.class)).orElse(null);
+        }
+
+        @Override
+        @Nullable
+        public GlTextureBinding getTexture() {
+            return state.textureState.cutoutTexture().map(id -> (state.textureState instanceof TextureStateShard shard) ? new GlTextureBinding.FromLocation(id, shard.blur, shard.mipmap) : new GlTextureBinding.FromLocation(id)).orElse(null);
+        }
+
+        @Override
+        public boolean getLightmap() {
+            return ImmutableExtensionKt.getExtensionValue(state.lightmapState, boolean.class);
+        }
+
+        @Override
+        public boolean getOverlay() {
+            return ImmutableExtensionKt.getExtensionValue(state.overlayState, boolean.class);
+        }
+
+        @Override
+        public boolean getCull() {
+            return ImmutableExtensionKt.getExtensionValue(state.cullState, boolean.class);
+        }
+
+        @Override
+        @Nullable
+        public GlAlphaFunction getDepth() {
+            return ImmutableExtensionKt.getExtensionValue(state.depthTestState, GlAlphaFunction.class);
+        }
+
+        @Override
+        public Boolean getWriteColor() {
+            return (boolean) ImmutableExtensionKt.getExtensionValue(state.writeMaskState, Pair.class).getFirst();
+        }
+
+        @Override
+        public Boolean getWriteDepth() {
+            return (boolean) ImmutableExtensionKt.getExtensionValue(state.writeMaskState, Pair.class).getSecond();
+        }
+
+        @Override
+        @Nullable
+        public GlLogicOp getCologLogic() {
+            return ImmutableExtensionKt.getExtensionValue(state.colorLogicState, GlLogicOp.class);
         }
     };
 
