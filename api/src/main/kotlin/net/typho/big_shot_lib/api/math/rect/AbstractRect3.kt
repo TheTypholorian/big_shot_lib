@@ -67,14 +67,33 @@ abstract class AbstractRect3<N : Number>(
             get() = opSet.times(size.x + 1, opSet.times(size.y + 1, size.z + 1))
 
         @JvmStatic
-        operator fun AbstractRect3<Int>.iterator(): Iterator<IVec3<Int>> = (min.x..max.x)
-            .flatMap { x ->
-                (min.y..max.y).map { y -> x to y }
+        operator fun AbstractRect3<Int>.iterator(): Iterator<IVec3<Int>> = object : Iterator<IVec3<Int>> {
+            var x = min.x
+            var y = min.y
+            var z = min.z
+
+            override fun hasNext(): Boolean {
+                return x <= max.x
             }
-            .flatMap { xy ->
-                (min.z..max.z).map { z -> NeoVec3i(xy.first, xy.second, z) }
+
+            override fun next(): IVec3<Int> {
+                val pos = NeoVec3i(x, y, z)
+
+                z++
+
+                if (z > max.z) {
+                    z = min.z
+                    y++
+
+                    if (y > max.y) {
+                        y = min.y
+                        x++
+                    }
+                }
+
+                return pos
             }
-            .iterator()
+        }
 
         @JvmStatic
         fun AbstractRect3<Int>.extend(direction: NeoDirection): AbstractRect3<Int> {
