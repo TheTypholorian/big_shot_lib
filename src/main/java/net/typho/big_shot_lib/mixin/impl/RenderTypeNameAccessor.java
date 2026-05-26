@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.RenderStateShard;
 //? } else if <1.21.11 {
 /*import net.minecraft.client.renderer.RenderType;
 *///? } else {
-/*import net.minecraft.client.renderer.rendertype.RenderType;
+/*import net.minecraft.client.renderer.RenderType;
 *///? }
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;

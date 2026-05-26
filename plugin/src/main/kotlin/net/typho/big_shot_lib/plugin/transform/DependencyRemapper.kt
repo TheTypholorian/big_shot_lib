@@ -9,6 +9,14 @@ class DependencyRemapper(
     api: Int
 ) : Remapper(api) {
     override fun map(internalName: String): String {
+        var internalName = internalName
+        val index = internalName.lastIndexOf('$')
+
+        if (index != -1) {
+            val parent = map(internalName.substring(0, index))
+            internalName = "$parent${internalName.substring(index)}"
+        }
+
         return info.classRenames.get().lastOrNull { it.from.get() == internalName }?.to?.get() ?: internalName
     }
 

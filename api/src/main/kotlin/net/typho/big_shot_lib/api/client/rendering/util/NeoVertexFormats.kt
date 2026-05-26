@@ -11,7 +11,7 @@ object NeoVertexFormats {
     @JvmField
     val CODEC: Codec<NeoVertexFormat> = ResourceKey.codec(REGISTRY).xmap(
         { REGISTRY.lookupOrThrow().get(it) },
-        { REGISTRY.lookupOrThrow().getKey(it) }
+        { REGISTRY.lookupOrThrow().getResourceKey(it).orElseThrow() }
     )
 
     /**

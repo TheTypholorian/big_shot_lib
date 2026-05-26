@@ -2,8 +2,10 @@ package net.typho.big_shot_lib.api.client.rendering
 
 import com.google.gson.JsonParser
 import com.mojang.serialization.DataResult
+import net.minecraft.core.Registry
 import net.minecraft.resources.FileToIdConverter
 import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.BigShotApi.lookupOrThrow
@@ -61,7 +63,7 @@ val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> 
             manager: ResourceManager
         ): DataResult<GlShader> {
             val shader = GlShader.create(location, shaderType)
-            shader.source = NeoShaderLoader.CommonInit.preprocessors.lookupOrThrow().values().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
+            shader.source = NeoShaderLoader.CommonInit.preprocessors.lookupOrThrow().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
 
             if (shader.compile()) {
                 return DataResult.success(shader)

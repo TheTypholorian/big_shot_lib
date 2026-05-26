@@ -20,6 +20,10 @@ bigShotLib {
 
     transformInfo {
         shortIdentifierMethods()
+        injectInterface(
+            "net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType",
+            "net/minecraft/client/renderer/RenderType"
+        )
     }
 }
 

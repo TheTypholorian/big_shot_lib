@@ -1,13 +1,16 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
 import net.minecraft.resources.Identifier
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
+import net.typho.big_shot_lib.api.plugin.Namespace
 import java.util.function.Supplier
 
+@Namespace(BigShotApi.MOD_ID)
 interface GlDrawState {
     val blend: BlendFunction?
     val shader: Supplier<GlProgram>?

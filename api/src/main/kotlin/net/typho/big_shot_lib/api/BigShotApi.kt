@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api
 
 import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.typho.big_shot_lib.api.util.WrapperUtil
@@ -14,7 +15,7 @@ object BigShotApi {
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> ResourceKey<out Registry<T>>.lookupOrThrow(error: String = "Couldn't find registry ${location()}") = NeoRegistry.REGISTRY.get(location())?.let { WrapperUtil.INSTANCE.wrap(it) as NeoRegistry<T> } ?: throw NullPointerException(error)
+    fun <T : Any> ResourceKey<out Registry<T>>.lookupOrThrow(error: String = "Couldn't find registry ${location()}") = BuiltInRegistries.REGISTRY.get(location())?.let { it as Registry<T> } ?: throw NullPointerException(error)
 
     @JvmStatic
     fun Identifier.toShortString(): String = if (namespace == Identifier.DEFAULT_NAMESPACE) path else toString()

@@ -5,6 +5,7 @@ import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.Arg
 import net.typho.big_shot_lib.plugin.transform.DependencyRemapper
 import net.typho.big_shot_lib.plugin.transform.DependencyTransformer
 import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
+import org.gradle.api.artifacts.transform.CacheableTransform
 import org.gradle.api.artifacts.transform.InputArtifact
 import org.gradle.api.artifacts.transform.TransformAction
 import org.gradle.api.artifacts.transform.TransformOutputs
@@ -13,6 +14,7 @@ import org.gradle.api.file.FileSystemLocation
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Classpath
 import org.gradle.api.tasks.Input
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
@@ -26,7 +28,9 @@ import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 import java.util.jar.Manifest
 
+@CacheableTransform
 abstract class DependencyTransformAction : TransformAction<DependencyTransformAction.Parameters> {
+    @get:Classpath
     @get:InputArtifact
     abstract val input: Provider<FileSystemLocation>
 
