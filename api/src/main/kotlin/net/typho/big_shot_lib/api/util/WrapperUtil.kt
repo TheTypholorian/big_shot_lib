@@ -1,14 +1,8 @@
 package net.typho.big_shot_lib.api.util
 
-import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.client.renderer.block.model.BakedQuad
-import net.minecraft.core.Registry
-import net.minecraft.core.RegistryAccess
-import net.minecraft.resources.ResourceKey
-import net.minecraft.server.packs.resources.ResourceManager
-import net.minecraft.tags.TagKey
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.util.MultiBufferSourceInjection
@@ -16,12 +10,6 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoMultiBufferSource
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 
 interface WrapperUtil {
-    //fun wrap(target: RenderTarget): GlFramebuffer
-
-    fun <T : Any> wrap(registry: Registry<T>): NeoRegistry<T>
-
-    fun wrap(access: RegistryAccess): NeoRegistryAccess
-
     fun wrap(quad: BakedQuad): NeoBakedQuad
 
     fun wrap(consumer: VertexConsumer): NeoVertexConsumer

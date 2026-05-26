@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.api
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.WrapperUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

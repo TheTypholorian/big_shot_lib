@@ -111,6 +111,8 @@ jsonlang {
 }
 
 repositories {
+    maven("https://maven.tterrag.com/")
+    maven("https://maven.ithundxr.dev/snapshots/")
     mavenLocal()
 }
 
@@ -145,6 +147,8 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:0.17.3")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
     modImplementation(libs.flk)
+
+    //modImplementation("com.tterrag:registrate:Registrate:${property("deps.registrate")}")
 }
 
 /*
