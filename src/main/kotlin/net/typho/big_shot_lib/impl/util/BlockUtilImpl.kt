@@ -25,6 +25,7 @@ import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.math.vec.blockPos
 import net.typho.big_shot_lib.api.util.BlockUtil
 import net.typho.big_shot_lib.api.util.WrapperUtil
+import net.typho.big_shot_lib.api.util.getExtensionValue
 import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
 
 object BlockUtilImpl : BlockUtil {

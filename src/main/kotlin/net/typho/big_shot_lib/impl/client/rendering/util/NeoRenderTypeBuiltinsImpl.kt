@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.impl.client.rendering.util
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
-import net.typho.big_shot_lib.impl.util.getExtensionValue
+import net.typho.big_shot_lib.api.util.getExtensionValue
 
 object NeoRenderTypeBuiltinsImpl : NeoRenderType.Builtins {
     override val solid: NeoRenderType = RenderType.solid().getExtensionValue()

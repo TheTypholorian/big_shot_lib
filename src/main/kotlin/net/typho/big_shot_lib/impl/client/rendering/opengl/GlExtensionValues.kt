@@ -9,7 +9,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgra
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
-import net.typho.big_shot_lib.impl.util.ImmutableExtension
+import net.typho.big_shot_lib.api.util.ImmutableExtension
 
 interface GlProgramExtensionValue : GlProgram, ImmutableExtension<ShaderInstance>
 

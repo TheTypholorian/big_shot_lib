@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.impl.client.rendering.util
 
 import net.minecraft.client.renderer.GameRenderer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
-import net.typho.big_shot_lib.impl.util.getExtensionValue
+import net.typho.big_shot_lib.api.util.getExtensionValue
 
 object GlProgramBuiltinsImpl : GlProgram.Builtins {
     override val position: GlProgram

@@ -33,8 +33,8 @@ import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoTextureStateShard
-import net.typho.big_shot_lib.impl.util.getExtensionValue
-import net.typho.big_shot_lib.impl.util.setExtensionValue
+import net.typho.big_shot_lib.api.util.getExtensionValue
+import net.typho.big_shot_lib.api.util.setExtensionValue
 import org.joml.Vector3f
 import sun.misc.Unsafe
 import java.lang.reflect.Modifier

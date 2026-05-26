@@ -15,6 +15,7 @@ import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.util.NeoRegistry
 import net.typho.big_shot_lib.api.util.NeoRegistryAccess
 import net.typho.big_shot_lib.api.util.WrapperUtil
+import net.typho.big_shot_lib.api.util.getExtensionValue
 import net.typho.big_shot_lib.impl.client.rendering.util.NeoVertexConsumerWrapper
 import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper
 import java.util.stream.Collectors

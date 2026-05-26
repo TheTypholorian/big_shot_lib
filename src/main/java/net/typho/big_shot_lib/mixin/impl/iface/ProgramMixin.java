@@ -5,7 +5,7 @@ import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.GlShaderExtensionValue;
-import net.typho.big_shot_lib.impl.util.ImmutableExtension;
+import net.typho.big_shot_lib.api.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

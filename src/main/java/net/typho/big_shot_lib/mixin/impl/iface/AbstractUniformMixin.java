@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.shaders.AbstractUniform;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUniform;
-import net.typho.big_shot_lib.impl.util.ImmutableExtension;
+import net.typho.big_shot_lib.api.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.joml.*;
 import org.spongepowered.asm.mixin.Mixin;

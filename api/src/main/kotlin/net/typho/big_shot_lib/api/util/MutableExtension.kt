@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.impl.util
+package net.typho.big_shot_lib.api.util
 
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.plugin.Namespace

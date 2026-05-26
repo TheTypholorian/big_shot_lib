@@ -12,7 +12,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTextur
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;
-import net.typho.big_shot_lib.impl.util.ImmutableExtension;
+import net.typho.big_shot_lib.api.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;

@@ -5,7 +5,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFac
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.LayeringState;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
-import net.typho.big_shot_lib.impl.util.MutableExtensionKt;
+import net.typho.big_shot_lib.api.util.MutableExtensionKt;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

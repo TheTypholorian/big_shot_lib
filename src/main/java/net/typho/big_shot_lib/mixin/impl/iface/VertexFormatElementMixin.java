@@ -2,9 +2,8 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType;
-import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.NeoVertexFormatElementExtensionValue;
-import net.typho.big_shot_lib.impl.util.ImmutableExtension;
+import net.typho.big_shot_lib.api.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
