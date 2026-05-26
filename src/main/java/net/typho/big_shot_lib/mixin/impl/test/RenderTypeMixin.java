@@ -29,11 +29,12 @@ public abstract class RenderTypeMixin {
                         Identifier.minecraft("entity_translucent"),
                         NeoVertexFormats.NEW_ENTITY,
                         new GlDrawState.Builder()
-                                .cull(true)
+                                .shader(GlProgram.BUILTINS::getEntityTranslucent)
+                                .texture(texture)
                                 .lightmap()
                                 .overlay()
-                                .shader(GlProgram.BUILTINS::getEntityTranslucent)
-                                .texture(texture),
+                                .cull(true)
+                                .depth(),
                         1536
                 ),
                 RenderType.class

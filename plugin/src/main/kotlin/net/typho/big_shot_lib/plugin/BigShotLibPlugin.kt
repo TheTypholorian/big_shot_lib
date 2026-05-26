@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.plugin
 
-import net.typho.big_shot_lib.plugin.task.GenerateModMetadataTask
 import net.typho.big_shot_lib.plugin.transform.ProjectRemapper
 import net.typho.big_shot_lib.plugin.transform.ProjectTransformer
 import net.typho.big_shot_lib.plugin.transform.util.AnnotationScanner
@@ -10,6 +9,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 import org.gradle.api.attributes.Attribute
+import org.gradle.api.attributes.LibraryElements
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.bundling.Jar
 import org.objectweb.asm.ClassReader
@@ -121,10 +121,7 @@ class BigShotLibPlugin : Plugin<Project> {
             }
 
             project.dependencies.registerTransform(DependencyTransformAction::class.java) {
-                it.from.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "jar")
                 it.from.attribute(neoTweakedAttrib, false)
-
-                it.to.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "jar")
                 it.to.attribute(neoTweakedAttrib, true)
 
                 it.parameters.classRenames.set(ext.transformInfo.classRenames)

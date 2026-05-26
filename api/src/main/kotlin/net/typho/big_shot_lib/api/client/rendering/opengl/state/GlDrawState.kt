@@ -57,9 +57,9 @@ interface GlDrawState {
         @JvmField
         var depth: GlAlphaFunction? = null
         @JvmField
-        var writeColor: Boolean = false
+        var writeColor: Boolean = true
         @JvmField
-        var writeDepth: Boolean = false
+        var writeDepth: Boolean = true
         @JvmField
         var colorLogic: GlLogicOp? = null
         @JvmField

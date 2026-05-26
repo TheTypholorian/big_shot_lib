@@ -17,7 +17,6 @@ import org.gradle.api.tasks.Input
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -25,12 +24,26 @@ import java.io.OutputStream
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
+import java.util.jar.Manifest
 
 abstract class DependencyTransformAction : TransformAction<DependencyTransformAction.Parameters> {
     @get:InputArtifact
     abstract val input: Provider<FileSystemLocation>
 
     companion object {
+        @JvmStatic
+        fun getAutomaticModuleName(name: String): String {
+            var name = name.removeSuffix(".jar")
+
+            val versionIndex = Regex("-\\d+(\\.|$)").find(name)?.range?.first
+
+            if (versionIndex != null) {
+                name = name.substring(0, versionIndex)
+            }
+
+            return name.replace(Regex("[^A-Za-z0-9]"), ".").replace(Regex("\\.+"), ".").trim('.')
+        }
+
         @JvmStatic
         fun transformEntry(
             entry: JarEntry,
@@ -65,10 +78,6 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                     } else {
                         out(JarEntry("$newName.class")) { write(writer.toByteArray()) }
                     }
-
-                    if (className == "net/fabricmc/fabric/mixin/registry/sync/SimpleRegistryMixin" || className == "net/minecraft/core/MappedRegistry") {
-                        File(className.substring(className.lastIndexOf('/') + 1) + ".class").writeBytes(writer.toByteArray())
-                    }
                 } else if (entry.name.endsWith(".java")) {
                     val className = entry.name.removeSuffix(".java")
                     val newName = remapper.map(className)
@@ -93,6 +102,41 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
             }
         }
 
+        @JvmStatic
+        fun transformTo(
+            inFile: File,
+            outFile: File,
+            parameters: Parameters
+        ) {
+            val remapper = DependencyRemapper(parameters, Opcodes.ASM9)
+
+            JarFile(inFile, false).use { jar ->
+                val manifest = jar.manifest ?: Manifest()
+
+                if (manifest.mainAttributes.getValue("Automatic-Module-Name") == null) {
+                    manifest.mainAttributes.putValue(
+                        "Automatic-Module-Name",
+                        getAutomaticModuleName(inFile.name)
+                    )
+                }
+
+                JarOutputStream(FileOutputStream(outFile), manifest).use { out ->
+                    jar.entries().asIterator().forEach { entry ->
+                        if (entry.name != "META-INF/MANIFEST.MF") {
+                            jar.getInputStream(entry).use { stream ->
+                                transformEntry(entry, remapper, parameters, stream) { entry, consumer ->
+                                    out.putNextEntry(entry)
+                                    consumer(out)
+                                    out.closeEntry()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /*
         @JvmStatic
         fun transformUnary(
             file: File,
@@ -121,34 +165,12 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
                 }
             }
         }
-
-        @JvmStatic
-        fun transformTo(
-            inFile: File,
-            outFile: File,
-            parameters: Parameters
-        ) {
-            val remapper = DependencyRemapper(parameters, Opcodes.ASM9)
-
-            JarFile(inFile, false).use { jar ->
-                JarOutputStream(FileOutputStream(outFile)).use { out ->
-                    jar.entries().asIterator().forEach { entry ->
-                        jar.getInputStream(entry).use { stream ->
-                            transformEntry(entry, remapper, parameters, stream) { entry, consumer ->
-                                out.putNextEntry(entry)
-                                consumer(out)
-                                out.closeEntry()
-                            }
-                        }
-                    }
-                }
-            }
-        }
+         */
     }
 
     override fun transform(outputs: TransformOutputs) {
         val inFile = input.get().asFile
-        val outFile = outputs.file(inFile.name.replace(".jar", "-neo-tweaked.jar"))
+        val outFile = outputs.file("${inFile.nameWithoutExtension}-neo-tweaked${inFile.extension.let { if (it.isEmpty()) "" else ".$it" }}")
         transformTo(inFile, outFile, parameters)
     }
 

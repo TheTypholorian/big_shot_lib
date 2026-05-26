@@ -39,6 +39,7 @@ stonecutter {
             .forEach { version("mc${it.replace('.', '_')}_$loader", it).buildscript = "build.$loader.gradle.kts" }
 
         match("fabric", "1.21")
+        match("neoforge", "1.21")
 
         //match("fabric", "1.20", "1.21", "1.21.11")
         //match("neoforge", "1.21", "1.21.11")

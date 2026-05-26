@@ -49,6 +49,7 @@ public class DepthTestStateShardMixin implements MutableExtension<GlAlphaFunctio
 
     @Override
     public void setExtensionValue(GlAlphaFunction glAlphaFunction) {
+        warned = true;
         depthFunction = glAlphaFunction;
     }
 }

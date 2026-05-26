@@ -48,6 +48,7 @@ public class WriteMaskStateShardMixin implements MutableExtension<Pair<Boolean, 
 
     @Override
     public void setExtensionValue(Pair<Boolean, Boolean> mask) {
+        warned = true;
         this.mask = mask;
     }
 }

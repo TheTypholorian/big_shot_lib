@@ -11,7 +11,6 @@ import javax.inject.Inject
 abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFactory) {
     abstract val version: Property<MCVersion>
     abstract val loader: Property<ModLoader>
-    val metadata: Metadata = objects.newInstance(Metadata::class.java)
     val transformInfo: TransformInfo = objects.newInstance(TransformInfo::class.java, version)
 
     fun transformInfo(action: Action<in TransformInfo>) {

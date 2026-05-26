@@ -39,6 +39,8 @@ abstract class ResourceRegistry<T>(
 
     operator fun get(location: Identifier) = map[location]
 
+    fun getOrThrow(location: Identifier) = get(location) ?: throw NullPointerException("No entry $location in resource registry ${this.location}")
+
     abstract fun decode(location: Identifier, reader: BufferedReader, manager: ResourceManager): DataResult<T>
 
     override fun onResourceManagerReload(manager: ResourceManager) {

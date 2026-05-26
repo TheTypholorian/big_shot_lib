@@ -129,7 +129,7 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         @Nullable
         public BlendFunction getBlend() {
             //? if <1.21.5 {
-            return ImmutableExtensionKt.getExtensionValue(state.transparencyState, BlendFunction.class);
+            return ImmutableExtensionKt.getExtensionValueNullable(state.transparencyState, BlendFunction.class);
             //? } else {
             /*return renderPipeline.getBlendFunction().<GlBlendShard>map(
                     function ->
@@ -173,7 +173,7 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         @Override
         @Nullable
         public GlAlphaFunction getDepth() {
-            return ImmutableExtensionKt.getExtensionValue(state.depthTestState, GlAlphaFunction.class);
+            return ImmutableExtensionKt.getExtensionValueNullable(state.depthTestState, GlAlphaFunction.class);
         }
 
         @Override
@@ -189,13 +189,13 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Imm
         @Override
         @Nullable
         public GlLogicOp getColorLogic() {
-            return ImmutableExtensionKt.getExtensionValue(state.colorLogicState, GlLogicOp.class);
+            return ImmutableExtensionKt.getExtensionValueNullable(state.colorLogicState, GlLogicOp.class);
         }
 
         @Override
         @Nullable
         public LayeringState getLayering() {
-            return ImmutableExtensionKt.getExtensionValue(state.layeringState, LayeringState.class);
+            return ImmutableExtensionKt.getExtensionValueNullable(state.layeringState, LayeringState.class);
         }
     };
 

@@ -62,7 +62,7 @@ class KotlinAndMixinSupportingClassRemapper(
                 { metadata ->
                     val classMetadata = KotlinClassMetadata.readStrict(metadata)
 
-                    if (classMetadata is KotlinClassMetadata.Class) {
+                    if (classMetadata is KotlinClassMetadata.Class) { // TODO unfuck
                         val owner = remapper.mapType(classMetadata.kmClass.name.replace('.', '$'))
                         classMetadata.kmClass.name = owner.replace('$', '.')
 

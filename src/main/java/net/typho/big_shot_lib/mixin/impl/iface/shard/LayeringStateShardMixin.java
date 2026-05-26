@@ -37,6 +37,7 @@ public class LayeringStateShardMixin implements MutableExtension<LayeringState> 
 
     @Override
     public void setExtensionValue(LayeringState layeringState) {
+        warned = true;
         layering = layeringState;
     }
 }

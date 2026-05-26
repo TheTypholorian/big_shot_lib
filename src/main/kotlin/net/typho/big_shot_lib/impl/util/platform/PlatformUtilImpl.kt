@@ -7,18 +7,18 @@ import net.typho.big_shot_lib.api.client.util.Registrar
 import net.typho.big_shot_lib.api.util.RegisteredObject
 
 //? fabric {
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
+/*import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
 import net.minecraft.core.registries.BuiltInRegistries
-//? } neoforge {
-/*import net.neoforged.fml.ModList
+*///? } neoforge {
+import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
 import net.neoforged.neoforge.registries.NewRegistryEvent
 import net.neoforged.neoforge.registries.RegisterEvent
 import net.neoforged.neoforge.registries.RegistryBuilder
-*///? }
+//? }
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
 import net.typho.big_shot_lib.api.util.platform.ModLoader
@@ -27,7 +27,7 @@ import java.nio.file.Path
 
 object PlatformUtilImpl : PlatformUtil {
     //? fabric {
-    override val loader = ModLoader.FABRIC
+    /*override val loader = ModLoader.FABRIC
     override val mods: Collection<ModContainer>
         get() = FabricLoader.getInstance().allMods.map { ModContainerImpl(it) }
     override val configPath: Path
@@ -102,8 +102,8 @@ object PlatformUtilImpl : PlatformUtil {
         }
     }
 
-    //? } neoforge {
-    /*override val loader = ModLoader.NEOFORGE
+    *///? } neoforge {
+    override val loader = ModLoader.NEOFORGE
     override val mods: Collection<ModContainer>
         get() = ModList.get().sortedMods.map { ModContainerImpl(it) }
     override val configPath: Path
@@ -212,5 +212,5 @@ object PlatformUtilImpl : PlatformUtil {
             return (queue.firstOrNull { it.registry == registry } ?: RegistryPair(registry, arrayListOf()).also { queue.add(it) }).register(id, value) as RegisteredObject<T>
         }
     }
-    *///? }
+    //? }
 }
