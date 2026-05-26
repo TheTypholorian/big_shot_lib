@@ -10,8 +10,6 @@ interface PlatformUtil {
 
     fun isDevEnv(): Boolean
 
-    fun createRegistrar(mod: ModContainer): Registrar
-
     fun getMod(id: String): ModContainer? {
         return mods.firstOrNull { it.id == id }
     }

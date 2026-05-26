@@ -28,10 +28,17 @@ bigShotLib {
         applyPostCompileTransforms.set(false)
 
         shortIdentifierMethods()
+        defaultDeprecatedMethods()
+
         injectInterface(
             "net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType",
             "net/minecraft/client/renderer/RenderType"
         )
+        injectInterface(
+            "net/typho/big_shot_lib/api/client/rendering/util/NeoVertexConsumer",
+            "com/mojang/blaze3d/vertex/VertexConsumer"
+        )
+
         overloadArguments(
             "net/minecraft/client/renderer/RenderType",
             "net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType",

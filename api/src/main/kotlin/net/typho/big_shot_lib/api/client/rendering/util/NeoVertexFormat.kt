@@ -19,26 +19,6 @@ interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
 
     override fun iterator() = elements.iterator()
 
-    object Entrypoint : BigShotCommonEntrypoint(BigShotApi.MOD_ID) {
-        internal val REGISTRY = createRegistry<NeoVertexFormat>(BigShotApi.id("vertex_formats"))
-
-        override fun onInitialize() {
-            register(REGISTRY, Identifier.minecraft("blit_screen"), InternalUtil.INSTANCE.blitScreenVertexFormat)
-            register(REGISTRY, Identifier.minecraft("block"), InternalUtil.INSTANCE.blockVertexFormat)
-            register(REGISTRY, Identifier.minecraft("new_entity"), InternalUtil.INSTANCE.newEntityVertexFormat)
-            register(REGISTRY, Identifier.minecraft("particle"), InternalUtil.INSTANCE.particleVertexFormat)
-            register(REGISTRY, Identifier.minecraft("position"), InternalUtil.INSTANCE.positionVertexFormat)
-            register(REGISTRY, Identifier.minecraft("position_color"), InternalUtil.INSTANCE.positionColorVertexFormat)
-            register(REGISTRY, Identifier.minecraft("position_color_normal"), InternalUtil.INSTANCE.positionColorNormalVertexFormat)
-            register(REGISTRY, Identifier.minecraft("position_color_lightmap"), InternalUtil.INSTANCE.positionColorLightVertexFormat)
-            register(REGISTRY, Identifier.minecraft("position_tex"), InternalUtil.INSTANCE.positionTexVertexFormat)
-            register(REGISTRY, Identifier.minecraft("position_tex_color"), InternalUtil.INSTANCE.positionTexColorVertexFormat)
-            register(REGISTRY, Identifier.minecraft("position_color_tex_lightmap"), InternalUtil.INSTANCE.positionColorTexLightVertexFormat)
-            register(REGISTRY, Identifier.minecraft("position_tex_lightmap_color"), InternalUtil.INSTANCE.positionTexLightColorVertexFormat)
-            register(REGISTRY, Identifier.minecraft("position_tex_color_normal"), InternalUtil.INSTANCE.positionTexColorNormalVertexFormat)
-        }
-    }
-
     companion object {
         @JvmStatic
         fun builder() = InternalUtil.INSTANCE.createVertexFormatBuilder()

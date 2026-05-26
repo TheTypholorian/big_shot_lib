@@ -1,23 +1,13 @@
 package net.typho.big_shot_lib.impl.util.platform
 
-import net.minecraft.core.Registry
-import net.minecraft.resources.Identifier
-import net.minecraft.resources.ResourceKey
-import net.typho.big_shot_lib.api.client.util.Registrar
-import net.typho.big_shot_lib.api.util.RegisteredObject
-
 //? fabric {
 /*import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
-import net.minecraft.core.registries.BuiltInRegistries
 *///? } neoforge {
 import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
-import net.neoforged.neoforge.registries.NewRegistryEvent
-import net.neoforged.neoforge.registries.RegisterEvent
-import net.neoforged.neoforge.registries.RegistryBuilder
 //? }
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
@@ -70,38 +60,6 @@ object PlatformUtilImpl : PlatformUtil {
             }
         }
     }
-
-    class FabricRegisteredObject<T : Any>(
-        override val registry: ResourceKey<out Registry<T>>,
-        override val key: Identifier,
-        override val value: T
-    ) : RegisteredObject<T> {
-        override val registered = true
-    }
-
-    override fun createRegistrar(mod: ModContainer): Registrar {
-        return object : Registrar {
-            override fun <T : Any> createRegistry(id: Identifier): ResourceKey<out Registry<T>> {
-                val key = ResourceKey.createRegistryKey<T>(id)
-                FabricRegistryBuilder.createSimple(key).buildAndRegister()
-                return key // TODO
-            }
-
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : Any> register(
-                registry: ResourceKey<out Registry<T>>,
-                id: Identifier,
-                value: T
-            ): RegisteredObject<T> {
-                return FabricRegisteredObject(
-                    registry,
-                    id,
-                    Registry.register(BuiltInRegistries.REGISTRY.get(registry.location()) as Registry<T>, id, value)
-                )
-            }
-        }
-    }
-
     *///? } neoforge {
     override val loader = ModLoader.NEOFORGE
     override val mods: Collection<ModContainer>
@@ -130,87 +88,6 @@ object PlatformUtilImpl : PlatformUtil {
             get() = inner.modInfo.description
         override val version: String
             get() = inner.modInfo.version.toString()
-    }
-
-    override fun createRegistrar(mod: ModContainer): Registrar {
-        return NeoForgeRegistrar(mod)
-    }
-
-    class NeoForgeRegisteredObject<T : Any>(
-        override val registry: ResourceKey<out Registry<T>>,
-        override val key: Identifier,
-        override val value: T
-    ) : RegisteredObject<T> {
-        override var registered = false
-
-        fun register(event: RegisterEvent) {
-            if (event.registryKey == registry) {
-                registered = true
-                event.register(registry, key) { value }
-            }
-        }
-    }
-
-    class NeoForgeRegistrar(
-        @JvmField
-        val mod: ModContainer
-    ) : Registrar {
-        @JvmField
-        val queue = arrayListOf<RegistryPair<*>>()
-        @JvmField
-        val registries = arrayListOf<NewRegistry<*>>()
-
-        data class NewRegistry<T : Any>(
-            @JvmField
-            val key: ResourceKey<out Registry<T>>
-        ) {
-            fun register(event: NewRegistryEvent) {
-                event.create(RegistryBuilder(key))
-            }
-        }
-
-        data class RegistryPair<T : Any>(
-            @JvmField
-            val registry: ResourceKey<out Registry<T>>,
-            @JvmField
-            val values: MutableList<NeoForgeRegisteredObject<T>>
-        ) {
-            @Suppress("UNCHECKED_CAST")
-            fun register(id: Identifier, value: Any): RegisteredObject<T> {
-                return NeoForgeRegisteredObject(registry, id, value as T).also { values.add(it) }
-            }
-        }
-
-        init {
-            val bus = (mod as ModContainerImpl).inner.eventBus!!
-            bus.addListener { event: NewRegistryEvent ->
-                for (registry in registries) {
-                    registry.register(event)
-                }
-            }
-            bus.addListener { event: RegisterEvent ->
-                for (content in queue) {
-                    for (value in content.values) {
-                        value.register(event)
-                    }
-                }
-            }
-        }
-
-        override fun <T : Any> createRegistry(id: Identifier): ResourceKey<out Registry<T>> {
-            val key = ResourceKey.createRegistryKey<T>(id)
-            registries.add(NewRegistry(key))
-            return key
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : Any> register(
-            registry: ResourceKey<out Registry<T>>,
-            id: Identifier,
-            value: T
-        ): RegisteredObject<T> {
-            return (queue.firstOrNull { it.registry == registry } ?: RegistryPair(registry, arrayListOf()).also { queue.add(it) }).register(id, value) as RegisteredObject<T>
-        }
     }
     //? }
 }

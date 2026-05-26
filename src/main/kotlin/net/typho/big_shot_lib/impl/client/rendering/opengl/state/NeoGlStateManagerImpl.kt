@@ -13,7 +13,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
-import net.typho.big_shot_lib.api.math.rect.AbstractRect2
+import net.typho.big_shot_lib.api.math.rect.IRect2
 import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import net.typho.big_shot_lib.api.util.KeyedDelegate
 import net.typho.big_shot_lib.api.util.NeoColor
@@ -27,6 +27,7 @@ import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL41.GL_PROGRAM_PIPELINE_BINDING
 import org.lwjgl.opengl.GL41.glBindProgramPipeline
 import org.lwjgl.system.MemoryStack
+import kotlin.jdk7.use
 
 object NeoGlStateManagerImpl : NeoGlStateManager {
     override val buffers: KeyedDelegate<GlBufferTarget, Int> = KeyedDelegate.of(
@@ -101,7 +102,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
             glGetFloat(GL_POLYGON_OFFSET_UNITS)
         )
         set(value) = GlStateManager._polygonOffset(value.factor, value.units)
-    override var scissor: AbstractRect2<Int>
+    override var scissor: IRect2<Int>
         get() = MemoryStack.stackPush().use { stack ->
             val box = stack.mallocInt(4)
             glGetIntegerv(GL_SCISSOR_BOX, box)
@@ -130,7 +131,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
             GlNamed.getEnum(glGetInteger(GL_STENCIL_PASS_DEPTH_PASS))
         )
         set(value) = GlStateManager._stencilOp(value.stencilFail.glId, value.depthFail.glId, value.depthPass.glId)
-    override var viewport: AbstractRect2<Int>
+    override var viewport: IRect2<Int>
         get() = MemoryStack.stackPush().use { stack ->
             val box = stack.mallocInt(4)
             glGetIntegerv(GL_VIEWPORT, box)
@@ -297,7 +298,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
             )
         }
     )
-    override val scissor: GlStateStack<AbstractRect2<Int>> = GlStateStack.Impl(
+    override val scissor: GlStateStack<IRect2<Int>> = GlStateStack.Impl(
         "SCISSOR",
         { if (it != null) glScissor(it.min.x, it.min.y, it.size.x, it.size.y) },
         {
@@ -340,7 +341,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
             )
         }
     )
-    override val viewport: GlStateStack<AbstractRect2<Int>> = GlStateStack.Impl(
+    override val viewport: GlStateStack<IRect2<Int>> = GlStateStack.Impl(
         "VIEWPORT",
         { if (it != null) glViewport(it.min.x, it.min.y, it.size.x, it.size.y) },
         {

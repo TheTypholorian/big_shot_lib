@@ -8,4 +8,7 @@ object Annotations {
 
     @JvmStatic
     val ONLY_IN = "Lnet/typho/big_shot_lib/api/plugin/OnlyIn;"
+
+    @JvmStatic
+    val DEPRECATED = "Ljava/lang/Deprecated;"
 }

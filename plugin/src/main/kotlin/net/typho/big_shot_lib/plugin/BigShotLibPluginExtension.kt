@@ -79,6 +79,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         abstract val classRenames: ListProperty<ClassRename>
         abstract val methodRenames: ListProperty<MethodRename>
         abstract val fieldRenames: ListProperty<FieldRename>
+        abstract val markAsDeprecated: ListProperty<MethodDesc>
         abstract val interfaceInjections: ListProperty<InterfaceInjection>
         abstract val staticMethodInjections: ListProperty<StaticMethodInjection>
         abstract val argumentOverloadConverters: ListProperty<ArgumentOverloadConverter>
@@ -125,6 +126,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             methodRenames.convention(listOf())
             fieldRenames.convention(listOf())
             interfaceInjections.convention(listOf())
+            markAsDeprecated.convention(listOf())
             staticMethodInjections.convention(version.map {
                 val list = mutableListOf<StaticMethodInjection>()
 
@@ -226,6 +228,97 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 it.name.set(from)
                 it.desc.set(desc)
             }, to)
+        }
+
+        fun markAsDeprecated(cls: String, name: String, desc: String) {
+            markAsDeprecated.add(objects.newInstance(MethodDesc::class.java).also {
+                it.cls.set(cls)
+                it.name.set(name)
+                it.desc.set(desc)
+            })
+        }
+
+        fun defaultDeprecatedMethods() {
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "addVertex",
+                "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setColor",
+                "(IIII)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setUv",
+                "(FF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setUv1",
+                "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setUv2",
+                "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setNormal",
+                "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setColor",
+                "(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setColor",
+                "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setWhiteAlpha",
+                "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setLight",
+                "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setOverlay",
+                "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "addVertex",
+                "(Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "addVertex",
+                $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "addVertex",
+                $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "addVertex",
+                "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+            markAsDeprecated(
+                "com/mojang/blaze3d/vertex/VertexConsumer",
+                "setNormal",
+                $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
         }
 
         @JvmOverloads

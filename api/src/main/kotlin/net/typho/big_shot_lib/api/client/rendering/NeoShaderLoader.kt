@@ -61,7 +61,7 @@ val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> 
             manager: ResourceManager
         ): DataResult<GlShader> {
             val shader = GlShader.create(location, shaderType)
-            shader.source = NeoShaderLoader.CommonInit.preprocessors.lookupOrThrow().fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
+            shader.source = NeoShaderLoader.preprocessors.fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
 
             if (shader.compile()) {
                 return DataResult.success(shader)
@@ -79,6 +79,9 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
     mutableListOf<ResourceRegistry<*>>(shaderIncludes).also { it.addAll(shaderRegistries.values) },
     mutableListOf(FileToIdConverter.json("neo/shaders"))
 ) {
+    @JvmField
+    val preprocessors = hashSetOf<ShaderPreprocessor>(ShaderIncludePreprocessor)
+
     // TODO unfuck this
     object ClientInit : BigShotClientEntrypoint(BigShotApi.MOD_ID) {
         override fun onInitializeClient() {
@@ -89,19 +92,10 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
         }
     }
 
-    object CommonInit : BigShotCommonEntrypoint(BigShotApi.MOD_ID) {
-        @JvmField
-        val preprocessors = createRegistry<ShaderPreprocessor>(BigShotApi.id("shader_preprocessors"))
-        val shaderIncludePreprocessor by register(preprocessors, ShaderIncludePreprocessor)
-
-        override fun onInitialize() {
-        }
-    }
-
     override fun decode(location: Identifier, reader: BufferedReader, manager: ResourceManager): DataResult<GlProgram> {
         val json = JsonParser.parseReader(reader).asJsonObject
         val formatKey = Identifier.parse(json.getAsJsonPrimitive("format").asString)
-        val program = GlProgram.create(location, NeoVertexFormats.REGISTRY.lookupOrThrow().get(formatKey) ?: return DataResult.error { "Nonexistent vertex format $formatKey" })
+        val program = GlProgram.create(location, NeoVertexFormats.REGISTRY[formatKey] ?: return DataResult.error { "Nonexistent vertex format $formatKey" })
         val sources = json.getAsJsonObject("sources")
 
         for (entry in sources.asMap()) {

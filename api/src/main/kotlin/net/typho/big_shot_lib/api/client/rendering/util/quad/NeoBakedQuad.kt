@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.util.quad
 
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.minecraft.core.Direction
@@ -22,7 +23,7 @@ interface NeoBakedQuad {
     val v3: NeoVertexData
         get() = vertices[3]
 
-    fun put(consumer: NeoVertexConsumer) {
+    fun put(consumer: VertexConsumer) {
         v0.put(consumer)
         v1.put(consumer)
         v2.put(consumer)

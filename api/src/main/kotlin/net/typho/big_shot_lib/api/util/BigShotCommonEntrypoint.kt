@@ -23,18 +23,8 @@ import net.minecraft.core.Direction
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 
-abstract class BigShotCommonEntrypoint(modId: String) : ModEntrypoint(modId), Registrar {
-    private val registrar = PlatformUtil.INSTANCE.createRegistrar(container)
-
+abstract class BigShotCommonEntrypoint(modId: String) : ModEntrypoint(modId) {
     abstract fun onInitialize()
-
-    override fun <T : Any> createRegistry(id: Identifier): ResourceKey<out Registry<T>> {
-        return registrar.createRegistry(id)
-    }
-
-    override fun <T : Any> register(registry: ResourceKey<out Registry<T>>, id: Identifier, value: T): RegisteredObject<T> {
-        return registrar.register(registry, id, value)
-    }
 
     open fun onBlockChanged(
         level: Level,

@@ -128,6 +128,8 @@ class BigShotLibPlugin : Plugin<Project> {
                 it.parameters.methodRenames.set(ext.transformInfo.methodRenames)
                 it.parameters.fieldRenames.set(ext.transformInfo.fieldRenames)
 
+                it.parameters.markAsDeprecated.set(ext.transformInfo.markAsDeprecated)
+
                 it.parameters.interfaceInjections.set(ext.transformInfo.interfaceInjections)
                 it.parameters.staticMethodInjections.set(ext.transformInfo.staticMethodInjections)
                 it.parameters.argumentOverloadConverters.set(ext.transformInfo.argumentOverloadConverters)

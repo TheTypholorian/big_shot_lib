@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.plugin.transform
 
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.*
 import net.typho.big_shot_lib.plugin.DependencyTransformAction
+import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
@@ -395,7 +396,13 @@ class DependencyTransformer(
             step(0)
         }
 
-        return super.visitMethod(access, name, descriptor, signature, exceptions)
+        val visitor = super.visitMethod(access, name, descriptor, signature, exceptions)
+
+        if (info.markAsDeprecated.get().any { it.cls.get() == this.name && it.name.get() == name && it.desc.get() == descriptor }) {
+            visitor.visitAnnotation(Annotations.DEPRECATED, true).visitEnd()
+        }
+
+        return visitor
     }
 
     override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {

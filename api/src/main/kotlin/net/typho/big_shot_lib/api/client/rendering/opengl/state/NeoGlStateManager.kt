@@ -166,7 +166,7 @@ interface NeoGlStateManager {
                 )
             }
         )
-        override var scissor: GlStateStack<AbstractRect2<Int>> = GlStateStack.Impl(
+        override var scissor: GlStateStack<IRect2<Int>> = GlStateStack.Impl(
             "SCISSOR",
             { if (it != null) glScissor(it.min.x, it.min.y, it.size.x, it.size.y) },
             {
@@ -209,7 +209,7 @@ interface NeoGlStateManager {
                 )
             }
         )
-        override var viewport: GlStateStack<AbstractRect2<Int>> = GlStateStack.Impl(
+        override var viewport: GlStateStack<IRect2<Int>> = GlStateStack.Impl(
             "VIEWPORT",
             { if (it != null) glViewport(it.min.x, it.min.y, it.size.x, it.size.y) },
             {

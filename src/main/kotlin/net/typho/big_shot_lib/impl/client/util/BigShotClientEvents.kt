@@ -10,11 +10,8 @@ import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
-import net.typho.big_shot_lib.api.client.util.NeoCamera
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
-import net.typho.big_shot_lib.api.util.WrapperUtil
-import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl
 import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
 //? }
 
@@ -51,15 +48,11 @@ object BigShotClientEvents {
                         else -> return@addListener
                     },
                     event.levelRenderer,
-                    NeoCamera(
-                        NeoVec3f(event.camera.position),
-                        NeoVec2f(event.camera.xRot, event.camera.yRot),
-                        event.camera.rotation()
-                    ),
+                    event.camera,
                     event.levelRenderer.level,
                     event.projectionMatrix,
                     event.modelViewMatrix,
-                    (event.frustum as FrustumAccessor).`big_shot_lib$getFrustmIntersection`(),
+                    (event.frustum as FrustumAccessor).`big_shot_lib$getFrustumIntersection`(),
                     // NeoGlStateManagerImpl.currentTarget ?:
                     //GlFramebuffer.MAIN, // TODO
                     event.renderTick,

@@ -6,8 +6,6 @@ import net.typho.big_shot_lib.api.BigShotApi
 import java.io.FileNotFoundException
 
 object ShaderIncludePreprocessor : ShaderPreprocessor {
-    override val location: Identifier = BigShotApi.id("shader_includes")
-
     override fun apply(
         location: Identifier,
         code: String,

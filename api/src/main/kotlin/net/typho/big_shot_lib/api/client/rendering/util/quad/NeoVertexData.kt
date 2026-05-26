@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.util.quad
 
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.math.vec.*
 import net.typho.big_shot_lib.api.util.NeoColor
@@ -61,16 +62,11 @@ data class NeoVertexData(
         normal ?: copy.normal,
     )
 
-    fun put(consumer: NeoVertexConsumer) {
-        consumer.vertex(pos)
-        color?.let(consumer::color)
-        textureUV?.let(consumer::textureUV)
-        overlayUV?.let(consumer::overlayUV)
-        lightUV?.let(consumer::lightUV)
-        normal?.let(consumer::normal)
+    fun put(consumer: VertexConsumer) {
+        consumer.vertex(pos, color, textureUV, overlayUV, lightUV, normal)
     }
 
-    abstract class Consumer : NeoVertexConsumer() {
+    abstract class Consumer : VertexConsumer {
         @JvmField
         protected var pos: IVec3<Float>? = null
         @JvmField
@@ -102,7 +98,7 @@ data class NeoVertexData(
             x: Float,
             y: Float,
             z: Float
-        ): NeoVertexConsumer {
+        ): VertexConsumer {
             flush()
             pos = NeoVec3f(x, y, z)
             return this
@@ -113,7 +109,7 @@ data class NeoVertexData(
             g: Int,
             b: Int,
             a: Int
-        ): NeoVertexConsumer {
+        ): VertexConsumer {
             color = NeoColor.RGBA(r, g, b, a)
             return this
         }
@@ -121,7 +117,7 @@ data class NeoVertexData(
         override fun textureUV(
             u: Float,
             v: Float
-        ): NeoVertexConsumer {
+        ): VertexConsumer {
             textureUV = NeoVec2f(u, v)
             return this
         }
@@ -129,7 +125,7 @@ data class NeoVertexData(
         override fun overlayUV(
             u: Int,
             v: Int
-        ): NeoVertexConsumer {
+        ): VertexConsumer {
             overlayUV = NeoVec2i(u, v)
             return this
         }
@@ -137,7 +133,7 @@ data class NeoVertexData(
         override fun lightUV(
             u: Int,
             v: Int
-        ): NeoVertexConsumer {
+        ): VertexConsumer {
             lightUV = NeoVec2i(u, v)
             return this
         }
@@ -146,7 +142,7 @@ data class NeoVertexData(
             x: Float,
             y: Float,
             z: Float
-        ): NeoVertexConsumer {
+        ): VertexConsumer {
             normal = NeoVec3f(x, y, z)
             return this
         }

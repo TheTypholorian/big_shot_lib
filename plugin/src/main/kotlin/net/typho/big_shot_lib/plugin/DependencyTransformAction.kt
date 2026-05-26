@@ -5,6 +5,7 @@ import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.Arg
 import net.typho.big_shot_lib.plugin.transform.DependencyRemapper
 import net.typho.big_shot_lib.plugin.transform.DependencyTransformer
 import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
+import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
 import org.gradle.api.artifacts.transform.CacheableTransform
 import org.gradle.api.artifacts.transform.InputArtifact
 import org.gradle.api.artifacts.transform.TransformAction
@@ -185,6 +186,8 @@ abstract class DependencyTransformAction : TransformAction<DependencyTransformAc
         val methodRenames: ListProperty<MethodRename>
         @get:Input
         val fieldRenames: ListProperty<FieldRename>
+        @get:Input
+        val markAsDeprecated: ListProperty<MethodDesc>
         @get:Input
         val interfaceInjections: ListProperty<InterfaceInjection>
         @get:Input
