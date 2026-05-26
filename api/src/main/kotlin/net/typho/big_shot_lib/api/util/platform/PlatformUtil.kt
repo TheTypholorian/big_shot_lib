@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.util.platform
 
-import net.typho.big_shot_lib.api.client.util.Registrar
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import java.nio.file.Path
 

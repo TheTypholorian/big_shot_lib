@@ -19,8 +19,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.chunk.ChunkAccess
-import net.typho.big_shot_lib.api.client.util.Registrar
-import net.typho.big_shot_lib.api.math.NeoDirection
+import net.minecraft.core.Direction
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 
@@ -63,7 +62,7 @@ abstract class BigShotCommonEntrypoint(modId: String) : ModEntrypoint(modId), Re
         hand: InteractionHand,
         item: ItemStack,
         pos: BlockPos,
-        face: NeoDirection?,
+        face: Direction?,
         context: UseOnContext
     ): ItemInteractionResult {
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION

@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
-import net.typho.big_shot_lib.api.math.rect.AbstractRect2
+import net.typho.big_shot_lib.api.math.rect.IRect2
 import net.typho.big_shot_lib.api.util.KeyedDelegate
 import net.typho.big_shot_lib.api.util.NeoColor
 
@@ -32,11 +32,11 @@ interface NeoGlStateManager {
     var depthFunc: GlAlphaFunction
     var polygonMode: GlPolygonMode
     var polygonOffset: PolygonOffset
-    var scissor: AbstractRect2<Int>
+    var scissor: IRect2<Int>
     var stencilFunction: StencilFunction
     var stencilMask: Int
     var stencilOp: StencilOp
-    var viewport: AbstractRect2<Int>
+    var viewport: IRect2<Int>
 
     var blendEnabled: Boolean
     var colorLogicOpEnabled: Boolean

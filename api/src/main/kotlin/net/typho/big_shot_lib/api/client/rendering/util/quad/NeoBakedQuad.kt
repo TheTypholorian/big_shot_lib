@@ -1,16 +1,16 @@
 package net.typho.big_shot_lib.api.client.rendering.util.quad
 
-import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite
+import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
-import net.typho.big_shot_lib.api.math.NeoDirection
+import net.minecraft.core.Direction
 import java.util.function.UnaryOperator
 import kotlin.collections.mapIndexed
 
 interface NeoBakedQuad {
     val vertices: Array<NeoVertexData>
     val tintIndex: Int?
-    val direction: NeoDirection?
-    val sprite: NeoAtlasSprite?
+    val direction: Direction?
+    val sprite: TextureAtlasSprite?
     val shade: Boolean
 
     val v0: NeoVertexData
@@ -47,9 +47,9 @@ interface NeoBakedQuad {
             override val vertices: Array<NeoVertexData> = vertices
             override val tintIndex: Int?
                 get() = parent.tintIndex
-            override val direction: NeoDirection?
+            override val direction: Direction?
                 get() = parent.direction
-            override val sprite: NeoAtlasSprite?
+            override val sprite: TextureAtlasSprite?
                 get() = parent.sprite
             override val shade: Boolean
                 get() = parent.shade
@@ -63,16 +63,16 @@ interface NeoBakedQuad {
             override val vertices: Array<NeoVertexData>
                 get() = parent.vertices
             override val tintIndex: Int? = tintIndex
-            override val direction: NeoDirection?
+            override val direction: Direction?
                 get() = parent.direction
-            override val sprite: NeoAtlasSprite?
+            override val sprite: TextureAtlasSprite?
                 get() = parent.sprite
             override val shade: Boolean
                 get() = parent.shade
         }
     }
 
-    fun withDirection(direction: UnaryOperator<NeoDirection?>): NeoBakedQuad {
+    fun withDirection(direction: UnaryOperator<Direction?>): NeoBakedQuad {
         val parent = this
         val direction = direction.apply(parent.direction)
         return object : NeoBakedQuad {
@@ -80,15 +80,15 @@ interface NeoBakedQuad {
                 get() = parent.vertices
             override val tintIndex: Int?
                 get() = parent.tintIndex
-            override val direction: NeoDirection? = direction
-            override val sprite: NeoAtlasSprite?
+            override val direction: Direction? = direction
+            override val sprite: TextureAtlasSprite?
                 get() = parent.sprite
             override val shade: Boolean
                 get() = parent.shade
         }
     }
 
-    fun withSprite(sprite: UnaryOperator<NeoAtlasSprite?>): NeoBakedQuad {
+    fun withSprite(sprite: UnaryOperator<TextureAtlasSprite?>): NeoBakedQuad {
         val parent = this
         val sprite = sprite.apply(parent.sprite)
         return object : NeoBakedQuad {
@@ -96,9 +96,9 @@ interface NeoBakedQuad {
                 get() = parent.vertices
             override val tintIndex: Int?
                 get() = parent.tintIndex
-            override val direction: NeoDirection?
+            override val direction: Direction?
                 get() = parent.direction
-            override val sprite: NeoAtlasSprite? = sprite
+            override val sprite: TextureAtlasSprite? = sprite
             override val shade: Boolean
                 get() = parent.shade
         }
@@ -112,9 +112,9 @@ interface NeoBakedQuad {
                 get() = parent.vertices
             override val tintIndex: Int?
                 get() = parent.tintIndex
-            override val direction: NeoDirection?
+            override val direction: Direction?
                 get() = parent.direction
-            override val sprite: NeoAtlasSprite?
+            override val sprite: TextureAtlasSprite?
                 get() = parent.sprite
             override val shade: Boolean = shade
         }
@@ -123,13 +123,21 @@ interface NeoBakedQuad {
     abstract class Consumer : NeoVertexData.Consumer() {
         private var vertices = arrayOfNulls<NeoVertexData>(4)
         private var index = 0
+        @JvmField
+        var tintIndex: Int? = null
+        @JvmField
+        var direction: Direction? = null
+        @JvmField
+        var sprite: TextureAtlasSprite? = null
+        @JvmField
+        var shade = false
 
         final override fun take(vertex: NeoVertexData) {
             vertices[index++] = vertex
 
             if (index == 4) {
                 index = 0
-                take(BasicBakedQuad(Array(4) { vertices[it]!! }, null, null, null, false))
+                take(BasicBakedQuad(Array(4) { vertices[it]!! }, tintIndex, direction, sprite, shade))
             }
         }
 

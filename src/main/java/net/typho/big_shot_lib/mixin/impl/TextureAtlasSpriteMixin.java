@@ -10,7 +10,7 @@ import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas;
-import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite;
+import net.typho.big_shot_lib.api.client.rendering.util.TextureAtlasSprite;
 import net.typho.big_shot_lib.api.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
@@ -22,7 +22,7 @@ import java.util.Objects;
 
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(TextureAtlasSprite.class)
-public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprite> {
+public class TextureAtlasSpriteMixin implements ImmutableExtension<TextureAtlasSprite> {
     @Shadow
     @Final
     private int x;
@@ -52,7 +52,7 @@ public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprit
     /*private Identifier atlasLocation;
     *///? }
     @Unique
-    private final NeoAtlasSprite extensionValue = new NeoAtlasSprite() {
+    private final TextureAtlasSprite extensionValue = new TextureAtlasSprite() {
         @Override
         public @NotNull NeoAtlas getAtlas() {
             return Objects.requireNonNull(NeoAtlas.get(atlasLocation));
@@ -100,7 +100,7 @@ public class TextureAtlasSpriteMixin implements ImmutableExtension<NeoAtlasSprit
     };
 
     @Override
-    public NeoAtlasSprite getExtensionValue() {
+    public TextureAtlasSprite getExtensionValue() {
         return extensionValue;
     }
 }

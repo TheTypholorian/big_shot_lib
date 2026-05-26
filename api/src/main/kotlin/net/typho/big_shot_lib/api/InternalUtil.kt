@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api
 
 import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
@@ -10,7 +11,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
-import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.math.vec.IVec3
@@ -45,10 +45,6 @@ interface InternalUtil {
 
     fun transformNormal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): IVec3<Float>
 
-    fun <T : Any> getRegistry(key: ResourceKey<Registry<T>>): Registry<T>?
-
-    fun mainWindowHandle(): Long
-
     fun createShader(location: Identifier, type: GlShaderType, glId: Int): GlShader
 
     fun createProgram(location: Identifier, format: NeoVertexFormat, glId: Int): GlProgram
@@ -62,7 +58,7 @@ interface InternalUtil {
         affectsCrumbling: Boolean,
         sortOnUpload: Boolean,
         isOutline: Boolean
-    ): NeoRenderType
+    ): RenderType
 
     companion object {
         @JvmStatic

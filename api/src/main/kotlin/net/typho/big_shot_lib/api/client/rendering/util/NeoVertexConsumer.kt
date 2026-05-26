@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.util
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.typho.big_shot_lib.api.InternalUtil
-import net.typho.big_shot_lib.api.math.rect.AbstractRect3
+import net.typho.big_shot_lib.api.math.rect.IRect3
 import net.typho.big_shot_lib.api.math.vec.IVec2
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
@@ -162,7 +162,7 @@ abstract class NeoVertexConsumer {
     }
 
     open fun cube(
-        box: AbstractRect3<*>,
+        box: IRect3<*>,
     ): NeoVertexConsumer {
         val vertices = arrayOf(
             NeoVec3f(box.max.x.toFloat(), box.max.x.toFloat(), box.max.x.toFloat()),
@@ -421,7 +421,7 @@ abstract class NeoVertexConsumer {
             other._endVertex()
         }
 
-        override fun cube(box: AbstractRect3<*>): NeoVertexConsumer {
+        override fun cube(box: IRect3<*>): NeoVertexConsumer {
             other.cube(box)
             return this
         }

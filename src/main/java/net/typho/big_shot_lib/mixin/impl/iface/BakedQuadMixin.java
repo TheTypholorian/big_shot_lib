@@ -10,11 +10,9 @@ import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite;
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad;
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData;
-import net.typho.big_shot_lib.api.math.NeoDirection;
-import net.typho.big_shot_lib.api.math.NeoDirectionKt;
+import net.minecraft.core.Direction;
 import net.typho.big_shot_lib.api.util.ImmutableExtension;
 import net.typho.big_shot_lib.api.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
@@ -76,14 +74,14 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
 
         @Override
         @Nullable
-        public NeoDirection getDirection() {
-            return direction == null ? null : NeoDirectionKt.getNeo(direction);
+        public Direction getDirection() {
+            return direction;
         }
 
         @Override
         @NotNull
-        public NeoAtlasSprite getSprite() {
-            return ImmutableExtensionKt.getExtensionValue(sprite, NeoAtlasSprite.class);
+        public TextureAtlasSprite getSprite() {
+            return sprite;
         }
 
         @Override
@@ -155,13 +153,13 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
 
         @Override
         @Nullable
-        public NeoDirection getDirection() {
-            return direction == null ? null : NeoDirectionKt.getNeo(direction);
+        public Direction getDirection() {
+            return direction == null ? null : DirectionKt.getNeo(direction);
         }
 
         @Override
         @NotNull
-        public NeoAtlasSprite getSprite() {
+        public TextureAtlasSprite getSprite() {
             return ImmutableExtensionKt.getExtensionValue(sprite);
         }
 

@@ -5,10 +5,11 @@ import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.vec.IVec4
 import net.typho.big_shot_lib.api.math.vec.NeoVec4i
 
-class NeoRect4i : AbstractRect4<Int> {
-    constructor(min: IVec4<Int>, max: IVec4<Int>) : super(min, max)
-
-    constructor(x1: Int, y1: Int, z1: Int, w1: Int, x2: Int, y2: Int, z2: Int, w2: Int) : super(NeoVec4i(x1, y1, z1, w1), NeoVec4i(x2, y2, z2, w2))
+class NeoRect4i(
+    override val min: IVec4<Int>,
+    override val max: IVec4<Int>
+) : IRect4<Int> {
+    constructor(x1: Int, y1: Int, z1: Int, w1: Int, x2: Int, y2: Int, z2: Int, w2: Int) : this(NeoVec4i(x1, y1, z1, w1), NeoVec4i(x2, y2, z2, w2))
 
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet

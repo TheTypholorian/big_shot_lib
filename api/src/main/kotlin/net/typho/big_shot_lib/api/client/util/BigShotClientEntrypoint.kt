@@ -17,8 +17,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.item.ItemStack
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
-import net.typho.big_shot_lib.api.client.util.resource.ResourceManagerReloadListener
-import net.typho.big_shot_lib.api.util.ModEntrypoint
+import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 import org.joml.FrustumIntersection
 import org.joml.Matrix4f
@@ -28,7 +27,7 @@ abstract class BigShotClientEntrypoint(modId: String) : ModEntrypoint(modId) {
     abstract fun onInitializeClient()
 
     open fun addReloadListeners(
-        out: (listener: ResourceManagerReloadListener) -> Unit
+        out: (listener: NeoResourceManagerReloadListener) -> Unit
     ) {
     }
 

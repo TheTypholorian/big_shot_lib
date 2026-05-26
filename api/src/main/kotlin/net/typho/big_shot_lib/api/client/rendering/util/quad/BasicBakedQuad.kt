@@ -1,15 +1,15 @@
 package net.typho.big_shot_lib.api.client.rendering.util.quad
 
-import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite
-import net.typho.big_shot_lib.api.math.NeoDirection
+import net.minecraft.client.renderer.texture.TextureAtlasSprite
+import net.minecraft.core.Direction
 import kotlin.collections.contentEquals
 import kotlin.collections.contentHashCode
 
 data class BasicBakedQuad(
     override val vertices: Array<NeoVertexData>,
     override val tintIndex: Int?,
-    override val direction: NeoDirection?,
-    override val sprite: NeoAtlasSprite?,
+    override val direction: Direction?,
+    override val sprite: TextureAtlasSprite?,
     override val shade: Boolean
 ) : NeoBakedQuad {
     override fun equals(other: Any?): Boolean {

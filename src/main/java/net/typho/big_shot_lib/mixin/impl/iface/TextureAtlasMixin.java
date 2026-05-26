@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlas;
-import net.typho.big_shot_lib.api.client.rendering.util.NeoAtlasSprite;
+import net.typho.big_shot_lib.api.client.rendering.util.TextureAtlasSprite;
 import net.typho.big_shot_lib.api.util.ImmutableExtension;
 import net.typho.big_shot_lib.api.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
@@ -94,10 +94,10 @@ public abstract class TextureAtlasMixin extends AbstractTexture implements Immut
              */
 
             @Override
-            public @NotNull Map<Identifier, NeoAtlasSprite> getSprites() {
+            public @NotNull Map<Identifier, TextureAtlasSprite> getSprites() {
                 return MapsKt.mapValues(
                         texturesByName,
-                        sprite -> ImmutableExtensionKt.getExtensionValue(sprite.getValue(), NeoAtlasSprite.class)
+                        sprite -> ImmutableExtensionKt.getExtensionValue(sprite.getValue(), TextureAtlasSprite.class)
                 );
             }
 

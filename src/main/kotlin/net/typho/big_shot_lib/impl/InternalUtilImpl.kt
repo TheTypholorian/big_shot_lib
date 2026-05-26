@@ -150,23 +150,6 @@ object InternalUtilImpl : InternalUtil {
         *///? }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> getRegistry(key: ResourceKey<Registry<T>>): Registry<T>? {
-        //? if <1.21.2 {
-        return BuiltInRegistries.REGISTRY.get(key.location()) as? Registry<T>
-        //? } else {
-        /*return BuiltInRegistries.REGISTRY.get(key.location.mojang).map { it as? Registry<T> }.orElse(null)
-        *///? }
-    }
-
-    override fun mainWindowHandle(): Long {
-        //? if <1.21.9 {
-        return Minecraft.getInstance().window.window
-        //? } else {
-        /*return Minecraft.getInstance().window.handle()
-        *///? }
-    }
-
     override fun createShader(location: Identifier, type: GlShaderType, glId: Int): GlShader {
         return when (type) {
             GlShaderType.VERTEX -> Program(Program.Type.VERTEX, glId, location.toShortString()).getExtensionValue()
@@ -194,7 +177,7 @@ object InternalUtilImpl : InternalUtil {
         affectsCrumbling: Boolean,
         sortOnUpload: Boolean,
         isOutline: Boolean
-    ): NeoRenderType {
+    ): RenderType {
         val blend = drawState.blend?.let { function ->
             RenderStateShard.TransparencyStateShard(
                 "$function",
@@ -266,6 +249,6 @@ object InternalUtilImpl : InternalUtil {
                 .setTextureState(texture)
                 .setShaderState(shader)
                 .createCompositeState(isOutline)
-        ).getExtensionValue()
+        )
     }
 }

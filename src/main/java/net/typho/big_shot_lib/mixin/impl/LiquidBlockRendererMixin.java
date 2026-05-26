@@ -9,8 +9,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.typho.big_shot_lib.api.math.NeoDirection;
-import net.typho.big_shot_lib.api.math.NeoDirectionKt;
+import net.minecraft.core.Direction;
+import net.minecraft.core.DirectionKt;
 import net.typho.big_shot_lib.impl.client.rendering.util.VertexConsumerWrapper;
 import net.typho.big_shot_lib.impl.util.FluidQuadConsumer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +35,7 @@ public class LiquidBlockRendererMixin {
             @Local(argsOnly = true) VertexConsumer consumer
     ) {
         if (consumer instanceof VertexConsumerWrapper wrapper && wrapper.inner instanceof FluidQuadConsumer fluid) {
-            NeoDirection direction1 = NeoDirectionKt.getNeo(direction);
+            Direction direction1 = DirectionKt.getNeo(direction);
             fluid.direction = direction1;
 
             if (fluid.occlusionCheck.invoke(blockGetter, blockPos, direction1, blockState)) {

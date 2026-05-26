@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
@@ -24,6 +25,7 @@ interface NeoRenderType : GlDrawState, MaybeNamedResource {
 
     companion object {
         @JvmField
+        @get:JvmName("getBuiltins")
         val BUILTINS = Builtins::class.loadService()
 
         @JvmStatic
@@ -37,7 +39,7 @@ interface NeoRenderType : GlDrawState, MaybeNamedResource {
             affectsCrumbling: Boolean = true,
             sortOnUpload: Boolean = false,
             isOutline: Boolean = false
-        ): NeoRenderType = InternalUtil.INSTANCE.createRenderType(
+        ): RenderType = InternalUtil.INSTANCE.createRenderType(
             location,
             format,
             drawState,

@@ -148,6 +148,7 @@ class BigShotLibPlugin : Plugin<Project> {
                 task.inputs.dir(out)
 
                 task.doFirst {
+                    out.mkdirs()
                     applyProjectTransforms(project, inputs, out, ext)
                 }
             }

@@ -1,15 +1,12 @@
 package net.typho.big_shot_lib.api.math.vec
 
 import com.mojang.serialization.Codec
-import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import org.joml.Vector3d
 import org.joml.Vector3f
 import org.joml.Vector3i
-
-val IVec3<Int>.blockPos: BlockPos
-    get() = BlockPos(x, y, z)
 
 interface IVec3<N : Number> {
     val opSet: OperatorSet<N>
@@ -275,6 +272,9 @@ interface IVec3<N : Number> {
 
         @JvmStatic
         fun IVec3<Double>.toJOML() = Vector3d(x, y, z)
+
+        @JvmStatic
+        operator fun IVec3<Int>.plus(dir: Direction) = plus(dir.stepX, dir.stepY, dir.stepZ)
 
         @JvmStatic
         inline fun <reified N : Number> Array<IVec3<N>>.flat(): Array<N> {

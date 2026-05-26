@@ -9,7 +9,7 @@ import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad
 import net.typho.big_shot_lib.api.client.rendering.util.BlockChunkLayer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
-import net.typho.big_shot_lib.api.math.NeoDirection
+import net.minecraft.core.Direction
 import net.typho.big_shot_lib.api.math.vec.IVec3
 
 interface BlockUtil {
@@ -24,7 +24,7 @@ interface BlockUtil {
     fun shouldRenderFace(
         level: BlockGetter,
         pos: IVec3<Int>,
-        direction: NeoDirection,
+        direction: Direction,
         state: BlockState = level.getBlockState(BlockPos(pos.x, pos.y, pos.z))
     ): Boolean
 
@@ -32,7 +32,7 @@ interface BlockUtil {
         state: BlockState,
         level: Level,
         pos: IVec3<Int>,
-        out: (direction: NeoDirection?, quads: List<NeoBakedQuad>) -> Unit
+        out: (direction: Direction?, quads: List<NeoBakedQuad>) -> Unit
     )
 
     fun getFluidQuads(
@@ -40,7 +40,7 @@ interface BlockUtil {
         fluid: FluidState,
         level: Level,
         pos: IVec3<Int>,
-        occlusionCheck: (level: BlockGetter, from: BlockPos, direction: NeoDirection, otherState: BlockState) -> Boolean,
+        occlusionCheck: (level: BlockGetter, from: BlockPos, direction: Direction, otherState: BlockState) -> Boolean,
         out: (quad: NeoBakedQuad) -> Unit
     )
 

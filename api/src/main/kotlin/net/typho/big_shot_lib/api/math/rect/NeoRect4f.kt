@@ -5,10 +5,11 @@ import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.vec.IVec4
 import net.typho.big_shot_lib.api.math.vec.NeoVec4f
 
-class NeoRect4f : AbstractRect4<Float> {
-    constructor(min: IVec4<Float>, max: IVec4<Float>) : super(min, max)
-
-    constructor(x1: Float, y1: Float, z1: Float, w1: Float, x2: Float, y2: Float, z2: Float, w2: Float) : super(NeoVec4f(x1, y1, z1, w1), NeoVec4f(x2, y2, z2, w2))
+class NeoRect4f(
+    override val min: IVec4<Float>,
+    override val max: IVec4<Float>
+) : IRect4<Float> {
+    constructor(x1: Float, y1: Float, z1: Float, w1: Float, x2: Float, y2: Float, z2: Float, w2: Float) : this(NeoVec4f(x1, y1, z1, w1), NeoVec4f(x2, y2, z2, w2))
 
     override val opSet: OperatorSet<Float>
         get() = FloatOperatorSet

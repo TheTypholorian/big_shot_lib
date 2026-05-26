@@ -2,10 +2,8 @@ package net.typho.big_shot_lib.api.client.rendering
 
 import com.google.gson.JsonParser
 import com.mojang.serialization.DataResult
-import net.minecraft.core.Registry
 import net.minecraft.resources.FileToIdConverter
 import net.minecraft.resources.Identifier
-import net.minecraft.resources.ResourceKey
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.BigShotApi.lookupOrThrow
@@ -15,7 +13,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
-import net.typho.big_shot_lib.api.client.util.resource.ResourceManagerReloadListener
+import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.client.util.resource.ResourceRegistry
 import net.typho.big_shot_lib.api.util.*
 import java.io.BufferedReader
@@ -86,7 +84,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
         override fun onInitializeClient() {
         }
 
-        override fun addReloadListeners(out: (listener: ResourceManagerReloadListener) -> Unit) {
+        override fun addReloadListeners(out: (listener: NeoResourceManagerReloadListener) -> Unit) {
             out(NeoShaderLoader)
         }
     }
