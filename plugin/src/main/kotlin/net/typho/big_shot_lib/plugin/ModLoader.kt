@@ -10,14 +10,6 @@ enum class ModLoader {
 
         override fun mapOnlyInAnnotation(visitor: ClassVisitor, client: Boolean) {
         }
-
-    },
-    QUILT {
-        override val mappedOnlyInAnnotationName = null
-
-        override fun mapOnlyInAnnotation(visitor: ClassVisitor, client: Boolean) {
-            TODO("Not yet implemented")
-        }
     },
     FABRIC {
         override val mappedOnlyInAnnotationName = "net/fabricmc/api/Environment"

@@ -97,12 +97,6 @@ class BigShotLibPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val ext = project.extensions.create("bigShotLib", BigShotLibPluginExtension::class.java)
 
-        val modMetadataTask = project.tasks.register("generateModMetadata", GenerateModMetadataTask::class.java) {
-            it.group = "big_shot_lib"
-            it.metadata.set(ext.metadata)
-            it.destination.set(project.layout.buildDirectory.dir("generated/bigShotLib"))
-        }
-
         project.afterEvaluate {
             println("[Big Shot Lib] Class Renames:")
             ext.transformInfo.classRenames.get().forEach { println("\t${it.from.get()} to ${it.to.get()}") }

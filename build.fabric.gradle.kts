@@ -118,12 +118,26 @@ tasks.withType<Javadoc>().configureEach {
     enabled = false
 }
 
+val mappingsFile = project.file("mappings.tiny")
+
+if (mappingsFile.exists()) {
+    bigShotLib {
+        transformInfo {
+            classRenames.empty()
+            methodRenames.empty()
+            fieldRenames.empty()
+        }
+    }
+}
+
 dependencies {
     minecraft("com.mojang:minecraft:${property("deps.minecraft")}")
     mappings(loom.layered {
         officialMojangMappings()
         if (hasProperty("deps.parchment"))
             parchment("org.parchmentmc.data:parchment-${property("deps.parchment")}@zip")
+        if (mappingsFile.exists())
+            mappings(mappingsFile)
     })
     modImplementation("net.fabricmc:fabric-loader:0.17.3")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")

@@ -130,23 +130,19 @@ class DependencyTransformer(
         }
 
         for (injection in info.staticMethodInjections.get()) {
-            val targetCls = remapper.mapType(injection.targetClass.get())
+            val targetCls = injection.targetClass.get()
 
             if (targetCls == name) {
-                val redirectCls = remapper.mapType(injection.redirectTo.get().cls.get())
-                val redirectDesc = remapper.mapMethodDesc(injection.redirectTo.get().desc.get())
-                val redirectName = remapper.mapMethodName(redirectCls, injection.targetMethodName.get(), redirectDesc)
-
                 val method = super.visitMethod(
                     Opcodes.ACC_PUBLIC or Opcodes.ACC_STATIC,
-                    redirectName,
-                    redirectDesc,
+                    injection.targetMethodName.get(),
+                    injection.redirectTo.get().desc.get(),
                     injection.signature.orNull?.let { remapper.mapSignature(it, false) },
                     injection.exceptions.orNull?.map { remapper.mapType(it) }?.toTypedArray()
                 )
 
-                val args = Type.getArgumentTypes(redirectDesc)
-                val ret = Type.getReturnType(redirectDesc)
+                val args = Type.getArgumentTypes(injection.redirectTo.get().desc.get())
+                val ret = Type.getReturnType(injection.redirectTo.get().desc.get())
 
                 var slot = 0
 
@@ -157,9 +153,9 @@ class DependencyTransformer(
 
                 method.visitMethodInsn(
                     Opcodes.INVOKESTATIC,
-                    redirectCls,
-                    redirectName,
-                    redirectName,
+                    injection.redirectTo.get().cls.get(),
+                    injection.targetMethodName.get(),
+                    injection.targetMethodName.get(),
                     false
                 )
 

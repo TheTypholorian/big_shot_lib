@@ -18,14 +18,10 @@ class MixinInjectionRemapper(
             val index = value.indexOf('(')
 
             if (index == -1) {
-                val n = remapper.mapMethodName(mixinTarget, value, null)
-                println("remapping $value to $n")
-                super.visit(name, n)
+                super.visit(name, remapper.mapMethodName(mixinTarget, value, null))
             } else {
                 val desc = value.substring(index)
-                val n = remapper.mapMethodName(mixinTarget, value.substring(0, index), desc) + remapper.mapMethodDesc(desc)
-                println("remapping $value to $n")
-                super.visit(name, n)
+                super.visit(name, remapper.mapMethodName(mixinTarget, value.substring(0, index), desc) + remapper.mapMethodDesc(desc))
             }
         } else {
             super.visit(name, value)

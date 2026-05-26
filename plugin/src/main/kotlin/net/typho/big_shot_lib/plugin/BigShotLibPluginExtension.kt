@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.plugin
 
-import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle
 import net.typho.big_shot_lib.plugin.transform.util.FieldDesc
 import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
 import org.gradle.api.Action
@@ -14,10 +13,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
     abstract val loader: Property<ModLoader>
     val metadata: Metadata = objects.newInstance(Metadata::class.java)
     val transformInfo: TransformInfo = objects.newInstance(TransformInfo::class.java, version)
-
-    fun metadata(action: Action<in Metadata>) {
-        action.execute(metadata)
-    }
 
     fun transformInfo(action: Action<in TransformInfo>) {
         action.execute(transformInfo)
@@ -37,17 +32,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
 
     fun loader(value: ModLoader) {
         loader.set(value)
-    }
-
-    abstract class Metadata {
-        abstract val modId: Property<String>
-        abstract val modName: Property<String>
-        abstract val description: Property<String>
-        abstract val authors: Property<Array<String>>
-        abstract val homePage: Property<String>
-        abstract val issuesPage: Property<String>
-        abstract val sourcesPage: Property<String>
-        abstract val license: Property<String>
     }
 
     abstract class TransformInfo @Inject constructor(

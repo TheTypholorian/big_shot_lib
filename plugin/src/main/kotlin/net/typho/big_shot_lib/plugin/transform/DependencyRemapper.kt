@@ -9,6 +9,13 @@ class DependencyRemapper(
     api: Int
 ) : Remapper(api) {
     override fun map(internalName: String): String {
+        if (internalName.contains("net/minecraft/resources/Identifier") && Math.random() < 0.0001) {
+            println("hey you're asking me to remap identifier uh oh")
+            NullPointerException().printStackTrace()
+        } else if (internalName.contains("net/minecraft/resources/ResourceLocation") && Math.random() < 0.0001) {
+            println("remapping res loc, yay")
+        }
+
         return info.classRenames.get().lastOrNull { it.from.get() == internalName }?.to?.get() ?: internalName
     }
 
