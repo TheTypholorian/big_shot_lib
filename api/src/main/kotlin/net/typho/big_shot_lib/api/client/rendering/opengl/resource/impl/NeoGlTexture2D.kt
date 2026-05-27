@@ -25,23 +25,6 @@ open class NeoGlTexture2D(
     override var height: Int = height
         protected set
 
-    /*
-    override fun bind(target: GlTextureTarget): GlBoundTexture2D {
-        checkUsable()
-        if (target.dimensions != 2) {
-            throw IllegalArgumentException("Non-2D texture target $target")
-        }
-
-        return object : GlBoundTexture2D.Basic(this, target, NeoGlStateManager.INSTANCE.textures[target].push(glId)) {
-            override fun resize(width: Int, height: Int, format: GlTextureFormat) {
-                this@NeoGlTexture2D.format = format
-                this@NeoGlTexture2D.width = width
-                this@NeoGlTexture2D.height = height
-            }
-        }
-    }
-     */
-
     companion object {
         @JvmStatic
         fun ofExisting(

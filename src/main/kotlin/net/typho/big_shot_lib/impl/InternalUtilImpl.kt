@@ -125,14 +125,6 @@ object InternalUtilImpl : InternalUtil {
         return Minecraft.getInstance().textureManager.getTexture(location).getExtensionValue()
     }
 
-    override fun getAtlas(location: Identifier): NeoAtlas {
-        //? if <1.21.9 {
-        return Minecraft.getInstance().modelManager.getAtlas(location.withPrefix("textures/atlas/").withSuffix(".png")).getExtensionValue()
-        //? } else {
-        /*return Minecraft.getInstance().atlasManager.getAtlasOrThrow(location.mojang).getExtensionValue()
-        *///? }
-    }
-
     override fun transformNormal(
         pose: PoseStack.Pose,
         x: Float,

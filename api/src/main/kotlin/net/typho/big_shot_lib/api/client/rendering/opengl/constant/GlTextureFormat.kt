@@ -23,8 +23,6 @@ enum class GlTextureFormat(
     @JvmField
     val hasStencil: Boolean = false
 ) : GlConstant {
-    NULL(0, 0),
-
     RED(GL_RED, GL_RED, hasColor = true),
     RG(GL_RG, GL_RG, hasColor = true),
     RGB(GL_RGB, GL_RGB, hasColor = true),

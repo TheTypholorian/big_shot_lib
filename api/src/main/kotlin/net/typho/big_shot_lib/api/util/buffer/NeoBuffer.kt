@@ -2,8 +2,9 @@ package net.typho.big_shot_lib.api.util.buffer
 
 import net.typho.big_shot_lib.api.math.vec.*
 import org.lwjgl.system.MemoryUtil.*
-import org.lwjgl.system.NativeResource
-import java.io.*
+import java.io.DataInput
+import java.io.DataInputStream
+import java.io.DataOutput
 import java.lang.ref.Cleaner
 import java.nio.ByteBuffer
 
@@ -360,14 +361,14 @@ abstract class NeoBuffer : Iterable<Byte> {
     open class Native(
         override val address: Long,
         override val size: Long
-    ) : NeoBuffer(), NativeResource {
+    ) : NeoBuffer(), AutoCloseable {
         var isFreed: Boolean = false
             protected set
         override val nio: ByteBuffer = memByteBuffer(address, size.toInt())
 
         constructor(size: Long) : this(nmemAllocChecked(size), size)
 
-        override fun free() {
+        override fun close() {
             if (!isFreed) {
                 isFreed = true
                 nmemFree(address)

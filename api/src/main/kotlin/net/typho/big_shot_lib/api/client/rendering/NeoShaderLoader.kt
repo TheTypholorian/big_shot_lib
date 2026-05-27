@@ -67,7 +67,7 @@ val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> 
                 return DataResult.success(shader)
             } else {
                 val message = "Error compiling shader:\n${shader.getInfoLog()}"
-                shader.free()
+                shader.close()
                 return DataResult.error { message }
             }
         }
@@ -103,7 +103,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
             val shader = shaderRegistries[GlShaderType.valueOf(entry.key.uppercase())][shaderKey]
 
             if (shader == null) {
-                program.free()
+                program.close()
                 return DataResult.error { "Unknown ${entry.key} shader $shaderKey" }
             }
 
@@ -114,7 +114,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
             return DataResult.success(program)
         } else {
             val message = "Error linking program:\n${program.getInfoLog()}"
-            program.free()
+            program.close()
             return DataResult.error { message }
         }
     }

@@ -1,7 +1,10 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl
 
+import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.plugin.Namespace
 import kotlin.enums.enumEntries
 
+@Namespace(BigShotApi.MOD_ID)
 interface GlNamed {
     val glId: Int
 

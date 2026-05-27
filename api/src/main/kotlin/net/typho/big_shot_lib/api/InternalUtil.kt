@@ -41,8 +41,6 @@ interface InternalUtil {
 
     fun getTexture(location: Identifier): GlTexture2D?
 
-    fun getAtlas(location: Identifier): NeoAtlas?
-
     fun transformNormal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): IVec3<Float>
 
     fun createShader(location: Identifier, type: GlShaderType, glId: Int): GlShader
