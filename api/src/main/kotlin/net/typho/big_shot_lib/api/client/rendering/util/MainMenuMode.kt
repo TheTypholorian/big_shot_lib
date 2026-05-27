@@ -32,30 +32,6 @@ data class MainMenuMode(
             editionHoverLightColor = NeoColor.WHITE,
             editionHoverDarkColor = NeoColor.WHITE
         )
-        @JvmField
-        val VIBRANCY_1 = MainMenuMode(
-            priority = 4000,
-            id = BigShotApi.id("vibrancy_1"),
-            panorama = CubeMap(BigShotApi.id("textures/gui/title/background/trial_chamber")),
-            editionHoverLightColor = NeoColor.RGB(222, 177, 45),
-            editionHoverDarkColor = NeoColor.RGB(177, 103, 18)
-        )
-        @JvmField
-        val VIBRANCY_2 = MainMenuMode(
-            priority = 3000,
-            id = BigShotApi.id("vibrancy_2"),
-            panorama = CubeMap(BigShotApi.id("textures/gui/title/background/lush_cave")),
-            editionHoverLightColor = NeoColor.RGB(247, 226, 107),
-            editionHoverDarkColor = NeoColor.RGB(244, 192, 94)
-        )
-        @JvmField
-        val VIBRANCY_3 = MainMenuMode(
-            priority = 2000,
-            id = BigShotApi.id("vibrancy_3"),
-            panorama = CubeMap(BigShotApi.id("textures/gui/title/background/ancient_city")),
-            editionHoverLightColor = NeoColor.RGB(122, 245, 248),
-            editionHoverDarkColor = NeoColor.RGB(42, 201, 207)
-        )
 
         @JvmStatic
         var selected: MainMenuMode = BigShotClientEntrypoint.mainMenuModes.first()

@@ -129,7 +129,7 @@ interface BigShotClientEntrypoint {
         @get:JvmName("getMainMenuModes")
         val mainMenuModes by lazy {
             entrypoints.flatMapTo(
-                mutableListOf(MainMenuMode.MINECRAFT, MainMenuMode.VIBRANCY_1, MainMenuMode.VIBRANCY_2, MainMenuMode.VIBRANCY_3),
+                mutableListOf(MainMenuMode.MINECRAFT),
                 { it.loadMainMenuModes() }
             )
                 .also {
