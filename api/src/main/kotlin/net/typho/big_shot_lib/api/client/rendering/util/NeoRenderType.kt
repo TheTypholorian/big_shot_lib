@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi
@@ -30,9 +31,10 @@ interface NeoRenderType : GlDrawState, MaybeNamedResource {
 
         @JvmStatic
         @JvmOverloads
-        fun create(
+        @JvmName("create")
+        operator fun invoke(
             location: Identifier,
-            format: NeoVertexFormat,
+            format: VertexFormat,
             drawState: GlDrawState.Builder,
             defaultBufferSize: Int = 786432,
             mode: GlBeginMode = GlBeginMode.QUADS,

@@ -83,7 +83,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         abstract val interfaceInjections: ListProperty<InterfaceInjection>
         abstract val staticMethodInjections: ListProperty<StaticMethodInjection>
         abstract val argumentOverloadConverters: ListProperty<ArgumentOverloadConverter>
-        abstract val applyPostCompileTransforms: Property<Boolean>
 
         init {
             classRenames.convention(version.map {
@@ -190,7 +189,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 list
             })
             argumentOverloadConverters.convention(listOf())
-            applyPostCompileTransforms.convention(true)
         }
 
         fun renameClass(from: String, to: String) {
@@ -318,6 +316,25 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 "com/mojang/blaze3d/vertex/VertexConsumer",
                 "setNormal",
                 $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
+            )
+        }
+
+        fun defaultInterfaceInjections() {
+            injectInterface(
+                "net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType",
+                "net/minecraft/client/renderer/RenderType"
+            )
+            injectInterface(
+                "net/typho/big_shot_lib/api/client/rendering/util/NeoVertexConsumer",
+                "com/mojang/blaze3d/vertex/VertexConsumer"
+            )
+            injectInterface(
+                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/type/GlUniform",
+                "com/mojang/blaze3d/shaders/AbstractUniform"
+            )
+            injectInterface(
+                "net/typho/big_shot_lib/api/client/rendering/util/NeoVertexFormat",
+                "com/mojang/blaze3d/vertex/VertexFormat"
             )
         }
 

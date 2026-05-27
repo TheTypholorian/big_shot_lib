@@ -8,15 +8,9 @@ import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
 
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad;
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData;
-import net.minecraft.core.Direction;
-import net.typho.big_shot_lib.api.util.ImmutableExtension;
-import net.typho.big_shot_lib.api.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,89 +18,31 @@ import org.spongepowered.asm.mixin.Unique;
 
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(BakedQuad.class)
-public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad> {
+public abstract class BakedQuadMixin implements NeoBakedQuad {
+    @Unique
+    private NeoVertexData[] vibrancy$vertices;
+
     //? if <1.21.11 {
     @Shadow
     @Final
     protected int[] vertices;
-    @Shadow
-    @Final
-    protected int tintIndex;
 
-    @Shadow
-    public abstract boolean isTinted();
-
-    @Shadow
-    @Final
-    protected Direction direction;
-    @Shadow
-    @Final
-    protected TextureAtlasSprite sprite;
-
-    @Shadow
-    @Final
-    private boolean shade;
-    @Unique
-    private final NeoBakedQuad extensionValue = new NeoBakedQuad() {
-        private NeoVertexData[] vertices;
-
-        @Override
-        @NotNull
-        @SuppressWarnings("NullableProblems")
-        public NeoVertexData[] getVertices() {
-            if (vertices == null) {
-                vertices = new NeoVertexData[]{
-                        new NeoVertexData(BakedQuadMixin.this.vertices, 0),
-                        new NeoVertexData(BakedQuadMixin.this.vertices, 8),
-                        new NeoVertexData(BakedQuadMixin.this.vertices, 16),
-                        new NeoVertexData(BakedQuadMixin.this.vertices, 24)
-                };
-            }
-
-            return vertices;
+    @Override
+    @NotNull
+    public NeoVertexData[] getVertices() {
+        if (vibrancy$vertices == null) {
+            vibrancy$vertices = new NeoVertexData[]{
+                    new NeoVertexData(vertices, 0),
+                    new NeoVertexData(vertices, 8),
+                    new NeoVertexData(vertices, 16),
+                    new NeoVertexData(vertices, 24)
+            };
         }
 
-        @Override
-        @Nullable
-        public Integer getTintIndex() {
-            return isTinted() ? tintIndex : null;
-        }
-
-        @Override
-        @Nullable
-        public Direction getDirection() {
-            return direction;
-        }
-
-        @Override
-        @NotNull
-        public TextureAtlasSprite getSprite() {
-            return sprite;
-        }
-
-        @Override
-        public boolean getShade() {
-            return shade;
-        }
-    };
+        return vibrancy$vertices;
+    }
     //? } else {
     /*@Shadow
-    @Final
-    private int tintIndex;
-
-    @Shadow
-    public abstract boolean isTinted();
-
-    @Shadow
-    @Final
-    private Direction direction;
-    @Shadow
-    @Final
-    private TextureAtlasSprite sprite;
-    @Shadow
-    @Final
-    private boolean shade;
-    @Shadow
     @Final
     private Vector3fc position0;
     @Shadow
@@ -131,13 +67,13 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
     @Final
     private long packedUV3;
 
-    @Unique
-    private final NeoBakedQuad extensionValue = new NeoBakedQuad() {
-        @Override
-        @NotNull
-        @SuppressWarnings("NullableProblems")
-        public NeoVertexData[] getVertices() {
-            return new NeoVertexData[]{
+    @Override
+    @NotNull
+    @SuppressWarnings("NullableProblems")
+    public NeoVertexData[] getVertices() {
+        return
+        if (vibrancy$vertices == null) {
+            vibrancy$vertices = new NeoVertexData[]{
                     new NeoVertexData(new NeoVec3f(position0), null, new NeoVec2f(packedUV0), null, null, null),
                     new NeoVertexData(new NeoVec3f(position1), null, new NeoVec2f(packedUV1), null, null, null),
                     new NeoVertexData(new NeoVec3f(position2), null, new NeoVec2f(packedUV2), null, null, null),
@@ -145,33 +81,7 @@ public abstract class BakedQuadMixin implements ImmutableExtension<NeoBakedQuad>
             };
         }
 
-        @Override
-        @Nullable
-        public Integer getTintIndex() {
-            return isTinted() ? tintIndex : null;
-        }
-
-        @Override
-        @Nullable
-        public Direction getDirection() {
-            return direction == null ? null : DirectionKt.getNeo(direction);
-        }
-
-        @Override
-        @NotNull
-        public TextureAtlasSprite getSprite() {
-            return ImmutableExtensionKt.getExtensionValue(sprite);
-        }
-
-        @Override
-        public boolean getShade() {
-            return shade;
-        }
-    };
-    *///? }
-
-    @Override
-    public NeoBakedQuad getExtensionValue() {
-        return extensionValue;
+        return vibrancy$vertices;
     }
+    *///? }
 }

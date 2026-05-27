@@ -60,7 +60,7 @@ val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> 
             reader: BufferedReader,
             manager: ResourceManager
         ): DataResult<GlShader> {
-            val shader = GlShader.create(location, shaderType)
+            val shader = GlShader(location, shaderType)
             shader.source = NeoShaderLoader.preprocessors.fold(reader.readText().trim()) { code, preprocessor -> preprocessor.apply(location, code, manager) }
 
             if (shader.compile()) {
@@ -89,7 +89,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
     override fun decode(location: Identifier, reader: BufferedReader, manager: ResourceManager): DataResult<GlProgram> {
         val json = JsonParser.parseReader(reader).asJsonObject
         val formatKey = Identifier.parse(json.getAsJsonPrimitive("format").asString)
-        val program = GlProgram.create(location, NeoVertexFormats.REGISTRY[formatKey] ?: return DataResult.error { "Nonexistent vertex format $formatKey" })
+        val program = GlProgram(location, NeoVertexFormats.REGISTRY[formatKey] ?: return DataResult.error { "Nonexistent vertex format $formatKey" })
         val sources = json.getAsJsonObject("sources")
 
         for (entry in sources.asMap()) {

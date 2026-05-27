@@ -22,7 +22,8 @@ interface GlShader : NamedResource, GlResource {
     companion object {
         @JvmStatic
         @JvmOverloads
-        fun create(location: Identifier, type: GlShaderType, glId: Int = type.resourceType.create()): GlShader = InternalUtil.INSTANCE.createShader(
+        @JvmName("create")
+        operator fun invoke(location: Identifier, type: GlShaderType, glId: Int = type.resourceType.create()): GlShader = InternalUtil.INSTANCE.createShader(
             location,
             type,
             glId,

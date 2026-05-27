@@ -21,10 +21,6 @@ import kotlin.jvm.java
 
 class BigShotLibPlugin : Plugin<Project> {
     fun applyProjectTransforms(project: Project, inputs: FileCollection, out: File, ext: BigShotLibPluginExtension) {
-        if (!ext.transformInfo.applyPostCompileTransforms.get()) {
-            return
-        }
-
         println("[Big Shot Lib] Applying project transforms")
 
         out.deleteRecursively()

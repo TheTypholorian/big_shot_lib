@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
 
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
@@ -41,7 +42,8 @@ interface GlProgram : NamedResource, GlResource, UniformOutput {
     companion object {
         @JvmStatic
         @JvmOverloads
-        fun create(location: Identifier, format: NeoVertexFormat, glId: Int = GlResourceType.PROGRAM.create()): GlProgram = InternalUtil.INSTANCE.createProgram(
+        @JvmName("create")
+        operator fun invoke(location: Identifier, format: VertexFormat, glId: Int = GlResourceType.PROGRAM.create()): GlProgram = InternalUtil.INSTANCE.createProgram(
             location,
             format,
             glId,

@@ -287,7 +287,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
     }
 
     @Override
-    public void big_shot_lib$init(@NotNull Identifier location, @NotNull NeoVertexFormat format, int glId) {
+    public void big_shot_lib$init(@NotNull Identifier location, @NotNull VertexFormat format, int glId) {
         samplerMap = Maps.newHashMap();
         samplerNames = Lists.newArrayList();
         samplerLocations = Lists.newArrayList();
@@ -295,7 +295,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
         uniformLocations = Lists.newArrayList();
         uniformMap = Maps.newHashMap();
         name = BigShotApi.toShortString(location);
-        vertexFormat = ImmutableExtensionKt.getExtensionValue(format, VertexFormat.class);
+        vertexFormat = format;
         programId = glId;
     }
 

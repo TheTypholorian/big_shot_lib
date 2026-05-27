@@ -4,6 +4,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.math.vec.*
 import net.typho.big_shot_lib.api.util.NeoColor
+import net.typho.big_shot_lib.api.util.buffer.packInt
+import net.typho.big_shot_lib.api.util.buffer.packUInt
 
 data class NeoVertexData(
     @JvmField
@@ -19,9 +21,10 @@ data class NeoVertexData(
     @JvmField
     val normal: IVec3<Float>? = null
 ) {
+    @JvmOverloads
     constructor(
         data: IntArray,
-        offset: Int
+        offset: Int = 0
     ) : this(
         NeoVec3f(
             Float.fromBits(data[offset]),
@@ -62,7 +65,34 @@ data class NeoVertexData(
         normal ?: copy.normal,
     )
 
-    fun put(consumer: VertexConsumer) {
+    @OptIn(ExperimentalUnsignedTypes::class)
+    @JvmOverloads
+    fun packToInts(array: IntArray = IntArray(8), offset: Int = 0): IntArray {
+        array[offset] = pos.x.toRawBits()
+        array[offset + 1] = pos.y.toRawBits()
+        array[offset + 2] = pos.z.toRawBits()
+        color?.let {
+            array[offset + 3] = it.toPackedRGBA().toInt()
+        }
+        textureUV?.let {
+            array[offset + 4] = it.x.toRawBits()
+            array[offset + 5] = it.y.toRawBits()
+        }
+        overlayUV?.let {
+            array[offset + 6] = packInt(it.x.toShort(), it.y.toShort())
+        }
+        normal?.let {
+            array[offset + 7] = packInt(
+                (it.x * 127f).toInt().toByte(),
+                (it.y * 127f).toInt().toByte(),
+                (it.z * 127f).toInt().toByte(),
+                0.toByte()
+            )
+        }
+        return array
+    }
+
+    fun put(consumer: NeoVertexConsumer) {
         consumer.vertex(pos, color, textureUV, overlayUV, lightUV, normal)
     }
 

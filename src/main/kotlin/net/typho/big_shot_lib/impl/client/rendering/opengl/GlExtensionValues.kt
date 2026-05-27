@@ -9,12 +9,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.util.ImmutableExtension
 
+// TODO
 interface GlProgramExtensionValue : GlProgram, ImmutableExtension<ShaderInstance>
 
 interface GlShaderExtensionValue : GlShader, ImmutableExtension<Program>
-
-interface NeoVertexFormatExtensionValue : NeoVertexFormat, ImmutableExtension<VertexFormat>
-
-interface NeoVertexFormatElementExtensionValue : NeoVertexFormat.Element, ImmutableExtension<VertexFormatElement>
-
-interface NeoVertexFormatBuilderExtensionValue : NeoVertexFormat.Builder, ImmutableExtension<VertexFormat.Builder>

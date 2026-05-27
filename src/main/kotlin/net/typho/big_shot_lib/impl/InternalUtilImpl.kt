@@ -9,6 +9,9 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
+import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.texture.TextureAtlasSprite
+import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi.toShortString
 import net.typho.big_shot_lib.api.InternalUtil
@@ -23,7 +26,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.LayeringState
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
-import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
+import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
@@ -61,64 +64,55 @@ object InternalUtilImpl : InternalUtil {
         throw UnsupportedOperationException("Big Shot Lib requires sun.misc.Unsafe to be available.")
     }
 
-    override fun createVertexFormatBuilder(): NeoVertexFormat.Builder {
-        return VertexFormat.builder().getExtensionValue()
-    }
-
-    override val positionVertexElement: NeoVertexFormat.Element
+    override val positionVertexElement: VertexFormatElement
         //? if >=1.21 {
         get() = VertexFormatElement.POSITION.getExtensionValue()
         //? } else {
         /*get() = DefaultVertexFormat.ELEMENT_POSITION.getExtensionValue()
         *///? }
-    override val colorVertexElement: NeoVertexFormat.Element
+    override val colorVertexElement: VertexFormatElement
         //? if >=1.21 {
         get() = VertexFormatElement.COLOR.getExtensionValue()
         //? } else {
         /*get() = DefaultVertexFormat.ELEMENT_COLOR.getExtensionValue()
         *///? }
-    override val textureUVVertexElement: NeoVertexFormat.Element
+    override val textureUVVertexElement: VertexFormatElement
         //? if >=1.21 {
         get() = VertexFormatElement.UV0.getExtensionValue()
         //? } else {
         /*get() = DefaultVertexFormat.ELEMENT_UV0.getExtensionValue()
         *///? }
-    override val overlayUVVertexElement: NeoVertexFormat.Element
+    override val overlayUVVertexElement: VertexFormatElement
         //? if >=1.21 {
         get() = VertexFormatElement.UV1.getExtensionValue()
         //? } else {
         /*get() = DefaultVertexFormat.ELEMENT_UV1.getExtensionValue()
         *///? }
-    override val lightUVVertexElement: NeoVertexFormat.Element
+    override val lightUVVertexElement: VertexFormatElement
         //? if >=1.21 {
         get() = VertexFormatElement.UV2.getExtensionValue()
         //? } else {
         /*get() = DefaultVertexFormat.ELEMENT_UV2.getExtensionValue()
         *///? }
-    override val normalVertexElement: NeoVertexFormat.Element
+    override val normalVertexElement: VertexFormatElement
         //? if >=1.21 {
         get() = VertexFormatElement.NORMAL.getExtensionValue()
         //? } else {
         /*get() = DefaultVertexFormat.ELEMENT_NORMAL.getExtensionValue()
         *///? }
 
-    //? if <1.21.9 {
-    override val blitScreenVertexFormat: NeoVertexFormat = DefaultVertexFormat.BLIT_SCREEN.getExtensionValue()
-    //? } else {
-    /*override val blitScreenVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION.getExtensionValue()
-    *///? }
-    override val blockVertexFormat: NeoVertexFormat = DefaultVertexFormat.BLOCK.getExtensionValue()
-    override val newEntityVertexFormat: NeoVertexFormat = DefaultVertexFormat.NEW_ENTITY.getExtensionValue()
-    override val particleVertexFormat: NeoVertexFormat = DefaultVertexFormat.PARTICLE.getExtensionValue()
-    override val positionVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION.getExtensionValue()
-    override val positionColorVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_COLOR.getExtensionValue()
-    override val positionColorNormalVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_COLOR_NORMAL.getExtensionValue()
-    override val positionColorLightVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_COLOR_LIGHTMAP.getExtensionValue()
-    override val positionTexVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_TEX.getExtensionValue()
-    override val positionTexColorVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_TEX_COLOR.getExtensionValue()
-    override val positionColorTexLightVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP.getExtensionValue()
-    override val positionTexLightColorVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR.getExtensionValue()
-    override val positionTexColorNormalVertexFormat: NeoVertexFormat = DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL.getExtensionValue()
+    override val blockVertexFormat: VertexFormat = DefaultVertexFormat.BLOCK.getExtensionValue()
+    override val newEntityVertexFormat: VertexFormat = DefaultVertexFormat.NEW_ENTITY.getExtensionValue()
+    override val particleVertexFormat: VertexFormat = DefaultVertexFormat.PARTICLE.getExtensionValue()
+    override val positionVertexFormat: VertexFormat = DefaultVertexFormat.POSITION.getExtensionValue()
+    override val positionColorVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_COLOR.getExtensionValue()
+    override val positionColorNormalVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_COLOR_NORMAL.getExtensionValue()
+    override val positionColorLightVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_COLOR_LIGHTMAP.getExtensionValue()
+    override val positionTexVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX.getExtensionValue()
+    override val positionTexColorVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX_COLOR.getExtensionValue()
+    override val positionColorTexLightVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP.getExtensionValue()
+    override val positionTexLightColorVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR.getExtensionValue()
+    override val positionTexColorNormalVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL.getExtensionValue()
 
     override fun getTexture(location: Identifier): GlTexture2D {
         return Minecraft.getInstance().textureManager.getTexture(location).getExtensionValue()
@@ -147,7 +141,7 @@ object InternalUtilImpl : InternalUtil {
 
     override fun createProgram(
         location: Identifier,
-        format: NeoVertexFormat,
+        format: VertexFormat,
         glId: Int
     ): GlProgram {
         val shader = UNSAFE.allocateInstance(ShaderInstance::class.java) as ShaderInstance
@@ -157,7 +151,7 @@ object InternalUtilImpl : InternalUtil {
 
     override fun createRenderType(
         location: Identifier,
-        format: NeoVertexFormat,
+        format: VertexFormat,
         drawState: GlDrawState.Builder,
         defaultBufferSize: Int,
         mode: GlBeginMode,
@@ -237,5 +231,23 @@ object InternalUtilImpl : InternalUtil {
                 .setShaderState(shader)
                 .createCompositeState(isOutline)
         )
+    }
+
+    @OptIn(ExperimentalUnsignedTypes::class)
+    override fun createBakedQuad(
+        vertices: Array<NeoVertexData>,
+        tintIndex: Int,
+        direction: Direction,
+        sprite: TextureAtlasSprite,
+        shade: Boolean
+    ): BakedQuad {
+        val data = IntArray(32)
+
+        vertices[0].packToInts(data, 0)
+        vertices[1].packToInts(data, 8)
+        vertices[2].packToInts(data, 16)
+        vertices[3].packToInts(data, 24)
+
+        return BakedQuad(data, tintIndex, direction, sprite, shade)
     }
 }
