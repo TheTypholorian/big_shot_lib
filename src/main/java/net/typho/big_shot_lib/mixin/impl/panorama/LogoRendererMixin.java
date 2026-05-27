@@ -39,12 +39,6 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
     @Unique
     @Namespace(BigShotApi.MOD_ID)
     private double mouseY;
-    @Unique
-    @Namespace(BigShotApi.MOD_ID)
-    private int menuModeIndex = 0;
-    @Unique
-    @Namespace(BigShotApi.MOD_ID)
-    private MainMenuMode menuMode = BigShotClientEntrypoint.getMainMenuModes().getFirst();
 
     @ModifyArg(
             method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V",
@@ -54,8 +48,8 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
             )
     )
     private Identifier renderLogo(Identifier texture) {
-        if (menuMode.logoImage != null) {
-            return menuMode.logoImage;
+        if (MainMenuMode.getSelected().logoImage != null) {
+            return MainMenuMode.getSelected().logoImage;
         } else {
             return texture;
         }
@@ -83,8 +77,8 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
             Operation<Void> original
     ) {
         if (enabled) {
-            if (menuMode.editionImage != null) {
-                texture = menuMode.editionImage;
+            if (MainMenuMode.getSelected().editionImage != null) {
+                texture = MainMenuMode.getSelected().editionImage;
             }
 
             if (rect != null && rect.containsPoint((int) mouseX, (int) mouseY)) {
@@ -99,8 +93,8 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
 
                 shader.setUniform("MousePos", uniform -> uniform.set((float) mouseX, (float) mouseY));
                 shader.setUniform("GuiSize", uniform -> uniform.set((float) guiGraphics.guiWidth(), (float) guiGraphics.guiHeight()));
-                shader.setUniform("DarkColor", uniform -> uniform.set(menuMode.editionHoverDarkColor));
-                shader.setUniform("LightColor", uniform -> uniform.set(menuMode.editionHoverLightColor));
+                shader.setUniform("DarkColor", uniform -> uniform.set(MainMenuMode.getSelected().editionHoverDarkColor));
+                shader.setUniform("LightColor", uniform -> uniform.set(MainMenuMode.getSelected().editionHoverLightColor));
 
                 int offset = 2;
 
@@ -126,8 +120,8 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (enabled && rect != null && rect.containsPoint((int) mouseX, (int) mouseY)) {
-            menuModeIndex = (menuModeIndex + 1) % BigShotClientEntrypoint.getMainMenuModes().size();
-            menuMode = BigShotClientEntrypoint.getMainMenuModes().get(menuModeIndex);
+            MainMenuMode.setSelected(MainMenuMode.getSelectedIndex() + 1);
+            Minecraft.getInstance().options.save();
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             return true;
         }
@@ -155,12 +149,6 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
     @Override
     public boolean isFocused() {
         return focused;
-    }
-
-    @Override
-    @NotNull
-    public MainMenuMode getMenuMode() {
-        return menuMode;
     }
 
     @Override

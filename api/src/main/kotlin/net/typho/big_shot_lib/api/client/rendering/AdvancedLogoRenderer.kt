@@ -8,5 +8,4 @@ import net.typho.big_shot_lib.api.plugin.Namespace
 @Namespace(BigShotApi.MOD_ID)
 interface AdvancedLogoRenderer : GuiEventListener {
     var enabled: Boolean
-    val menuMode: MainMenuMode
 }

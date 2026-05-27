@@ -3,8 +3,10 @@ package net.typho.big_shot_lib.mixin.impl.panorama;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LogoRenderer;
+import net.minecraft.client.gui.screens.AccessibilityOnboardingScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.renderer.CubeMap;
@@ -28,22 +30,22 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-@Mixin(TitleScreen.class)
-public abstract class TitleScreenMixin extends Screen {
+@Mixin(AccessibilityOnboardingScreen.class)
+public abstract class AccessibilityOnboardingScreenMixin extends Screen {
     @Shadow
     @Final
     private LogoRenderer logoRenderer;
 
-    protected TitleScreenMixin(Component title) {
+    protected AccessibilityOnboardingScreenMixin(Component title) {
         super(title);
     }
 
     @Inject(
-            method = "<init>(ZLnet/minecraft/client/gui/components/LogoRenderer;)V",
+            method = "<init>",
             at = @At("TAIL")
     )
-    private void init(boolean fading, LogoRenderer logoRenderer, CallbackInfo ci) {
-        ((AdvancedLogoRenderer) this.logoRenderer).setEnabled(true);
+    private void init(Options options, Runnable onClose, CallbackInfo ci) {
+        ((AdvancedLogoRenderer) logoRenderer).setEnabled(true);
     }
 
     @WrapMethod(
@@ -76,36 +78,5 @@ public abstract class TitleScreenMixin extends Screen {
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @ModifyArg(
-            method = "preloadResources",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/concurrent/CompletableFuture;allOf([Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;"
-            )
-    )
-    private static CompletableFuture<?>[] preloadResources(
-            CompletableFuture<?>[] cfs,
-            @Local(argsOnly = true) TextureManager textures,
-            @Local(argsOnly = true) Executor backgroundExecutor
-    ) {
-        List<CompletableFuture<?>> futures = new ArrayList<>(Arrays.asList(cfs));
-
-        for (MainMenuMode mode : BigShotClientEntrypoint.getMainMenuModes()) {
-            if (mode.panorama != null) {
-                futures.add(mode.panorama.preload(textures, backgroundExecutor));
-            }
-
-            if (mode.logoImage != null) {
-                futures.add(textures.preload(mode.logoImage, backgroundExecutor));
-            }
-
-            if (mode.editionImage != null) {
-                futures.add(textures.preload(mode.editionImage, backgroundExecutor));
-            }
-        }
-
-        return futures.toArray(CompletableFuture[]::new);
     }
 }
