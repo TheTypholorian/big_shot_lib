@@ -49,9 +49,7 @@ interface GlProgram : NamedResource, GlResource, UniformOutput {
             glId,
         )
 
-        operator fun get(location: Identifier): GlProgram {
-            TODO()
-        }
+        operator fun get(location: Identifier): GlProgram? = InternalUtil.INSTANCE.getProgram(location)
 
         @JvmField
         val BUILTINS = Builtins::class.loadService()

@@ -15,6 +15,7 @@ import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi.toShortString
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
@@ -116,6 +117,10 @@ object InternalUtilImpl : InternalUtil {
 
     override fun getTexture(location: Identifier): GlTexture2D {
         return Minecraft.getInstance().textureManager.getTexture(location).getExtensionValue()
+    }
+
+    override fun getProgram(location: Identifier): GlProgram? {
+        return Minecraft.getInstance().gameRenderer.getShader(location.toShortString())?.getExtensionValue() ?: NeoShaderLoader[location]
     }
 
     override fun transformNormal(

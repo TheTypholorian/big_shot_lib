@@ -80,8 +80,17 @@ public interface VertexConsumerMixin extends NeoVertexConsumer {
         return setNormal(x, y, z);
     }
 
+    //? if <1.21 {
+    /*@Shadow
+    void endVertex();
+
     @Override
     default void end() {
-        // TODO
+        endVertex();
     }
+    *///? } else {
+    @Override
+    default void end() {
+    }
+    //? }
 }
