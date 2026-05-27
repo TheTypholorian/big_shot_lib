@@ -14,7 +14,6 @@ import net.typho.big_shot_lib.api.util.NeoColor
 interface NeoGlStateManager {
     val buffers: KeyedDelegate<GlBufferTarget, Int>
     var program: Int
-    var programPipeline: Int
     var vertexArray: Int
     var texture: Int
     var renderbuffer: Int

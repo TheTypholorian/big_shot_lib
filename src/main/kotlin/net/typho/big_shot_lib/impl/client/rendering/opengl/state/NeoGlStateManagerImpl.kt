@@ -54,13 +54,6 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     override var program: Int
         get() = boundProgram
         set(value) = GlStateManager._glUseProgram(value)
-    override var programPipeline: Int = 0
-        set(value) {
-            if (field != value) {
-                field = value
-                glBindProgramPipeline(value)
-            }
-        }
     override var vertexArray: Int
         get() = boundVertexArray
         set(value) = GlStateManager._glBindVertexArray(value)
