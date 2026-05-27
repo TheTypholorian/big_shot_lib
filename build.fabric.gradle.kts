@@ -35,6 +35,10 @@ bigShotLib {
             "net/typho/big_shot_lib/api/client/rendering/util/NeoVertexConsumer",
             "com/mojang/blaze3d/vertex/VertexConsumer"
         )
+        injectInterface(
+            "net/typho/big_shot_lib/api/client/rendering/opengl/resource/type/GlUniform",
+            "com/mojang/blaze3d/shaders/AbstractUniform"
+        )
 
         overloadArguments(
             "net/minecraft/client/renderer/RenderType",
@@ -164,7 +168,11 @@ dependencies {
     })
     modImplementation("net.fabricmc:fabric-loader:0.17.3")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
+
     modImplementation(libs.flk)
+
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 
     //modImplementation("com.tterrag:registrate:Registrate:${property("deps.registrate")}")
 }

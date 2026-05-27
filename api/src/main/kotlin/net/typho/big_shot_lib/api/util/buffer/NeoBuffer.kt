@@ -388,7 +388,7 @@ abstract class NeoBuffer : Iterable<Byte> {
 
         constructor(size: Long) : super(size)
 
-        override fun free() {
+        override fun close() {
             if (!isFreed) {
                 isFreed = true
                 cleanup.clean()

@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL41.GL_PROGRAM_PIPELINE_BINDING
 import org.lwjgl.opengl.GL41.glBindProgramPipeline
 import org.lwjgl.system.MemoryStack
-import kotlin.jdk7.use
+import kotlin.io.use
 
 object NeoGlStateManagerImpl : NeoGlStateManager {
     override val buffers: KeyedDelegate<GlBufferTarget, Int> = KeyedDelegate.of(
@@ -132,15 +132,17 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         )
         set(value) = GlStateManager._stencilOp(value.stencilFail.glId, value.depthFail.glId, value.depthPass.glId)
     override var viewport: IRect2<Int>
-        get() = MemoryStack.stackPush().use { stack ->
-            val box = stack.mallocInt(4)
-            glGetIntegerv(GL_VIEWPORT, box)
-            return NeoRect2i(
-                box.get(0),
-                box.get(1),
-                box.get(0) + box.get(2),
-                box.get(1) + box.get(3),
-            )
+        get() {
+            MemoryStack.stackPush().use<MemoryStack, Unit> { stack ->
+                val box = stack.mallocInt(4)
+                glGetIntegerv(GL_VIEWPORT, box)
+                return NeoRect2i(
+                    box.get(0),
+                    box.get(1),
+                    box.get(0) + box.get(2),
+                    box.get(1) + box.get(3),
+                )
+            }
         }
         set(value) = GlStateManager._viewport(value.min.x, value.min.y, value.size.x, value.size.y)
     override var blendEnabled: Boolean

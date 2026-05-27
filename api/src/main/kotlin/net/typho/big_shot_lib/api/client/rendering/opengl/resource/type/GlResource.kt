@@ -19,6 +19,4 @@ interface GlResource : GlNamed, AutoCloseable {
     }
 
     override fun close()
-
-    interface Container : GlResource
 }

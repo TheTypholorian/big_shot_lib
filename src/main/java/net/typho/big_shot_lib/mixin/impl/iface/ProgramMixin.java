@@ -93,7 +93,7 @@ public abstract class ProgramMixin implements ImmutableExtension<GlShaderExtensi
         }
 
         @Override
-        public void free() {
+        public void close() {
             ProgramMixin.this.close();
         }
     };

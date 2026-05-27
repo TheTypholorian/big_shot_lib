@@ -30,6 +30,10 @@ bigShotLib {
             "net/typho/big_shot_lib/api/client/rendering/util/NeoVertexConsumer",
             "com/mojang/blaze3d/vertex/VertexConsumer"
         )
+        injectInterface(
+            "net/typho/big_shot_lib/api/client/rendering/opengl/resource/type/GlUniform",
+            "com/mojang/blaze3d/shaders/AbstractUniform"
+        )
 
         overloadArguments(
             "net/minecraft/client/renderer/RenderType",
@@ -160,6 +164,8 @@ repositories {
 
 dependencies {
     implementation(libs.kff)
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks {

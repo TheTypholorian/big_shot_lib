@@ -11,7 +11,7 @@ open class NeoGlResource(
     final override var freed = false
         protected set
 
-    override fun free() {
+    override fun close() {
         if (!freed) {
             freed = true
             GlQueue.INSTANCE.runOrQueue { type.destroy(glId) }

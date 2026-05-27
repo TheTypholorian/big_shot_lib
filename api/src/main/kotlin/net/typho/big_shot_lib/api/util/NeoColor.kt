@@ -11,6 +11,10 @@ import net.typho.big_shot_lib.api.util.buffer.packInt
 import net.typho.big_shot_lib.api.util.buffer.packUInt
 import net.typho.big_shot_lib.api.util.buffer.ubyteAt
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
+import org.joml.Vector3f
+import org.joml.Vector3i
+import org.joml.Vector4f
+import org.joml.Vector4i
 import java.awt.Color
 
 interface NeoColor {
@@ -170,11 +174,15 @@ interface NeoColor {
 
         constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f, color.red.toUByte(), color.green.toUByte(), color.blue.toUByte(), color.alpha.toUByte(), color)
 
-        constructor(color: IVec3<Int>) : this(color.r, color.g, color.b, null)
+        constructor(color: Vector3i) : this(color.x, color.y, color.z, null)
+
+        constructor(color: Vector3f) : this(color.x, color.y, color.z, null)
 
         constructor(color: IVec3<Float>) : this(color.r, color.g, color.b, null)
 
-        constructor(color: IVec4<Int>) : this(color.r, color.g, color.b, color.a)
+        constructor(color: Vector4i) : this(color.x, color.y, color.z, color.w)
+
+        constructor(color: Vector4f) : this(color.x, color.y, color.z, color.w)
 
         constructor(color: IVec4<Float>) : this(color.r, color.g, color.b, color.a)
 
@@ -203,9 +211,11 @@ interface NeoColor {
 
         constructor(color: Color) : this(color.red, color.green, color.blue)
 
-        constructor(color: IVec3<Int>) : this(color.r, color.g, color.b)
+        constructor(color: Vector3i) : this(color.x, color.y, color.z)
 
-        constructor(color: IVec3<Float>) : this(color.r, color.g, color.b)
+        constructor(color: Vector3f) : this(color.x, color.y, color.z)
+
+        constructor(color: IVec3<Int>) : this(color.r, color.g, color.b)
 
         constructor(color: IntArray) : this(color[0], color[1], color[2])
 
@@ -235,9 +245,11 @@ interface NeoColor {
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)
 
-        constructor(color: IVec4<Int>) : this(color.r, color.g, color.b, color.a)
+        constructor(color: Vector4i) : this(color.x, color.y, color.z, color.w)
 
-        constructor(color: IVec4<Float>) : this(color.r, color.g, color.b, color.a)
+        constructor(color: Vector4f) : this(color.x, color.y, color.z, color.w)
+
+        constructor(color: IVec4<Int>) : this(color.r, color.g, color.b, color.a)
 
         constructor(color: IntArray) : this(color[0], color[1], color[2], color[3])
 
@@ -262,7 +274,9 @@ interface NeoColor {
 
         constructor(color: Color) : this(color.red, color.green, color.blue)
 
-        constructor(color: IVec3<Int>) : this(color.r, color.g, color.b)
+        constructor(color: Vector3i) : this(color.x, color.y, color.z)
+
+        constructor(color: Vector3f) : this(color.x, color.y, color.z)
 
         constructor(color: IVec3<Float>) : this(color.r, color.g, color.b)
 
@@ -294,7 +308,9 @@ interface NeoColor {
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)
 
-        constructor(color: IVec4<Int>) : this(color.r, color.g, color.b, color.a)
+        constructor(color: Vector4i) : this(color.x, color.y, color.z, color.w)
+
+        constructor(color: Vector4f) : this(color.x, color.y, color.z, color.w)
 
         constructor(color: IVec4<Float>) : this(color.r, color.g, color.b, color.a)
 

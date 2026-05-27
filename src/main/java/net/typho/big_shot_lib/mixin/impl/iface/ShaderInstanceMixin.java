@@ -191,7 +191,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
                 }
 
                 @Override
-                public void free() {
+                public void close() {
                     ShaderInstanceMixin.this.close();
                 }
 

@@ -23,10 +23,11 @@ import net.minecraft.core.Direction
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 
-abstract class BigShotCommonEntrypoint(modId: String) : ModEntrypoint(modId) {
-    abstract fun onInitialize()
+interface BigShotCommonEntrypoint {
+    fun onInitialize() {
+    }
 
-    open fun onBlockChanged(
+    fun onBlockChanged(
         level: Level,
         pos: BlockPos,
         old: BlockState,
@@ -34,19 +35,19 @@ abstract class BigShotCommonEntrypoint(modId: String) : ModEntrypoint(modId) {
     ) {
     }
 
-    open fun chunkLoaded(
+    fun chunkLoaded(
         level: LevelAccessor,
         chunk: ChunkAccess
     ) {
     }
 
-    open fun chunkUnloaded(
+    fun chunkUnloaded(
         level: LevelAccessor,
         chunk: ChunkAccess
     ) {
     }
 
-    open fun useItemOnBlock(
+    fun useItemOnBlock(
         level: Level,
         player: Player?,
         hand: InteractionHand,
@@ -58,7 +59,7 @@ abstract class BigShotCommonEntrypoint(modId: String) : ModEntrypoint(modId) {
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION
     }
 
-    open fun bonemeal(
+    fun bonemeal(
         level: Level,
         player: Player?,
         pos: BlockPos,
@@ -69,7 +70,7 @@ abstract class BigShotCommonEntrypoint(modId: String) : ModEntrypoint(modId) {
         return false
     }
 
-    open fun chatMessage(
+    fun chatMessage(
         player: Player,
         username: String,
         rawText: String,
@@ -78,14 +79,14 @@ abstract class BigShotCommonEntrypoint(modId: String) : ModEntrypoint(modId) {
         return message
     }
 
-    open fun commonCommands(
+    fun commonCommands(
         dispatcher: CommandDispatcher<CommandSourceStack>,
         environment: Commands.CommandSelection,
         context: CommandBuildContext
     ) {
     }
 
-    open fun serverTick(
+    fun serverTick(
         hasTime: () -> Boolean,
         server: MinecraftServer
     ) {

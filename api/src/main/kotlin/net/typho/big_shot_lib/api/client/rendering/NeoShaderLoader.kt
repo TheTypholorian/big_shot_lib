@@ -78,18 +78,12 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
     BigShotApi.id("shaders"),
     mutableListOf<ResourceRegistry<*>>(shaderIncludes).also { it.addAll(shaderRegistries.values) },
     mutableListOf(FileToIdConverter.json("neo/shaders"))
-) {
+), BigShotClientEntrypoint {
     @JvmField
     val preprocessors = hashSetOf<ShaderPreprocessor>(ShaderIncludePreprocessor)
 
-    // TODO unfuck this
-    object ClientInit : BigShotClientEntrypoint(BigShotApi.MOD_ID) {
-        override fun onInitializeClient() {
-        }
-
-        override fun addReloadListeners(out: (listener: NeoResourceManagerReloadListener) -> Unit) {
-            out(NeoShaderLoader)
-        }
+    override fun addReloadListeners(out: (listener: NeoResourceManagerReloadListener) -> Unit) {
+        out(NeoShaderLoader)
     }
 
     override fun decode(location: Identifier, reader: BufferedReader, manager: ResourceManager): DataResult<GlProgram> {

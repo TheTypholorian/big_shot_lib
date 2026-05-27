@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client.util
 
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.brigadier.CommandDispatcher
+import net.minecraft.client.Camera
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
@@ -23,31 +24,32 @@ import org.joml.FrustumIntersection
 import org.joml.Matrix4f
 import java.util.UUID
 
-abstract class BigShotClientEntrypoint(modId: String) : ModEntrypoint(modId) {
-    abstract fun onInitializeClient()
+interface BigShotClientEntrypoint {
+    fun onInitializeClient() {
+    }
 
-    open fun addReloadListeners(
+    fun addReloadListeners(
         out: (listener: NeoResourceManagerReloadListener) -> Unit
     ) {
     }
 
-    open fun addF3Info(
+    fun addF3Info(
         out: (location: Identifier, allowedWithReducedDebugInfo: Boolean, text: (out: (line: String) -> Unit) -> Unit) -> Unit
     ) {
     }
 
-    open fun displayInitialScreens(
+    fun displayInitialScreens(
         out: (text: Component, onClose: () -> Unit) -> Unit
     ) {
     }
 
-    open fun clientLevelChanged(
+    fun clientLevelChanged(
         old: ClientLevel?,
         new: ClientLevel?
     ) {
     }
 
-    open fun renderHand(
+    fun renderHand(
         hand: InteractionHand,
         poseStack: PoseStack,
         buffers: MultiBufferSource,
@@ -60,10 +62,10 @@ abstract class BigShotClientEntrypoint(modId: String) : ModEntrypoint(modId) {
     ) {
     }
 
-    open fun renderLevel(
+    fun renderLevel(
         stage: RenderLevelStage,
         levelRenderer: LevelRenderer,
-        camera: NeoCamera,
+        camera: Camera,
         level: ClientLevel?,
         projMat: Matrix4f,
         modelViewMat: Matrix4f,
@@ -74,13 +76,13 @@ abstract class BigShotClientEntrypoint(modId: String) : ModEntrypoint(modId) {
     ) {
     }
 
-    open fun clientCommands(
+    fun clientCommands(
         dispatcher: CommandDispatcher<CommandSourceStack>,
         context: CommandBuildContext
     ) {
     }
 
-    open fun displayResized(
+    fun displayResized(
         windowWidth: Int,
         windowHeight: Int,
         framebufferWidth: Int,
@@ -88,7 +90,7 @@ abstract class BigShotClientEntrypoint(modId: String) : ModEntrypoint(modId) {
     ) {
     }
 
-    open fun renderTooltip(
+    fun renderTooltip(
         stack: ItemStack,
         graphics: GuiGraphics,
         x: Int,
@@ -98,20 +100,20 @@ abstract class BigShotClientEntrypoint(modId: String) : ModEntrypoint(modId) {
     ) {
     }
 
-    open fun renderGui(
+    fun renderGui(
         graphics: GuiGraphics,
         partialTick: DeltaTracker
     ) {
     }
 
-    open fun clientChatMessage(
+    fun clientChatMessage(
         message: Component,
         type: ChatType.Bound?,
         sender: UUID
     ) {
     }
 
-    open fun clientTick() {
+    fun clientTick() {
     }
 
     companion object {

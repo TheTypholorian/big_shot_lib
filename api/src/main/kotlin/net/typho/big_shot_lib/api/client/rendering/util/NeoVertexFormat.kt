@@ -1,10 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
-import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
-import net.typho.big_shot_lib.api.util.*
 
 interface NeoVertexFormat : Iterable<NeoVertexFormat.Element> {
     val vertexSizeBytes: Int
