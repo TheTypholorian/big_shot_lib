@@ -11,7 +11,6 @@ stonecutter active "mc1_21_neoforge"
 stonecutter parameters {
     constants.match(node.metadata.project.substringAfterLast('_'), "fabric", "neoforge")
     filters.include("**/*.fsh", "**/*.vsh")
-    filters.exclude("**/*.accesswidener")
 
     replacements.string(current.parsed >= "1.21.5") {
         replace("com.mojang.blaze3d.platform.GlStateManager", "com.mojang.blaze3d.opengl.GlStateManager")

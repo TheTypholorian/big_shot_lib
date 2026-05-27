@@ -28,8 +28,6 @@ sealed interface BlendFunction {
         val DEFAULT = Separate(GlBlendingFactor.SRC_ALPHA, GlBlendingFactor.ONE_MINUS_SRC_ALPHA, GlBlendingFactor.ONE, GlBlendingFactor.ZERO)
     }
 
-    fun rawBind()
-
     @JvmRecord
     data class Basic(
         @JvmField
@@ -45,10 +43,6 @@ sealed interface BlendFunction {
                     NeoCodecs.enumCodec<GlBlendingFactor>().fieldOf("dest").forGetter { basic -> basic.dest }
                 ).apply(it, ::Basic)
             }
-        }
-
-        override fun rawBind() {
-            glBlendFunc(src.glId, dest.glId)
         }
 
         override fun hashCode(): Int {
@@ -95,10 +89,6 @@ sealed interface BlendFunction {
                     NeoCodecs.enumCodec<GlBlendingFactor>().fieldOf("destA").forGetter { basic -> basic.destA }
                 ).apply(it, ::Separate)
             }
-        }
-
-        override fun rawBind() {
-            glBlendFuncSeparate(src.glId, dest.glId, srcA.glId, destA.glId)
         }
 
         override fun hashCode(): Int {

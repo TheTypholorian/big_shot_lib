@@ -17,12 +17,12 @@ import net.typho.big_shot_lib.api.math.rect.IRect2
 import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import net.typho.big_shot_lib.api.util.KeyedDelegate
 import net.typho.big_shot_lib.api.util.NeoColor
+import net.typho.big_shot_lib.api.util.mutableEnumArrayMapOf
 import org.lwjgl.opengl.ARBImaging.GL_BLEND_COLOR
 import org.lwjgl.opengl.ARBImaging.GL_BLEND_EQUATION
 import org.lwjgl.opengl.GL11.glGetInteger
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL14.glBlendColor
-import org.lwjgl.opengl.GL20.GL_CURRENT_PROGRAM
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL41.GL_PROGRAM_PIPELINE_BINDING
 import org.lwjgl.opengl.GL41.glBindProgramPipeline
@@ -30,80 +30,99 @@ import org.lwjgl.system.MemoryStack
 import kotlin.io.use
 
 object NeoGlStateManagerImpl : NeoGlStateManager {
+    @JvmField
+    val boundBuffers = mutableEnumArrayMapOf<GlBufferTarget, Int> { 0 }
+    @JvmField
+    var boundProgram: Int = 0
+    @JvmField
+    var boundVertexArray: Int = 0
+    @JvmField
+    var boundRenderbuffer: Int = 0
+    @JvmField
+    var boundReadFramebuffer: Int = 0
+    @JvmField
+    var currentBlendEquation: GlBlendEquation = GlBlendEquation.ADD
+    @JvmField
+    var currentBlendFunction: BlendFunction = BlendFunction.NONE
+    @JvmField
+    var currentScissor: IRect2<Int>? = null
+
     override val buffers: KeyedDelegate<GlBufferTarget, Int> = KeyedDelegate.of(
-        { target -> glGetInteger(target.bindingId) },
+        { target -> boundBuffers[target] },
         { target, glId -> GlStateManager._glBindBuffer(target.glId, glId) }
     )
     override var program: Int
-        get() = glGetInteger(GL_CURRENT_PROGRAM)
+        get() = boundProgram
         set(value) = GlStateManager._glUseProgram(value)
-    override var programPipeline: Int
-        get() = glGetInteger(GL_PROGRAM_PIPELINE_BINDING)
-        set(value) = glBindProgramPipeline(value)
+    override var programPipeline: Int = 0
+        set(value) {
+            if (field != value) {
+                field = value
+                glBindProgramPipeline(value)
+            }
+        }
     override var vertexArray: Int
-        get() = glGetInteger(GL_VERTEX_ARRAY_BINDING)
+        get() = boundVertexArray
         set(value) = GlStateManager._glBindVertexArray(value)
     override var texture: Int
         get() = GlStateManager.TEXTURES[activeTexture].binding
         set(value) = GlStateManager._bindTexture(value)
     override var renderbuffer: Int
-        get() = glGetInteger(GL_RENDERBUFFER_BINDING)
+        get() = boundRenderbuffer
         set(value) = GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, value)
     override var framebuffer: Int
         get() = GlStateManager.getBoundFramebuffer()
         set(value) = GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, value)
     override var readFramebuffer: Int
-        get() = glGetInteger(GL_READ_FRAMEBUFFER_BINDING)
+        get() = boundReadFramebuffer
         set(value) = GlStateManager._glBindFramebuffer(GL_READ_FRAMEBUFFER, value)
     override var activeTexture: Int
         get() = GlStateManager._getActiveTexture() - GL_TEXTURE0
         set(value) = GlStateManager._activeTexture(value + GL_TEXTURE0)
-    override var blendColor: NeoColor
-        get() = NeoColor.RGBA(glGetInteger(GL_BLEND_COLOR))
-        set(value) = glBlendColor(value.redF, value.greenF, value.blueF, value.alphaF ?: 1f)
-    override var blendEquation: GlBlendEquation
-        get() = GlNamed.getEnum(glGetInteger(GL_BLEND_EQUATION))
-        set(value) = glBlendEquation(value.glId)
-    override var blendFunction: BlendFunction
-        get() = BlendFunction.Separate(
-            GlNamed.getEnum(glGetInteger(GL_BLEND_SRC_RGB)),
-            GlNamed.getEnum(glGetInteger(GL_BLEND_DST_RGB)),
-            GlNamed.getEnum(glGetInteger(GL_BLEND_SRC_ALPHA)),
-            GlNamed.getEnum(glGetInteger(GL_BLEND_DST_ALPHA)),
-        )
-        set(value) = value.rawBind()
-    override var colorMask: ColorMask
-        get() = MemoryStack.stackPush().use { stack ->
-            val mask = stack.malloc(4)
-            glGetBooleanv(GL_COLOR_WRITEMASK, mask)
-            return ColorMask(
-                mask.get(0).toInt() == GL_TRUE,
-                mask.get(1).toInt() == GL_TRUE,
-                mask.get(2).toInt() == GL_TRUE,
-                mask.get(3).toInt() == GL_TRUE,
-            )
+    override var blendColor: NeoColor = NeoColor.FULL_ON
+        set(value) {
+            field = value
+            glBlendColor(value.redF, value.greenF, value.blueF, value.alphaF ?: 1f)
         }
+    override var blendEquation: GlBlendEquation
+        get() = currentBlendEquation
+        set(value) = GlStateManager._blendEquation(value.glId)
+    override var blendFunction: BlendFunction
+        get() = currentBlendFunction
+        set(value) = when (value) {
+            is BlendFunction.Basic -> GlStateManager._blendFunc(value.src.glId, value.dest.glId)
+            is BlendFunction.Separate -> GlStateManager._blendFuncSeparate(value.src.glId, value.dest.glId, value.srcA.glId, value.destA.glId)
+        }
+    override var colorMask: ColorMask
+        get() = ColorMask(
+            GlStateManager.COLOR_MASK.red,
+            GlStateManager.COLOR_MASK.green,
+            GlStateManager.COLOR_MASK.blue,
+            GlStateManager.COLOR_MASK.alpha
+        )
         set(value) = GlStateManager._colorMask(value.red, value.green, value.blue, value.alpha)
     override var cullFace: GlCullFace
-        get() = GlNamed.getEnum(glGetInteger(GL_CULL_FACE_MODE))
-        set(value) = glCullFace(value.glId)
+        get() = GlNamed.getEnum(GlStateManager.CULL.mode)
+        set(value) {
+            if (value.glId != GlStateManager.CULL.mode) {
+                GlStateManager.CULL.mode = value.glId
+                glCullFace(value.glId)
+            }
+        }
     override var depthMask: Boolean
-        get() = glGetBoolean(GL_DEPTH_WRITEMASK)
+        get() = GlStateManager.DEPTH.mask
         set(value) = GlStateManager._depthMask(value)
     override var depthFunc: GlAlphaFunction
-        get() = GlNamed.getEnum(glGetInteger(GL_DEPTH_FUNC))
+        get() = GlNamed.getEnum(GlStateManager.DEPTH.func)
         set(value) = GlStateManager._depthFunc(value.glId)
-    override var polygonMode: GlPolygonMode
-        get() = GlNamed.getEnum(glGetInteger(GL_POLYGON_MODE))
-        set(value) = GlStateManager._polygonMode(GL_FRONT_AND_BACK, value.glId)
     override var polygonOffset: PolygonOffset
         get() = PolygonOffset(
-            glGetFloat(GL_POLYGON_OFFSET_FACTOR),
-            glGetFloat(GL_POLYGON_OFFSET_UNITS)
+            GlStateManager.POLY_OFFSET.factor,
+            GlStateManager.POLY_OFFSET.units
         )
         set(value) = GlStateManager._polygonOffset(value.factor, value.units)
     override var scissor: IRect2<Int>
-        get() = MemoryStack.stackPush().use { stack ->
+        get() = currentScissor ?: MemoryStack.stackPush().use { stack ->
             val box = stack.mallocInt(4)
             glGetIntegerv(GL_SCISSOR_BOX, box)
             return NeoRect2i(
@@ -116,56 +135,59 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         set(value) = GlStateManager._scissorBox(value.min.x, value.min.y, value.size.x, value.size.y)
     override var stencilFunction: StencilFunction
         get() = StencilFunction(
-            GlNamed.getEnum(glGetInteger(GL_STENCIL_FUNC)),
-            glGetInteger(GL_STENCIL_REF),
-            glGetInteger(GL_STENCIL_VALUE_MASK)
+            GlNamed.getEnum(GlStateManager.STENCIL.func.func),
+            glGetInteger(GlStateManager.STENCIL.func.ref),
+            glGetInteger(GlStateManager.STENCIL.func.mask)
         )
         set(value) = GlStateManager._stencilFunc(value.func.glId, value.ref, value.mask)
     override var stencilMask: Int
-        get() = glGetInteger(GL_STENCIL_WRITEMASK)
+        get() = GlStateManager.STENCIL.mask
         set(value) = GlStateManager._stencilMask(value)
     override var stencilOp: StencilOp
         get() = StencilOp(
-            GlNamed.getEnum(glGetInteger(GL_STENCIL_FAIL)),
-            GlNamed.getEnum(glGetInteger(GL_STENCIL_PASS_DEPTH_FAIL)),
-            GlNamed.getEnum(glGetInteger(GL_STENCIL_PASS_DEPTH_PASS))
+            GlNamed.getEnum(GlStateManager.STENCIL.fail),
+            GlNamed.getEnum(GlStateManager.STENCIL.zfail),
+            GlNamed.getEnum(GlStateManager.STENCIL.zpass)
         )
         set(value) = GlStateManager._stencilOp(value.stencilFail.glId, value.depthFail.glId, value.depthPass.glId)
     override var viewport: IRect2<Int>
-        get() {
-            MemoryStack.stackPush().use<MemoryStack, Unit> { stack ->
-                val box = stack.mallocInt(4)
-                glGetIntegerv(GL_VIEWPORT, box)
-                return NeoRect2i(
-                    box.get(0),
-                    box.get(1),
-                    box.get(0) + box.get(2),
-                    box.get(1) + box.get(3),
-                )
-            }
-        }
+        get() = NeoRect2i(
+            GlStateManager.Viewport.x(),
+            GlStateManager.Viewport.y(),
+            GlStateManager.Viewport.x() + GlStateManager.Viewport.width(),
+            GlStateManager.Viewport.y() + GlStateManager.Viewport.height()
+        )
         set(value) = GlStateManager._viewport(value.min.x, value.min.y, value.size.x, value.size.y)
     override var blendEnabled: Boolean
-        get() = glIsEnabled(GL_BLEND)
+        get() = GlStateManager.BLEND.mode.enabled
         set(value) = if (value) GlStateManager._enableBlend() else GlStateManager._disableBlend()
     override var colorLogicOpEnabled: Boolean
-        get() = glIsEnabled(GL_COLOR_LOGIC_OP)
+        get() = GlStateManager.COLOR_LOGIC.enable.enabled
         set(value) = if (value) GlStateManager._enableColorLogicOp() else GlStateManager._disableColorLogicOp()
     override var cullFaceEnabled: Boolean
-        get() = glIsEnabled(GL_CULL_FACE)
+        get() = GlStateManager.CULL.enable.enabled
         set(value) = if (value) GlStateManager._enableCull() else GlStateManager._disableCull()
     override var depthEnabled: Boolean
-        get() = glIsEnabled(GL_DEPTH_TEST)
+        get() = GlStateManager.DEPTH.mode.enabled
         set(value) = if (value) GlStateManager._enableDepthTest() else GlStateManager._disableDepthTest()
     override var polygonOffsetEnabled: Boolean
-        get() = glIsEnabled(GL_POLYGON_OFFSET_FILL)
+        get() = GlStateManager.POLY_OFFSET.fill.enabled
         set(value) = if (value) GlStateManager._enablePolygonOffset() else GlStateManager._disablePolygonOffset()
     override var scissorEnabled: Boolean
-        get() = glIsEnabled(GL_SCISSOR_TEST)
+        get() = GlStateManager.SCISSOR.mode.enabled
         set(value) = if (value) GlStateManager._enableScissorTest() else GlStateManager._disableScissorTest()
-    override var stencilEnabled: Boolean
-        get() = glIsEnabled(GL_STENCIL_TEST)
-        set(value) = if (value) glEnable(GL_STENCIL_TEST) else glDisable(GL_STENCIL_TEST)
+    override var stencilEnabled: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+
+                if (value) {
+                    glEnable(GL_STENCIL_TEST)
+                } else {
+                    glDisable(GL_STENCIL_TEST)
+                }
+            }
+        }
     /*
     override val buffers: EnumArrayMap<GlBufferTarget, GlStateStack<Int>> = enumArrayMapOf { target ->
         GlStateStack.Impl(

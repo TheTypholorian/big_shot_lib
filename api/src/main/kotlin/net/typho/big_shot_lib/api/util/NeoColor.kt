@@ -191,6 +191,26 @@ interface NeoColor {
         constructor(color: FloatArray) : this(color[0], color[1], color[2], color.getOrNull(3))
 
         override fun toJava() = java
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is NeoColor) return false
+
+            if (red != other.red) return false
+            if (green != other.green) return false
+            if (blue != other.blue) return false
+            if (alpha != other.alpha) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = red.hashCode()
+            result = 31 * result + green.hashCode()
+            result = 31 * result + blue.hashCode()
+            result = 31 * result + (alpha?.hashCode() ?: 0)
+            return result
+        }
     }
 
     @JvmRecord
@@ -223,6 +243,26 @@ interface NeoColor {
 
         override val alpha: UByte?
             get() = null
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is NeoColor) return false
+
+            if (red != other.red) return false
+            if (green != other.green) return false
+            if (blue != other.blue) return false
+            if (alpha != other.alpha) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = red.hashCode()
+            result = 31 * result + green.hashCode()
+            result = 31 * result + blue.hashCode()
+            result = 31 * result + (alpha?.hashCode() ?: 0)
+            return result
+        }
     }
 
     @JvmRecord
@@ -254,6 +294,26 @@ interface NeoColor {
         constructor(color: IntArray) : this(color[0], color[1], color[2], color[3])
 
         constructor(color: FloatArray) : this(color[0], color[1], color[2], color[3])
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is NeoColor) return false
+
+            if (red != other.red) return false
+            if (green != other.green) return false
+            if (blue != other.blue) return false
+            if (alpha != other.alpha) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = red.hashCode()
+            result = 31 * result + green.hashCode()
+            result = 31 * result + blue.hashCode()
+            result = 31 * result + alpha.hashCode()
+            return result
+        }
     }
 
     @JvmRecord
@@ -286,6 +346,26 @@ interface NeoColor {
 
         override val alphaF: Float?
             get() = null
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is NeoColor) return false
+
+            if (red != other.red) return false
+            if (green != other.green) return false
+            if (blue != other.blue) return false
+            if (alpha != other.alpha) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = red.hashCode()
+            result = 31 * result + green.hashCode()
+            result = 31 * result + blue.hashCode()
+            result = 31 * result + (alpha?.hashCode() ?: 0)
+            return result
+        }
     }
 
     @JvmRecord
@@ -295,6 +375,9 @@ interface NeoColor {
         override val blueF: Float,
         override val alphaF: Float
     ) : NeoColor {
+        override val alpha: UByte
+            get() = super.alpha!!
+
         constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(red / 255f, green / 255f, blue / 255f, alpha / 255f)
 
         constructor(red: UByte, green: UByte, blue: UByte, alpha: UByte) : this(red.toInt(), green.toInt(), blue.toInt(), alpha.toInt())
@@ -317,5 +400,25 @@ interface NeoColor {
         constructor(color: IntArray) : this(color[0], color[1], color[2], color[3])
 
         constructor(color: FloatArray) : this(color[0], color[1], color[2], color[3])
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is NeoColor) return false
+
+            if (red != other.red) return false
+            if (green != other.green) return false
+            if (blue != other.blue) return false
+            if (alpha != other.alpha) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = red.hashCode()
+            result = 31 * result + green.hashCode()
+            result = 31 * result + blue.hashCode()
+            result = 31 * result + alpha.hashCode()
+            return result
+        }
     }
 }

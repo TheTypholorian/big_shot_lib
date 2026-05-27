@@ -30,7 +30,6 @@ interface NeoGlStateManager {
     var cullFace: GlCullFace
     var depthMask: Boolean
     var depthFunc: GlAlphaFunction
-    var polygonMode: GlPolygonMode
     var polygonOffset: PolygonOffset
     var scissor: IRect2<Int>
     var stencilFunction: StencilFunction
