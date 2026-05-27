@@ -1,0 +1,7 @@
+{
+  "sources": {
+    "vertex": "big_shot_lib:hovered_edition",
+    "fragment": "big_shot_lib:hovered_edition"
+  },
+  "format": "minecraft:position_tex"
+}

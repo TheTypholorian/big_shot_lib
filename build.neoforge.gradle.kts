@@ -145,6 +145,7 @@ neoForge {
 repositories {
     mavenLocal()
     maven("https://thedarkcolour.github.io/KotlinForForge/") { name = "KotlinForForge" }
+    maven("https://maven.parchmentmc.org") { name = "Parchment" }
 }
 
 dependencies {

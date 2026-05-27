@@ -6,6 +6,7 @@ import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.IVec3.Companion.flat
 import net.typho.big_shot_lib.api.math.vec.IVec4
 import net.typho.big_shot_lib.api.math.vec.IVec4.Companion.flat
+import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.*
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.opengl.GL40.*
@@ -78,6 +79,8 @@ interface GlUniform {
     fun setDoubleVec(v: IVec4<Double>) = set(v.x, v.y, v.z, v.w)
 
     fun setDoubleVecs(array: Array<IVec4<Double>>) = set(array.flat().toDoubleArray())
+
+    fun set(color: NeoColor) = setFloatVec(color.toVec4F())
 
     fun set(mat: Matrix2f, transpose: Boolean = false)
 

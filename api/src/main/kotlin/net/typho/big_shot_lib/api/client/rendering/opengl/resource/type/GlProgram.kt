@@ -49,7 +49,11 @@ interface GlProgram : NamedResource, GlResource, UniformOutput {
             glId,
         )
 
+        @JvmStatic
         operator fun get(location: Identifier): GlProgram? = InternalUtil.INSTANCE.getProgram(location)
+
+        @JvmStatic
+        fun getOrThrow(location: Identifier): GlProgram = get(location) ?: throw NullPointerException("No shader program $location")
 
         @JvmField
         val BUILTINS = Builtins::class.loadService()

@@ -120,6 +120,7 @@ jsonlang {
 repositories {
     maven("https://maven.tterrag.com/")
     maven("https://maven.ithundxr.dev/snapshots/")
+    maven("https://maven.parchmentmc.org") { name = "Parchment" }
     mavenLocal()
 }
 

@@ -93,6 +93,8 @@ interface BigShotCommonEntrypoint {
     }
 
     companion object {
+        @JvmStatic
+        @get:JvmName("getEntrypoints")
         val entrypoints by lazy { BigShotCommonEntrypoint::class.loadServices() }
     }
 }

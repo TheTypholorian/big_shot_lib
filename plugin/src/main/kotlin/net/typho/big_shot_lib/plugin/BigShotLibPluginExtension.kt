@@ -336,6 +336,10 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 "net/typho/big_shot_lib/api/client/rendering/util/NeoVertexFormat",
                 "com/mojang/blaze3d/vertex/VertexFormat"
             )
+            injectInterface(
+                "net/typho/big_shot_lib/api/client/rendering/util/NeoGuiGraphics",
+                "net/minecraft/client/gui/GuiGraphics"
+            )
         }
 
         @JvmOverloads

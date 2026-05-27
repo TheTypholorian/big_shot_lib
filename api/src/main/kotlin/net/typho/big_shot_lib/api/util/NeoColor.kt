@@ -106,9 +106,9 @@ interface NeoColor {
 
     fun toVec4F(): IVec4<Float> = NeoVec4f(redF, greenF, blueF, alphaF ?: 1f)
 
-    fun toVec3i() = NeoVec3i(red.toInt(), green.toInt(), blue.toInt())
+    fun toVec3i(): IVec3<Int> = NeoVec3i(red.toInt(), green.toInt(), blue.toInt())
 
-    fun toVec4i() = NeoVec4i(red.toInt(), green.toInt(), blue.toInt(), alpha?.toInt() ?: 255)
+    fun toVec4i(): IVec4<Int> = NeoVec4i(red.toInt(), green.toInt(), blue.toInt(), alpha?.toInt() ?: 255)
 
     fun toPackedARGB() = packUInt(alpha ?: 255.toUByte(), red, green, blue)
 

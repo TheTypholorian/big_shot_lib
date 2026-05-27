@@ -17,6 +17,7 @@ import net.minecraft.network.chat.ChatType
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.item.ItemStack
+import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
@@ -113,10 +114,27 @@ interface BigShotClientEntrypoint {
     ) {
     }
 
+    fun loadMainMenuModes(): Iterable<MainMenuMode> {
+        return listOf()
+    }
+
     fun clientTick() {
     }
 
     companion object {
+        @JvmStatic
+        @get:JvmName("getEntrypoints")
         val entrypoints by lazy { BigShotClientEntrypoint::class.loadServices() }
+        @JvmStatic
+        @get:JvmName("getMainMenuModes")
+        val mainMenuModes by lazy {
+            entrypoints.flatMapTo(
+                mutableListOf(MainMenuMode.MINECRAFT, MainMenuMode.VIBRANCY_1, MainMenuMode.VIBRANCY_2, MainMenuMode.VIBRANCY_3),
+                { it.loadMainMenuModes() }
+            )
+                .also {
+                    it.sortWith(Comparator.comparingInt { -it.priority })
+                }
+        }
     }
 }

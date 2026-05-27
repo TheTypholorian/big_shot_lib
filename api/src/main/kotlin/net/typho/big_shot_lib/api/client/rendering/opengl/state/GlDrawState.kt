@@ -79,7 +79,7 @@ interface GlDrawState {
             return this
         }
 
-        fun shader(shader: Identifier) = shader { GlProgram[shader] }
+        fun shader(shader: Identifier) = shader { GlProgram.getOrThrow(shader) }
 
         fun texture(texture: GlTextureBinding?): Builder {
             this.texture = texture

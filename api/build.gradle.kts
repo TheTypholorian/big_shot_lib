@@ -46,6 +46,7 @@ repositories {
         name = "Spongepowered"
         url = uri("https://repo.spongepowered.org/repository/maven-public")
     }
+    maven("https://maven.parchmentmc.org") { name = "Parchment" }
     ivy {
         url = uri("https://github.com/TheTypholorian/")
         patternLayout {
@@ -59,7 +60,10 @@ repositories {
 
 dependencies {
     minecraft(libs.minecraftForAPI)
-    mappings(loom.officialMojangMappings())
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-1.21.1:2024.11.17@zip")
+    })
     implementation(kotlin("reflect"))
 
     compileOnly(libs.mixin)

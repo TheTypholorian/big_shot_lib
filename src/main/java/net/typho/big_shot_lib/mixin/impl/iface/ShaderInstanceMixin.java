@@ -261,7 +261,7 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
                     Uniform uniform = getUniform(name);
 
                     if (uniform != null) {
-                        value.accept(ImmutableExtensionKt.getExtensionValue(uniform, GlUniform.class));
+                        value.accept(uniform);
                     }
                 }
 
