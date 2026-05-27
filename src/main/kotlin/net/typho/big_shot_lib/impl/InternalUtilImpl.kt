@@ -1,5 +1,7 @@
 package net.typho.big_shot_lib.impl
 
+import com.mojang.blaze3d.pipeline.RenderTarget
+import com.mojang.blaze3d.pipeline.TextureTarget
 import com.mojang.blaze3d.shaders.Program
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
@@ -254,5 +256,9 @@ object InternalUtilImpl : InternalUtil {
         vertices[3].packToInts(data, 24)
 
         return BakedQuad(data, tintIndex, direction, sprite, shade)
+    }
+
+    override fun createRenderTarget(useDepth: Boolean, name: () -> String): RenderTarget {
+        return TextureTarget(width, height, useDepth, Minecraft.ON_OSX)
     }
 }

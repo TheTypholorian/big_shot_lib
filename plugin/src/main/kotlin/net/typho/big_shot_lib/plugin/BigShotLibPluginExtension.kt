@@ -340,6 +340,10 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 "net/typho/big_shot_lib/api/client/rendering/util/NeoGuiGraphics",
                 "net/minecraft/client/gui/GuiGraphics"
             )
+            injectInterface(
+                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/type/NeoRenderTarget",
+                "com/mojang/blaze3d/pipeline/RenderTarget"
+            )
         }
 
         @JvmOverloads

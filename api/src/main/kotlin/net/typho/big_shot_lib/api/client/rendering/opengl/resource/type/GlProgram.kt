@@ -43,7 +43,7 @@ interface GlProgram : NamedResource, GlResource, UniformOutput {
         @JvmStatic
         @JvmOverloads
         @JvmName("create")
-        operator fun invoke(location: Identifier, format: VertexFormat, glId: Int = GlResourceType.PROGRAM.create()): GlProgram = InternalUtil.INSTANCE.createProgram(
+        operator fun invoke(location: Identifier, format: VertexFormat, glId: Int = GlResourceType.PROGRAM.create() = InternalUtil.INSTANCE.createProgram(
             location,
             format,
             glId,

@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api
 
-import com.mojang.blaze3d.vertex.PoseStack
+com.mojang.blaze3d.pipeline.RenderTargetimport com.mojang.blaze3d.pipeline.RenderTargetimport com.mojang.blaze3d.pipeline.RenderTargetimport
+import com.mojang.blaze3d.vertex.PoseStack com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.renderer.RenderType
@@ -66,6 +67,13 @@ interface InternalUtil {
         sprite: TextureAtlasSprite,
         shade: Boolean
     ): BakedQuad
+
+    fun createRenderTarget(
+        width: Int,
+        height: Int,
+        useDepth: Boolean,
+        name: () -> String
+    ): RenderTarget
 
     companion object {
         @JvmStatic
