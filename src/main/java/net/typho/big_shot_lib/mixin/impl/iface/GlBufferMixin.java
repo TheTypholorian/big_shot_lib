@@ -13,7 +13,7 @@ import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundBuffer;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext;
 import net.typho.big_shot_lib.api.util.ImmutableExtension;
@@ -29,7 +29,7 @@ import dev.kikugie.fletching_table.annotation.MixinIgnore;
 //? }
 @MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(GlBuffer.class)
-public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtension<net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer> {
+public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtension<net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer> {
     //? if <1.21.6 {
     public GlBufferMixin(BufferType bufferType, BufferUsage bufferUsage, int i) {
         super(bufferType, bufferUsage, i);
@@ -51,8 +51,8 @@ public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtens
     protected int handle;
 
     @Override
-    public net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer getExtensionValue() {
-        return new net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlBuffer() {
+    public net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer getExtensionValue() {
+        return new net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer() {
             @Override
             public RenderingContext getContext() {
                 return RenderingContext.MAIN;

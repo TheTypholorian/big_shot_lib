@@ -1,11 +1,11 @@
-package net.typho.big_shot_lib.api.client.rendering.opengl.state
+package net.typho.big_shot_lib.api.client.rendering.state
 
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
 import java.io.FileNotFoundException
 
-sealed interface GlTextureBinding : MaybeNamedResource {
+sealed interface TextureBinding : MaybeNamedResource {
     val texture: GlTexture2D
     val blur: Boolean
     val mipmap: Boolean
@@ -14,7 +14,7 @@ sealed interface GlTextureBinding : MaybeNamedResource {
         override val location: Identifier,
         override val blur: Boolean = false,
         override val mipmap: Boolean = true
-    ) : GlTextureBinding {
+    ) : TextureBinding {
         override val texture: GlTexture2D
             get() = GlTexture2D[location] ?: throw FileNotFoundException("Couldn't find texture $location")
     }
@@ -23,7 +23,7 @@ sealed interface GlTextureBinding : MaybeNamedResource {
         private val supplier: () -> GlTexture2D,
         override val blur: Boolean = false,
         override val mipmap: Boolean = true
-    ) : GlTextureBinding {
+    ) : TextureBinding {
         override val texture: GlTexture2D
             get() = supplier()
         override val location: Identifier?

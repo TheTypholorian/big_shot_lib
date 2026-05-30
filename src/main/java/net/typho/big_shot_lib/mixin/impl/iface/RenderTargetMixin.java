@@ -5,14 +5,18 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.NeoRenderTarget;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.NeoRenderTarget;
+import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RenderTarget.class)
 public abstract class RenderTargetMixin implements NeoRenderTarget {
@@ -29,13 +33,10 @@ public abstract class RenderTargetMixin implements NeoRenderTarget {
     protected int depthBufferId;
 
     @Shadow
-    public abstract void resize(int par1, int par2, boolean par3);
+    public abstract void resize(int width, int height, boolean clearError);
 
     @Shadow
-    public abstract void createBuffers(int par1, int par2, boolean par3);
-
-    @Shadow
-    public abstract void setClearColor(float red, float green, float blue, float alpha);
+    public abstract void createBuffers(int width, int height, boolean clearError);
 
     @Override
     public @NotNull GlTexture2D getColorTexture() {
@@ -169,5 +170,21 @@ public abstract class RenderTargetMixin implements NeoRenderTarget {
     @Override
     public void clear(@NotNull GlClearBit... bits) {
         GlStateManager._clear(GlClearBit.initAndGetMask(bits), Minecraft.ON_OSX);
+    }
+
+    @Inject(
+            method = "_bindWrite",
+            at = @At("TAIL")
+    )
+    private void bindWrite(boolean setViewport, CallbackInfo ci) {
+        NeoGlStateManagerImpl.boundFramebuffer = (RenderTarget) (Object) this;
+    }
+
+    @Inject(
+            method = "unbindWrite",
+            at = @At("TAIL")
+    )
+    private void unbindWrite(CallbackInfo ci) {
+        NeoGlStateManagerImpl.boundFramebuffer = null;
     }
 }

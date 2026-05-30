@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
 import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
@@ -20,22 +21,28 @@ import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.impl.NeoGlShader
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.LayeringState
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D
+import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
+import net.typho.big_shot_lib.api.client.rendering.state.LayeringState
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
-import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoTextureStateShard
+import net.typho.big_shot_lib.impl.client.rendering.state.NeoTextureStateShard
 import net.typho.big_shot_lib.api.util.getExtensionValue
 import net.typho.big_shot_lib.api.util.setExtensionValue
+import net.typho.big_shot_lib.impl.client.rendering.opengl.GlBufferImpl
+import net.typho.big_shot_lib.impl.client.rendering.opengl.NeoDynamicTexture
 import org.joml.Vector3f
 import sun.misc.Unsafe
 import java.lang.reflect.Modifier
@@ -117,8 +124,8 @@ object InternalUtilImpl : InternalUtil {
     override val positionTexLightColorVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR.getExtensionValue()
     override val positionTexColorNormalVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL.getExtensionValue()
 
-    override fun getTexture(location: Identifier): GlTexture2D {
-        return Minecraft.getInstance().textureManager.getTexture(location).getExtensionValue()
+    override fun getTexture(location: Identifier): AbstractTexture? {
+        return Minecraft.getInstance().textureManager.getTexture(location, null)
     }
 
     override fun getProgram(location: Identifier): GlProgram? {
@@ -142,7 +149,7 @@ object InternalUtilImpl : InternalUtil {
         return when (type) {
             GlShaderType.VERTEX -> Program(Program.Type.VERTEX, glId, location.toShortString()).getExtensionValue()
             GlShaderType.FRAGMENT -> Program(Program.Type.VERTEX, glId, location.toShortString()).getExtensionValue()
-            else -> NeoGlShader(location, type, glId)
+            else -> GlShader.Impl(location, type, glId)
         }
     }
 
@@ -159,7 +166,7 @@ object InternalUtilImpl : InternalUtil {
     override fun createRenderType(
         location: Identifier,
         format: VertexFormat,
-        drawState: GlDrawState.Builder,
+        drawState: GpuDrawState.Builder,
         defaultBufferSize: Int,
         mode: GlBeginMode,
         affectsCrumbling: Boolean,
@@ -258,7 +265,21 @@ object InternalUtilImpl : InternalUtil {
         return BakedQuad(data, tintIndex, direction, sprite, shade)
     }
 
-    override fun createRenderTarget(useDepth: Boolean, name: () -> String): RenderTarget {
+    override fun createRenderTarget(width: Int, height: Int, useDepth: Boolean, name: () -> String): RenderTarget {
         return TextureTarget(width, height, useDepth, Minecraft.ON_OSX)
+    }
+
+    override fun createTexture(
+        width: Int,
+        height: Int,
+        format: GlTextureFormat,
+        blur: Boolean,
+        mipmap: Boolean
+    ): AbstractTexture {
+        return NeoDynamicTexture(width, height, format, blur, mipmap, GlResourceType.TEXTURE.create())
+    }
+
+    override fun createBuffer(size: Long, usage: GlBufferUsage, target: GlBufferTarget): GlBuffer {
+        return GlBufferImpl(size, usage, target)
     }
 }

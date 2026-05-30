@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
+package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 
 import net.typho.big_shot_lib.api.math.vec.IVec2
 import net.typho.big_shot_lib.api.math.vec.IVec2.Companion.flat

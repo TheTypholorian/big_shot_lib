@@ -11,7 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.AdvancedLogoRenderer;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoGuiGraphics;
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint;

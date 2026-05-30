@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.shaders.AbstractUniform;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlUniform;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlUniform;
 import org.jetbrains.annotations.NotNull;
 import org.joml.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,10 +10,10 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(AbstractUniform.class)
 public abstract class AbstractUniformMixin implements GlUniform {
     @Shadow
-    public abstract void set(Matrix3f p_254112_);
+    public abstract void set(Matrix3f matrix);
 
     @Shadow
-    public abstract void set(Matrix4f p_254214_);
+    public abstract void set(Matrix4f matrix);
 
     @Override
     public void set(@NotNull int[] array) {

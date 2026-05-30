@@ -1,20 +1,20 @@
-package net.typho.big_shot_lib.api.client.rendering.opengl.state
+package net.typho.big_shot_lib.api.client.rendering.state
 
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.plugin.Namespace
 import java.util.function.Supplier
 
 @Namespace(BigShotApi.MOD_ID)
-interface GlDrawState {
+interface GpuDrawState {
     val blend: BlendFunction?
     val shader: Supplier<GlProgram>?
-    val texture: GlTextureBinding?
+    val texture: TextureBinding?
     val lightmap: Boolean
     val overlay: Boolean
     val cull: Boolean
@@ -31,7 +31,7 @@ interface GlDrawState {
     open class Builder {
         constructor()
 
-        constructor(state: GlDrawState) {
+        constructor(state: GpuDrawState) {
             blend = state.blend
             shader = state.shader
             texture = state.texture
@@ -50,7 +50,7 @@ interface GlDrawState {
         @JvmField
         var shader: Supplier<GlProgram>? = null
         @JvmField
-        var texture: GlTextureBinding? = null
+        var texture: TextureBinding? = null
         @JvmField
         var lightmap: Boolean = false
         @JvmField
@@ -81,16 +81,16 @@ interface GlDrawState {
 
         fun shader(shader: Identifier) = shader { GlProgram.getOrThrow(shader) }
 
-        fun texture(texture: GlTextureBinding?): Builder {
+        fun texture(texture: TextureBinding?): Builder {
             this.texture = texture
             return this
         }
 
         @JvmOverloads
-        fun texture(texture: Identifier, blur: Boolean = false, mipmap: Boolean = true) = texture(GlTextureBinding.FromLocation(texture, blur, mipmap))
+        fun texture(texture: Identifier, blur: Boolean = false, mipmap: Boolean = true) = texture(TextureBinding.FromLocation(texture, blur, mipmap))
 
         @JvmOverloads
-        fun texture(texture: () -> GlTexture2D, blur: Boolean = false, mipmap: Boolean = true) = texture(GlTextureBinding.FromSupplier(texture, blur, mipmap))
+        fun texture(texture: () -> GlTexture2D, blur: Boolean = false, mipmap: Boolean = true) = texture(TextureBinding.FromSupplier(texture, blur, mipmap))
 
         @JvmOverloads
         fun lightmap(lightmap: Boolean = true): Builder {

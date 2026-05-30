@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.*
 import org.lwjgl.opengl.GL44.*
@@ -26,5 +27,13 @@ enum class GlBufferTarget(
     /*
     ATOMIC_COUNTER_BUFFER(GL_ATOMIC_COUNTER_BUFFER, GL_ATOMIC_COUNTER_BUFFER_BINDING),
      */
-    SHADER_STORAGE_BUFFER(GL_SHADER_STORAGE_BUFFER, GL_SHADER_STORAGE_BUFFER_BINDING)
+    SHADER_STORAGE_BUFFER(GL_SHADER_STORAGE_BUFFER, GL_SHADER_STORAGE_BUFFER_BINDING);
+
+    fun <V> pushBoundValue(glId: Int, task: () -> V): V {
+        val old = NeoGlStateManager.INSTANCE.buffers[this]
+        NeoGlStateManager.INSTANCE.buffers[this] = glId
+        val value = task()
+        NeoGlStateManager.INSTANCE.buffers[this] = old
+        return value
+    }
 }

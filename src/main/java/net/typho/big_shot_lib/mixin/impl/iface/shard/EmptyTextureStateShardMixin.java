@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.BigShotApi;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding;
+import net.typho.big_shot_lib.api.client.rendering.state.TextureBinding;
 import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.api.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,18 +14,18 @@ import org.spongepowered.asm.mixin.Unique;
 @MixinIgnore
 *///? }
 @Mixin(RenderStateShard.EmptyTextureStateShard.class)
-public class EmptyTextureStateShardMixin implements MutableExtension<GlTextureBinding> {
+public class EmptyTextureStateShardMixin implements MutableExtension<TextureBinding> {
     @Unique
     @Namespace(BigShotApi.MOD_ID)
-    private GlTextureBinding texture = null;
+    private TextureBinding texture = null;
 
     @Override
-    public GlTextureBinding getExtensionValue() {
+    public TextureBinding getExtensionValue() {
         return texture;
     }
 
     @Override
-    public void setExtensionValue(GlTextureBinding glTextureBinding) {
-        texture = glTextureBinding;
+    public void setExtensionValue(TextureBinding textureBinding) {
+        texture = textureBinding;
     }
 }

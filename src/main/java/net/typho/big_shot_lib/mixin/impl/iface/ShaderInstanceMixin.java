@@ -9,19 +9,17 @@ import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import com.mojang.blaze3d.shaders.Program;
 import com.mojang.blaze3d.shaders.Shader;
 import com.mojang.blaze3d.shaders.Uniform;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.BigShotApi;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.*;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.*;
+import net.typho.big_shot_lib.api.client.rendering.state.TextureBinding;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
+import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.api.util.ImmutableExtensionKt;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.GlProgramExtensionValue;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension;
-import net.typho.big_shot_lib.api.util.ImmutableExtension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.MemoryStack;
@@ -38,7 +36,7 @@ import java.util.function.Consumer;
 import static org.lwjgl.opengl.GL20.*;
 
 @Mixin(ShaderInstance.class)
-public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgramExtensionValue>, ShaderInstanceExtension {
+public abstract class ShaderInstanceMixin implements GlProgram, ShaderInstanceExtension {
     @Shadow
     @Final
     @Mutable
@@ -164,10 +162,10 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
 
     @Shadow
     @Nullable
-    public abstract Uniform getUniform(String string);
+    public abstract Uniform getUniform(String name);
 
     @Shadow
-    public abstract void setSampler(String string, Object object);
+    public abstract void setSampler(String name, Object textureId);
 
     @Shadow
     public abstract void markDirty();
@@ -176,114 +174,88 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
     protected abstract void updateLocations();
 
     @Unique
-    private boolean big_shot_lib$freed = false;
-    @Unique
-    private GlProgramExtensionValue extensionValue;
+    @Namespace(BigShotApi.MOD_ID)
+    private boolean freed = false;
 
     @Override
-    public GlProgramExtensionValue getExtensionValue() {
-        if (extensionValue == null) {
-            extensionValue = new GlProgramExtensionValue() {
-                @Override
-                @NotNull
-                public ShaderInstance getExtensionValue() {
-                    return (ShaderInstance) (Object) ShaderInstanceMixin.this;
-                }
+    public @NotNull Identifier getLocation() {
+        return Identifier.parse(name);
+    }
 
-                @Override
-                public void close() {
-                    ShaderInstanceMixin.this.close();
-                }
+    @Override
+    public int getGlId() {
+        return programId;
+    }
 
-                @Override
-                public @NotNull Identifier getLocation() {
-                    return Identifier.parse(name);
-                }
+    @Override
+    public boolean getFreed() {
+        return freed;
+    }
 
-                @Override
-                public int getGlId() {
-                    return programId;
-                }
+    @Override
+    public @NotNull GlResourceType getType() {
+        return GlResourceType.PROGRAM;
+    }
 
-                @Override
-                public boolean getFreed() {
-                    return big_shot_lib$freed;
-                }
+    @Override
+    public boolean validate() {
+        glValidateProgram(getGlId());
 
-                @Override
-                public @NotNull GlResourceType getType() {
-                    return GlResourceType.PROGRAM;
-                }
+        return glGetProgrami(getGlId(), GL_VALIDATE_STATUS) == GL_TRUE;
+    }
 
-                @Override
-                public boolean validate() {
-                    glValidateProgram(getGlId());
+    @Override
+    public boolean link() {
+        glLinkProgram(getGlId());
 
-                    return glGetProgrami(getGlId(), GL_VALIDATE_STATUS) == GL_TRUE;
-                }
+        boolean success = glGetProgrami(getGlId(), GL_LINK_STATUS) == GL_TRUE;
 
-                @Override
-                public boolean link() {
-                    glLinkProgram(getGlId());
-
-                    boolean success = glGetProgrami(getGlId(), GL_LINK_STATUS) == GL_TRUE;
-
-                    if (success) {
-                        big_shot_lib$initUniforms();
-                    }
-
-                    return success;
-                }
-
-                @Override
-                @NotNull
-                public String getInfoLog() {
-                    return glGetProgramInfoLog(getGlId(), 4096).trim();
-                }
-
-                @Override
-                public void detach(@NotNull GlShader shader) {
-                    glDetachShader(getGlId(), shader.getGlId());
-                }
-
-                @Override
-                public void attach(@NotNull GlShader shader) {
-                    glAttachShader(getGlId(), shader.getGlId());
-
-                    switch (shader.getShaderType()) {
-                        case VERTEX -> vertexProgram = ImmutableExtensionKt.getExtensionValue(shader, Program.class);
-                        case FRAGMENT -> fragmentProgram = ImmutableExtensionKt.getExtensionValue(shader, Program.class);
-                    }
-                }
-
-                @Override
-                public void setUniform(String name, Consumer<GlUniform> value) {
-                    Uniform uniform = getUniform(name);
-
-                    if (uniform != null) {
-                        value.accept(uniform);
-                    }
-                }
-
-                @Override
-                public void setTexture(int index, GlTextureBinding binding) {
-                    // TODO set filters
-                    RenderSystem._setShaderTexture(index, binding.getTexture().getGlId());
-                }
-
-                @Override
-                public void setTextureArray(int index, GlTextureBinding... bindings) {
-                    throw new UnsupportedOperationException("texture arrays");
-                }
-
-                @Override
-                public @NotNull NeoVertexFormat getFormat() {
-                    return ImmutableExtensionKt.getExtensionValue(vertexFormat, NeoVertexFormat.class);
-                }
-            };
+        if (success) {
+            big_shot_lib$initUniforms();
         }
 
-        return extensionValue;
+        return success;
+    }
+
+    @Override
+    @NotNull
+    public String getInfoLog() {
+        return glGetProgramInfoLog(getGlId(), 4096).trim();
+    }
+
+    @Override
+    public void detach(@NotNull GlShader shader) {
+        glDetachShader(getGlId(), shader.getGlId());
+    }
+
+    @Override
+    public void attach(@NotNull GlShader shader) {
+        glAttachShader(getGlId(), shader.getGlId());
+
+        switch (shader.getShaderType()) {
+            case VERTEX -> vertexProgram = ImmutableExtensionKt.getExtensionValue(shader, Program.class);
+            case FRAGMENT -> fragmentProgram = ImmutableExtensionKt.getExtensionValue(shader, Program.class);
+        }
+    }
+
+    @Override
+    public void setUniform(String name, Consumer<GlUniform> value) {
+        Uniform uniform = getUniform(name);
+
+        if (uniform != null) {
+            value.accept(uniform);
+        }
+    }
+
+    @Override
+    public void setTexture(int index, TextureBinding binding) {
+        // TODO set filters
+        setSampler("Sampler" + index, binding);
+    }
+
+    @Override
+    public @NotNull NeoVertexFormat getFormat() {
+        return ImmutableExtensionKt.getExtensionValue(vertexFormat, NeoVertexFormat.class);
     }
 
     @Override
@@ -389,9 +361,9 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
             method = "close"
     )
     private void close(Operation<Void> original) {
-        if (!big_shot_lib$freed) {
+        if (!freed) {
             original.call();
-            big_shot_lib$freed = true;
+            freed = true;
         }
     }
 
@@ -402,14 +374,12 @@ public abstract class ShaderInstanceMixin implements ImmutableExtension<GlProgra
                     args = "classValue=com/mojang/blaze3d/pipeline/RenderTarget"
             )
     )
-    private void apply(CallbackInfo ci, @Local Object value, @Local(ordinal = 1) int currentUnit, @Local(ordinal = 3) LocalIntRef textureId) {
-        if (value instanceof GlTextureBinding binding) {
-            textureId.set(binding.getTexture().getGlId());
-        } else if (value instanceof GlTextureBinding[] bindings) {
-            for (GlTextureBinding binding : bindings) {
-                NeoGlStateManager.getInstance().setActiveTexture(currentUnit);
-                NeoGlStateManager.getInstance().setTexture(binding.getTexture().getGlId());
-            }
+    private void apply(CallbackInfo ci, @Local Object value, @Local(ordinal = 3) LocalIntRef textureId) {
+        if (value instanceof TextureBinding binding) {
+            var texture = binding.getTexture();
+            texture.setBlur(binding.getBlur()); // TODO 1.21.11+ samplers
+            texture.setMipmap(binding.getMipmap());
+            textureId.set(texture.getGlId());
         }
     }
 }

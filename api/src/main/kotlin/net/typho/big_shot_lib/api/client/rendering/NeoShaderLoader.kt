@@ -6,11 +6,10 @@ import net.minecraft.resources.FileToIdConverter
 import net.minecraft.resources.Identifier
 import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.BigShotApi.lookupOrThrow
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener

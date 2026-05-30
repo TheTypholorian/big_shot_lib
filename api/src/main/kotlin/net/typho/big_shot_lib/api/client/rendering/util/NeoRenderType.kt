@@ -7,12 +7,12 @@ import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.GpuDrawState
 import net.typho.big_shot_lib.api.plugin.Namespace
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
 
 @Namespace(BigShotApi.MOD_ID)
-interface NeoRenderType : GlDrawState, MaybeNamedResource {
+interface NeoRenderType : GpuDrawState, MaybeNamedResource {
     val format: NeoVertexFormat
     val mode: GlBeginMode
     val defaultBufferSize: Int
@@ -35,7 +35,7 @@ interface NeoRenderType : GlDrawState, MaybeNamedResource {
         operator fun invoke(
             location: Identifier,
             format: VertexFormat,
-            drawState: GlDrawState.Builder,
+            drawState: GpuDrawState.Builder,
             defaultBufferSize: Int = 786432,
             mode: GlBeginMode = GlBeginMode.QUADS,
             affectsCrumbling: Boolean = true,

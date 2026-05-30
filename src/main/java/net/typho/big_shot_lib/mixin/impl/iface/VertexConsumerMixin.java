@@ -15,10 +15,10 @@ public interface VertexConsumerMixin extends NeoVertexConsumer {
     VertexConsumer setColor(int i, int i1, int i2, int i3);
 
     @Shadow
-    VertexConsumer setColor(float p_350350_, float p_350356_, float p_350623_, float p_350312_);
+    VertexConsumer setColor(float red, float green, float blue, float alpha);
 
     @Shadow
-    VertexConsumer setColor(int p_350809_);
+    VertexConsumer setColor(int color);
 
     @Shadow
     VertexConsumer setUv(float v, float v1);

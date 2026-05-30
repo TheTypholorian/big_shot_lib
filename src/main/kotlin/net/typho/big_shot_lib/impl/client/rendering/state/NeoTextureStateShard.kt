@@ -1,14 +1,14 @@
-package net.typho.big_shot_lib.impl.client.rendering.opengl.state
+package net.typho.big_shot_lib.impl.client.rendering.state
 
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlTextureBinding
+import net.typho.big_shot_lib.api.client.rendering.state.TextureBinding
 import java.util.Optional
 
 class NeoTextureStateShard(
     @JvmField
-    val binding: GlTextureBinding
+    val binding: TextureBinding
 ) : RenderStateShard.EmptyTextureStateShard(
     {
         val texture = binding.texture

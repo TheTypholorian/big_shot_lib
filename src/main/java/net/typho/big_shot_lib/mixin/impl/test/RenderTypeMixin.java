@@ -3,8 +3,8 @@ package net.typho.big_shot_lib.mixin.impl.test;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.Identifier;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram;
+import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats;
 import net.typho.big_shot_lib.api.util.ImmutableExtensionKt;
@@ -27,7 +27,7 @@ public abstract class RenderTypeMixin {
                 NeoRenderType.create(
                         Identifier.minecraft("entity_translucent"),
                         NeoVertexFormats.NEW_ENTITY,
-                        new GlDrawState.Builder()
+                        new GpuDrawState.Builder()
                                 .shader(GlProgram.BUILTINS::getEntityTranslucent)
                                 .texture(texture)
                                 .lightmap()

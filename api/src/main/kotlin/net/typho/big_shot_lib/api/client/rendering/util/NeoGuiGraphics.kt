@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.util
 
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.plugin.Namespace
 
 @Namespace(BigShotApi.MOD_ID)

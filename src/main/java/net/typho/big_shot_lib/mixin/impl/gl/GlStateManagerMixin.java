@@ -5,7 +5,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendEquation;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
 import net.typho.big_shot_lib.api.math.rect.NeoRect2i;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl;
@@ -16,12 +15,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static org.lwjgl.opengl.GL30.GL_READ_FRAMEBUFFER;
-
 @Mixin(GlStateManager.class)
 public abstract class GlStateManagerMixin {
     @Shadow
-    public static void _glBindBuffer(int i, int j) {
+    public static void _glBindBuffer(int target, int buffer) {
     }
 
     @Inject(
@@ -44,14 +41,6 @@ public abstract class GlStateManagerMixin {
     }
 
     @Inject(
-            method = "_glUseProgram",
-            at = @At("TAIL")
-    )
-    private static void glUseProgram(int id, CallbackInfo ci) {
-        NeoGlStateManagerImpl.boundProgram = id;
-    }
-
-    @Inject(
             method = "_glBindVertexArray",
             at = @At("TAIL")
     )
@@ -65,16 +54,6 @@ public abstract class GlStateManagerMixin {
     )
     private static void glBindRenderbuffer(int type, int id, CallbackInfo ci) {
         NeoGlStateManagerImpl.boundRenderbuffer = id;
-    }
-
-    @Inject(
-            method = "_glBindFramebuffer",
-            at = @At("TAIL")
-    )
-    private static void glBindFramebuffer(int type, int id, CallbackInfo ci) {
-        if (type == GL_READ_FRAMEBUFFER) {
-            NeoGlStateManagerImpl.boundReadFramebuffer = id;
-        }
     }
 
     @Inject(

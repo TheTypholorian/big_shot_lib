@@ -8,9 +8,10 @@ import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.*;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
+import net.typho.big_shot_lib.api.client.rendering.state.LayeringState;
+import net.typho.big_shot_lib.api.client.rendering.state.TextureBinding;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
 import net.typho.big_shot_lib.api.util.ImmutableExtensionKt;
@@ -140,8 +141,8 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Neo
 
     @Override
     @Nullable
-    public GlTextureBinding getTexture() {
-        return state.textureState.cutoutTexture().map(id -> (state.textureState instanceof TextureStateShard shard) ? new GlTextureBinding.FromLocation(id, shard.blur, shard.mipmap) : new GlTextureBinding.FromLocation(id)).orElse(null);
+    public TextureBinding getTexture() {
+        return state.textureState.cutoutTexture().map(id -> (state.textureState instanceof TextureStateShard shard) ? new TextureBinding.FromLocation(id, shard.blur, shard.mipmap) : new TextureBinding.FromLocation(id)).orElse(null);
     }
 
     @Override

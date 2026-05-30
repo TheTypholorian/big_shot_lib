@@ -1,20 +1,24 @@
-package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
+package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.Identifier
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.UniformOutput
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.error.ShaderLinkException
 import net.typho.big_shot_lib.api.error.ShaderValidationException
+import net.typho.big_shot_lib.api.plugin.Namespace
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.util.resource.NamedResource
 
+@Namespace(BigShotApi.MOD_ID)
 interface GlProgram : NamedResource, GlResource, UniformOutput {
     val format: NeoVertexFormat
 
     fun use() {
-        NeoGlStateManager.INSTANCE.program = glId
+        NeoGlStateManager.INSTANCE.program = this
     }
 
     fun attach(shader: GlShader)
@@ -43,7 +47,7 @@ interface GlProgram : NamedResource, GlResource, UniformOutput {
         @JvmStatic
         @JvmOverloads
         @JvmName("create")
-        operator fun invoke(location: Identifier, format: VertexFormat, glId: Int = GlResourceType.PROGRAM.create() = InternalUtil.INSTANCE.createProgram(
+        operator fun invoke(location: Identifier, format: VertexFormat, glId: Int = GlResourceType.PROGRAM.create()) = InternalUtil.INSTANCE.createProgram(
             location,
             format,
             glId,

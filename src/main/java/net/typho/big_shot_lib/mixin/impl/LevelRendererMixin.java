@@ -20,7 +20,7 @@ import net.typho.big_shot_lib.api.client.util.NeoCamera;
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
 import net.typho.big_shot_lib.api.BigShotApi;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlFramebuffer;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlFramebuffer;
 import net.typho.big_shot_lib.api.client.util.event.RenderEventData;
 import net.typho.big_shot_lib.impl.client.util.BigShotClientEvents;
 import org.jetbrains.annotations.Nullable;

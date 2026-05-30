@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.opengl.resource.type
+package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 
 import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.BigShotApi

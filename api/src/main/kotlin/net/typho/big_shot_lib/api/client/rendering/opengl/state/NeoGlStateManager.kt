@@ -1,7 +1,9 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.state
 
+import com.mojang.blaze3d.pipeline.RenderTarget
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.*
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
@@ -13,12 +15,11 @@ import net.typho.big_shot_lib.api.util.NeoColor
 
 interface NeoGlStateManager {
     val buffers: KeyedDelegate<GlBufferTarget, Int>
-    var program: Int
+    var program: GlProgram?
     var vertexArray: Int
     var texture: Int
     var renderbuffer: Int
-    var framebuffer: Int
-    var readFramebuffer: Int
+    var framebuffer: RenderTarget?
 
     var activeTexture: Int
 

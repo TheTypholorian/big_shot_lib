@@ -1,20 +1,24 @@
 package net.typho.big_shot_lib.api
 
-com.mojang.blaze3d.pipeline.RenderTargetimport com.mojang.blaze3d.pipeline.RenderTargetimport com.mojang.blaze3d.pipeline.RenderTargetimport
-import com.mojang.blaze3d.vertex.PoseStack com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.pipeline.RenderTarget
+import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.block.model.BakedQuad
+import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlProgram
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShader
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlShaderType
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.GlDrawState
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
+import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
@@ -39,7 +43,7 @@ interface InternalUtil {
     val positionTexLightColorVertexFormat: VertexFormat
     val positionTexColorNormalVertexFormat: VertexFormat
 
-    fun getTexture(location: Identifier): GlTexture2D?
+    fun getTexture(location: Identifier): AbstractTexture?
 
     fun getProgram(location: Identifier): GlProgram?
 
@@ -52,7 +56,7 @@ interface InternalUtil {
     fun createRenderType(
         location: Identifier,
         format: VertexFormat,
-        drawState: GlDrawState.Builder,
+        drawState: GpuDrawState.Builder,
         defaultBufferSize: Int,
         mode: GlBeginMode,
         affectsCrumbling: Boolean,
@@ -74,6 +78,20 @@ interface InternalUtil {
         useDepth: Boolean,
         name: () -> String
     ): RenderTarget
+
+    fun createTexture(
+        width: Int,
+        height: Int,
+        format: GlTextureFormat,
+        blur: Boolean,
+        mipmap: Boolean
+    ): AbstractTexture
+
+    fun createBuffer(
+        size: Long,
+        usage: GlBufferUsage,
+        target: GlBufferTarget
+    ): GlBuffer
 
     companion object {
         @JvmStatic

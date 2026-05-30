@@ -3,11 +3,14 @@ package net.typho.big_shot_lib.mixin.impl.iface.texture;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlResourceType;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.type.GlTexture2D;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType;
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+
+import java.util.Objects;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -34,7 +37,7 @@ public abstract class AbstractTextureMixin implements GlTexture2D {
     protected boolean mipmap;
 
     @Shadow
-    public abstract void setFilter(boolean p_117961_, boolean p_117962_);
+    public abstract void setFilter(boolean blur, boolean mipmap);
 
     @Override
     public int getGlId() {
@@ -56,11 +59,11 @@ public abstract class AbstractTextureMixin implements GlTexture2D {
     }
 
     @Override
-    public @Nullable GlTextureFormat getFormat() {
-        return getType().pushBoundValue(
+    public @NotNull GlTextureFormat getFormat() {
+        return Objects.requireNonNull(getType().pushBoundValue(
                 getGlId(),
                 () -> GlTextureFormat.fromInternalId(glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT))
-        );
+        ));
     }
 
     @Override

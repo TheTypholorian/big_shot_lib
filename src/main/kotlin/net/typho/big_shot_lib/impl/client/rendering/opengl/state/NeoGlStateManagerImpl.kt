@@ -1,12 +1,16 @@
 package net.typho.big_shot_lib.impl.client.rendering.opengl.state
 
+import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.systems.RenderSystem
+import net.minecraft.client.renderer.ShaderInstance
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendEquation
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlCullFace
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlPolygonMode
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
@@ -33,13 +37,11 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     @JvmField
     val boundBuffers = mutableEnumArrayMapOf<GlBufferTarget, Int> { 0 }
     @JvmField
-    var boundProgram: Int = 0
-    @JvmField
     var boundVertexArray: Int = 0
     @JvmField
     var boundRenderbuffer: Int = 0
     @JvmField
-    var boundReadFramebuffer: Int = 0
+    var boundFramebuffer: RenderTarget? = null
     @JvmField
     var currentBlendEquation: GlBlendEquation = GlBlendEquation.ADD
     @JvmField
@@ -51,9 +53,9 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         { target -> boundBuffers[target] },
         { target, glId -> GlStateManager._glBindBuffer(target.glId, glId) }
     )
-    override var program: Int
-        get() = boundProgram
-        set(value) = GlStateManager._glUseProgram(value)
+    override var program: GlProgram?
+        get() = RenderSystem.getShader() as GlProgram
+        set(value) = RenderSystem.setShader { value as ShaderInstance }
     override var vertexArray: Int
         get() = boundVertexArray
         set(value) = GlStateManager._glBindVertexArray(value)
@@ -63,12 +65,12 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
     override var renderbuffer: Int
         get() = boundRenderbuffer
         set(value) = GlStateManager._glBindRenderbuffer(GL_RENDERBUFFER, value)
-    override var framebuffer: Int
-        get() = GlStateManager.getBoundFramebuffer()
-        set(value) = GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, value)
-    override var readFramebuffer: Int
-        get() = boundReadFramebuffer
-        set(value) = GlStateManager._glBindFramebuffer(GL_READ_FRAMEBUFFER, value)
+    override var framebuffer: RenderTarget?
+        get() = boundFramebuffer
+        set(value) {
+            boundFramebuffer = value
+            GlStateManager._glBindFramebuffer(GL_FRAMEBUFFER, value?.glId ?: 0)
+        }
     override var activeTexture: Int
         get() = GlStateManager._getActiveTexture() - GL_TEXTURE0
         set(value) = GlStateManager._activeTexture(value + GL_TEXTURE0)

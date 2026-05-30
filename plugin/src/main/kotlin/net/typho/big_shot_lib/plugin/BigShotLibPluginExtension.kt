@@ -329,7 +329,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 "com/mojang/blaze3d/vertex/VertexConsumer"
             )
             injectInterface(
-                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/type/GlUniform",
+                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlUniform",
                 "com/mojang/blaze3d/shaders/AbstractUniform"
             )
             injectInterface(
@@ -341,8 +341,12 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 "net/minecraft/client/gui/GuiGraphics"
             )
             injectInterface(
-                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/type/NeoRenderTarget",
+                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/NeoRenderTarget",
                 "com/mojang/blaze3d/pipeline/RenderTarget"
+            )
+            injectInterface(
+                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlTexture2D",
+                "net/minecraft/client/renderer/texture/AbstractTexture"
             )
         }
 
