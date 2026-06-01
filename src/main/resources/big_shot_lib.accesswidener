@@ -23,6 +23,7 @@ accessible class com/mojang/blaze3d/platform/GlStateManager$ColorMask
 accessible class com/mojang/blaze3d/platform/GlStateManager$BooleanState
 accessible field com/mojang/blaze3d/platform/GlStateManager$BooleanState enabled Z
 
+#? if <1.21.11 {
 accessible class net/minecraft/client/renderer/RenderType$CompositeRenderType
 accessible class net/minecraft/client/renderer/RenderType$CompositeState
 accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType state ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
@@ -64,6 +65,49 @@ accessible field net/minecraft/client/renderer/RenderType$CompositeState texturi
 accessible field net/minecraft/client/renderer/RenderType$CompositeState writeMaskState Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
 accessible field net/minecraft/client/renderer/RenderType$CompositeState lineState Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
 accessible field net/minecraft/client/renderer/RenderType$CompositeState colorLogicState Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;
+#? } else {
+accessible class net/minecraft/client/renderer/rendertype/RenderType$CompositeRenderType
+accessible class net/minecraft/client/renderer/rendertype/RenderType$CompositeState
+accessible method net/minecraft/client/renderer/rendertype/RenderType$CompositeRenderType state ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
+
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$TransparencyStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$ShaderStateShard
+accessible field net/minecraft/client/renderer/rendertype/RenderStateShard$ShaderStateShard shader Ljava/util/Optional;
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$EmptyTextureStateShard
+accessible method net/minecraft/client/renderer/rendertype/RenderStateShard$EmptyTextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$MultiTextureStateShard
+accessible method net/minecraft/client/renderer/rendertype/RenderStateShard$MultiTextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard
+accessible method net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible field net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard blur Z
+accessible field net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard mipmap Z
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$TexturingStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$OffsetTexturingStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$BooleanStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$LightmapStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$OverlayStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$CullStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$DepthTestStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$WriteMaskStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$LayeringStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$OutputStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$LineStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$ColorLogicStateShard
+
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState textureState Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState shaderState Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState transparencyState Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState depthTestState Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState cullState Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState lightmapState Lnet/minecraft/client/renderer/RenderStateShard$LightmapStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState overlayState Lnet/minecraft/client/renderer/RenderStateShard$OverlayStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState layeringState Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState outputState Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState texturingState Lnet/minecraft/client/renderer/RenderStateShard$TexturingStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState writeMaskState Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState lineState Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState colorLogicState Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;
+#? }
 
 accessible method com/mojang/blaze3d/shaders/Program <init> (Lcom/mojang/blaze3d/shaders/Program$Type;ILjava/lang/String;)V
 accessible field net/minecraft/client/renderer/LevelRenderer level Lnet/minecraft/client/multiplayer/ClientLevel;

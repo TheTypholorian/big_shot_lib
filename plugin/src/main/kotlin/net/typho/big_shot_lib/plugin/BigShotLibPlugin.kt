@@ -6,9 +6,13 @@ import net.typho.big_shot_lib.plugin.transform.ProjectTransformer
 import net.typho.big_shot_lib.plugin.transform.TransformUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.attributes.Attribute
+import org.gradle.api.internal.provider.ValueSupplier.ValueProducer.task
+import org.gradle.api.tasks.compile.AbstractCompile
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompileTool
 import org.objectweb.asm.Opcodes
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -93,7 +97,7 @@ class BigShotLibPlugin : Plugin<Project> {
                 it.parameters.set(ext)
             }
 
-            project.tasks.withType(JavaCompile::class.java).configureEach { task ->
+            project.tasks.getByName("classes") { task ->
                 println("[Big Shot Lib] Attaching project transforms to task '${task.name}'")
                 val parameters = project.provider {
                     project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) }
@@ -101,23 +105,37 @@ class BigShotLibPlugin : Plugin<Project> {
 
                 task.inputs.property("neoParameters", parameters)
 
-                task.doLast {
-                    applyProjectTransforms(task.destinationDirectory.get().asFile, parameters.get())
+                if (project.pluginManager.hasPlugin("org.jetbrains.kotlin.jvm")) {
+                    task.doLast {
+                        println("classes with kotlin")
+                        fun scanDependencies(task: Task) {
+                            println("task $task")
+                            task.taskDependencies.getDependencies(task).forEach { dependency ->
+                                if (dependency is KotlinCompileTool) {
+                                    applyProjectTransforms(dependency.destinationDirectory.get().asFile, parameters.get())
+                                }
+
+                                scanDependencies(dependency)
+                            }
+                        }
+
+                        scanDependencies(task)
+                    }
                 }
-            }
-        }
-
-        project.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-            project.tasks.withType(KotlinCompile::class.java).configureEach { task ->
-                println("[Big Shot Lib] Attaching project transforms to task '${task.name}'")
-                val parameters = project.provider {
-                    project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) }
-                }
-
-                task.inputs.property("neoParameters", parameters)
 
                 task.doLast {
-                    applyProjectTransforms(task.destinationDirectory.get().asFile, parameters.get())
+                    println("classes")
+                    fun scanDependencies(task: Task) {
+                        task.taskDependencies.getDependencies(task).forEach { dependency ->
+                            if (dependency is AbstractCompile) {
+                                applyProjectTransforms(dependency.destinationDirectory.get().asFile, parameters.get())
+                            }
+
+                            scanDependencies(dependency)
+                        }
+                    }
+
+                    scanDependencies(task)
                 }
             }
         }
