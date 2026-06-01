@@ -16,6 +16,8 @@ class NeoVec2f(
 
     constructor(packed: Long) : this(packed.floatAt(1), packed.floatAt(0))
 
+    constructor(x: Float) : this(x, x)
+
     override val opSet: OperatorSet<Float>
         get() = FloatOperatorSet
 

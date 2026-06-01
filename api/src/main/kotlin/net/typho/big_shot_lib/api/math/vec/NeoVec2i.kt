@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.math.vec
 
 import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
+import net.typho.big_shot_lib.api.math.vec.NeoVec2d
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f
 import org.joml.Vector2ic
 
@@ -12,6 +13,8 @@ class NeoVec2i(
     constructor(other: IVec2<Int>) : this(other.x, other.y)
 
     constructor(other: Vector2ic) : this(other.x(), other.y())
+
+    constructor(x: Int) : this(x, x)
 
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet

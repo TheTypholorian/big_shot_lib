@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.math.vec
 import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f
+import net.typho.big_shot_lib.api.math.vec.NeoVec4d
 import org.joml.Vector4ic
 
 class NeoVec4i(
@@ -14,6 +15,8 @@ class NeoVec4i(
     constructor(other: IVec4<Int>) : this(other.x, other.y, other.z, other.w)
 
     constructor(other: Vector4ic) : this(other.x(), other.y(), other.z(), other.w())
+
+    constructor(x: Int) : this(x, x, x, x)
 
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet

@@ -12,6 +12,8 @@ class NeoVec2d(
 
     constructor(other: Vector2dc) : this(other.x(), other.y())
 
+    constructor(x: Double) : this(x, x)
+
     override val opSet: OperatorSet<Double>
         get() = DoubleOperatorSet
 

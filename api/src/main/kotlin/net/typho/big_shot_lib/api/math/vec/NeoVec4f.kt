@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.math.vec
 import net.typho.big_shot_lib.api.math.op.FloatOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f
+import net.typho.big_shot_lib.api.math.vec.NeoVec4d
 import org.joml.Vector4fc
 
 class NeoVec4f(
@@ -14,6 +15,8 @@ class NeoVec4f(
     constructor(other: IVec4<Float>) : this(other.x, other.y, other.z, other.w)
 
     constructor(other: Vector4fc) : this(other.x(), other.y(), other.z(), other.w())
+
+    constructor(x: Float) : this(x, x, x, x)
 
     override val opSet: OperatorSet<Float>
         get() = FloatOperatorSet
