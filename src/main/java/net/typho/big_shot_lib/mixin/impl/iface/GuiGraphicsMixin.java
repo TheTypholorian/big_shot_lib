@@ -5,11 +5,8 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.Identifier;
-import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram;
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoGuiGraphics;
-import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.api.util.ImmutableExtensionKt;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
@@ -18,7 +15,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-@Namespace(BigShotApi.MOD_ID)
 @Mixin(GuiGraphics.class)
 public class GuiGraphicsMixin implements NeoGuiGraphics {
     @Shadow

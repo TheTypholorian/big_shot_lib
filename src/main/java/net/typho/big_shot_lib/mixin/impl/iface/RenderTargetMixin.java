@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.client.Minecraft;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
@@ -54,6 +55,14 @@ public abstract class RenderTargetMixin implements NeoRenderTarget {
             @Override
             public int getGlId() {
                 return colorTextureId;
+            }
+
+            @Override
+            public void close() {
+                if (colorTextureId > -1) {
+                    TextureUtil.releaseTextureId(colorTextureId);
+                    colorTextureId = -1;
+                }
             }
 
             @NotNull
@@ -114,6 +123,14 @@ public abstract class RenderTargetMixin implements NeoRenderTarget {
             @Override
             public int getGlId() {
                 return depthBufferId;
+            }
+
+            @Override
+            public void close() {
+                if (depthBufferId > -1) {
+                    TextureUtil.releaseTextureId(depthBufferId);
+                    depthBufferId = -1;
+                }
             }
 
             @Override

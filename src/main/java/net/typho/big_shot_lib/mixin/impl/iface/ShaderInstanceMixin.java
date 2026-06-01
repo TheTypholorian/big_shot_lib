@@ -16,9 +16,7 @@ import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.*;
 import net.typho.big_shot_lib.api.client.rendering.state.TextureBinding;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
-import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.api.util.ImmutableExtensionKt;
-import net.typho.big_shot_lib.impl.client.rendering.opengl.GlProgramExtensionValue;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -174,7 +172,6 @@ public abstract class ShaderInstanceMixin implements GlProgram, ShaderInstanceEx
     protected abstract void updateLocations();
 
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private boolean freed = false;
 
     @Override

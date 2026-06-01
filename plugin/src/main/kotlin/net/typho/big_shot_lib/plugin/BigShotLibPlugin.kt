@@ -1,94 +1,62 @@
 package net.typho.big_shot_lib.plugin
 
+import net.typho.big_shot_lib.plugin.transform.NeoTransformParameters
 import net.typho.big_shot_lib.plugin.transform.ProjectRemapper
 import net.typho.big_shot_lib.plugin.transform.ProjectTransformer
-import net.typho.big_shot_lib.plugin.transform.util.AnnotationScanner
-import net.typho.big_shot_lib.plugin.transform.util.Annotations
-import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
+import net.typho.big_shot_lib.plugin.transform.TransformUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.type.ArtifactTypeDefinition
 import org.gradle.api.attributes.Attribute
-import org.gradle.api.attributes.LibraryElements
-import org.gradle.api.file.FileCollection
-import org.gradle.api.tasks.bundling.Jar
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.ClassWriter
+import org.gradle.api.tasks.compile.JavaCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.objectweb.asm.Opcodes
+import java.io.ByteArrayInputStream
 import java.io.File
-import java.util.jar.JarFile
 import kotlin.jvm.java
 
 class BigShotLibPlugin : Plugin<Project> {
-    fun applyProjectTransforms(project: Project, inputs: FileCollection, out: File, ext: BigShotLibPluginExtension) {
-        println("[Big Shot Lib] Applying project transforms")
-
-        out.deleteRecursively()
-        out.mkdirs()
-
-        val annotations = AnnotationScanner(project.objects, setOf(
-            Annotations.NAMESPACE,
-        ))
-        var visited = 0
-
-        for (file in project.configurations.getByName("compileClasspath").resolve()) {
-            if (file.extension == "jar") {
-                JarFile(file, false).use { jar ->
-                    jar.entries().asIterator().forEach { entry ->
-                        if (entry.name.endsWith(".class") && !entry.name.endsWith("-info.class")) {
-                            visited++
-                            ClassReader(jar.getInputStream(entry)).accept(annotations.createVisitor(), ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
-                        }
-                    }
-                }
-            }
-        }
-
-        inputs.forEach {
-            it.walkTopDown().forEach { file ->
-                if (file.extension == "class" && !file.endsWith("-info.class")) {
-                    visited++
-                    file.inputStream().use { stream ->
-                        ClassReader(stream).accept(annotations.createVisitor(), ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
-                    }
-                }
-            }
-        }
-
-        println("\tLoaded annotations from $visited class files:")
-        println("\t\t${annotations.classes.values.sumOf { it.size }} class annotations")
-        println("\t\t${annotations.methods.values.sumOf { it.size }} method annotations")
-        println("\t\t${annotations.fields.values.sumOf { it.size }} field annotations")
-        visited = 0
-
-        val remapper = ProjectRemapper(ext, Opcodes.ASM9, annotations)
-
-        inputs.forEach { file ->
-            if (file.extension == "class" && !file.endsWith("-info.class")) {
-                file.inputStream().use { stream ->
-                    val reader = ClassReader(stream)
-                    val writer = ClassWriter(0)
-                    val transformer = ProjectTransformer(ext, Opcodes.ASM9, KotlinAndMixinSupportingClassRemapper(Opcodes.ASM9, writer, remapper))
-                    reader.accept(transformer, 0)
-
-                    if (ext.loader.get().mappedOnlyInAnnotationName != transformer.desc!!) {
-                        val target = out.resolve("${transformer.desc!!}.class")
-                        target.parentFile.mkdirs()
-                        target.writeBytes(writer.toByteArray())
-                        visited++
-                    }
-                }
-            }
-        }
-
-        println("\tProcessed $visited class files")
-    }
-
     @JvmField
     val neoTweakedAttrib: Attribute<Boolean> = Attribute.of(
         "big_shot_lib:tweaked",
         Boolean::class.javaObjectType
     )
+    @JvmField
+    val neoReverseTweakedAttrib: Attribute<Boolean> = Attribute.of(
+        "big_shot_lib:reverse_tweaked",
+        Boolean::class.javaObjectType
+    )
+
+    fun applyProjectTransforms(dir: File, parameters: NeoTransformParameters) {
+        val remapper = ProjectRemapper(parameters, Opcodes.ASM9)
+
+        dir.walkTopDown().forEach { file ->
+            val rel = file.relativeTo(dir)
+
+            if (rel.extension == "class") {
+                TransformUtils.transformSingleFile(
+                    rel.name,
+                    remapper,
+                    { api, writer -> ProjectTransformer(parameters, api, writer) },
+                    ByteArrayInputStream(file.readBytes())
+                ) { name, consumer ->
+                    if (name == rel.name) {
+                        file.outputStream().use {
+                            consumer(it)
+                        }
+                    } else {
+                        file.delete()
+
+                        val newFile = File(name)
+                        newFile.parentFile.mkdirs()
+
+                        newFile.outputStream().use {
+                            consumer(it)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     override fun apply(project: Project) {
         val ext = project.extensions.create("bigShotLib", BigShotLibPluginExtension::class.java)
@@ -108,9 +76,12 @@ class BigShotLibPlugin : Plugin<Project> {
 
         project.pluginManager.withPlugin("java") {
             project.dependencies.attributesSchema.attribute(neoTweakedAttrib)
-            project.dependencies.artifactTypes.getByName("jar").attributes.attribute(neoTweakedAttrib, false)
 
-            project.configurations.configureEach {
+            project.dependencies.artifactTypes.configureEach {
+                it.attributes.attribute(neoTweakedAttrib, false)
+            }
+
+            project.configurations.getByName("compileClasspath") {
                 if (it.isCanBeResolved) {
                     it.attributes.attribute(neoTweakedAttrib, true)
                 }
@@ -119,35 +90,34 @@ class BigShotLibPlugin : Plugin<Project> {
             project.dependencies.registerTransform(DependencyTransformAction::class.java) {
                 it.from.attribute(neoTweakedAttrib, false)
                 it.to.attribute(neoTweakedAttrib, true)
-
-                it.parameters.classRenames.set(ext.transformInfo.classRenames)
-                it.parameters.methodRenames.set(ext.transformInfo.methodRenames)
-                it.parameters.fieldRenames.set(ext.transformInfo.fieldRenames)
-
-                it.parameters.markAsDeprecated.set(ext.transformInfo.markAsDeprecated)
-
-                it.parameters.interfaceInjections.set(ext.transformInfo.interfaceInjections)
-                it.parameters.staticMethodInjections.set(ext.transformInfo.staticMethodInjections)
-                it.parameters.argumentOverloadConverters.set(ext.transformInfo.argumentOverloadConverters)
-
-                it.parameters.version.set(ext.version)
-                it.parameters.loader.set(ext.loader)
+                it.parameters.set(ext)
             }
 
-            //project.tasks.getByName("processResources") {
-            //    it.dependsOn(modMetadataTask)
-            //}
-
-            project.tasks.withType(Jar::class.java) { task ->
+            project.tasks.withType(JavaCompile::class.java).configureEach { task ->
                 println("[Big Shot Lib] Attaching project transforms to task '${task.name}'")
-                val out = project.layout.buildDirectory.dir("big_shot_classes").get().asFile
-                val inputs = task.inputs.files
+                val parameters = project.provider {
+                    project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) }
+                }
 
-                task.inputs.dir(out)
+                task.inputs.property("neoParameters", parameters)
 
-                task.doFirst {
-                    out.mkdirs()
-                    applyProjectTransforms(project, inputs, out, ext)
+                task.doLast {
+                    applyProjectTransforms(task.destinationDirectory.get().asFile, parameters.get())
+                }
+            }
+        }
+
+        project.pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+            project.tasks.withType(KotlinCompile::class.java).configureEach { task ->
+                println("[Big Shot Lib] Attaching project transforms to task '${task.name}'")
+                val parameters = project.provider {
+                    project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) }
+                }
+
+                task.inputs.property("neoParameters", parameters)
+
+                task.doLast {
+                    applyProjectTransforms(task.destinationDirectory.get().asFile, parameters.get())
                 }
             }
         }

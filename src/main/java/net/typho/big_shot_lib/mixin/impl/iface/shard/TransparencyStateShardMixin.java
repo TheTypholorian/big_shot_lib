@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
-import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.api.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,10 +15,8 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(RenderStateShard.TransparencyStateShard.class)
 public class TransparencyStateShardMixin implements MutableExtension<BlendFunction> {
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private boolean warned = false;
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private BlendFunction blend = null;
 
     @Override

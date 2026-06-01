@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.util
 
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.plugin.Namespace
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified V> Any.getExtensionValue(): V {
@@ -43,7 +42,6 @@ fun <V> Any.getExtensionValueNullable(cls: Class<V>): V? {
     }
 }
 
-@Namespace(BigShotApi.MOD_ID)
 interface ImmutableExtension<V> {
     val extensionValue: V
 }

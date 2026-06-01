@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl.client.util
 
 //? neoforge {
-import net.neoforged.api.distmarker.Dist
+/*import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.SubscribeEvent
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.neoforge.client.event.ClientTickEvent
@@ -12,14 +12,14 @@ import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
-//? }
+*///? }
 
 //? neoforge {
-@EventBusSubscriber(
+/*@EventBusSubscriber(
     value = [Dist.CLIENT],
     modid = BigShotApi.MOD_ID
 )
-//? }
+*///? }
 object BigShotClientEvents {
     //? if <1.21.9 {
     @JvmField
@@ -30,7 +30,7 @@ object BigShotClientEvents {
     }
 
     //? neoforge {
-    @JvmStatic
+    /*@JvmStatic
     @SubscribeEvent
     fun renderLevel(event: RenderLevelStageEvent) {
         for (entrypoint in BigShotClientEntrypoint.entrypoints) {
@@ -110,5 +110,5 @@ object BigShotClientEvents {
             entrypoint.clientTick()
         }
     }
-    //? }
+    *///? }
 }

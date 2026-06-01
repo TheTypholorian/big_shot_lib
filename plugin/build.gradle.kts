@@ -21,6 +21,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.13.1")
 
     implementation("org.jetbrains.kotlin:kotlin-metadata-jvm:2.2.0")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.0")
 
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))

@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.state.LayeringState;
-import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.api.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,10 +15,8 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(RenderStateShard.LayeringStateShard.class)
 public class LayeringStateShardMixin implements MutableExtension<LayeringState> {
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private boolean warned = false;
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private LayeringState layering = null;
 
     @Override

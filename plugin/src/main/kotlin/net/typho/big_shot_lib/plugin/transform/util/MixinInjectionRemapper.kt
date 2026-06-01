@@ -14,15 +14,48 @@ class MixinInjectionRemapper(
     val parentName: String? = null
 ) : AnnotationVisitor(api, visitor) {
     override fun visit(name: String?, value: Any?) {
-        if (value is String && (parentName == "method" || name == "method")) {
-            val index = value.indexOf('(')
+        if (value is String && ((parentName == "method" || name == "method") || (parentName == "target" || name == "target"))) {
+            var methodOwner: String? = null
+            var work = value
 
-            if (index == -1) {
-                super.visit(name, remapper.mapMethodName(mixinTarget, value, null))
-            } else {
-                val desc = value.substring(index)
-                super.visit(name, remapper.mapMethodName(mixinTarget, value.substring(0, index), desc) + remapper.mapMethodDesc(desc))
+            val index0 = work.indexOf(';')
+            var index1 = work.indexOf('(')
+
+            if (work.startsWith("L") && index0 > 0 && (index1 == -1 || index0 < index1)) {
+                methodOwner = work.substring(1, index0)
+                work = work.substring(index0 + 1)
             }
+
+            index1 = work.indexOf('(')
+
+            val methodName: String
+            val methodDesc: String?
+
+            if (index1 >= 0) {
+                methodName = work.substring(0, index1)
+                methodDesc = work.substring(index1)
+            } else {
+                methodName = work
+                methodDesc = null
+            }
+
+            val builder = StringBuilder()
+
+            if (methodOwner != null) {
+                builder.append("L${remapper.map(methodOwner)};")
+            }
+
+            if (methodOwner == null) {
+                methodOwner = mixinTarget
+            }
+
+            builder.append(remapper.mapMethodName(methodOwner, methodName, methodDesc))
+
+            if (methodDesc != null) {
+                builder.append(remapper.mapMethodDesc(methodDesc))
+            }
+
+            super.visit(name, builder.toString())
         } else {
             super.visit(name, value)
         }

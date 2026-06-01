@@ -1,19 +1,16 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
 import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.blaze3d.vertex.VertexConsumer
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.math.rect.IRect3
 import net.typho.big_shot_lib.api.math.vec.IVec2
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
-import net.typho.big_shot_lib.api.plugin.Namespace
 import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.Matrix4fc
 import org.joml.Vector3f
 
-@Namespace(BigShotApi.MOD_ID)
 interface NeoVertexConsumer {
     fun vertex(x: Float, y: Float, z: Float): NeoVertexConsumer
 

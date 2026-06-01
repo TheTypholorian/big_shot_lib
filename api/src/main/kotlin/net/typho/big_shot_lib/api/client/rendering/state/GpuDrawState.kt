@@ -7,10 +7,8 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
-import net.typho.big_shot_lib.api.plugin.Namespace
 import java.util.function.Supplier
 
-@Namespace(BigShotApi.MOD_ID)
 interface GpuDrawState {
     val blend: BlendFunction?
     val shader: Supplier<GlProgram>?

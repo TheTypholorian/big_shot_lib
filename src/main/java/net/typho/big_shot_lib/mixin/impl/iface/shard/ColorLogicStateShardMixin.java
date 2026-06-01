@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.BigShotApi;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp;
-import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.api.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,7 +15,6 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(RenderStateShard.ColorLogicStateShard.class)
 public class ColorLogicStateShardMixin implements MutableExtension<GlLogicOp> {
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private GlLogicOp logic = null;
 
     @Override

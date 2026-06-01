@@ -5,10 +5,8 @@ import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
-import net.typho.big_shot_lib.api.plugin.Namespace
 import java.nio.ByteBuffer
 
-@Namespace(BigShotApi.MOD_ID)
 interface GlBuffer : GlResource {
     val size: Long
     val usage: GlBufferUsage

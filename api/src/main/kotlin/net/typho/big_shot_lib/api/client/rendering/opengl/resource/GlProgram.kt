@@ -9,11 +9,9 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.util.UniformOutput
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
 import net.typho.big_shot_lib.api.error.ShaderLinkException
 import net.typho.big_shot_lib.api.error.ShaderValidationException
-import net.typho.big_shot_lib.api.plugin.Namespace
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.util.resource.NamedResource
 
-@Namespace(BigShotApi.MOD_ID)
 interface GlProgram : NamedResource, GlResource, UniformOutput {
     val format: NeoVertexFormat
 

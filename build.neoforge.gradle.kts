@@ -60,10 +60,6 @@ sourceSets {
 val accessTransformer = project.file("build/resources/main/META-INF/accesstransformer.cfg")
 val accessWidener = "big_shot_lib.accesswidener"
 
-tasks.withType<Jar> {
-    destinationDirectory.set(rootProject.file("build/libs/${project(":api").version}"))
-}
-
 fletchingTable {
     accessConverter.register(sourceSets.main) {
         add(accessWidener)

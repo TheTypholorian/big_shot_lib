@@ -15,7 +15,7 @@ import org.objectweb.asm.signature.SignatureWriter
 
 class DependencyTransformer(
     @JvmField
-    val info: DependencyTransformAction.Parameters,
+    val info: NeoTransformParameters,
     @JvmField
     val overloads: (newDesc: String, oldDesc: String, argumentConverters: List<ArgumentOverloadConverter?>) -> Unit,
     @JvmField

@@ -1,17 +1,14 @@
 package net.typho.big_shot_lib.plugin.transform
 
 import groovyjarjarasm.asm.Opcodes
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension
-import net.typho.big_shot_lib.plugin.ModLoader
 import net.typho.big_shot_lib.plugin.transform.util.Annotations
-import org.gradle.api.model.ObjectFactory
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 
 class ProjectTransformer(
     @JvmField
-    val ext: BigShotLibPluginExtension,
+    val info: NeoTransformParameters,
     api: Int,
     visitor: ClassVisitor?
 ) : ClassVisitor(api, visitor) {
@@ -42,7 +39,7 @@ class ProjectTransformer(
                 }
 
                 override fun visitEnd() {
-                    ext.loader.get().mapOnlyInAnnotation(this@ProjectTransformer, client)
+                    info.loader.get().mapOnlyInAnnotation(this@ProjectTransformer, client)
                 }
             }
         } else {
@@ -59,7 +56,7 @@ class ProjectTransformer(
     ): MethodVisitor {
         var access = access
 
-        if (ext.transformInfo.staticMethodInjections.get().any { it.redirectTo.get().cls.get() == desc && it.redirectTo.get().name.get() == name && it.redirectTo.get().desc.get() == descriptor }) {
+        if (info.staticMethodInjections.get().any { it.redirectTo.get().cls.get() == desc && it.redirectTo.get().name.get() == name && it.redirectTo.get().desc.get() == descriptor }) {
             access = access and Opcodes.ACC_PUBLIC and Opcodes.ACC_PRIVATE.inv()
         }
 
@@ -71,7 +68,7 @@ class ProjectTransformer(
                 descriptor: String,
                 isInterface: Boolean
             ) {
-                for (injection in ext.transformInfo.staticMethodInjections.get()) {
+                for (injection in info.staticMethodInjections.get()) {
                     if (injection.targetClass.get() == owner && injection.targetMethodName.get() == name && injection.redirectTo.get().desc.get() == descriptor) {
                         super.visitMethodInsn(opcode, injection.redirectTo.get().cls.get(), injection.redirectTo.get().name.get(), descriptor, false)
                         return

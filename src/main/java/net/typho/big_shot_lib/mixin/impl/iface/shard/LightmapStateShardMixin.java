@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import net.minecraft.client.renderer.RenderStateShard;
 import net.typho.big_shot_lib.api.BigShotApi;
-import net.typho.big_shot_lib.api.plugin.Namespace;
 import net.typho.big_shot_lib.api.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -18,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RenderStateShard.LightmapStateShard.class)
 public class LightmapStateShardMixin implements MutableExtension<Boolean> {
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private boolean lightmap = false;
 
     @Inject(

@@ -4,15 +4,15 @@ import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.impl.client.util.BigShotClientEvents
 
 //? fabric {
-/*import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.api.ClientModInitializer
 
 class BigShotClientInit : ClientModInitializer {
     override fun onInitializeClient() {
         BigShotClientEvents.init()
     }
 }
-*///? } neoforge {
-import net.neoforged.api.distmarker.Dist
+//? } neoforge {
+/*import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
@@ -33,4 +33,4 @@ class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
         BigShotApi.LOGGER.info("Entity Translucent: ${type.format} ${type.blend} ${type.writeColor} ${type.writeDepth} ${type.cull} ${type.depth} ${type.layering} ${type.lightmap} ${type.overlay} ${type.defaultBufferSize}")
     }
 }
-//? }
+*///? }

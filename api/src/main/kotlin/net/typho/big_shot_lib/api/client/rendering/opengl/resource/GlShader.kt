@@ -5,7 +5,6 @@ import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.error.ShaderCompileException
-import net.typho.big_shot_lib.api.plugin.Namespace
 import net.typho.big_shot_lib.api.util.resource.NamedResource
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL11.GL_TRUE
@@ -16,7 +15,6 @@ import org.lwjgl.opengl.GL20.glGetShaderSource
 import org.lwjgl.opengl.GL20.glGetShaderi
 import org.lwjgl.opengl.GL20.glShaderSource
 
-@Namespace(BigShotApi.MOD_ID)
 interface GlShader : NamedResource, GlResource {
     override val type: GlResourceType
         get() = shaderType.resourceType
@@ -46,8 +44,8 @@ interface GlShader : NamedResource, GlResource {
             private set
 
         override fun close() {
-            if (!Impl.freed) {
-                Impl.freed = true
+            if (!freed) {
+                freed = true
                 GlQueue.INSTANCE.runOrQueue { type.destroy(glId) }
             }
         }

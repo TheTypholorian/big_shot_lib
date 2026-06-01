@@ -1,11 +1,10 @@
 package net.typho.big_shot_lib.plugin.transform
 
-import net.typho.big_shot_lib.plugin.DependencyTransformAction
 import org.objectweb.asm.commons.Remapper
 
 class DependencyRemapper(
     @JvmField
-    val info: DependencyTransformAction.Parameters,
+    val info: NeoTransformParameters,
     api: Int
 ) : Remapper(api) {
     override fun map(internalName: String): String {

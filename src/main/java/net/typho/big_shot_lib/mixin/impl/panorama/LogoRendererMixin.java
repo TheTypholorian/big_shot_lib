@@ -15,7 +15,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoGuiGraphics;
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint;
-import net.typho.big_shot_lib.api.plugin.Namespace;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,19 +24,14 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 @Mixin(LogoRenderer.class)
 public class LogoRendererMixin implements AdvancedLogoRenderer {
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private boolean enabled = false;
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private boolean focused = false;
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private ScreenRectangle rect;
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private double mouseX;
     @Unique
-    @Namespace(BigShotApi.MOD_ID)
     private double mouseY;
 
     @ModifyArg(

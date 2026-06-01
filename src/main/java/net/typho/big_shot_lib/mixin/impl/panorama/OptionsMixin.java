@@ -10,6 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Options.class)
 public class OptionsMixin {
+    // TODO
+    /*
     @Inject(
             method = "processOptionsForge",
             at = @At("TAIL")
@@ -17,4 +19,5 @@ public class OptionsMixin {
     private void processOptionsForge(Options.FieldAccess accessor, CallbackInfo ci) {
         MainMenuMode.setSelected(Identifier.bySeparator(accessor.process("bigShotLibCurrentMainMenuMode", MainMenuMode.getSelected().id.toLanguageKey()), '.'));
     }
+     */
 }

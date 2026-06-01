@@ -70,14 +70,6 @@ fletchingTable {
 
 val accessWidener = "big_shot_lib.accesswidener"
 
-tasks.withType<RemapJarTask> {
-    destinationDirectory.set(rootProject.file("build/libs/${project(":api").version}"))
-}
-
-tasks.withType<RemapSourcesJarTask> {
-    destinationDirectory.set(rootProject.file("build/libs/${project(":api").version}"))
-}
-
 tasks.named<ProcessResources>("processResources") {
     val props = HashMap<String, String>().apply {
         this["minecraft"] = (project.property("deps.minecraft_range") ?: project.property("deps.minecraft")) as String

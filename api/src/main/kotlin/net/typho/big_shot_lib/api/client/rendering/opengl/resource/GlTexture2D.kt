@@ -5,9 +5,7 @@ import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
-import net.typho.big_shot_lib.api.plugin.Namespace
 
-@Namespace(BigShotApi.MOD_ID)
 interface GlTexture2D : GlResource {
     val width: Int
     val height: Int
