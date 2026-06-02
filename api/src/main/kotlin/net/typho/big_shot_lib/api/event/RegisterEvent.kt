@@ -9,9 +9,6 @@ import net.minecraft.world.level.block.Block
 import java.util.function.Consumer
 
 fun interface RegisterEvent {
-    /**
-     * May be called multiple times
-     */
     fun register(output: Output)
 
     interface Output {
