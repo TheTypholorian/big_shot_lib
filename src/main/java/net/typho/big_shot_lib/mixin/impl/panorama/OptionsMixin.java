@@ -17,7 +17,7 @@ public class OptionsMixin {
             at = @At("TAIL")
     )
     private void processOptionsForge(Options.FieldAccess accessor, CallbackInfo ci) {
-        MainMenuMode.setSelected(Identifier.bySeparator(accessor.process("bigShotLibCurrentMainMenuMode", MainMenuMode.getSelected().id.toLanguageKey()), '.'));
+        MainMenuModeManager.setSelected(Identifier.bySeparator(accessor.process("bigShotLibCurrentMainMenuMode", MainMenuModeManager.getSelected().id.toLanguageKey()), '.'));
     }
      */
 }

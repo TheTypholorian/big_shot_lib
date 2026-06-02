@@ -21,7 +21,7 @@ abstract class ResourceRegistry<T>(
     val dependencies: MutableList<ResourceRegistry<*>>,
     @JvmField
     val paths: MutableList<FileToIdConverter>,
-) : NeoReloadListener {
+) : SingleStepNeoReloadListener {
     companion object {
         @JvmField
         val registries = LinkedList<ResourceRegistry<*>>()

@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.typho.big_shot_lib.api.client.rendering.AdvancedLogoRenderer;
 import net.typho.big_shot_lib.api.client.rendering.PanoramaRendererExtension;
 import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode;
-import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint;
+import net.typho.big_shot_lib.impl.client.MainMenuModeManager;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,10 +50,10 @@ public abstract class TitleScreenMixin extends Screen {
             method = "renderPanorama"
     )
     private void renderPanorama(GuiGraphics guiGraphics, float partialTick, Operation<Void> original) {
-        if (((AdvancedLogoRenderer) logoRenderer).getEnabled() && MainMenuMode.getSelected().panorama != null) {
+        if (((AdvancedLogoRenderer) logoRenderer).getEnabled() && MainMenuModeManager.getSelected().panorama != null) {
             PanoramaRendererExtension extension = (PanoramaRendererExtension) PANORAMA;
             CubeMap old = extension.getCubeMap();
-            extension.setCubeMap(MainMenuMode.getSelected().panorama);
+            extension.setCubeMap(MainMenuModeManager.getSelected().panorama);
 
             original.call(guiGraphics, partialTick);
 
@@ -92,7 +92,7 @@ public abstract class TitleScreenMixin extends Screen {
     ) {
         List<CompletableFuture<?>> futures = new ArrayList<>(Arrays.asList(cfs));
 
-        for (MainMenuMode mode : BigShotClientEntrypoint.getMainMenuModes()) {
+        for (MainMenuMode mode : MainMenuModeManager.mainMenuModes) {
             if (mode.panorama != null) {
                 futures.add(mode.panorama.preload(textures, backgroundExecutor));
             }

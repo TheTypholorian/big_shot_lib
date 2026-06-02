@@ -15,6 +15,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoGuiGraphics;
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint;
+import net.typho.big_shot_lib.impl.client.MainMenuModeManager;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -42,8 +43,8 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
             )
     )
     private Identifier renderLogo(Identifier texture) {
-        if (MainMenuMode.getSelected().logoImage != null) {
-            return MainMenuMode.getSelected().logoImage;
+        if (MainMenuModeManager.getSelected().logoImage != null) {
+            return MainMenuModeManager.getSelected().logoImage;
         } else {
             return texture;
         }
@@ -71,8 +72,8 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
             Operation<Void> original
     ) {
         if (enabled) {
-            if (MainMenuMode.getSelected().editionImage != null) {
-                texture = MainMenuMode.getSelected().editionImage;
+            if (MainMenuModeManager.getSelected().editionImage != null) {
+                texture = MainMenuModeManager.getSelected().editionImage;
             }
 
             if (rect != null && rect.containsPoint((int) mouseX, (int) mouseY)) {
@@ -87,8 +88,8 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
 
                 shader.setUniform("MousePos", uniform -> uniform.set((float) mouseX, (float) mouseY));
                 shader.setUniform("GuiSize", uniform -> uniform.set((float) guiGraphics.guiWidth(), (float) guiGraphics.guiHeight()));
-                shader.setUniform("DarkColor", uniform -> uniform.set(MainMenuMode.getSelected().editionHoverDarkColor));
-                shader.setUniform("LightColor", uniform -> uniform.set(MainMenuMode.getSelected().editionHoverLightColor));
+                shader.setUniform("DarkColor", uniform -> uniform.set(MainMenuModeManager.getSelected().editionHoverDarkColor));
+                shader.setUniform("LightColor", uniform -> uniform.set(MainMenuModeManager.getSelected().editionHoverLightColor));
 
                 int offset = 2;
 
@@ -114,7 +115,7 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (enabled && rect != null && rect.containsPoint((int) mouseX, (int) mouseY)) {
-            MainMenuMode.setSelected(MainMenuMode.getSelectedIndex() + 1);
+            MainMenuModeManager.setSelected(MainMenuModeManager.getSelectedIndex() + 1);
             Minecraft.getInstance().options.save();
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             return true;
@@ -130,7 +131,7 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
 
     @Override
     public void setEnabled(boolean b) {
-        if (BigShotClientEntrypoint.getMainMenuModes().size() > 1) {
+        if (MainMenuModeManager.mainMenuModes.size() > 1) {
             enabled = b;
         }
     }

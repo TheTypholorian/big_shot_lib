@@ -23,6 +23,7 @@ import net.typho.big_shot_lib.api.client.event.RenderGUIEvent
 import net.typho.big_shot_lib.api.client.event.RenderHandEvent
 import net.typho.big_shot_lib.api.client.event.RenderLevelEvent
 import net.typho.big_shot_lib.api.client.event.RenderTooltipEvent
+import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
 import net.typho.big_shot_lib.api.event.AddDataReloadListenersEvent
 import net.typho.big_shot_lib.api.event.BlockChangedEvent
@@ -102,7 +103,7 @@ object NeoClientEventBusImpl : NeoClientEventBus {
     }
 
     override fun register(event: RegisterMainMenuModesEvent) {
-        TODO("Not yet implemented")
+        MainMenuModeManager.register(event)
     }
 
     override fun register(event: RenderGUIEvent) {

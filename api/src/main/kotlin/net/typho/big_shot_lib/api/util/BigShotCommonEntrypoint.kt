@@ -4,8 +4,7 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 
 interface BigShotCommonEntrypoint {
-    fun onInitialize(bus: NeoEventBus) {
-    }
+    fun onInitialize(bus: NeoEventBus)
 
     companion object {
         @JvmStatic

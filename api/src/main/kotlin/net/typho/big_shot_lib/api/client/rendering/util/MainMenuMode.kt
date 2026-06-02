@@ -1,10 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
-import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.CubeMap
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.util.NeoColor
 
 // TODO expand with dynamic rendering
@@ -32,23 +29,5 @@ data class MainMenuMode(
             editionHoverLightColor = NeoColor.WHITE,
             editionHoverDarkColor = NeoColor.WHITE
         )
-
-        @JvmStatic
-        var selected: MainMenuMode = BigShotClientEntrypoint.mainMenuModes.first()
-            private set
-        @JvmStatic
-        @set:JvmName("setSelected")
-        var selectedIndex: Int = 0
-            set(value) {
-                field = value % BigShotClientEntrypoint.mainMenuModes.size
-                selected = BigShotClientEntrypoint.mainMenuModes[field]
-            }
-        @JvmStatic
-        @set:JvmName("setSelected")
-        var selectedId: Identifier
-            get() = selected.id
-            set(value) {
-                BigShotClientEntrypoint.mainMenuModes.firstOrNull { it.id == value }?.let { selected = it }
-            }
     }
 }

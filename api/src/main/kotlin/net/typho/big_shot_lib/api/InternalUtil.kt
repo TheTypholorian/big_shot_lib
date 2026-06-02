@@ -21,6 +21,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
+import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
 import net.typho.big_shot_lib.api.event.RegistryBuilder
 import net.typho.big_shot_lib.api.math.vec.IVec3
@@ -33,6 +34,7 @@ interface InternalUtil {
     val overlayUVVertexElement: VertexFormatElement
     val lightUVVertexElement: VertexFormatElement
     val normalVertexElement: VertexFormatElement
+
     val blockVertexFormat: VertexFormat
     val newEntityVertexFormat: VertexFormat
     val particleVertexFormat: VertexFormat
