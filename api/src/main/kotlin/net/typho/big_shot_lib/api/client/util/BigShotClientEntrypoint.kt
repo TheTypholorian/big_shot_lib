@@ -1,124 +1,11 @@
 package net.typho.big_shot_lib.api.client.util
 
-import com.mojang.blaze3d.vertex.PoseStack
-import com.mojang.brigadier.CommandDispatcher
-import net.minecraft.client.Camera
-import net.minecraft.client.DeltaTracker
-import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
-import net.minecraft.client.multiplayer.ClientLevel
-import net.minecraft.client.renderer.LevelRenderer
-import net.minecraft.client.renderer.MultiBufferSource
-import net.minecraft.commands.CommandBuildContext
-import net.minecraft.commands.CommandSourceStack
-import net.minecraft.resources.Identifier
-import net.minecraft.network.chat.ChatType
-import net.minecraft.network.chat.Component
-import net.minecraft.world.InteractionHand
-import net.minecraft.world.item.ItemStack
+import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode
-import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
-import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
-import org.joml.FrustumIntersection
-import org.joml.Matrix4f
-import java.util.UUID
 
 interface BigShotClientEntrypoint {
-    fun onInitializeClient() {
-    }
-
-    fun addReloadListeners(
-        out: (listener: NeoResourceManagerReloadListener) -> Unit
-    ) {
-    }
-
-    fun addF3Info(
-        out: (location: Identifier, allowedWithReducedDebugInfo: Boolean, text: (out: (line: String) -> Unit) -> Unit) -> Unit
-    ) {
-    }
-
-    fun displayInitialScreens(
-        out: (text: Component, onClose: () -> Unit) -> Unit
-    ) {
-    }
-
-    fun clientLevelChanged(
-        old: ClientLevel?,
-        new: ClientLevel?
-    ) {
-    }
-
-    fun renderHand(
-        hand: InteractionHand,
-        poseStack: PoseStack,
-        buffers: MultiBufferSource,
-        packedLight: Int,
-        partialTick: Float,
-        interpolatedPitch: Float,
-        swingProgress: Float,
-        equipProgress: Float,
-        stack: ItemStack
-    ) {
-    }
-
-    fun renderLevel(
-        stage: RenderLevelStage,
-        levelRenderer: LevelRenderer,
-        camera: Camera,
-        level: ClientLevel?,
-        projMat: Matrix4f,
-        modelViewMat: Matrix4f,
-        frustum: FrustumIntersection,
-        //target: GlFramebuffer,
-        renderTick: Int,
-        partialTick: DeltaTracker
-    ) {
-    }
-
-    fun clientCommands(
-        dispatcher: CommandDispatcher<CommandSourceStack>,
-        context: CommandBuildContext
-    ) {
-    }
-
-    fun displayResized(
-        windowWidth: Int,
-        windowHeight: Int,
-        framebufferWidth: Int,
-        framebufferHeight: Int
-    ) {
-    }
-
-    fun renderTooltip(
-        stack: ItemStack,
-        graphics: GuiGraphics,
-        x: Int,
-        y: Int,
-        font: Font,
-        components: List<ClientTooltipComponent>
-    ) {
-    }
-
-    fun renderGui(
-        graphics: GuiGraphics,
-        partialTick: DeltaTracker
-    ) {
-    }
-
-    fun clientChatMessage(
-        message: Component,
-        type: ChatType.Bound?,
-        sender: UUID
-    ) {
-    }
-
-    fun loadMainMenuModes(): Iterable<MainMenuMode> {
-        return listOf()
-    }
-
-    fun clientTick() {
+    fun onInitializeClient(bus: NeoClientEventBus) {
     }
 
     companion object {
@@ -128,6 +15,8 @@ interface BigShotClientEntrypoint {
         @JvmStatic
         @get:JvmName("getMainMenuModes")
         val mainMenuModes by lazy {
+            mutableListOf(MainMenuMode.MINECRAFT) // TODO
+            /*
             entrypoints.flatMapTo(
                 mutableListOf(MainMenuMode.MINECRAFT),
                 { it.loadMainMenuModes() }
@@ -135,6 +24,7 @@ interface BigShotClientEntrypoint {
                 .also {
                     it.sortWith(Comparator.comparingInt { -it.priority })
                 }
+             */
         }
     }
 }

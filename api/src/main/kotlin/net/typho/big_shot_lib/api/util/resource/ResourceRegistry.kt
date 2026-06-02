@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.util.resource
+package net.typho.big_shot_lib.api.util.resource
 
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
@@ -13,6 +13,7 @@ import net.minecraft.server.packs.resources.ResourceManager
 import net.typho.big_shot_lib.api.BigShotApi
 import java.io.BufferedReader
 import java.util.*
+import kotlin.collections.iterator
 
 abstract class ResourceRegistry<T>(
     override val location: Identifier,
@@ -20,7 +21,7 @@ abstract class ResourceRegistry<T>(
     val dependencies: MutableList<ResourceRegistry<*>>,
     @JvmField
     val paths: MutableList<FileToIdConverter>,
-) : NeoResourceManagerReloadListener {
+) : NeoReloadListener {
     companion object {
         @JvmField
         val registries = LinkedList<ResourceRegistry<*>>()

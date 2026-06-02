@@ -7,6 +7,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
@@ -15,7 +17,9 @@ import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.core.Direction
+import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import net.typho.big_shot_lib.api.BigShotApi.toShortString
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
@@ -35,6 +39,7 @@ import net.typho.big_shot_lib.api.client.rendering.state.LayeringState
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
+import net.typho.big_shot_lib.api.event.RegistryBuilder
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
@@ -281,5 +286,9 @@ object InternalUtilImpl : InternalUtil {
 
     override fun createBuffer(size: Long, usage: GlBufferUsage, target: GlBufferTarget): GlBuffer {
         return GlBufferImpl(size, usage, target)
+    }
+
+    override fun <T> createRegistryBuilder(key: ResourceKey<Registry<T>>): RegistryBuilder<T> {
+        return RegistryBuilderImpl(key)
     }
 }

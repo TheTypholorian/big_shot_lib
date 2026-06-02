@@ -9,7 +9,7 @@ inline fun <reified K : Enum<K>, V> mutableEnumArrayMapOf(noinline init: (key: K
 open class EnumArrayMap<K : Enum<K>, V>(
     protected val enumEntries: List<K>,
     init: (key: K) -> V
-) : Map<K, V> {
+) : Map<K, V>, KeyedDelegate.ReadOnly<K, V> {
     protected val array = ArrayList<V>(enumEntries.size)
 
     init {
@@ -36,7 +36,7 @@ open class EnumArrayMap<K : Enum<K>, V>(
     override operator fun get(key: K) = array[key.ordinal]
 }
 
-open class MutableEnumArrayMap<K : Enum<K>, V> : EnumArrayMap<K, V>, MutableMap<K, V> {
+open class MutableEnumArrayMap<K : Enum<K>, V> : EnumArrayMap<K, V>, MutableMap<K, V>, KeyedDelegate<K, V> {
     constructor(entries: List<K>, init: (key: K) -> V) : super(entries, init)
 
     constructor(cls: Class<K>, init: (key: K) -> V) : super(cls, init)
@@ -53,7 +53,7 @@ open class MutableEnumArrayMap<K : Enum<K>, V> : EnumArrayMap<K, V>, MutableMap<
         }
     } }
 
-    operator fun set(key: K, value: V) {
+    override operator fun set(key: K, value: V) {
         array[key.ordinal] = value
     }
 

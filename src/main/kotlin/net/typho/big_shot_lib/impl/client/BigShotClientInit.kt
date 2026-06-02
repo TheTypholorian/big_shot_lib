@@ -1,14 +1,14 @@
 package net.typho.big_shot_lib.impl.client
 
-import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.impl.client.util.BigShotClientEvents
-
 //? fabric {
 import net.fabricmc.api.ClientModInitializer
+import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 
 class BigShotClientInit : ClientModInitializer {
     override fun onInitializeClient() {
-        BigShotClientEvents.init()
+        for (entrypoint in BigShotClientEntrypoint.entrypoints) {
+            entrypoint.onInitializeClient(NeoClientEventBusImpl)
+        }
     }
 }
 //? } neoforge {

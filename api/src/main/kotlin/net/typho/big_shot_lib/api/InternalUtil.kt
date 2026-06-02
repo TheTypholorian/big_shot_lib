@@ -9,7 +9,9 @@ import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.core.Direction
+import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
@@ -20,6 +22,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
+import net.typho.big_shot_lib.api.event.RegistryBuilder
 import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 
@@ -92,6 +95,10 @@ interface InternalUtil {
         usage: GlBufferUsage,
         target: GlBufferTarget
     ): GlBuffer
+
+    fun <T> createRegistryBuilder(
+        key: ResourceKey<Registry<T>>
+    ): RegistryBuilder<T>
 
     companion object {
         @JvmStatic

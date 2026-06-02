@@ -12,8 +12,8 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
-import net.typho.big_shot_lib.api.client.util.resource.NeoResourceManagerReloadListener
-import net.typho.big_shot_lib.api.client.util.resource.ResourceRegistry
+import net.typho.big_shot_lib.api.util.resource.NeoReloadListener
+import net.typho.big_shot_lib.api.util.resource.ResourceRegistry
 import net.typho.big_shot_lib.api.util.*
 import java.io.BufferedReader
 
@@ -81,7 +81,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
     @JvmField
     val preprocessors = hashSetOf<ShaderPreprocessor>(ShaderIncludePreprocessor)
 
-    override fun addReloadListeners(out: (listener: NeoResourceManagerReloadListener) -> Unit) {
+    override fun addReloadListeners(out: (listener: NeoReloadListener) -> Unit) {
         out(NeoShaderLoader)
     }
 

@@ -1,13 +1,14 @@
 package net.typho.big_shot_lib.impl
 
-import net.typho.big_shot_lib.impl.util.BigShotCommonEvents
-
 //? fabric {
 import net.fabricmc.api.ModInitializer
+import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 
 class BigShotCommonInit : ModInitializer {
     override fun onInitialize() {
-        BigShotCommonEvents.init()
+        for (entrypoint in BigShotCommonEntrypoint.entrypoints) {
+            entrypoint.onInitialize(NeoEventBusImpl)
+        }
     }
 }
 //? } neoforge {
