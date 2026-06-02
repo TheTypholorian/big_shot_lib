@@ -14,6 +14,8 @@ class ProjectTransformer(
 ) : ClassVisitor(api, visitor) {
     @JvmField
     var desc: String? = null
+    @JvmField
+    var isClient: Boolean? = null
 
     override fun visit(
         version: Int,
@@ -78,5 +80,31 @@ class ProjectTransformer(
                 super.visitMethodInsn(opcode, owner, name, descriptor, isInterface)
             }
         }
+    }
+
+    override fun visitEnd() {
+        fun helper() {
+            if (isClient == null) {
+                for (pkg in info.clientOnlyPackages.get()) {
+                    if (desc!!.startsWith(pkg)) {
+                        info.loader.get().mapOnlyInAnnotation(this@ProjectTransformer, true)
+                        isClient = true
+                        return
+                    }
+                }
+
+                for (pkg in info.serverOnlyPackages.get()) {
+                    if (desc!!.startsWith(pkg)) {
+                        info.loader.get().mapOnlyInAnnotation(this@ProjectTransformer, false)
+                        isClient = false
+                        return
+                    }
+                }
+            }
+        }
+
+        helper()
+
+        super.visitEnd()
     }
 }

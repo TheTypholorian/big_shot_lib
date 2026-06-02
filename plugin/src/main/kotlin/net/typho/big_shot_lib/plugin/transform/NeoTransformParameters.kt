@@ -34,6 +34,10 @@ interface NeoTransformParameters : TransformParameters {
     val version: Property<MCVersion>
     @get:Input
     val loader: Property<ModLoader>
+    @get:Input
+    val clientOnlyPackages: ListProperty<String>
+    @get:Input
+    val serverOnlyPackages: ListProperty<String>
 
     fun set(ext: BigShotLibPluginExtension) {
         classRenames.set(ext.transformInfo.classRenames)
@@ -45,6 +49,9 @@ interface NeoTransformParameters : TransformParameters {
         interfaceInjections.set(ext.transformInfo.interfaceInjections)
         staticMethodInjections.set(ext.transformInfo.staticMethodInjections)
         argumentOverloadConverters.set(ext.transformInfo.argumentOverloadConverters)
+
+        clientOnlyPackages.set(ext.transformInfo.clientOnlyPackages)
+        serverOnlyPackages.set(ext.transformInfo.serverOnlyPackages)
 
         version.set(ext.version)
         loader.set(ext.loader)
