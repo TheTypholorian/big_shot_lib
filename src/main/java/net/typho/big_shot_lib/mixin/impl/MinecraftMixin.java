@@ -2,14 +2,9 @@ package net.typho.big_shot_lib.mixin.impl;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.kikugie.fletching_table.annotation.MixinEnvironment;
-import kotlin.Unit;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.LogoRenderer;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint;
-import net.typho.big_shot_lib.impl.client.util.BigShotClientEvents;
-import net.typho.big_shot_lib.impl.client.util.InitialScreen;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

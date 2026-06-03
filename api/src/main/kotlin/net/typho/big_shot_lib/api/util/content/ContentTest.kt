@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.util.content
 
 import net.minecraft.resources.Identifier
+import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.Rarity
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
@@ -15,6 +16,7 @@ object ContentTest : BigShotCommonEntrypoint {
 
     val testItem = items.begin(id("test_item"))
         .properties { it.stacksTo(31).rarity(Rarity.RARE) }
+        .tags(ItemTags.HORSE_TEMPT_ITEMS, ItemTags.ARROWS)
         .end()
 
     val blocks = BlockContentFactory()

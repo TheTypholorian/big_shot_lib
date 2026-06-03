@@ -23,8 +23,8 @@ object NeoServiceLoader {
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    fun <T> load(cls: Class<T>): List<T> {
-        return services[cls.name]?.map {
+    fun <T> load(cls: Class<T>): MutableList<T> {
+        return services[cls.name]?.mapTo(mutableListOf()) {
             try {
                 val service = Class.forName(it)
 
@@ -32,22 +32,22 @@ object NeoServiceLoader {
                     throw ServiceLoaderException("Class $service does not extend $cls")
                 }
 
-                service.kotlin.objectInstance?.let { obj -> return@map obj as T }
+                service.kotlin.objectInstance?.let { obj -> return@mapTo obj as T }
 
                 val constructor = service.kotlin.constructors.firstOrNull { constructor ->
                     constructor.parameters.isEmpty() && constructor.visibility == KVisibility.PUBLIC
                 } ?: throw ServiceLoaderException("Class $service does not have a public no-arg constructor")
 
-                return@map constructor.call() as T
+                return@mapTo constructor.call() as T
             } catch (t: Throwable) {
                 throw ServiceLoaderException("Error loading service $it for ${cls.name}", t)
             }
-        } ?: listOf()
+        } ?: mutableListOf()
     }
 
     @JvmStatic
     fun <T : Any> KClass<T>.loadService(): T = load(java).firstOrNull() ?: throw IllegalStateException("Could not find service implementation for $jvmName")
 
     @JvmStatic
-    fun <T : Any> KClass<T>.loadServices(): List<T> = load(java)
+    fun <T : Any> KClass<T>.loadServices(): MutableList<T> = load(java)
 }

@@ -17,6 +17,8 @@ interface NeoEventBus {
 
     fun register(event: NewRegistryEvent)
 
+    fun register(event: RegisterDynamicTagsEvent)
+
     fun register(event: RegisterEvent)
 
     fun register(event: ServerStartTickEvent)

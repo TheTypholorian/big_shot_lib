@@ -6,7 +6,6 @@ import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
-import net.typho.big_shot_lib.impl.client.util.BigShotClientEvents;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,6 +31,8 @@ public class DebugScreenOverlayMixin {
     private List<String> getGameInformation(
             List<String> list
     ) {
+        // TODO
+        /*
         for (Pair<Boolean, Function1<Function1<? super String, Unit>, Unit>> info : BigShotClientEvents.debugScreenInfo) {
             if (!info.getFirst() || !minecraft.showOnlyReducedInfo()) {
                 list.add("");
@@ -41,6 +42,7 @@ public class DebugScreenOverlayMixin {
                 });
             }
         }
+         */
 
         return list;
     }

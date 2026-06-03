@@ -2,24 +2,20 @@ package net.typho.big_shot_lib.api.util.content
 
 import net.minecraft.client.color.block.BlockColor
 import net.minecraft.resources.Identifier
-import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterEvent
-import net.typho.big_shot_lib.api.util.content.ItemContentFactory.BuilderImpl
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
-import org.lwjgl.system.Platform
 import java.util.function.UnaryOperator
-import kotlin.collections.iterator
 
 @Suppress("UNCHECKED_CAST")
 open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<Block, B>> protected constructor() : ContentFactory<Block, Identifier, O, B> {
     @JvmField
     protected var registered = false
     @JvmField
-    protected val toRegister = hashMapOf<Identifier, Block>()
+    protected val toRegister = hashMapOf<Identifier, RegisteredObject<out Block>>()
 
     companion object {
         @JvmStatic
@@ -58,9 +54,7 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
             out.beginBlocks { out ->
                 registered = true
 
-                for (entry in toRegister) {
-                    out.register(entry.key, entry.value)
-                }
+                toRegister.values.forEach { out.register(it) }
             }
         })
     }
@@ -90,8 +84,9 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
         protected var properties: BlockBehaviour.Properties,
         @JvmField
         protected val parent: BlockContentFactory<*, *>
-    ) : ContentFactory.ObjectBuilder<T> {
-        protected lateinit var constructor: (properties: BlockBehaviour.Properties) -> T
+    ) : ObjectBuilder<T> {
+        @JvmField
+        protected var constructor: (properties: BlockBehaviour.Properties) -> T = { properties -> Block(properties) as? T ?: throw ClassCastException("Must specify a constructor for $key as it doesn't use the base Block class.") }
         @JvmField
         protected var clientInfo: ClientInfo<*>? = null // TODO do stuff with this
         // TODO block item
@@ -127,12 +122,12 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
             return this as B
         }
 
-        override fun end(): T {
+        override fun end(): RegisteredObject<T> {
             if (parent.registered) {
                 throw IllegalStateException("ContentFactory $parent has ended, it cannot receive more entries")
             }
 
-            val block = constructor(properties)
+            val block = RegisteredObject(key) { constructor(properties) }
 
             parent.toRegister.put(key, block)?.let { old ->
                 throw IllegalArgumentException("Cannot create two blocks ($block and $old) under the same ID $key")

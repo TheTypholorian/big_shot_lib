@@ -151,11 +151,19 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.neoforged.neoforge.event.ServerChatEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
 import net.neoforged.neoforge.event.tick.ServerTickEvent
+import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
+import net.typho.big_shot_lib.api.util.content.RegisteredObject
+import net.typho.big_shot_lib.impl.util.platform.RegisteredObjectImpl
 
 class NeoEventBusImpl(
     @JvmField
     val inner: IEventBus
 ) : NeoEventBus {
+    companion object {
+        @JvmField
+        val DYNAMIC_TAG_EVENTS = arrayListOf<RegisterDynamicTagsEvent>()
+    }
+
     override fun register(event: AddDataReloadListenersEvent) {
         inner.register { e: AddReloadListenerEvent ->
             event.registerReloadListeners { listener ->
@@ -227,6 +235,10 @@ class NeoEventBusImpl(
         }
     }
 
+    override fun register(event: RegisterDynamicTagsEvent) {
+        DYNAMIC_TAG_EVENTS.add(event)
+    }
+
     override fun register(event: RegisterEvent) {
         inner.register { e: net.neoforged.neoforge.registries.RegisterEvent ->
             event.register(object : RegisterEvent.Output {
@@ -251,6 +263,13 @@ class NeoEventBusImpl(
 
                             override fun register(key: ResourceKey<T>, value: T) {
                                 register(key.location(), value)
+                            }
+
+                            override fun <V : T> register(obj: RegisteredObject<V>) {
+                                val obj = obj as? RegisteredObjectImpl<V> ?: throw ClassCastException("Not allowed to make custom RegisteredObject instances, must use RegisteredObject.create()")
+                                val value = obj.constructor.invoke()
+                                register(obj.location, value)
+                                obj.value = value
                             }
                         })
                     }

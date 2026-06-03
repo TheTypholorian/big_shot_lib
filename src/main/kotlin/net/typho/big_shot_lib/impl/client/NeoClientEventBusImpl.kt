@@ -209,6 +209,7 @@ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
 import net.neoforged.neoforge.client.event.RenderGuiEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.neoforged.neoforge.event.RegisterCommandsEvent
+import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 
 class NeoClientEventBusImpl(
     @JvmField
@@ -353,6 +354,10 @@ class NeoClientEventBusImpl(
     }
 
     override fun register(event: NewRegistryEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: RegisterDynamicTagsEvent) {
         common.register(event)
     }
 
