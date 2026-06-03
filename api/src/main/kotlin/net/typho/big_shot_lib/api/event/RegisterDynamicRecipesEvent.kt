@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.event
 
+import com.google.common.collect.ImmutableMap
 import net.minecraft.advancements.Advancement
 import net.minecraft.advancements.AdvancementHolder
 import net.minecraft.core.HolderLookup
@@ -35,5 +36,44 @@ fun interface RegisterDynamicRecipesEvent {
         }
 
         fun register(location: Identifier, recipe: Recipe<*>)
+
+        class Advancements(
+            @JvmField
+            val builder: ImmutableMap.Builder<Identifier, AdvancementHolder>
+        ) : Output {
+            override fun register(location: Identifier, recipe: RecipeBuilder) {
+                recipe.save(object : RecipeOutput {
+                    override fun advancement(): Advancement.Builder {
+                        return Advancement.Builder.recipeAdvancement()
+                    }
+
+                    //? fabric {
+                    /*override fun accept(
+                        identifier: Identifier,
+                        recipe: Recipe<*>,
+                        advancement: AdvancementHolder?
+                    ) {
+                        if (advancement != null) {
+                            builder.put(advancement.id(), advancement)
+                        }
+                    }
+                    *///? } neoforge {
+                    override fun accept(
+                        identifier: Identifier,
+                        recipe: Recipe<*>,
+                        advancement: AdvancementHolder?,
+                        vararg iConditions: ICondition
+                    ) {
+                        if (advancement != null) {
+                            builder.put(advancement.id(), advancement)
+                        }
+                    }
+                    //? }
+                }, location)
+            }
+
+            override fun register(location: Identifier, recipe: Recipe<*>) {
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.util.content
 
 import net.minecraft.data.recipes.RecipeCategory
+import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.data.recipes.ShapedRecipeBuilder
 import net.minecraft.resources.Identifier
 import net.minecraft.tags.ItemTags
@@ -33,6 +34,7 @@ object ContentTest : BigShotCommonEntrypoint {
                 .usingConvertsTo { Items.MUD }
                 .build()) }
         .recipe { item -> ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, item)
+            .unlockedBy("has_mud", RecipeProvider.has(Items.MUD))
             .define('M', Items.MUD)
             .pattern("M M")
             .pattern(" M ")

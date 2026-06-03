@@ -111,3 +111,10 @@ accessible field net/minecraft/client/renderer/RenderType$CompositeState colorLo
 
 accessible method com/mojang/blaze3d/shaders/Program <init> (Lcom/mojang/blaze3d/shaders/Program$Type;ILjava/lang/String;)V
 accessible field net/minecraft/client/renderer/LevelRenderer level Lnet/minecraft/client/multiplayer/ClientLevel;
+
+accessible method net/minecraft/data/recipes/RecipeProvider insideOf (Lnet/minecraft/world/level/block/Block;)Lnet/minecraft/advancements/Criterion;
+accessible method net/minecraft/data/recipes/RecipeProvider has (Lnet/minecraft/advancements/critereon/MinMaxBounds$Ints;Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/advancements/Criterion;
+accessible method net/minecraft/data/recipes/RecipeProvider has (Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/advancements/Criterion;
+accessible method net/minecraft/data/recipes/RecipeProvider has (Lnet/minecraft/tags/TagKey;)Lnet/minecraft/advancements/Criterion;
+accessible method net/minecraft/data/recipes/RecipeProvider inventoryTrigger ([Lnet/minecraft/advancements/critereon/ItemPredicate$Builder;)Lnet/minecraft/advancements/Criterion;
+accessible method net/minecraft/data/recipes/RecipeProvider inventoryTrigger ([Lnet/minecraft/advancements/critereon/ItemPredicate;)Lnet/minecraft/advancements/Criterion;
