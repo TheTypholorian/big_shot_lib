@@ -107,35 +107,44 @@ class BigShotLibPlugin : Plugin<Project> {
 
                 if (project.pluginManager.hasPlugin("org.jetbrains.kotlin.jvm")) {
                     task.doLast {
-                        println("classes with kotlin")
-                        fun scanDependencies(task: Task) {
-                            println("task $task")
-                            task.taskDependencies.getDependencies(task).forEach { dependency ->
-                                if (dependency is KotlinCompileTool) {
-                                    applyProjectTransforms(dependency.destinationDirectory.get().asFile, parameters.get())
-                                }
+                        val parameters = parameters.get()
+                        val scanned = hashSetOf<Task>()
 
-                                scanDependencies(dependency)
+                        fun scanDependencies(task: Task) {
+                            task.taskDependencies.getDependencies(task).forEach { dependency ->
+                                if (scanned.add(dependency)) {
+                                    if (dependency is KotlinCompileTool) {
+                                        applyProjectTransforms(dependency.destinationDirectory.get().asFile, parameters)
+                                    } else if (dependency is AbstractCompile) {
+                                        applyProjectTransforms(dependency.destinationDirectory.get().asFile, parameters)
+                                    }
+
+                                    scanDependencies(dependency)
+                                }
                             }
                         }
 
                         scanDependencies(task)
                     }
-                }
+                } else {
+                    task.doLast {
+                        val parameters = parameters.get()
+                        val scanned = hashSetOf<Task>()
 
-                task.doLast {
-                    println("classes")
-                    fun scanDependencies(task: Task) {
-                        task.taskDependencies.getDependencies(task).forEach { dependency ->
-                            if (dependency is AbstractCompile) {
-                                applyProjectTransforms(dependency.destinationDirectory.get().asFile, parameters.get())
+                        fun scanDependencies(task: Task) {
+                            task.taskDependencies.getDependencies(task).forEach { dependency ->
+                                if (scanned.add(dependency)) {
+                                    if (dependency is AbstractCompile) {
+                                        applyProjectTransforms(dependency.destinationDirectory.get().asFile, parameters)
+                                    }
+
+                                    scanDependencies(dependency)
+                                }
                             }
-
-                            scanDependencies(dependency)
                         }
-                    }
 
-                    scanDependencies(task)
+                        scanDependencies(task)
+                    }
                 }
             }
         }

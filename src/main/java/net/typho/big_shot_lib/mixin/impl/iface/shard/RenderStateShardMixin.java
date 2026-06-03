@@ -55,11 +55,11 @@ public class RenderStateShardMixin {
 
     @Shadow
     @Final
-    protected static RenderStateShard.ColorLogicStateShard NO_COLOR_LOGIC;
+    public static RenderStateShard.ColorLogicStateShard NO_COLOR_LOGIC;
 
     @Shadow
     @Final
-    protected static RenderStateShard.ColorLogicStateShard OR_REVERSE_COLOR_LOGIC;
+    public static RenderStateShard.ColorLogicStateShard OR_REVERSE_COLOR_LOGIC;
 
     static {
         MutableExtensionKt.setExtensionValue(NO_TRANSPARENCY, null);

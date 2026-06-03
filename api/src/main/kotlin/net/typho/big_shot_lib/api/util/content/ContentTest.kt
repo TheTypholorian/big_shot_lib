@@ -3,11 +3,12 @@ package net.typho.big_shot_lib.api.util.content
 import net.minecraft.resources.Identifier
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.item.Rarity
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 
 object ContentTest : BigShotCommonEntrypoint {
-    override val modId: String = "test"
+    override val modId: String = BigShotApi.MOD_ID
 
     @JvmStatic
     fun id(path: String): Identifier = Identifier.of(modId, path)

@@ -18,6 +18,7 @@ import net.minecraft.core.Direction
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.BigShotApi.toShortString
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader

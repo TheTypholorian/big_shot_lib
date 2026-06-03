@@ -165,7 +165,7 @@ class NeoEventBusImpl(
     }
 
     override fun register(event: AddDataReloadListenersEvent) {
-        inner.register { e: AddReloadListenerEvent ->
+        inner.addListener { e: AddReloadListenerEvent ->
             event.registerReloadListeners { listener ->
                 e.addListener(listener)
             }
@@ -177,7 +177,7 @@ class NeoEventBusImpl(
     }
 
     override fun register(event: BonemealEvent) {
-        inner.register { e: net.neoforged.neoforge.event.entity.player.BonemealEvent ->
+        inner.addListener { e: net.neoforged.neoforge.event.entity.player.BonemealEvent ->
             event.bonemeal(
                 e.level,
                 e.player,
@@ -190,7 +190,7 @@ class NeoEventBusImpl(
     }
 
     override fun register(event: ChatMessageEvent) {
-        inner.register { e: ServerChatEvent ->
+        inner.addListener { e: ServerChatEvent ->
             e.message = event.onChatMessage(
                 e.player,
                 e.username,
@@ -201,13 +201,13 @@ class NeoEventBusImpl(
     }
 
     override fun register(event: ChunkLoadedEvent) {
-        inner.register { e: ChunkEvent.Load ->
+        inner.addListener { e: ChunkEvent.Load ->
             event.onChunkLoaded(e.level, e.chunk)
         }
     }
 
     override fun register(event: ChunkUnloadedEvent) {
-        inner.register { e: ChunkEvent.Unload ->
+        inner.addListener { e: ChunkEvent.Unload ->
             event.onChunkUnloaded(e.level, e.chunk)
         }
     }
@@ -217,7 +217,7 @@ class NeoEventBusImpl(
     }
 
     override fun register(event: NewRegistryEvent) {
-        inner.register { e: net.neoforged.neoforge.registries.NewRegistryEvent ->
+        inner.addListener { e: net.neoforged.neoforge.registries.NewRegistryEvent ->
             event.registerRegistries(object : NewRegistryEvent.Output {
                 override fun <T> register(builder: RegistryBuilder<T>): Registry<T> {
                     if (builder !is RegistryBuilderImpl) {
@@ -240,7 +240,7 @@ class NeoEventBusImpl(
     }
 
     override fun register(event: RegisterEvent) {
-        inner.register { e: net.neoforged.neoforge.registries.RegisterEvent ->
+        inner.addListener { e: net.neoforged.neoforge.registries.RegisterEvent ->
             event.register(object : RegisterEvent.Output {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : Any> begin(key: Identifier, out: Consumer<RegisterEvent.RegistrationConsumer<T>>) {
@@ -281,19 +281,19 @@ class NeoEventBusImpl(
     }
 
     override fun register(event: ServerStartTickEvent) {
-        inner.register { e: ServerTickEvent.Pre ->
+        inner.addListener { e: ServerTickEvent.Pre ->
             event.serverStartTick(e.server)
         }
     }
 
     override fun register(event: ServerEndTickEvent) {
-        inner.register { e: ServerTickEvent.Post ->
+        inner.addListener { e: ServerTickEvent.Post ->
             event.serverEndTick(e.server)
         }
     }
 
     override fun register(event: UseItemOnBlockEvent) {
-        inner.register { e: net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent ->
+        inner.addListener { e: net.neoforged.neoforge.event.entity.player.UseItemOnBlockEvent ->
             event.useItemOnBlock(
                 e.level,
                 e.player,

@@ -218,7 +218,7 @@ class NeoClientEventBusImpl(
     val common: NeoEventBus = NeoEventBusImpl(inner)
 ) : NeoClientEventBus {
     override fun register(event: AddAssetReloadListenersEvent) {
-        inner.register { e: RegisterClientReloadListenersEvent ->
+        inner.addListener { e: RegisterClientReloadListenersEvent ->
             event.registerReloadListeners { listener ->
                 e.registerReloadListener(listener)
             }
@@ -226,13 +226,13 @@ class NeoClientEventBusImpl(
     }
 
     override fun register(event: ClientCommandsEvent) {
-        inner.register { e: RegisterCommandsEvent ->
+        inner.addListener { e: RegisterCommandsEvent ->
             event.registerClientCommands(e.dispatcher, e.buildContext)
         }
     }
 
     override fun register(event: ClientEndTickEvent) {
-        inner.register { e: ClientTickEvent.Post ->
+        inner.addListener { e: ClientTickEvent.Post ->
             event.onClientEndTick(Minecraft.getInstance())
         }
     }
@@ -242,7 +242,7 @@ class NeoClientEventBusImpl(
     }
 
     override fun register(event: ClientStartTickEvent) {
-        inner.register { e: ClientTickEvent.Pre ->
+        inner.addListener { e: ClientTickEvent.Pre ->
             event.onClientStartTick(Minecraft.getInstance())
         }
     }
@@ -264,13 +264,13 @@ class NeoClientEventBusImpl(
     }
 
     override fun register(event: RenderGUIEvent) {
-        inner.register { e: RenderGuiEvent ->
+        inner.addListener { e: RenderGuiEvent ->
             event.renderGui(e.guiGraphics, e.partialTick)
         }
     }
 
     override fun register(event: RenderHandEvent) {
-        inner.register { e: net.neoforged.neoforge.client.event.RenderHandEvent ->
+        inner.addListener { e: net.neoforged.neoforge.client.event.RenderHandEvent ->
             event.renderHand(
                 e.hand,
                 e.poseStack,
@@ -289,7 +289,7 @@ class NeoClientEventBusImpl(
         stage: RenderLevelStage,
         event: RenderLevelEvent
     ) {
-        inner.register { e: RenderLevelStageEvent ->
+        inner.addListener { e: RenderLevelStageEvent ->
             val neoStage = when (e.stage) {
                 RenderLevelStageEvent.Stage.AFTER_SKY -> RenderLevelStage.AFTER_SKY
                 RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS -> RenderLevelStage.AFTER_SOLID_BLOCKS
@@ -302,7 +302,7 @@ class NeoClientEventBusImpl(
                 RenderLevelStageEvent.Stage.AFTER_PARTICLES -> RenderLevelStage.AFTER_PARTICLES
                 RenderLevelStageEvent.Stage.AFTER_WEATHER -> RenderLevelStage.AFTER_WEATHER
                 RenderLevelStageEvent.Stage.AFTER_LEVEL -> RenderLevelStage.AFTER_LEVEL
-                else -> return@register
+                else -> return@addListener
             }
 
             if (stage == neoStage) {

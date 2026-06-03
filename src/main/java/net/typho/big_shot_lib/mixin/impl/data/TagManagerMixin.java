@@ -61,7 +61,12 @@ public class TagManagerMixin {
             });
         }
 
-        BigShotApi.LOGGER.info("Injected {} dynamic tag entries into {} tags", modifiedTags.values().stream().mapToInt(Set::size).count(), modifiedTags.size());
+        long numEntries = modifiedTags.values().stream().mapToInt(Set::size).count();
+        long numTags = modifiedTags.size();
+
+        if (numEntries > 0) {
+            BigShotApi.LOGGER.info("Injected {} dynamic tag entries into {} tags of registry {}", numEntries, numTags, key.location());
+        }
 
         args.set(1, tags);
     }
