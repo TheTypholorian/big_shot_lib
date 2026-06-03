@@ -1,15 +1,7 @@
 package net.typho.big_shot_lib.impl.client
 
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper
-import net.minecraft.server.packs.PackType
-import net.minecraft.server.packs.resources.PreparableReloadListener
-import net.minecraft.server.packs.resources.ResourceManager
-import net.minecraft.util.profiling.ProfilerFiller
+import net.minecraft.client.Minecraft
 import net.typho.big_shot_lib.api.client.event.AddAssetReloadListenersEvent
-import net.typho.big_shot_lib.api.client.event.ClientChatMessageEvent
 import net.typho.big_shot_lib.api.client.event.ClientCommandsEvent
 import net.typho.big_shot_lib.api.client.event.ClientEndTickEvent
 import net.typho.big_shot_lib.api.client.event.ClientLevelChangedEvent
@@ -23,7 +15,6 @@ import net.typho.big_shot_lib.api.client.event.RenderGUIEvent
 import net.typho.big_shot_lib.api.client.event.RenderHandEvent
 import net.typho.big_shot_lib.api.client.event.RenderLevelEvent
 import net.typho.big_shot_lib.api.client.event.RenderTooltipEvent
-import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
 import net.typho.big_shot_lib.api.event.AddDataReloadListenersEvent
 import net.typho.big_shot_lib.api.event.BlockChangedEvent
@@ -32,16 +23,27 @@ import net.typho.big_shot_lib.api.event.ChatMessageEvent
 import net.typho.big_shot_lib.api.event.ChunkLoadedEvent
 import net.typho.big_shot_lib.api.event.ChunkUnloadedEvent
 import net.typho.big_shot_lib.api.event.CommandsEvent
+import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.NewRegistryEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.event.ServerEndTickEvent
 import net.typho.big_shot_lib.api.event.ServerStartTickEvent
 import net.typho.big_shot_lib.api.event.UseItemOnBlockEvent
 import net.typho.big_shot_lib.impl.NeoEventBusImpl
+import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
+
+//? fabric {
+/*import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper
+import net.minecraft.server.packs.PackType
+import net.minecraft.server.packs.resources.PreparableReloadListener
+import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.util.profiling.ProfilerFiller
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
-//? fabric {
 object NeoClientEventBusImpl : NeoClientEventBus {
     override fun register(event: AddAssetReloadListenersEvent) {
         val helper = ResourceManagerHelper.get(PackType.CLIENT_RESOURCES)
@@ -200,5 +202,174 @@ object NeoClientEventBusImpl : NeoClientEventBus {
         NeoEventBusImpl.register(event)
     }
 }
-//? } neoforge {
+*///? } neoforge {
+import net.neoforged.bus.api.IEventBus
+import net.neoforged.neoforge.client.event.ClientTickEvent
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
+import net.neoforged.neoforge.client.event.RenderGuiEvent
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent
+import net.neoforged.neoforge.event.RegisterCommandsEvent
+
+class NeoClientEventBusImpl(
+    @JvmField
+    val inner: IEventBus,
+    @JvmField
+    val common: NeoEventBus = NeoEventBusImpl(inner)
+) : NeoClientEventBus {
+    override fun register(event: AddAssetReloadListenersEvent) {
+        inner.register { e: RegisterClientReloadListenersEvent ->
+            event.registerReloadListeners { listener ->
+                e.registerReloadListener(listener)
+            }
+        }
+    }
+
+    override fun register(event: ClientCommandsEvent) {
+        inner.register { e: RegisterCommandsEvent ->
+            event.registerClientCommands(e.dispatcher, e.buildContext)
+        }
+    }
+
+    override fun register(event: ClientEndTickEvent) {
+        inner.register { e: ClientTickEvent.Post ->
+            event.onClientEndTick(Minecraft.getInstance())
+        }
+    }
+
+    override fun register(event: ClientLevelChangedEvent) {
+        TODO("Not yet implemented")
+    }
+
+    override fun register(event: ClientStartTickEvent) {
+        inner.register { e: ClientTickEvent.Pre ->
+            event.onClientStartTick(Minecraft.getInstance())
+        }
+    }
+
+    override fun register(event: DisplayResizedEvent) {
+        TODO("Not yet implemented")
+    }
+
+    override fun register(event: InitialScreenEvent) {
+        TODO("Not yet implemented")
+    }
+
+    override fun register(event: RegisterDebugScreenEntriesEvent) {
+        TODO("Not yet implemented")
+    }
+
+    override fun register(event: RegisterMainMenuModesEvent) {
+        MainMenuModeManager.register(event)
+    }
+
+    override fun register(event: RenderGUIEvent) {
+        inner.register { e: RenderGuiEvent ->
+            event.renderGui(e.guiGraphics, e.partialTick)
+        }
+    }
+
+    override fun register(event: RenderHandEvent) {
+        inner.register { e: net.neoforged.neoforge.client.event.RenderHandEvent ->
+            event.renderHand(
+                e.hand,
+                e.poseStack,
+                e.multiBufferSource,
+                e.packedLight,
+                e.partialTick,
+                e.interpolatedPitch,
+                e.swingProgress,
+                e.equipProgress,
+                e.itemStack
+            )
+        }
+    }
+
+    override fun register(
+        stage: RenderLevelStage,
+        event: RenderLevelEvent
+    ) {
+        inner.register { e: RenderLevelStageEvent ->
+            val neoStage = when (e.stage) {
+                RenderLevelStageEvent.Stage.AFTER_SKY -> RenderLevelStage.AFTER_SKY
+                RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS -> RenderLevelStage.AFTER_SOLID_BLOCKS
+                RenderLevelStageEvent.Stage.AFTER_CUTOUT_MIPPED_BLOCKS_BLOCKS -> RenderLevelStage.AFTER_CUTOUT_MIPPED_BLOCKS
+                RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS -> RenderLevelStage.AFTER_CUTOUT_BLOCKS
+                RenderLevelStageEvent.Stage.AFTER_ENTITIES -> RenderLevelStage.AFTER_ENTITIES
+                RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES -> RenderLevelStage.AFTER_BLOCK_ENTITIES
+                RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS -> RenderLevelStage.AFTER_TRANSLUCENT_BLOCKS
+                RenderLevelStageEvent.Stage.AFTER_TRIPWIRE_BLOCKS -> RenderLevelStage.AFTER_TRIPWIRE_BLOCKS
+                RenderLevelStageEvent.Stage.AFTER_PARTICLES -> RenderLevelStage.AFTER_PARTICLES
+                RenderLevelStageEvent.Stage.AFTER_WEATHER -> RenderLevelStage.AFTER_WEATHER
+                RenderLevelStageEvent.Stage.AFTER_LEVEL -> RenderLevelStage.AFTER_LEVEL
+                else -> return@register
+            }
+
+            if (stage == neoStage) {
+                event.renderLevel(
+                    e.levelRenderer,
+                    e.camera,
+                    e.levelRenderer.level!!,
+                    e.projectionMatrix,
+                    e.modelViewMatrix,
+                    (e.frustum as FrustumAccessor).`big_shot_lib$getFrustumIntersection`(),
+                    // NeoGlStateManagerImpl.currentTarget ?:
+                    //GlFramebuffer.MAIN, // TODO
+                    e.partialTick
+                )
+            }
+        }
+    }
+
+    override fun register(event: RenderTooltipEvent) {
+        TODO("Not yet implemented")
+    }
+
+    override fun register(event: AddDataReloadListenersEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: BlockChangedEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: BonemealEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: ChatMessageEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: ChunkLoadedEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: ChunkUnloadedEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: CommandsEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: NewRegistryEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: RegisterEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: ServerStartTickEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: ServerEndTickEvent) {
+        common.register(event)
+    }
+
+    override fun register(event: UseItemOnBlockEvent) {
+        common.register(event)
+    }
+}
 //? }

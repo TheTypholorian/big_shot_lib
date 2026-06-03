@@ -5,6 +5,8 @@ import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 
 interface BigShotClientEntrypoint {
+    val modId: String
+
     fun onInitializeClient(bus: NeoClientEventBus)
 
     companion object {

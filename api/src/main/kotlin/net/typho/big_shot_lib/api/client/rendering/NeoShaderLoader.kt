@@ -81,6 +81,7 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
 ), BigShotClientEntrypoint {
     @JvmField
     val preprocessors = hashSetOf<ShaderPreprocessor>(ShaderIncludePreprocessor)
+    override val modId: String = BigShotApi.MOD_ID
 
     override fun onInitializeClient(bus: NeoClientEventBus) {
         bus.register(AddAssetReloadListenersEvent {

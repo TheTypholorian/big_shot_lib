@@ -4,6 +4,8 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
 
 interface BigShotCommonEntrypoint {
+    val modId: String
+
     fun onInitialize(bus: NeoEventBus)
 
     companion object {
