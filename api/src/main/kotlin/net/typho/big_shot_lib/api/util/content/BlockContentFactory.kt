@@ -9,6 +9,9 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.util.content.ItemContentFactory.BuilderImpl
+import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import org.lwjgl.system.Platform
+import java.util.function.UnaryOperator
 import kotlin.collections.iterator
 
 @Suppress("UNCHECKED_CAST")
@@ -62,6 +65,18 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
         })
     }
 
+    private class ClientInfoImpl : ClientInfo<ClientInfoImpl>()
+
+    open class ClientInfo<B : ClientInfo<B>> {
+        @JvmField
+        protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
+
+        fun renderType(renderType: NeoRenderType): B {
+            this.renderType = renderType
+            return this as B
+        }
+    }
+
     private class BuilderImpl<T : Block>(
         key: Identifier,
         properties: BlockBehaviour.Properties,
@@ -78,7 +93,7 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
     ) : ContentFactory.ObjectBuilder<T> {
         protected lateinit var constructor: (properties: BlockBehaviour.Properties) -> T
         @JvmField
-        protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid // TODO
+        protected var clientInfo: ClientInfo<*>? = null // TODO do stuff with this
         // TODO block item
         // TODO block entity
         @JvmField
@@ -94,8 +109,11 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
             return this as B
         }
 
-        fun renderType(renderType: NeoRenderType): B {
-            this.renderType = renderType
+        fun clientInfo(info: UnaryOperator<ClientInfo<*>>): B {
+            if (PlatformUtil.INSTANCE.isClient()) {
+                clientInfo = info.apply(clientInfo ?: ClientInfoImpl())
+            }
+
             return this as B
         }
 

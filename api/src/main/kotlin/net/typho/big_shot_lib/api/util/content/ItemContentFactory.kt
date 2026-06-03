@@ -2,9 +2,13 @@ package net.typho.big_shot_lib.api.util.content
 
 import net.minecraft.resources.Identifier
 import net.minecraft.world.item.Item
+import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterEvent
+import net.typho.big_shot_lib.api.util.content.BlockContentFactory.ClientInfoImpl
 import net.typho.big_shot_lib.api.util.content.ItemContentFactory.Builder
+import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import java.util.function.UnaryOperator
 import kotlin.collections.iterator
 
 @Suppress("UNCHECKED_CAST")
@@ -50,6 +54,18 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
         })
     }
 
+    private class ClientInfoImpl : ClientInfo<ClientInfoImpl>()
+
+    open class ClientInfo<B : ClientInfo<B>> {
+        @JvmField
+        protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
+
+        fun renderType(renderType: NeoRenderType): B {
+            this.renderType = renderType
+            return this as B
+        }
+    }
+
     private class BuilderImpl<T : Item>(
         key: Identifier,
         properties: Item.Properties,
@@ -65,6 +81,8 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
         protected val parent: ItemContentFactory<*, *>
     ) : ContentFactory.ObjectBuilder<T> {
         protected lateinit var constructor: (properties: Item.Properties) -> T
+        @JvmField
+        protected var clientInfo: ClientInfo<*>? = null // TODO do stuff with this
         // TODO creative tab
         // TODO model
         // TODO recipe
@@ -76,6 +94,14 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
 
         fun properties(properties: (Item.Properties) -> Item.Properties): B {
             this.properties = properties(this.properties)
+            return this as B
+        }
+
+        fun clientInfo(info: UnaryOperator<ClientInfo<*>>): B {
+            if (PlatformUtil.INSTANCE.isClient()) {
+                clientInfo = info.apply(clientInfo ?: ClientInfoImpl())
+            }
+
             return this as B
         }
 

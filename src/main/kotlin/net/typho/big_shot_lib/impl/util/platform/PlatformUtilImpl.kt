@@ -5,7 +5,9 @@ package net.typho.big_shot_lib.impl.util.platform
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
 *///? } neoforge {
+import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModList
+import net.neoforged.fml.loading.FMLEnvironment
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
 //? }
@@ -73,6 +75,10 @@ object PlatformUtilImpl : PlatformUtil {
         //? } else {
         /*return !FMLLoader.getCurrent().isProduction
         *///? }
+    }
+
+    override fun isClient(): Boolean {
+        return FMLEnvironment.dist == Dist.CLIENT
     }
 
     @JvmRecord

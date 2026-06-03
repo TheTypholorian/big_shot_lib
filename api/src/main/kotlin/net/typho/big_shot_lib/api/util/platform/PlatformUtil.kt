@@ -10,6 +10,8 @@ interface PlatformUtil {
 
     fun isDevEnv(): Boolean
 
+    fun isClient(): Boolean
+
     fun getMod(id: String): ModContainer? {
         return mods.firstOrNull { it.id == id }
     }
