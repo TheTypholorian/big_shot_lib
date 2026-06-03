@@ -27,7 +27,7 @@ class KotlinAndMixinSupportingClassRemapper(
         this.name = name
     }
 
-    override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor {
+    override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {
         return if (descriptor == Annotations.MIXIN) {
             MixinTargetRemapper(api, super.visitAnnotation(descriptor, visible), remapper, name!!) { target = it }
         } else {

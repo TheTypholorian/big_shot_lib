@@ -6,7 +6,7 @@ import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 
-class ProjectTransformer(
+class ToRuntimeTransformer(
     @JvmField
     val info: NeoTransformParameters,
     api: Int,
@@ -29,9 +29,10 @@ class ProjectTransformer(
         super.visit(version, access, name, signature, superName, interfaces)
     }
 
-    override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor {
-        if (descriptor == Annotations.ONLY_IN) {
-            return object : AnnotationVisitor(api) {
+    override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {
+        return when (descriptor) {
+            Annotations.IS_RUNTIME_READY -> null
+            Annotations.ONLY_IN -> object : AnnotationVisitor(api) {
                 var client = false
 
                 override fun visitEnum(name: String, descriptor: String, value: String) {
@@ -41,11 +42,10 @@ class ProjectTransformer(
                 }
 
                 override fun visitEnd() {
-                    info.loader.get().mapOnlyInAnnotation(this@ProjectTransformer, client)
+                    info.loader.get().mapOnlyInAnnotation(this@ToRuntimeTransformer, client)
                 }
             }
-        } else {
-            return super.visitAnnotation(descriptor, visible)
+            else -> super.visitAnnotation(descriptor, visible)
         }
     }
 
@@ -87,7 +87,7 @@ class ProjectTransformer(
             if (isClient == null) {
                 for (pkg in info.clientOnlyPackages.get()) {
                     if (desc!!.startsWith(pkg)) {
-                        info.loader.get().mapOnlyInAnnotation(this@ProjectTransformer, true)
+                        info.loader.get().mapOnlyInAnnotation(this@ToRuntimeTransformer, true)
                         isClient = true
                         return
                     }
@@ -95,7 +95,7 @@ class ProjectTransformer(
 
                 for (pkg in info.serverOnlyPackages.get()) {
                     if (desc!!.startsWith(pkg)) {
-                        info.loader.get().mapOnlyInAnnotation(this@ProjectTransformer, false)
+                        info.loader.get().mapOnlyInAnnotation(this@ToRuntimeTransformer, false)
                         isClient = false
                         return
                     }
@@ -104,6 +104,11 @@ class ProjectTransformer(
         }
 
         helper()
+
+        super.visitAnnotation(Annotations.IS_RUNTIME_READY, true)?.let { anno ->
+            anno.visit("value", true)
+            anno.visitEnd()
+        }
 
         super.visitEnd()
     }

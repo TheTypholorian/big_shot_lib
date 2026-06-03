@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.plugin.transform
 
 import org.objectweb.asm.commons.Remapper
 
-class ProjectRemapper(
+class ToRuntimeRemapper(
     @JvmField
     val info: NeoTransformParameters,
     api: Int

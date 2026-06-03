@@ -6,6 +6,7 @@ import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.Remapper
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -33,6 +34,7 @@ object TransformUtils {
     fun transformSingleFile(
         name: String,
         remapper: Remapper,
+        predicate: (api: Int, reader: ClassReader) -> Boolean,
         transformer: (api: Int, writer: ClassWriter) -> ClassVisitor,
         stream: InputStream,
         out: (name: String, stream: OutputStream.() -> Unit) -> Unit
@@ -40,22 +42,31 @@ object TransformUtils {
         if (!(name.startsWith("META-INF/") && (name.endsWith(".SF") || name.endsWith(".RSA") || name.endsWith(".DSA")))) {
             if (name.endsWith(".class") && !name.endsWith("-info.class")) {
                 val className = name.removeSuffix(".class")
+                stream.mark(-1)
 
                 val reader = ClassReader(stream)
                 val writer = ClassWriter(reader, 0)
-                val transformer = KotlinAndMixinSupportingClassRemapper(
-                    Opcodes.ASM9,
-                    transformer(Opcodes.ASM9, writer),
-                    remapper
-                )
-                reader.accept(transformer, 0)
 
-                val newName = remapper.map(className)
+                if (predicate(Opcodes.ASM9, reader)) {
+                    val transformer = KotlinAndMixinSupportingClassRemapper(
+                        Opcodes.ASM9,
+                        transformer(Opcodes.ASM9, writer),
+                        remapper
+                    )
+                    reader.accept(transformer, 0)
 
-                if (className == newName) {
-                    out(name) { write(writer.toByteArray()) }
+                    val newName = remapper.map(className)
+
+                    if (className == newName) {
+                        out(name) { write(writer.toByteArray()) }
+                    } else {
+                        out("$newName.class") { write(writer.toByteArray()) }
+                    }
                 } else {
-                    out("$newName.class") { write(writer.toByteArray()) }
+                    out(name) {
+                        stream.reset()
+                        stream.transferTo(this)
+                    }
                 }
             } else if (name.endsWith(".java")) {
                 val className = name.removeSuffix(".java")
@@ -86,6 +97,7 @@ object TransformUtils {
         inFile: File,
         outFile: File,
         remapper: Remapper,
+        predicate: (name: String, api: Int, reader: ClassReader) -> Boolean,
         transformer: (api: Int, writer: ClassWriter) -> ClassVisitor,
     ) {
         JarFile(inFile, false).use { jar ->
@@ -102,11 +114,49 @@ object TransformUtils {
                 jar.entries().asIterator().forEach { entry ->
                     if (entry.name != "META-INF/MANIFEST.MF") {
                         jar.getInputStream(entry).use { stream ->
-                            transformSingleFile(entry.name, remapper, transformer, stream) { name, consumer ->
+                            transformSingleFile(entry.name, remapper, { api, reader -> predicate(entry.name, api, reader) }, transformer, stream) { name, consumer ->
                                 out.putNextEntry(JarEntry(name))
                                 consumer(out)
                                 out.closeEntry()
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @JvmStatic
+    fun transformDir(
+        inDir: File,
+        outDir: File,
+        remapper: Remapper,
+        predicate: (name: String, api: Int, reader: ClassReader) -> Boolean,
+        transformer: (api: Int, writer: ClassWriter) -> ClassVisitor,
+    ) {
+        inDir.walkTopDown().forEach { file ->
+            val rel = file.relativeTo(inDir)
+
+            if (rel.extension == "class") {
+                transformSingleFile(
+                    rel.name,
+                    remapper,
+                    { api, reader -> predicate(rel.name, api, reader) },
+                    transformer,
+                    ByteArrayInputStream(file.readBytes())
+                ) { name, consumer ->
+                    if (name == rel.name) {
+                        outDir.resolve(rel).outputStream().use {
+                            consumer(it)
+                        }
+                    } else {
+                        file.delete()
+
+                        val newFile = outDir.resolve(name)
+                        newFile.parentFile.mkdirs()
+
+                        newFile.outputStream().use {
+                            consumer(it)
                         }
                     }
                 }
