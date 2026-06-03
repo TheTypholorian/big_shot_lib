@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.util.content
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.NamedResource
+import java.util.function.Consumer
 
 interface RegisteredObject<T : Any> : NamedResource {
     /**
@@ -11,6 +12,8 @@ interface RegisteredObject<T : Any> : NamedResource {
     fun get(): T
 
     fun isRegistered(): Boolean
+
+    fun addListener(out: Consumer<T>)
 
     companion object {
         @JvmStatic

@@ -268,7 +268,9 @@ class NeoEventBusImpl(
                             override fun <V : T> register(obj: RegisteredObject<V>) {
                                 val obj = obj as? RegisteredObjectImpl<V> ?: throw ClassCastException("Not allowed to make custom RegisteredObject instances, must use RegisteredObject.create()")
                                 val value = obj.constructor.invoke()
+
                                 register(obj.location, value)
+
                                 obj.value = value
                             }
                         })
