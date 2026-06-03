@@ -1,8 +1,11 @@
 package net.typho.big_shot_lib.api.util.content
 
+import net.minecraft.advancements.AdvancementRewards
+import net.minecraft.advancements.critereon.InventoryChangeTrigger
 import net.minecraft.data.recipes.RecipeCategory
 import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.data.recipes.ShapedRecipeBuilder
+import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.effect.MobEffectInstance
@@ -51,8 +54,18 @@ object ContentTest : BigShotCommonEntrypoint {
         .properties { it.air() }
         .end()
 
+    val advancements = AdvancementContentFactory()
+
+    val testAdvancement = advancements.begin(id("test_advancement"))
+        .parent(Identifier.minecraft("adventure/trade"))
+        .display(testItem)
+        .rewards(AdvancementRewards.Builder.experience(100000))
+        .addCriterion("test_item") { InventoryChangeTrigger.TriggerInstance.hasItems(testItem) }
+        .end()
+
     override fun onInitialize(bus: NeoEventBus) {
         items.end(bus)
         blocks.end(bus)
+        advancements.end(bus)
     }
 }

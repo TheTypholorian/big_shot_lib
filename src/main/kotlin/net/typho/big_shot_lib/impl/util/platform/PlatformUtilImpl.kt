@@ -83,10 +83,6 @@ object PlatformUtilImpl : PlatformUtil {
         return FMLEnvironment.dist == Dist.CLIENT
     }
 
-    override fun <T : Any> createRegisteredObject(location: Identifier, constructor: () -> T): RegisteredObject<T> {
-        return RegisteredObjectImpl(location, constructor)
-    }
-
     @JvmRecord
     data class ModContainerImpl(
         @JvmField

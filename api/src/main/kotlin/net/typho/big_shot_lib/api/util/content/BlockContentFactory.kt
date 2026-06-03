@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.api.util.content
 import net.minecraft.client.color.block.BlockColor
 import net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
-import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
@@ -43,7 +42,7 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
         return beginComplex<Block>(key, properties)
     }
 
-    override fun <V : Block> beginComplex(key: Identifier): B {
+    fun <V : Block> beginComplex(key: Identifier): B {
         return beginComplex<V>(key, BlockBehaviour.Properties.of())
     }
 
@@ -56,6 +55,8 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
     }
 
     override fun end(output: O) {
+        registered = true
+
         output.register(RegisterEvent { out ->
             out.beginBlocks { out ->
                 registered = true
@@ -142,7 +143,7 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
                 throw IllegalStateException("ContentFactory $parent has ended, it cannot receive more entries")
             }
 
-            val block = RegisteredObject(key) { constructor(properties) }
+            val block = RegisteredObject.Late(key) { constructor(properties) }
 
             parent.toRegister.put(key, block)?.let { old ->
                 throw IllegalArgumentException("Cannot create two blocks ($block and $old) under the same ID $key")

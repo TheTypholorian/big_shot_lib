@@ -10,12 +10,11 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
-import net.typho.big_shot_lib.api.util.content.ItemContentFactory.Builder
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import java.util.function.UnaryOperator
 
 @Suppress("UNCHECKED_CAST")
-open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected constructor() : ContentFactory<Item, Identifier, O, B> {
+open class ItemContentFactory<O : NeoEventBus, B : ItemContentFactory.Builder<*, B>> protected constructor() : ContentFactory<Item, Identifier, O, B> {
     @JvmField
     protected var registered = false
     @JvmField
@@ -43,7 +42,7 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
         return beginComplex<Item>(key, properties)
     }
 
-    override fun <T : Item> beginComplex(key: Identifier): B {
+    fun <T : Item> beginComplex(key: Identifier): B {
         return beginComplex<T>(key, Item.Properties())
     }
 
@@ -52,10 +51,10 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
     }
 
     override fun end(output: O) {
+        registered = true
+
         output.register(RegisterEvent { out ->
             out.beginItems { out ->
-                registered = true
-
                 toRegister.values.forEach { out.register(it) }
             }
         })
@@ -150,7 +149,7 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
                 throw IllegalStateException("ContentFactory $parent has ended, it cannot receive more entries")
             }
 
-            val item = RegisteredObject(key) { constructor(properties) }
+            val item = RegisteredObject.Late(key) { constructor(properties) }
 
             registered = item
 

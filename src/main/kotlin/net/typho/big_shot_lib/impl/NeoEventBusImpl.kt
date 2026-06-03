@@ -151,11 +151,11 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.neoforged.neoforge.event.ServerChatEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
 import net.neoforged.neoforge.event.tick.ServerTickEvent
+import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.util.content.RegisteredObject
-import net.typho.big_shot_lib.impl.util.platform.RegisteredObjectImpl
 
 class NeoEventBusImpl(
     @JvmField
@@ -280,7 +280,11 @@ class NeoEventBusImpl(
                             }
 
                             override fun <V : T> register(obj: RegisteredObject<V>) {
-                                val obj = obj as? RegisteredObjectImpl<V> ?: throw ClassCastException("Not allowed to make custom RegisteredObject instances, must use RegisteredObject.create()")
+                                if (obj !is RegisteredObject.Late<V>) {
+                                    BigShotApi.LOGGER.warn("Submitted a non-late registered object $obj with id ${obj.location} to a NeoForge RegistrationConsumer, skipping.")
+                                    return
+                                }
+
                                 val value = obj.constructor.invoke()
 
                                 register(obj.location, value)
