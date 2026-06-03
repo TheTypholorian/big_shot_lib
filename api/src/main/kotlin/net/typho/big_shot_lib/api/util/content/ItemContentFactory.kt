@@ -96,7 +96,6 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
         protected var compostable: Float? = null
         @JvmField
         protected val tags: MutableList<TagKey<Item>> = arrayListOf()
-        // TODO tag
 
         fun properties(properties: (Item.Properties) -> Item.Properties): B {
             this.properties = properties(this.properties)
