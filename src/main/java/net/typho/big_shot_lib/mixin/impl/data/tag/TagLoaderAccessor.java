@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl.data;
+package net.typho.big_shot_lib.mixin.impl.data.tag;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagLoader;

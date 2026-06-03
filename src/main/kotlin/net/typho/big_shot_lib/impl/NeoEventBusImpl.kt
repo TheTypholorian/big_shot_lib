@@ -151,6 +151,7 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.neoforged.neoforge.event.ServerChatEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
 import net.neoforged.neoforge.event.tick.ServerTickEvent
+import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.util.content.RegisteredObject
 import net.typho.big_shot_lib.impl.util.platform.RegisteredObjectImpl
@@ -160,6 +161,8 @@ class NeoEventBusImpl(
     val inner: IEventBus
 ) : NeoEventBus {
     companion object {
+        @JvmField
+        val DYNAMIC_RECIPE_EVENTS = arrayListOf<RegisterDynamicRecipesEvent>()
         @JvmField
         val DYNAMIC_TAG_EVENTS = arrayListOf<RegisterDynamicTagsEvent>()
     }
@@ -233,6 +236,10 @@ class NeoEventBusImpl(
                 }
             })
         }
+    }
+
+    override fun register(event: RegisterDynamicRecipesEvent) {
+        DYNAMIC_RECIPE_EVENTS.add(event)
     }
 
     override fun register(event: RegisterDynamicTagsEvent) {

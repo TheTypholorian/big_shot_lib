@@ -1,10 +1,13 @@
 package net.typho.big_shot_lib.api.util.content
 
+import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.crafting.Recipe
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.NeoEventBus
+import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.util.content.ItemContentFactory.Builder
@@ -17,6 +20,10 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
     protected var registered = false
     @JvmField
     protected val toRegister = hashMapOf<Identifier, RegisteredObject<out Item>>()
+    @JvmField
+    protected val dynamicRecipes = hashMapOf<Identifier, () -> RecipeBuilder>()
+    @JvmField
+    protected val dynamicExistingRecipes = hashMapOf<Identifier, () -> Recipe<*>>()
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<Identifier>>()
 
@@ -51,6 +58,10 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
 
                 toRegister.values.forEach { out.register(it) }
             }
+        })
+        output.register(RegisterDynamicRecipesEvent { out, registries ->
+            dynamicRecipes.forEach { (key, value) -> out.register(key, value()) }
+            dynamicExistingRecipes.forEach { (key, value) -> out.register(key, value()) }
         })
         output.register(RegisterDynamicTagsEvent { out ->
             dynamicTags.forEach { (key, value) -> out.addItems(key, *value.toTypedArray()) }
@@ -96,6 +107,8 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
         protected var compostable: Float? = null
         @JvmField
         protected val tags: MutableList<TagKey<Item>> = arrayListOf()
+        @JvmField
+        protected var registered: RegisteredObject<T>? = null
 
         fun properties(properties: (Item.Properties) -> Item.Properties): B {
             this.properties = properties(this.properties)
@@ -115,6 +128,18 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
             return this as B
         }
 
+        @JvmOverloads
+        fun recipe(location: Identifier = key, recipe: (item: T) -> RecipeBuilder): B {
+            parent.dynamicRecipes.put(location) { recipe(registered!!.get()) }?.let { throw IllegalStateException("Already registered a recipe for $key with id $location") }
+            return this as B
+        }
+
+        @JvmOverloads
+        fun existingRecipe(location: Identifier = key, recipe: (item: T) -> Recipe<*>): B {
+            parent.dynamicExistingRecipes.put(location) { recipe(registered!!.get()) }?.let { throw IllegalStateException("Already registered a recipe for $key with id $location") }
+            return this as B
+        }
+
         fun tags(vararg tags: TagKey<Item>): B {
             this.tags.addAll(tags)
             return this as B
@@ -126,6 +151,8 @@ open class ItemContentFactory<O : NeoEventBus, B : Builder<*, B>> protected cons
             }
 
             val item = RegisteredObject(key) { constructor(properties) }
+
+            registered = item
 
             parent.toRegister.put(key, item)?.let {
                 throw IllegalArgumentException("Cannot create two items under the same ID $key")

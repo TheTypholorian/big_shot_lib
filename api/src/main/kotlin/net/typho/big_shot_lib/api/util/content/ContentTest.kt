@@ -1,5 +1,7 @@
 package net.typho.big_shot_lib.api.util.content
 
+import net.minecraft.data.recipes.RecipeCategory
+import net.minecraft.data.recipes.ShapedRecipeBuilder
 import net.minecraft.resources.Identifier
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.effect.MobEffectInstance
@@ -30,6 +32,11 @@ object ContentTest : BigShotCommonEntrypoint {
                 .effect(MobEffectInstance(MobEffects.WITHER, 200, 200), 1f)
                 .usingConvertsTo { Items.MUD }
                 .build()) }
+        .recipe { item -> ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, item)
+            .define('M', Items.MUD)
+            .pattern("M M")
+            .pattern(" M ")
+            .pattern("M M") }
         .tags(ItemTags.HORSE_TEMPT_ITEMS, ItemTags.ARROWS)
         .end()
 
