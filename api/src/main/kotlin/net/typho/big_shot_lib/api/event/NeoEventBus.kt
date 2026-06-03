@@ -17,6 +17,8 @@ interface NeoEventBus {
 
     fun register(event: NewRegistryEvent)
 
+    fun register(event: RegisterDynamicAdvancementsEvent)
+
     fun register(event: RegisterDynamicRecipesEvent)
 
     fun register(event: RegisterDynamicTagsEvent)

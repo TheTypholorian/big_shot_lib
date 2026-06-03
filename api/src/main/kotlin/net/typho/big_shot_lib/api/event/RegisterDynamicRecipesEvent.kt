@@ -41,6 +41,9 @@ fun interface RegisterDynamicRecipesEvent {
             @JvmField
             val builder: ImmutableMap.Builder<Identifier, AdvancementHolder>
         ) : Output {
+            @JvmField
+            var count = 0
+
             override fun register(location: Identifier, recipe: RecipeBuilder) {
                 recipe.save(object : RecipeOutput {
                     override fun advancement(): Advancement.Builder {
@@ -66,6 +69,7 @@ fun interface RegisterDynamicRecipesEvent {
                     ) {
                         if (advancement != null) {
                             builder.put(advancement.id(), advancement)
+                            count++
                         }
                     }
                     //? }

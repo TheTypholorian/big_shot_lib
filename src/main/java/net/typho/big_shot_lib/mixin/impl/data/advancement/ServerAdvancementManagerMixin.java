@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl.data.recipe;
+package net.typho.big_shot_lib.mixin.impl.data.advancement;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
@@ -10,6 +10,7 @@ import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent;
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent;
 import net.typho.big_shot_lib.impl.NeoEventBusImpl;
 import org.spongepowered.asm.mixin.Final;
@@ -41,12 +42,22 @@ public class ServerAdvancementManagerMixin {
             CallbackInfo ci,
             @Local ImmutableMap.Builder<Identifier, AdvancementHolder> builder
     ) {
-        int[] counter = { 0 };
+        RegisterDynamicRecipesEvent.Output.Advancements recipeOutput = new RegisterDynamicRecipesEvent.Output.Advancements(builder);
+        int[] count = { 0 };
+        RegisterDynamicAdvancementsEvent.Output output = advancement -> {
+            builder.put(advancement.id(), advancement);
+            count[0]++;
+        };
 
         for (RegisterDynamicRecipesEvent event : NeoEventBusImpl.DYNAMIC_RECIPE_EVENTS) {
-            event.register(new RegisterDynamicRecipesEvent.Output.Advancements(builder), registries);
+            event.register(recipeOutput, registries);
         }
 
-        BigShotApi.LOGGER.info("Loaded {} dynamic recipe advancements", counter[0]);
+        for (RegisterDynamicAdvancementsEvent event : NeoEventBusImpl.DYNAMIC_ADVANCEMENT_EVENTS) {
+            event.register(output, registries);
+        }
+
+        BigShotApi.LOGGER.info("Loaded {} dynamic recipe advancements", recipeOutput.count);
+        BigShotApi.LOGGER.info("Loaded {} regular dynamic advancements", count[0]);
     }
 }
