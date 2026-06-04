@@ -1,7 +1,16 @@
 package net.typho.big_shot_lib.api.util.content
 
-interface ContentFactory<T : Any, K, O> {
-    fun begin(key: K): ObjectBuilder<out T>
+import net.minecraft.core.Registry
+import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
+import net.typho.big_shot_lib.api.event.NeoEventBus
 
-    fun end(output: O)
+interface ContentFactory<T : Any> {
+    val registry: ResourceKey<Registry<T>>
+
+    fun begin(key: ResourceKey<T>): ObjectBuilder<RegisteredObject<T>>
+
+    fun begin(key: Identifier): ObjectBuilder<RegisteredObject<T>> = begin(ResourceKey.create(registry, key))
+
+    fun end(bus: NeoEventBus)
 }

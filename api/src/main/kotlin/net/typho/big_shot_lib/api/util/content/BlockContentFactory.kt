@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.api.util.content
 
 import net.minecraft.client.color.block.BlockColor
+import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
@@ -18,10 +19,11 @@ import java.util.function.UnaryOperator
 import kotlin.collections.addAll
 
 @Suppress("UNCHECKED_CAST")
-open class BlockContentFactory<O : NeoEventBus> protected constructor(
+open class BlockContentFactory(
     @JvmField
-    protected val items: ItemContentFactory<*>? = null
-) : ContentFactory<RegisteredObject<Block>, ResourceKey<Block>, O> {
+    protected val items: ItemContentFactory? = null
+) : ContentFactory<Block> {
+    override val registry: ResourceKey<Registry<Block>> = Registries.BLOCK
     @JvmField
     protected var registered = false
     @JvmField
@@ -29,42 +31,29 @@ open class BlockContentFactory<O : NeoEventBus> protected constructor(
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<out Block>, MutableSet<ResourceKey<out Block>>>()
 
-    companion object {
-        @JvmOverloads
-        @JvmStatic
-        @JvmName("simple")
-        operator fun invoke(items: ItemContentFactory<*>? = null): BlockContentFactory<NeoEventBus> {
-            return BlockContentFactory<NeoEventBus>(items)
-        }
-    }
-
-    open fun begin(key: Identifier): Builder<Block, *> {
-        return begin(ResourceKey.create(Registries.BLOCK, key))
-    }
-
     override fun begin(key: ResourceKey<Block>): Builder<Block, *> {
         return beginComplex(key)
     }
 
     open fun <V : Block> beginComplex(key: Identifier): Builder<V, *> {
-        return beginComplex(ResourceKey.create(Registries.BLOCK, key) as ResourceKey<V>)
+        return beginComplex(ResourceKey.create(registry, key) as ResourceKey<V>)
     }
 
     open fun <V : Block> beginComplex(key: ResourceKey<V>): Builder<V, *> {
         return BuilderImpl(key, this)
     }
 
-    override fun end(output: O) {
+    override fun end(bus: NeoEventBus) {
         registered = true
 
-        output.register(RegisterEvent { out ->
+        bus.register(RegisterEvent { out ->
             out.beginBlocks { out ->
                 registered = true
 
                 toRegister.values.forEach { out.register(it) }
             }
         })
-        output.register(RegisterDynamicTagsEvent { out ->
+        bus.register(RegisterDynamicTagsEvent { out ->
             dynamicTags.forEach { (key, value) -> out.addBlocks(key, *value.toTypedArray()) }
         })
     }
@@ -83,14 +72,14 @@ open class BlockContentFactory<O : NeoEventBus> protected constructor(
 
     private class BuilderImpl<T : Block>(
         key: ResourceKey<T>,
-        parent: BlockContentFactory<*>
+        parent: BlockContentFactory
     ) : Builder<T, BuilderImpl<T>>(key, parent)
 
     open class Builder<T : Block, B : Builder<T, B>>(
         @JvmField
         val key: ResourceKey<T>,
         @JvmField
-        protected val parent: BlockContentFactory<*>
+        protected val parent: BlockContentFactory
     ) : ObjectBuilder<RegisteredObject<T>> {
         @JvmField
         protected var constructor: (properties: BlockBehaviour.Properties) -> T = { properties -> Block(properties) as? T ?: throw ClassCastException("Must specify a constructor for $key as it doesn't use the base Block class.") }
@@ -164,7 +153,7 @@ open class BlockContentFactory<O : NeoEventBus> protected constructor(
             return this as B
         }
 
-        fun item(item: ItemContentFactory<*>.() -> ItemContentFactory.Builder<*, *>): B {
+        fun item(item: ItemContentFactory.() -> ItemContentFactory.Builder<*, *>): B {
             this.item = Runnable {
                 item(parent.items ?: throw NullPointerException("Must pass an ItemContentFactory to the BlockContentFactory to be able to call Builder.item()")).end()
             }

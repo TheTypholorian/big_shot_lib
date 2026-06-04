@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.util.content
 
+import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.resources.Identifier
@@ -16,7 +17,8 @@ import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import java.util.function.UnaryOperator
 
 @Suppress("UNCHECKED_CAST")
-open class ItemContentFactory<O : NeoEventBus> protected constructor() : ContentFactory<RegisteredObject<Item>, ResourceKey<Item>, O> {
+open class ItemContentFactory : ContentFactory<Item> {
+    override val registry: ResourceKey<Registry<Item>> = Registries.ITEM
     @JvmField
     protected var registered = false
     @JvmField
@@ -28,43 +30,31 @@ open class ItemContentFactory<O : NeoEventBus> protected constructor() : Content
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<ResourceKey<out Item>>>()
 
-    companion object {
-        @JvmStatic
-        @JvmName("simple")
-        operator fun invoke(): ItemContentFactory<NeoEventBus> {
-            return ItemContentFactory<NeoEventBus>()
-        }
-    }
-
-    open fun begin(key: Identifier): Builder<Item, *> {
-        return begin(ResourceKey.create(Registries.ITEM, key))
-    }
-
     override fun begin(key: ResourceKey<Item>): Builder<Item, *> {
         return beginComplex(key)
     }
 
     open fun <V : Item> beginComplex(key: Identifier): Builder<V, *> {
-        return beginComplex(ResourceKey.create(Registries.ITEM, key) as ResourceKey<V>)
+        return beginComplex(ResourceKey.create(registry, key) as ResourceKey<V>)
     }
 
     open fun <V : Item> beginComplex(key: ResourceKey<V>): Builder<V, *> {
         return BuilderImpl(key, this)
     }
 
-    override fun end(output: O) {
+    override fun end(bus: NeoEventBus) {
         registered = true
 
-        output.register(RegisterEvent { out ->
+        bus.register(RegisterEvent { out ->
             out.beginItems { out ->
                 toRegister.values.forEach { out.register(it) }
             }
         })
-        output.register(RegisterDynamicRecipesEvent { out, registries ->
+        bus.register(RegisterDynamicRecipesEvent { out, registries ->
             dynamicRecipes.forEach { (key, value) -> out.register(key, value()) }
             dynamicExistingRecipes.forEach { (key, value) -> out.register(key, value()) }
         })
-        output.register(RegisterDynamicTagsEvent { out ->
+        bus.register(RegisterDynamicTagsEvent { out ->
             dynamicTags.forEach { (key, value) -> out.addItems(key, *value.toTypedArray()) }
         })
     }
@@ -83,14 +73,14 @@ open class ItemContentFactory<O : NeoEventBus> protected constructor() : Content
 
     private class BuilderImpl<T : Item>(
         key: ResourceKey<T>,
-        parent: ItemContentFactory<*>
+        parent: ItemContentFactory
     ) : Builder<T, BuilderImpl<T>>(key, parent)
 
     open class Builder<T : Item, B : Builder<T, B>>(
         @JvmField
         val key: ResourceKey<T>,
         @JvmField
-        protected val parent: ItemContentFactory<*>
+        protected val parent: ItemContentFactory
     ) : ObjectBuilder<RegisteredObject<T>> {
         @JvmField
         protected var constructor: (properties: Item.Properties) -> T = { properties -> Item(properties) as? T ?: throw ClassCastException("Must specify a constructor for $key as it doesn't use the base Item class.") }

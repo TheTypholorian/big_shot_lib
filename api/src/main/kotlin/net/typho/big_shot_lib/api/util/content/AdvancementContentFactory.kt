@@ -7,6 +7,7 @@ import net.minecraft.advancements.AdvancementRewards
 import net.minecraft.advancements.AdvancementType
 import net.minecraft.advancements.Criterion
 import net.minecraft.advancements.DisplayInfo
+import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
@@ -18,32 +19,21 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 
 @Suppress("UNCHECKED_CAST")
-open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : ContentFactory<RegisteredObject<Advancement>, ResourceKey<Advancement>, O> {
+open class AdvancementContentFactory : ContentFactory<Advancement> {
+    override val registry: ResourceKey<Registry<Advancement>> = Registries.ADVANCEMENT
     @JvmField
     protected var registered = false
     @JvmField
     protected val toRegister = hashSetOf<RegisteredObject.Late<Advancement>>()
 
-    companion object {
-        @JvmStatic
-        @JvmName("simple")
-        operator fun invoke(): AdvancementContentFactory<NeoEventBus> {
-            return AdvancementContentFactory<NeoEventBus>()
-        }
-    }
-
-    fun begin(key: Identifier): Builder<*> {
-        return begin(ResourceKey.create(Registries.ADVANCEMENT, key))
-    }
-
     override fun begin(key: ResourceKey<Advancement>): Builder<*> {
         return BuilderImpl(key, this)
     }
 
-    override fun end(output: O) {
+    override fun end(bus: NeoEventBus) {
         registered = true
 
-        output.register(RegisterDynamicAdvancementsEvent { out, registries ->
+        bus.register(RegisterDynamicAdvancementsEvent { out, registries ->
             toRegister.forEach {
                 val value = it.constructor()
                 it.value = value
@@ -54,14 +44,14 @@ open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : 
 
     private class BuilderImpl(
         key: ResourceKey<Advancement>,
-        parent: AdvancementContentFactory<*>
+        parent: AdvancementContentFactory
     ) : Builder<BuilderImpl>(key, parent)
 
     open class Builder<B : Builder<B>>(
         @JvmField
         val key: ResourceKey<Advancement>,
         @JvmField
-        protected val parent: AdvancementContentFactory<*>
+        protected val parent: AdvancementContentFactory
     ) : ObjectBuilder<RegisteredObject<Advancement>> {
         @JvmField
         protected val mutators = arrayListOf<(builder: Advancement.Builder) -> Advancement.Builder>()
