@@ -189,7 +189,7 @@ class ToCompileTransformer(
             return null
         }
 
-        return info.loader.get().unmapOnlyInAnnotation(this, descriptor, api) ?: super.visitAnnotation(descriptor, visible)
+        return info.loader.get().unmapOnlyInAnnotation({ descriptor, visible -> super.visitAnnotation(descriptor, visible) }, descriptor, api) ?: super.visitAnnotation(descriptor, visible)
     }
 
     override fun visitEnd() {

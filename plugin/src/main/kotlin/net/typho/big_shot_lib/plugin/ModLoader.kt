@@ -8,38 +8,40 @@ enum class ModLoader {
     NONE {
         override val mappedOnlyInAnnotationName = null
 
-        override fun mapOnlyInAnnotation(visitor: ClassVisitor, client: Boolean) {
+        override fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean) {
         }
     },
     FABRIC {
         override val mappedOnlyInAnnotationName = "net/fabricmc/api/Environment"
 
-        override fun mapOnlyInAnnotation(visitor: ClassVisitor, client: Boolean) {
-            val anno = visitor.visitAnnotation("L$mappedOnlyInAnnotationName;", true)
-            anno.visitEnum("value", "Lnet/fabricmc/api/EnvType;", if (client) "CLIENT" else "SERVER")
-            anno.visitEnd()
+        override fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean) {
+            annotation("L$mappedOnlyInAnnotationName;", true)?.let { anno ->
+                anno.visitEnum("value", "Lnet/fabricmc/api/EnvType;", if (client) "CLIENT" else "SERVER")
+                anno.visitEnd()
+            }
         }
     },
     FORGE {
         override val mappedOnlyInAnnotationName = null
 
-        override fun mapOnlyInAnnotation(visitor: ClassVisitor, client: Boolean) {
+        override fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean) {
             TODO("Not yet implemented")
         }
     },
     NEOFORGE {
         override val mappedOnlyInAnnotationName = "net/neoforged/api/distmarker/OnlyIn"
 
-        override fun mapOnlyInAnnotation(visitor: ClassVisitor, client: Boolean) {
-            val anno = visitor.visitAnnotation("L$mappedOnlyInAnnotationName;", true)
-            anno.visitEnum("value", "Lnet/neoforged/api/distmarker/Dist;", if (client) "CLIENT" else "DEDICATED_SERVER")
-            anno.visitEnd()
+        override fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean) {
+            annotation("L$mappedOnlyInAnnotationName;", true)?.let { anno ->
+                anno.visitEnum("value", "Lnet/neoforged/api/distmarker/Dist;", if (client) "CLIENT" else "DEDICATED_SERVER")
+                anno.visitEnd()
+            }
         }
     };
 
     abstract val mappedOnlyInAnnotationName: String?
 
-    open fun unmapOnlyInAnnotation(visitor: ClassVisitor, descriptor: String, api: Int): AnnotationVisitor? {
+    open fun unmapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, descriptor: String, api: Int): AnnotationVisitor? {
         return if (mappedOnlyInAnnotationName != null && descriptor == "L$mappedOnlyInAnnotationName;") {
             object : AnnotationVisitor(api) {
                 var client = false
@@ -51,9 +53,10 @@ enum class ModLoader {
                 }
 
                 override fun visitEnd() {
-                    val anno = visitor.visitAnnotation(Annotations.ONLY_IN, true)
-                    anno.visitEnum("value", "Lnet/typho/big_shot_lib/api/plugin/Environment;", if (client) "CLIENT" else "SERVER")
-                    anno.visitEnd()
+                    annotation(Annotations.ONLY_IN, true)?.let { anno ->
+                        anno.visitEnum("value", "Lnet/typho/big_shot_lib/api/plugin/Environment;", if (client) "CLIENT" else "SERVER")
+                        anno.visitEnd()
+                    }
                 }
             }
         } else {
@@ -61,7 +64,7 @@ enum class ModLoader {
         }
     }
 
-    abstract fun mapOnlyInAnnotation(visitor: ClassVisitor, client: Boolean)
+    abstract fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean)
 
     companion object {
         @JvmStatic
