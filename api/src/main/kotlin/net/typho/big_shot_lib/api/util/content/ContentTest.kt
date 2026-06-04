@@ -23,7 +23,10 @@ object ContentTest : BigShotCommonEntrypoint {
     @JvmStatic
     fun id(path: String): Identifier = Identifier.of(modId, path)
 
+    val loot = LootTableContentFactory()
+    val advancements = AdvancementContentFactory()
     val items = ItemContentFactory()
+    val blocks = BlockContentFactory(items, loot)
 
     val testItem = items.begin(id("test_item"))
         .properties {
@@ -49,9 +52,6 @@ object ContentTest : BigShotCommonEntrypoint {
         .tags(ItemTags.HORSE_TEMPT_ITEMS, ItemTags.ARROWS)
         .end()
 
-    val loot = LootTableContentFactory()
-
-    val blocks = BlockContentFactory(items, loot)
 
     val testBlock1 = blocks.begin(id("test_block"))
         .properties {
@@ -67,8 +67,6 @@ object ContentTest : BigShotCommonEntrypoint {
         }
         .end()
 
-    val advancements = AdvancementContentFactory()
-
     val testAdvancement = advancements.begin(id("test_advancement"))
         .parent(Identifier.minecraft("adventure/trade"))
         .display(testItem)
@@ -77,8 +75,8 @@ object ContentTest : BigShotCommonEntrypoint {
         .end()
 
     override fun onInitialize(bus: NeoEventBus) {
-        items.end(bus)
         blocks.end(bus)
+        items.end(bus)
         advancements.end(bus)
         loot.end(bus)
     }

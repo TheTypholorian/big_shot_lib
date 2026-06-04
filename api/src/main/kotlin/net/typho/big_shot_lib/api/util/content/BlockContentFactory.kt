@@ -120,7 +120,6 @@ open class BlockContentFactory @JvmOverloads constructor(
                     .end()
             }
         }
-        // TODO recipe
         // TODO client side extensions
         @JvmField
         protected val tags: MutableList<TagKey<Block>> = arrayListOf()
@@ -174,8 +173,20 @@ open class BlockContentFactory @JvmOverloads constructor(
             key: ResourceKey<Item> = this.key as ResourceKey<Item>
         ): B {
             item = Supplier {
-                (parent.items ?: throw NullPointerException("Must pass an ItemContentFactory to the BlockContentFactory to be able to call Builder.item()")).beginComplex(key as ResourceKey<BlockItem>)
+                (parent.items ?: throw UnsupportedOperationException("Must pass an ItemContentFactory to the BlockContentFactory to be able to call Builder.item()")).beginComplex(key as ResourceKey<BlockItem>)
                     .constructor { BlockItem(registered!!.get(), it) }
+                    .let(builder)
+                    .end()
+            }
+
+            return this as B
+        }
+
+        fun drops(
+            builder: LootTableContentFactory.Builder<*>.() -> LootTableContentFactory.Builder<*>
+        ): B {
+            lootTable = BiFunction { block, item ->
+                (parent.loot ?: throw UnsupportedOperationException("Must pass a LootTableContentFactory to the BlockContentFactory to be able to call Builder.drops()")).begin(block.lootTable)
                     .let(builder)
                     .end()
             }
