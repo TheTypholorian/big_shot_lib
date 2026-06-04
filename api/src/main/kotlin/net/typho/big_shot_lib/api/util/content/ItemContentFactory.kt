@@ -14,7 +14,7 @@ import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import java.util.function.UnaryOperator
 
 @Suppress("UNCHECKED_CAST")
-open class ItemContentFactory<O : NeoEventBus, B : ItemContentFactory.Builder<*, B>> protected constructor() : ContentFactory<Item, Identifier, O, B> {
+open class ItemContentFactory<O : NeoEventBus> protected constructor() : ContentFactory<Item, Identifier, O> {
     @JvmField
     protected var registered = false
     @JvmField
@@ -29,25 +29,25 @@ open class ItemContentFactory<O : NeoEventBus, B : ItemContentFactory.Builder<*,
     companion object {
         @JvmStatic
         @JvmName("simple")
-        operator fun invoke(): ItemContentFactory<NeoEventBus, *> {
-            return ItemContentFactory<NeoEventBus, BuilderImpl<Item>>()
+        operator fun invoke(): ItemContentFactory<NeoEventBus> {
+            return ItemContentFactory<NeoEventBus>()
         }
     }
 
-    override fun begin(key: Identifier): B {
+    override fun begin(key: Identifier): Builder<Item, *> {
         return begin(key, Item.Properties())
     }
 
-    open fun begin(key: Identifier, properties: Item.Properties): B {
-        return beginComplex<Item>(key, properties)
+    open fun begin(key: Identifier, properties: Item.Properties): Builder<Item, *> {
+        return beginComplex(key, properties)
     }
 
-    fun <T : Item> beginComplex(key: Identifier): B {
-        return beginComplex<T>(key, Item.Properties())
+    fun <T : Item> beginComplex(key: Identifier): Builder<T, *> {
+        return beginComplex(key, Item.Properties())
     }
 
-    open fun <T : Item> beginComplex(key: Identifier, properties: Item.Properties): B {
-        return BuilderImpl<T>(key, properties, this) as? B ?: throw IllegalStateException("ItemContentFactory subclass $this must override begin(Identifier) as it defines a different Builder type")
+    open fun <T : Item> beginComplex(key: Identifier, properties: Item.Properties): Builder<T, *> {
+        return BuilderImpl(key, properties, this)
     }
 
     override fun end(output: O) {
@@ -82,7 +82,7 @@ open class ItemContentFactory<O : NeoEventBus, B : ItemContentFactory.Builder<*,
     private class BuilderImpl<T : Item>(
         key: Identifier,
         properties: Item.Properties,
-        parent: ItemContentFactory<*, *>
+        parent: ItemContentFactory<*>
     ) : Builder<T, BuilderImpl<T>>(key, properties, parent)
 
     open class Builder<T : Item, B : Builder<T, B>>(
@@ -91,7 +91,7 @@ open class ItemContentFactory<O : NeoEventBus, B : ItemContentFactory.Builder<*,
         @JvmField
         protected var properties: Item.Properties,
         @JvmField
-        protected val parent: ItemContentFactory<*, *>
+        protected val parent: ItemContentFactory<*>
     ) : ObjectBuilder<T> {
         @JvmField
         protected var constructor: (properties: Item.Properties) -> T = { properties -> Item(properties) as? T ?: throw ClassCastException("Must specify a constructor for $key as it doesn't use the base Item class.") }

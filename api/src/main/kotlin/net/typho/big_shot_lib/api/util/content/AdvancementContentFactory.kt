@@ -16,7 +16,7 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 
 @Suppress("UNCHECKED_CAST")
-open class AdvancementContentFactory<O : NeoEventBus, B : AdvancementContentFactory.Builder<B>> protected constructor() : ContentFactory<Advancement, Identifier, O, B> {
+open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : ContentFactory<Advancement, Identifier, O> {
     @JvmField
     protected var registered = false
     @JvmField
@@ -25,13 +25,13 @@ open class AdvancementContentFactory<O : NeoEventBus, B : AdvancementContentFact
     companion object {
         @JvmStatic
         @JvmName("simple")
-        operator fun invoke(): AdvancementContentFactory<NeoEventBus, *> {
-            return AdvancementContentFactory<NeoEventBus, BuilderImpl>()
+        operator fun invoke(): AdvancementContentFactory<NeoEventBus> {
+            return AdvancementContentFactory<NeoEventBus>()
         }
     }
 
-    override fun begin(key: Identifier): B {
-        return BuilderImpl(key, this) as? B ?: throw IllegalStateException("AdvancementContentFactory subclass $this must override begin(Identifier) as it defines a different Builder type")
+    override fun begin(key: Identifier): Builder<*> {
+        return BuilderImpl(key, this)
     }
 
     override fun end(output: O) {
@@ -48,14 +48,14 @@ open class AdvancementContentFactory<O : NeoEventBus, B : AdvancementContentFact
 
     private class BuilderImpl(
         key: Identifier,
-        parent: AdvancementContentFactory<*, *>
+        parent: AdvancementContentFactory<*>
     ) : Builder<BuilderImpl>(key, parent)
 
     open class Builder<B : Builder<B>>(
         @JvmField
         val key: Identifier,
         @JvmField
-        protected val parent: AdvancementContentFactory<*, *>
+        protected val parent: AdvancementContentFactory<*>
     ) : ObjectBuilder<Advancement> {
         @JvmField
         protected val mutators = arrayListOf<(builder: Advancement.Builder) -> Advancement.Builder>()

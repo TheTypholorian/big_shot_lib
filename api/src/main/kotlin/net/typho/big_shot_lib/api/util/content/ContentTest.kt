@@ -5,7 +5,6 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger
 import net.minecraft.data.recipes.RecipeCategory
 import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.data.recipes.ShapedRecipeBuilder
-import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
 import net.minecraft.tags.ItemTags
 import net.minecraft.world.effect.MobEffectInstance
@@ -45,13 +44,15 @@ object ContentTest : BigShotCommonEntrypoint {
         .tags(ItemTags.HORSE_TEMPT_ITEMS, ItemTags.ARROWS)
         .end()
 
-    val blocks = BlockContentFactory()
+    val blocks = BlockContentFactory(items)
 
     val testBlock1 = blocks.begin(id("test_block"))
         .properties { it.instabreak().ignitedByLava() }
+        .item()
         .end()
     val testBlock2 = blocks.begin(id("test_block_b"))
         .properties { it.air() }
+        .item()
         .end()
 
     val advancements = AdvancementContentFactory()

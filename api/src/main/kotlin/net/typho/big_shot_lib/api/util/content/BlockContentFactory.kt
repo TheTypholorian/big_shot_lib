@@ -3,6 +3,8 @@ package net.typho.big_shot_lib.api.util.content
 import net.minecraft.client.color.block.BlockColor
 import net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
+import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
@@ -14,7 +16,10 @@ import java.util.function.UnaryOperator
 import kotlin.collections.addAll
 
 @Suppress("UNCHECKED_CAST")
-open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<Block, B>> protected constructor() : ContentFactory<Block, Identifier, O, B> {
+open class BlockContentFactory<O : NeoEventBus> protected constructor(
+    @JvmField
+    protected val items: ItemContentFactory<*>? = null
+) : ContentFactory<Block, Identifier, O> {
     @JvmField
     protected var registered = false
     @JvmField
@@ -23,35 +28,36 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
     protected val dynamicTags = hashMapOf<TagKey<Block>, MutableSet<Identifier>>()
 
     companion object {
+        @JvmOverloads
         @JvmStatic
         @JvmName("simple")
-        operator fun invoke(): BlockContentFactory<NeoEventBus, *> {
-            return BlockContentFactory<NeoEventBus, BuilderImpl<Block>>()
+        operator fun invoke(items: ItemContentFactory<*>? = null): BlockContentFactory<NeoEventBus> {
+            return BlockContentFactory<NeoEventBus>(items)
         }
     }
 
-    override fun begin(key: Identifier): B {
+    override fun begin(key: Identifier): Builder<Block, *> {
         return begin(key, BlockBehaviour.Properties.of())
     }
 
-    open fun begin(key: Identifier, copyProperties: BlockBehaviour): B {
+    open fun begin(key: Identifier, copyProperties: BlockBehaviour): Builder<Block, *> {
         return begin(key, BlockBehaviour.Properties.ofFullCopy(copyProperties))
     }
 
-    open fun begin(key: Identifier, properties: BlockBehaviour.Properties): B {
-        return beginComplex<Block>(key, properties)
+    open fun begin(key: Identifier, properties: BlockBehaviour.Properties): Builder<Block, *> {
+        return beginComplex(key, properties)
     }
 
-    fun <V : Block> beginComplex(key: Identifier): B {
-        return beginComplex<V>(key, BlockBehaviour.Properties.of())
+    fun <V : Block> beginComplex(key: Identifier): Builder<V, *> {
+        return beginComplex(key, BlockBehaviour.Properties.of())
     }
 
-    open fun <V : Block> beginComplex(key: Identifier, copyProperties: BlockBehaviour): B {
-        return beginComplex<V>(key, BlockBehaviour.Properties.ofFullCopy(copyProperties))
+    open fun <V : Block> beginComplex(key: Identifier, copyProperties: BlockBehaviour): Builder<V, *> {
+        return beginComplex(key, BlockBehaviour.Properties.ofFullCopy(copyProperties))
     }
 
-    open fun <V : Block> beginComplex(key: Identifier, properties: BlockBehaviour.Properties): B {
-        return BuilderImpl<V>(key, properties, this) as? B ?: throw IllegalStateException("BlockContentFactory subclass $this must override begin(Identifier) as it defines a different Builder type")
+    open fun <V : Block> beginComplex(key: Identifier, properties: BlockBehaviour.Properties): Builder<V, *> {
+        return BuilderImpl(key, properties, this)
     }
 
     override fun end(output: O) {
@@ -84,7 +90,7 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
     private class BuilderImpl<T : Block>(
         key: Identifier,
         properties: BlockBehaviour.Properties,
-        parent: BlockContentFactory<*, *>
+        parent: BlockContentFactory<*>
     ) : Builder<T, BuilderImpl<T>>(key, properties, parent)
 
     open class Builder<T : Block, B : Builder<T, B>>(
@@ -93,7 +99,7 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
         @JvmField
         protected var properties: BlockBehaviour.Properties,
         @JvmField
-        protected val parent: BlockContentFactory<*, *>
+        protected val parent: BlockContentFactory<*>
     ) : ObjectBuilder<T> {
         @JvmField
         protected var constructor: (properties: BlockBehaviour.Properties) -> T = { properties -> Block(properties) as? T ?: throw ClassCastException("Must specify a constructor for $key as it doesn't use the base Block class.") }
@@ -109,6 +115,8 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
         // TODO client side extensions
         @JvmField
         protected val tags: MutableList<TagKey<Block>> = arrayListOf()
+        @JvmField
+        protected var registered: RegisteredObject<T>? = null
 
         fun properties(properties: (BlockBehaviour.Properties) -> BlockBehaviour.Properties): B {
             this.properties = properties(this.properties)
@@ -138,12 +146,25 @@ open class BlockContentFactory<O : NeoEventBus, B : BlockContentFactory.Builder<
             return this as B
         }
 
+        @JvmOverloads
+        fun item(key: Identifier = this.key, properties: Item.Properties = Item.Properties()): B {
+            parent.items ?: throw NullPointerException("Must pass an ItemContentFactory to the BlockContentFactory to be able to call Builder.item()")
+
+            parent.items.beginComplex<BlockItem>(key, properties)
+                .constructor { BlockItem(registered!!.get(), it) }
+                .end()
+
+            return this as B
+        }
+
         override fun end(): RegisteredObject<T> {
             if (parent.registered) {
                 throw IllegalStateException("ContentFactory $parent has ended, it cannot receive more entries")
             }
 
             val block = RegisteredObject.Late(key) { constructor(properties) }
+
+            registered = block
 
             parent.toRegister.put(key, block)?.let { old ->
                 throw IllegalArgumentException("Cannot create two blocks ($block and $old) under the same ID $key")

@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.util.content
 
-interface ContentFactory<T : Any, K, O, B : ObjectBuilder<out T>> {
-    fun begin(key: K): B
+interface ContentFactory<T : Any, K, O> {
+    fun begin(key: K): ObjectBuilder<out T>
 
     fun end(output: O)
 }
