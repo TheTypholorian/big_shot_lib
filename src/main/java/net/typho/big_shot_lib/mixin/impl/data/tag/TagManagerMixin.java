@@ -39,9 +39,9 @@ public class TagManagerMixin {
         for (RegisterDynamicTagsEvent event : NeoEventBusImpl.DYNAMIC_TAG_EVENTS) {
             event.register(new RegisterDynamicTagsEvent.Output() {
                 @Override
-                public <V> void add(@NotNull ResourceKey<Registry<V>> registry, @NotNull TagKey<? extends V> tag, @NotNull Identifier... entries) {
+                public <V> void add(@NotNull ResourceKey<Registry<V>> registry, @NotNull TagKey<? extends V> tag, @NotNull ResourceKey<? extends V>... entries) {
                     if (registry.equals(key) && entries.length > 0) {
-                        modifiedTags.computeIfAbsent(tag, key -> new HashSet<>()).addAll(Arrays.asList(entries));
+                        modifiedTags.computeIfAbsent(tag, key -> new HashSet<>()).addAll(Arrays.stream(entries).map(ResourceKey::location).toList());
 
                         tags.compute(tag.location(), (key, value) -> {
                             if (value == null) {
@@ -50,8 +50,8 @@ public class TagManagerMixin {
                                 value = new HashSet<>(value);
                             }
 
-                            for (Identifier entry : entries) {
-                                value.add((Holder<T>) func.apply(entry).orElseThrow(() -> new NullPointerException("Nonexistent entry " + entry + " while injecting dynamic tags into " + registry + "." + tag)));
+                            for (ResourceKey<? extends V> entry : entries) {
+                                value.add((Holder<T>) func.apply(entry.location()).orElseThrow(() -> new NullPointerException("Nonexistent entry " + entry + " while injecting dynamic tags into " + registry + "." + tag)));
                             }
 
                             return value;
@@ -65,7 +65,7 @@ public class TagManagerMixin {
         long numTags = modifiedTags.size();
 
         if (numEntries > 0) {
-            BigShotApi.LOGGER.info("Injected {} dynamic tag entries into {} tags of registry {}", numEntries, numTags, key.location());
+            BigShotApi.LOGGER.info("Loaded {} dynamic tag entries into {} tags of registry {}", numEntries, numTags, key.location());
         }
 
         args.set(1, tags);

@@ -49,7 +49,9 @@ object ContentTest : BigShotCommonEntrypoint {
         .tags(ItemTags.HORSE_TEMPT_ITEMS, ItemTags.ARROWS)
         .end()
 
-    val blocks = BlockContentFactory(items)
+    val loot = LootTableContentFactory()
+
+    val blocks = BlockContentFactory(items, loot)
 
     val testBlock1 = blocks.begin(id("test_block"))
         .properties {
@@ -78,5 +80,6 @@ object ContentTest : BigShotCommonEntrypoint {
         items.end(bus)
         blocks.end(bus)
         advancements.end(bus)
+        loot.end(bus)
     }
 }

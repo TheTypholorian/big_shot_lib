@@ -163,6 +163,8 @@ class NeoEventBusImpl(
 ) : NeoEventBus {
     companion object {
         @JvmField
+        val REGISTER_EVENTS = arrayListOf<RegisterEvent>()
+        @JvmField
         val DYNAMIC_ADVANCEMENT_EVENTS = arrayListOf<RegisterDynamicAdvancementsEvent>()
         @JvmField
         val DYNAMIC_RECIPE_EVENTS = arrayListOf<RegisterDynamicRecipesEvent>()
@@ -254,15 +256,16 @@ class NeoEventBusImpl(
     }
 
     override fun register(event: RegisterEvent) {
+        REGISTER_EVENTS.add(event)
         inner.addListener { e: net.neoforged.neoforge.registries.RegisterEvent ->
             event.register(object : RegisterEvent.Output {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : Any> begin(key: Identifier, out: Consumer<RegisterEvent.RegistrationConsumer<T>>) {
-                    begin(BuiltInRegistries.REGISTRY.get(key) as Registry<T>, out)
+                    (BuiltInRegistries.REGISTRY.get(key) as? Registry<T>)?.let { begin(it, out) }
                 }
 
                 override fun <T : Any> begin(
-                    key: ResourceKey<Registry<T>>,
+                    key: ResourceKey<out Registry<T>>,
                     out: Consumer<RegisterEvent.RegistrationConsumer<T>>
                 ) {
                     return begin(key.location(), out)
@@ -275,21 +278,8 @@ class NeoEventBusImpl(
                                 e.register(registry.key(), key) { value }
                             }
 
-                            override fun register(key: ResourceKey<T>, value: T) {
+                            override fun register(key: ResourceKey<out T>, value: T) {
                                 register(key.location(), value)
-                            }
-
-                            override fun <V : T> register(obj: RegisteredObject<V>) {
-                                if (obj !is RegisteredObject.Late<V>) {
-                                    BigShotApi.LOGGER.warn("Submitted a non-late registered object $obj with id ${obj.location} to a NeoForge RegistrationConsumer, skipping.")
-                                    return
-                                }
-
-                                val value = obj.constructor.invoke()
-
-                                register(obj.location, value)
-
-                                obj.value = value
                             }
                         })
                     }

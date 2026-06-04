@@ -4,7 +4,10 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import net.minecraft.world.level.storage.loot.LootPool
 import net.minecraft.world.level.storage.loot.LootTable
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterEvent
 
@@ -16,15 +19,19 @@ open class LootTableContentFactory : ContentFactory<LootTable> {
     @JvmField
     protected val toRegister = hashSetOf<RegisteredObject.Late<LootTable>>()
 
+    open fun begin(key: Identifier): Builder<*> {
+        return begin(ResourceKey.create(registry, key))
+    }
+
     override fun begin(key: ResourceKey<LootTable>): Builder<*> {
         return BuilderImpl(key, this)
     }
 
     override fun end(bus: NeoEventBus) {
-        registered = true
-
         bus.register(RegisterEvent { out ->
             out.begin(registry) { out ->
+                registered = true
+
                 toRegister.forEach { out.register(it) }
             }
         })
@@ -43,6 +50,26 @@ open class LootTableContentFactory : ContentFactory<LootTable> {
     ) : ObjectBuilder<RegisteredObject<LootTable>> {
         @JvmField
         protected val mutators = arrayListOf<(builder: LootTable.Builder) -> LootTable.Builder>()
+
+        fun withPool(pool: () -> LootPool.Builder): B {
+            mutators.add { it.withPool(pool()) }
+            return this as B
+        }
+
+        fun setParamSet(paramSet: () -> LootContextParamSet): B {
+            mutators.add { it.setParamSet(paramSet()) }
+            return this as B
+        }
+
+        fun setRandomSequence(randomSequence: () -> Identifier): B {
+            mutators.add { it.setRandomSequence(randomSequence()) }
+            return this as B
+        }
+
+        fun apply(function: () -> LootItemFunction.Builder): B {
+            mutators.add { it.apply(function()) }
+            return this as B
+        }
 
         override fun end(): RegisteredObject<LootTable> {
             if (parent.registered) {

@@ -10,7 +10,5 @@ interface ContentFactory<T : Any> {
 
     fun begin(key: ResourceKey<T>): ObjectBuilder<RegisteredObject<T>>
 
-    fun begin(key: Identifier): ObjectBuilder<RegisteredObject<T>> = begin(ResourceKey.create(registry, key))
-
     fun end(bus: NeoEventBus)
 }

@@ -26,14 +26,18 @@ open class AdvancementContentFactory : ContentFactory<Advancement> {
     @JvmField
     protected val toRegister = hashSetOf<RegisteredObject.Late<Advancement>>()
 
+    open fun begin(key: Identifier): Builder<*> {
+        return begin(ResourceKey.create(registry, key))
+    }
+
     override fun begin(key: ResourceKey<Advancement>): Builder<*> {
         return BuilderImpl(key, this)
     }
 
     override fun end(bus: NeoEventBus) {
-        registered = true
-
         bus.register(RegisterDynamicAdvancementsEvent { out, registries ->
+            registered = true
+
             toRegister.forEach {
                 val value = it.constructor()
                 it.value = value

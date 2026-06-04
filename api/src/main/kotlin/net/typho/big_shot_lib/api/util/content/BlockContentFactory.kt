@@ -10,18 +10,29 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
+import net.minecraft.world.level.storage.loot.LootPool
+import net.minecraft.world.level.storage.loot.LootTable
+import net.minecraft.world.level.storage.loot.entries.LootItem
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import java.util.function.BiConsumer
+import java.util.function.BiFunction
+import java.util.function.Consumer
+import java.util.function.Supplier
 import java.util.function.UnaryOperator
 import kotlin.collections.addAll
 
 @Suppress("UNCHECKED_CAST")
-open class BlockContentFactory(
+open class BlockContentFactory @JvmOverloads constructor(
     @JvmField
-    protected val items: ItemContentFactory? = null
+    protected val items: ItemContentFactory? = null,
+    @JvmField
+    protected val loot: LootTableContentFactory? = null
 ) : ContentFactory<Block> {
     override val registry: ResourceKey<Registry<Block>> = Registries.BLOCK
     @JvmField
@@ -30,6 +41,10 @@ open class BlockContentFactory(
     protected val toRegister = hashMapOf<ResourceKey<out Block>, RegisteredObject<out Block>>()
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<out Block>, MutableSet<ResourceKey<out Block>>>()
+
+    open fun begin(key: Identifier): Builder<Block, *> {
+        return begin(ResourceKey.create(registry, key))
+    }
 
     override fun begin(key: ResourceKey<Block>): Builder<Block, *> {
         return beginComplex(key)
@@ -44,8 +59,6 @@ open class BlockContentFactory(
     }
 
     override fun end(bus: NeoEventBus) {
-        registered = true
-
         bus.register(RegisterEvent { out ->
             out.beginBlocks { out ->
                 registered = true
@@ -54,6 +67,8 @@ open class BlockContentFactory(
             }
         })
         bus.register(RegisterDynamicTagsEvent { out ->
+            registered = true
+
             dynamicTags.forEach { (key, value) -> out.addBlocks(key, *value.toTypedArray()) }
         })
     }
@@ -92,14 +107,26 @@ open class BlockContentFactory(
         @JvmField
         protected var color: BlockColor? = null
         // TODO model
-        // TODO loot
+        @JvmField
+        protected var lootTable: BiFunction<T, BlockItem, RegisteredObject<LootTable>>? = parent.loot?.let { loot ->
+            BiFunction { block, item ->
+                loot.begin(block.lootTable)
+                    .withPool {
+                        LootPool.lootPool()
+                            .setRolls(ConstantValue.exactly(1f))
+                            .`when`(ExplosionCondition.survivesExplosion())
+                            .add(LootItem.lootTableItem(item))
+                    }
+                    .end()
+            }
+        }
         // TODO recipe
         // TODO client side extensions
         @JvmField
         protected val tags: MutableList<TagKey<Block>> = arrayListOf()
         @JvmField
-        protected var item: Runnable? = parent.items?.let { items ->
-            Runnable {
+        protected var item: Supplier<RegisteredObject<out BlockItem>>? = parent.items?.let { items ->
+            Supplier {
                 items.beginComplex(key as ResourceKey<BlockItem>)
                     .constructor { properties -> BlockItem(registered!!.get(), properties) }
                     .end()
@@ -136,26 +163,21 @@ open class BlockContentFactory(
             return this as B
         }
 
-        @JvmOverloads
-        fun item(
-            builder: ItemContentFactory.Builder<BlockItem, *>.() -> ItemContentFactory.Builder<BlockItem, *> = { this },
-            properties: Item.Properties.() -> Item.Properties = { this },
-            key: ResourceKey<Item> = this.key as ResourceKey<Item>
-        ): B {
-            item = Runnable {
-                (parent.items ?: throw NullPointerException("Must pass an ItemContentFactory to the BlockContentFactory to be able to call Builder.item()")).beginComplex(key as ResourceKey<BlockItem>)
-                    .constructor { BlockItem(registered!!.get(), it) }
-                    .properties(properties)
-                    .let(builder)
-                    .end()
-            }
-
+        fun noLoot(): B {
+            lootTable = null
             return this as B
         }
 
-        fun item(item: ItemContentFactory.() -> ItemContentFactory.Builder<*, *>): B {
-            this.item = Runnable {
-                item(parent.items ?: throw NullPointerException("Must pass an ItemContentFactory to the BlockContentFactory to be able to call Builder.item()")).end()
+        @JvmOverloads
+        fun item(
+            builder: ItemContentFactory.Builder<out BlockItem, *>.() -> ItemContentFactory.Builder<out BlockItem, *>,
+            key: ResourceKey<Item> = this.key as ResourceKey<Item>
+        ): B {
+            item = Supplier {
+                (parent.items ?: throw NullPointerException("Must pass an ItemContentFactory to the BlockContentFactory to be able to call Builder.item()")).beginComplex(key as ResourceKey<BlockItem>)
+                    .constructor { BlockItem(registered!!.get(), it) }
+                    .let(builder)
+                    .end()
             }
 
             return this as B
@@ -183,7 +205,11 @@ open class BlockContentFactory(
                 parent.dynamicTags.computeIfAbsent(tag) { hashSetOf() }.add(key)
             }
 
-            item?.run()
+            item?.get()?.addListener { item ->
+                block.addListener { block ->
+                    lootTable?.apply(block, item)
+                }
+            }
 
             return block
         }

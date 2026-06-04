@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.crafting.Recipe
+import net.minecraft.world.level.block.Block
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
@@ -30,6 +31,10 @@ open class ItemContentFactory : ContentFactory<Item> {
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<ResourceKey<out Item>>>()
 
+    open fun begin(key: Identifier): Builder<Item, *> {
+        return begin(ResourceKey.create(registry, key))
+    }
+
     override fun begin(key: ResourceKey<Item>): Builder<Item, *> {
         return beginComplex(key)
     }
@@ -43,18 +48,22 @@ open class ItemContentFactory : ContentFactory<Item> {
     }
 
     override fun end(bus: NeoEventBus) {
-        registered = true
-
         bus.register(RegisterEvent { out ->
             out.beginItems { out ->
+                registered = true
+
                 toRegister.values.forEach { out.register(it) }
             }
         })
         bus.register(RegisterDynamicRecipesEvent { out, registries ->
+            registered = true
+
             dynamicRecipes.forEach { (key, value) -> out.register(key, value()) }
             dynamicExistingRecipes.forEach { (key, value) -> out.register(key, value()) }
         })
         bus.register(RegisterDynamicTagsEvent { out ->
+            registered = true
+
             dynamicTags.forEach { (key, value) -> out.addItems(key, *value.toTypedArray()) }
         })
     }
