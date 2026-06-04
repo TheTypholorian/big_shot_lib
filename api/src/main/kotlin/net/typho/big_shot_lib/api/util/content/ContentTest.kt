@@ -12,6 +12,7 @@ import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.food.FoodProperties
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.Rarity
+import net.minecraft.world.level.block.SoundType
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
@@ -25,34 +26,43 @@ object ContentTest : BigShotCommonEntrypoint {
     val items = ItemContentFactory()
 
     val testItem = items.begin(id("test_item"))
-        .properties { it.stacksTo(31)
-            .rarity(Rarity.RARE)
-            .food(FoodProperties.Builder()
+        .properties {
+            stacksTo(31)
+            rarity(Rarity.RARE)
+            food(FoodProperties.Builder()
                 .fast()
                 .nutrition(2000)
                 .alwaysEdible()
                 .saturationModifier(200f)
                 .effect(MobEffectInstance(MobEffects.WITHER, 200, 200), 1f)
                 .usingConvertsTo { Items.MUD }
-                .build()) }
-        .recipe { item -> ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, item)
-            .unlockedBy("has_mud", RecipeProvider.has(Items.MUD))
-            .define('M', Items.MUD)
-            .pattern("M M")
-            .pattern(" M ")
-            .pattern("M M") }
+                .build())
+        }
+        .recipe { item ->
+            ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, item)
+                .unlockedBy("has_mud", RecipeProvider.has(Items.MUD))
+                .define('M', Items.MUD)
+                .pattern("M M")
+                .pattern(" M ")
+                .pattern("M M")
+        }
         .tags(ItemTags.HORSE_TEMPT_ITEMS, ItemTags.ARROWS)
         .end()
 
     val blocks = BlockContentFactory(items)
 
     val testBlock1 = blocks.begin(id("test_block"))
-        .properties { it.instabreak().ignitedByLava() }
-        .item()
+        .properties {
+            instabreak()
+            ignitedByLava()
+        }
         .end()
     val testBlock2 = blocks.begin(id("test_block_b"))
-        .properties { it.air() }
-        .item()
+        .properties {
+            emissiveRendering { state, getter, pos -> true }
+            lightLevel { 15 }
+            sound(SoundType.MUD)
+        }
         .end()
 
     val advancements = AdvancementContentFactory()

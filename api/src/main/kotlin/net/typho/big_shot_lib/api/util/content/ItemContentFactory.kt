@@ -109,7 +109,7 @@ open class ItemContentFactory<O : NeoEventBus> protected constructor() : Content
         @JvmField
         protected var registered: RegisteredObject<T>? = null
 
-        fun properties(properties: (Item.Properties) -> Item.Properties): B {
+        fun properties(properties: Item.Properties.() -> Item.Properties): B {
             this.properties = properties(this.properties)
             return this as B
         }
