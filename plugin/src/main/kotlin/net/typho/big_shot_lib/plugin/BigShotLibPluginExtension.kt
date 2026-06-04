@@ -95,6 +95,30 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                         it.from.set("net/minecraft/resources/ResourceLocation")
                         it.to.set("net/minecraft/resources/Identifier")
                     })
+                    list.add(objects.newInstance(ClassRename::class.java).also {
+                        it.from.set("net/minecraft/util/ResourceLocationPattern")
+                        it.to.set("net/minecraft/util/IdentifierPattern")
+                    })
+                    list.add(objects.newInstance(ClassRename::class.java).also {
+                        it.from.set("net/minecraft/ResourceLocationException")
+                        it.to.set("net/minecraft/IdentifierException")
+                    })
+                    list.add(objects.newInstance(ClassRename::class.java).also {
+                        it.from.set("net/minecraft/client/resources/model/ModelResourceLocation")
+                        it.to.set("net/minecraft/client/resources/model/ModelIdentifier")
+                    })
+                    list.add(objects.newInstance(ClassRename::class.java).also {
+                        it.from.set("net/minecraft/commands/arguments/ResourceLocationArgument")
+                        it.to.set("net/minecraft/commands/arguments/IdentifierArgument")
+                    })
+                    list.add(objects.newInstance(ClassRename::class.java).also {
+                        it.from.set("net/minecraft/util/parsing/packrat/commands/ResourceLocationParseRule")
+                        it.to.set("net/minecraft/util/parsing/packrat/commands/IdentifierParseRule")
+                    })
+                    list.add(objects.newInstance(ClassRename::class.java).also {
+                        it.from.set("net/minecraft/client/searchtree/ResourceLocationSearchTree")
+                        it.to.set("net/minecraft/client/searchtree/IdentifierSearchTree")
+                    })
                 } else {
                     list.add(objects.newInstance(ClassRename::class.java).also {
                         it.from.set("net/minecraft/client/renderer/rendertype/LayeringTransform")

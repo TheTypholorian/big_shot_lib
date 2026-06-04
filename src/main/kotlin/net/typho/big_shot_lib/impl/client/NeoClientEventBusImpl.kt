@@ -209,6 +209,7 @@ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
 import net.neoforged.neoforge.client.event.RenderGuiEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.neoforged.neoforge.event.RegisterCommandsEvent
+import net.typho.big_shot_lib.api.client.event.BlockModelLoadingEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
@@ -219,12 +220,21 @@ class NeoClientEventBusImpl(
     @JvmField
     val common: NeoEventBus = NeoEventBusImpl(inner)
 ) : NeoClientEventBus {
+    companion object {
+        @JvmField
+        val BLOCK_MODEL_LOADING_EVENTS = arrayListOf<BlockModelLoadingEvent>()
+    }
+
     override fun register(event: AddAssetReloadListenersEvent) {
         inner.addListener { e: RegisterClientReloadListenersEvent ->
             event.registerReloadListeners { listener ->
                 e.registerReloadListener(listener)
             }
         }
+    }
+
+    override fun register(event: BlockModelLoadingEvent) {
+        BLOCK_MODEL_LOADING_EVENTS.add(event)
     }
 
     override fun register(event: ClientCommandsEvent) {

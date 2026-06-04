@@ -6,11 +6,13 @@ import net.minecraft.world.level.ItemLike
 import net.typho.big_shot_lib.api.util.resource.RegisteredResource
 import java.util.function.Consumer
 
-sealed interface RegisteredObject<T : Any> : RegisteredResource<T>, ItemLike {
+sealed interface RegisteredObject<T : Any> : RegisteredResource<T>, ItemLike, () -> T {
     /**
      * @throws IllegalStateException If [isRegistered] returns false
      */
     fun get(): T
+
+    override fun invoke() = get()
 
     fun isRegistered(): Boolean
 

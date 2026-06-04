@@ -6,6 +6,8 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 interface NeoClientEventBus : NeoEventBus {
     fun register(event: AddAssetReloadListenersEvent)
 
+    fun register(event: BlockModelLoadingEvent)
+
     fun register(event: ClientCommandsEvent)
 
     fun register(event: ClientEndTickEvent)

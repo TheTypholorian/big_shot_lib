@@ -2,6 +2,14 @@ package net.typho.big_shot_lib.api.util.content
 
 import net.minecraft.advancements.AdvancementRewards
 import net.minecraft.advancements.critereon.InventoryChangeTrigger
+import net.minecraft.data.models.BlockModelGenerators
+import net.minecraft.data.models.blockstates.BlockStateGenerator
+import net.minecraft.data.models.blockstates.MultiVariantGenerator
+import net.minecraft.data.models.blockstates.Variant
+import net.minecraft.data.models.blockstates.VariantProperties
+import net.minecraft.data.models.model.ModelTemplates
+import net.minecraft.data.models.model.TextureMapping
+import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.recipes.RecipeCategory
 import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.data.recipes.ShapedRecipeBuilder
@@ -14,6 +22,9 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.Rarity
 import net.minecraft.world.level.block.SoundType
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.client.event.BlockModelLoadingEvent
+import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
+import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
 
@@ -79,5 +90,27 @@ object ContentTest : BigShotCommonEntrypoint {
         items.end(bus)
         advancements.end(bus)
         loot.end(bus)
+    }
+
+    object Client : BigShotClientEntrypoint {
+        override val modId: String = ContentTest.modId
+
+        override fun onInitializeClient(bus: NeoClientEventBus) {
+            bus.register(object : BlockModelLoadingEvent {
+                override fun loadModels(out: BlockModelLoadingEvent.ModelOutput) {
+                    out.register(ModelTemplates.CUBE_ALL, testBlock1) {
+                        TextureMapping().put(TextureSlot.ALL, TextureMapping.getBlockTexture(testBlock1.get()))
+                    }
+                }
+
+                override fun loadStates(out: BlockModelLoadingEvent.StateOutput) {
+                    out.register(testBlock1.get()) {
+                        MultiVariantGenerator.multiVariant(testBlock1.get(), Variant.variant().with(VariantProperties.MODEL, ModelTemplates.CUBE_ALL.getDefaultModelLocation(testBlock1.get())))
+                        // TODO
+                        //BlockModelGenerators.createSimpleBlock()
+                    }
+                }
+            })
+        }
     }
 }
