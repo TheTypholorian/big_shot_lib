@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableMap
 import net.minecraft.advancements.Advancement
 import net.minecraft.advancements.AdvancementHolder
 import net.minecraft.core.HolderLookup
+import net.minecraft.core.registries.Registries
 import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.crafting.Recipe
 
 //? neoforge {
@@ -17,25 +19,25 @@ fun interface RegisterDynamicRecipesEvent {
     fun register(output: Output, registries: HolderLookup.Provider)
 
     interface Output {
-        fun register(location: Identifier, recipe: RecipeBuilder) {
+        fun register(location: ResourceKey<out Recipe<*>>, recipe: RecipeBuilder) {
             recipe.save(object : RecipeOutput {
                 //? fabric {
                 /*override fun accept(location: Identifier, recipe: Recipe<*>, advancement: AdvancementHolder?) {
-                    register(location, recipe)
+                    register(ResourceKey.create(Registries.RECIPE, location), recipe)
                 }
                 *///? } neoforge {
                 override fun accept(location: Identifier, recipe: Recipe<*>, advancement: AdvancementHolder?, vararg conditions: ICondition) {
-                    register(location, recipe) // TODO implement this conditions system
+                    register(ResourceKey.create(Registries.RECIPE, location), recipe) // TODO implement this conditions system
                 }
                 //? }
 
                 override fun advancement(): Advancement.Builder {
                     return Advancement.Builder.recipeAdvancement() // TODO advancements
                 }
-            }, location)
+            }, location.location())
         }
 
-        fun register(location: Identifier, recipe: Recipe<*>)
+        fun register(location: ResourceKey<out Recipe<*>>, recipe: Recipe<*>)
 
         class Advancements(
             @JvmField
@@ -44,7 +46,7 @@ fun interface RegisterDynamicRecipesEvent {
             @JvmField
             var count = 0
 
-            override fun register(location: Identifier, recipe: RecipeBuilder) {
+            override fun register(location: ResourceKey<out Recipe<*>>, recipe: RecipeBuilder) {
                 recipe.save(object : RecipeOutput {
                     override fun advancement(): Advancement.Builder {
                         return Advancement.Builder.recipeAdvancement()
@@ -73,10 +75,10 @@ fun interface RegisterDynamicRecipesEvent {
                         }
                     }
                     //? }
-                }, location)
+                }, location.location())
             }
 
-            override fun register(location: Identifier, recipe: Recipe<*>) {
+            override fun register(location: ResourceKey<out Recipe<*>>, recipe: Recipe<*>) {
             }
         }
     }

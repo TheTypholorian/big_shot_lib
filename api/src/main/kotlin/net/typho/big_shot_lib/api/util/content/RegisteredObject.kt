@@ -1,13 +1,12 @@
 package net.typho.big_shot_lib.api.util.content
 
-import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.ItemLike
-import net.typho.big_shot_lib.api.util.platform.PlatformUtil
-import net.typho.big_shot_lib.api.util.resource.NamedResource
+import net.typho.big_shot_lib.api.util.resource.RegisteredResource
 import java.util.function.Consumer
 
-sealed interface RegisteredObject<T : Any> : NamedResource, ItemLike {
+sealed interface RegisteredObject<T : Any> : RegisteredResource<T>, ItemLike {
     /**
      * @throws IllegalStateException If [isRegistered] returns false
      */
@@ -23,7 +22,7 @@ sealed interface RegisteredObject<T : Any> : NamedResource, ItemLike {
     }
 
     data class Immediate<T : Any>(
-        override val location: Identifier,
+        override val key: ResourceKey<T>,
         private val value: T
     ) : RegisteredObject<T> {
         override fun get() = value
@@ -50,7 +49,7 @@ sealed interface RegisteredObject<T : Any> : NamedResource, ItemLike {
     }
 
     data class Late<T : Any>(
-        override val location: Identifier,
+        override val key: ResourceKey<T>,
         @JvmField
         val constructor: () -> T
     ) : RegisteredObject<T> {

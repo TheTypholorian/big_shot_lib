@@ -7,8 +7,10 @@ import net.minecraft.advancements.AdvancementRewards
 import net.minecraft.advancements.AdvancementType
 import net.minecraft.advancements.Criterion
 import net.minecraft.advancements.DisplayInfo
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
@@ -16,7 +18,7 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 
 @Suppress("UNCHECKED_CAST")
-open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : ContentFactory<Advancement, Identifier, O> {
+open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : ContentFactory<RegisteredObject<Advancement>, ResourceKey<Advancement>, O> {
     @JvmField
     protected var registered = false
     @JvmField
@@ -30,7 +32,11 @@ open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : 
         }
     }
 
-    override fun begin(key: Identifier): Builder<*> {
+    fun begin(key: Identifier): Builder<*> {
+        return begin(ResourceKey.create(Registries.ADVANCEMENT, key))
+    }
+
+    override fun begin(key: ResourceKey<Advancement>): Builder<*> {
         return BuilderImpl(key, this)
     }
 
@@ -47,16 +53,16 @@ open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : 
     }
 
     private class BuilderImpl(
-        key: Identifier,
+        key: ResourceKey<Advancement>,
         parent: AdvancementContentFactory<*>
     ) : Builder<BuilderImpl>(key, parent)
 
     open class Builder<B : Builder<B>>(
         @JvmField
-        val key: Identifier,
+        val key: ResourceKey<Advancement>,
         @JvmField
         protected val parent: AdvancementContentFactory<*>
-    ) : ObjectBuilder<Advancement> {
+    ) : ObjectBuilder<RegisteredObject<Advancement>> {
         @JvmField
         protected val mutators = arrayListOf<(builder: Advancement.Builder) -> Advancement.Builder>()
 
@@ -74,8 +80,8 @@ open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : 
         @JvmOverloads
         fun display(
             icon: () -> ItemStack,
-            title: Component = Component.translatable(key.toLanguageKey("advancements", "title")),
-            description: Component = Component.translatable(key.toLanguageKey("advancements", "description")),
+            title: Component = Component.translatable(key.location().toLanguageKey("advancements", "title")),
+            description: Component = Component.translatable(key.location().toLanguageKey("advancements", "description")),
             background: Identifier? = null,
             type: AdvancementType = AdvancementType.TASK,
             showToast: Boolean = true,
@@ -89,8 +95,8 @@ open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : 
         @JvmOverloads
         fun display(
             icon: ItemLike,
-            title: Component = Component.translatable(key.toLanguageKey("advancements", "title")),
-            description: Component = Component.translatable(key.toLanguageKey("advancements", "description")),
+            title: Component = Component.translatable(key.location().toLanguageKey("advancements", "title")),
+            description: Component = Component.translatable(key.location().toLanguageKey("advancements", "description")),
             background: Identifier? = null,
             type: AdvancementType = AdvancementType.TASK,
             showToast: Boolean = true,
@@ -104,8 +110,8 @@ open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : 
         @JvmOverloads
         fun display(
             icon: RegisteredObject<out Item>,
-            title: Component = Component.translatable(key.toLanguageKey("advancements", "title")),
-            description: Component = Component.translatable(key.toLanguageKey("advancements", "description")),
+            title: Component = Component.translatable(key.location().toLanguageKey("advancements", "title")),
+            description: Component = Component.translatable(key.location().toLanguageKey("advancements", "description")),
             background: Identifier? = null,
             type: AdvancementType = AdvancementType.TASK,
             showToast: Boolean = true,
@@ -159,7 +165,7 @@ open class AdvancementContentFactory<O : NeoEventBus> protected constructor() : 
                 throw IllegalStateException("ContentFactory $parent has ended, it cannot receive more entries")
             }
 
-            val obj = RegisteredObject.Late(key) { mutators.fold(Advancement.Builder.advancement()) { builder, mutator -> mutator(builder) }.build(key).value }
+            val obj = RegisteredObject.Late(key) { mutators.fold(Advancement.Builder.advancement()) { builder, mutator -> mutator(builder) }.build(key.location()).value }
 
             if (!parent.toRegister.add(obj)) {
                 throw IllegalArgumentException("Cannot create two advancements under the same ID $key")

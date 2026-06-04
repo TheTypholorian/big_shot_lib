@@ -1,7 +1,9 @@
 package net.typho.big_shot_lib.api.util.content
 
+import net.minecraft.core.registries.Registries
 import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.crafting.Recipe
@@ -14,17 +16,17 @@ import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import java.util.function.UnaryOperator
 
 @Suppress("UNCHECKED_CAST")
-open class ItemContentFactory<O : NeoEventBus> protected constructor() : ContentFactory<Item, Identifier, O> {
+open class ItemContentFactory<O : NeoEventBus> protected constructor() : ContentFactory<RegisteredObject<Item>, ResourceKey<Item>, O> {
     @JvmField
     protected var registered = false
     @JvmField
-    protected val toRegister = hashMapOf<Identifier, RegisteredObject<out Item>>()
+    protected val toRegister = hashMapOf<ResourceKey<out Item>, RegisteredObject<out Item>>()
     @JvmField
-    protected val dynamicRecipes = hashMapOf<Identifier, () -> RecipeBuilder>()
+    protected val dynamicRecipes = hashMapOf<ResourceKey<out Recipe<*>>, () -> RecipeBuilder>()
     @JvmField
-    protected val dynamicExistingRecipes = hashMapOf<Identifier, () -> Recipe<*>>()
+    protected val dynamicExistingRecipes = hashMapOf<ResourceKey<out Recipe<*>>, () -> Recipe<*>>()
     @JvmField
-    protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<Identifier>>()
+    protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<ResourceKey<out Item>>>()
 
     companion object {
         @JvmStatic
@@ -34,20 +36,20 @@ open class ItemContentFactory<O : NeoEventBus> protected constructor() : Content
         }
     }
 
-    override fun begin(key: Identifier): Builder<Item, *> {
-        return begin(key, Item.Properties())
+    open fun begin(key: Identifier): Builder<Item, *> {
+        return begin(ResourceKey.create(Registries.ITEM, key))
     }
 
-    open fun begin(key: Identifier, properties: Item.Properties): Builder<Item, *> {
-        return beginComplex(key, properties)
+    override fun begin(key: ResourceKey<Item>): Builder<Item, *> {
+        return beginComplex(key)
     }
 
-    fun <T : Item> beginComplex(key: Identifier): Builder<T, *> {
-        return beginComplex(key, Item.Properties())
+    open fun <V : Item> beginComplex(key: Identifier): Builder<V, *> {
+        return beginComplex(ResourceKey.create(Registries.ITEM, key) as ResourceKey<V>)
     }
 
-    open fun <T : Item> beginComplex(key: Identifier, properties: Item.Properties): Builder<T, *> {
-        return BuilderImpl(key, properties, this)
+    open fun <V : Item> beginComplex(key: ResourceKey<V>): Builder<V, *> {
+        return BuilderImpl(key, this)
     }
 
     override fun end(output: O) {
@@ -80,21 +82,20 @@ open class ItemContentFactory<O : NeoEventBus> protected constructor() : Content
     }
 
     private class BuilderImpl<T : Item>(
-        key: Identifier,
-        properties: Item.Properties,
+        key: ResourceKey<T>,
         parent: ItemContentFactory<*>
-    ) : Builder<T, BuilderImpl<T>>(key, properties, parent)
+    ) : Builder<T, BuilderImpl<T>>(key, parent)
 
     open class Builder<T : Item, B : Builder<T, B>>(
         @JvmField
-        val key: Identifier,
-        @JvmField
-        protected var properties: Item.Properties,
+        val key: ResourceKey<T>,
         @JvmField
         protected val parent: ItemContentFactory<*>
-    ) : ObjectBuilder<T> {
+    ) : ObjectBuilder<RegisteredObject<T>> {
         @JvmField
         protected var constructor: (properties: Item.Properties) -> T = { properties -> Item(properties) as? T ?: throw ClassCastException("Must specify a constructor for $key as it doesn't use the base Item class.") }
+        @JvmField
+        protected var properties: Item.Properties = Item.Properties()
         @JvmField
         protected var clientInfo: ClientInfo<*>? = null // TODO do stuff with this
         // TODO creative tab
@@ -128,13 +129,13 @@ open class ItemContentFactory<O : NeoEventBus> protected constructor() : Content
         }
 
         @JvmOverloads
-        fun recipe(location: Identifier = key, recipe: (item: T) -> RecipeBuilder): B {
+        fun recipe(location: ResourceKey<out Recipe<*>> = key as ResourceKey<Recipe<*>>, recipe: (item: T) -> RecipeBuilder): B {
             parent.dynamicRecipes.put(location) { recipe(registered!!.get()) }?.let { throw IllegalStateException("Already registered a recipe for $key with id $location") }
             return this as B
         }
 
         @JvmOverloads
-        fun existingRecipe(location: Identifier = key, recipe: (item: T) -> Recipe<*>): B {
+        fun existingRecipe(location: ResourceKey<out Recipe<*>> = key as ResourceKey<Recipe<*>>, recipe: (item: T) -> Recipe<*>): B {
             parent.dynamicExistingRecipes.put(location) { recipe(registered!!.get()) }?.let { throw IllegalStateException("Already registered a recipe for $key with id $location") }
             return this as B
         }
