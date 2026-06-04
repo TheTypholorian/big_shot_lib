@@ -26,12 +26,8 @@ open class AdvancementContentFactory : ContentFactory<Advancement> {
     @JvmField
     protected val toRegister = hashSetOf<RegisteredObject.Late<Advancement>>()
 
-    open fun begin(key: Identifier): Builder<*> {
-        return begin(ResourceKey.create(registry, key))
-    }
-
-    override fun begin(key: ResourceKey<Advancement>): Builder<*> {
-        return BuilderImpl(key, this)
+    override fun begin(key: Identifier): Builder<*> {
+        return BuilderImpl(ResourceKey.create(registry, key), this)
     }
 
     override fun end(bus: NeoEventBus) {

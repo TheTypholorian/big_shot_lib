@@ -77,6 +77,11 @@ object ContentTest : BigShotCommonEntrypoint {
             sound(SoundType.MUD)
         }
         .end()
+    val testStairs = blocks.beginStairs(testBlock1, id("test_stairs"))
+        .properties {
+            sound(SoundType.WOOL)
+        }
+        .end()
 
     val testAdvancement = advancements.begin(id("test_advancement"))
         .parent(Identifier.minecraft("adventure/trade"))

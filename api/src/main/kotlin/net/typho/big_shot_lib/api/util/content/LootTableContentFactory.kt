@@ -19,12 +19,8 @@ open class LootTableContentFactory : ContentFactory<LootTable> {
     @JvmField
     protected val toRegister = hashSetOf<RegisteredObject.Late<LootTable>>()
 
-    open fun begin(key: Identifier): Builder<*> {
-        return begin(ResourceKey.create(registry, key))
-    }
-
-    override fun begin(key: ResourceKey<LootTable>): Builder<*> {
-        return BuilderImpl(key, this)
+    override fun begin(key: Identifier): Builder<*> {
+        return BuilderImpl(ResourceKey.create(registry, key), this)
     }
 
     override fun end(bus: NeoEventBus) {

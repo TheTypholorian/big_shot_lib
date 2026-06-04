@@ -6,6 +6,7 @@ import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
+import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
@@ -31,20 +32,16 @@ open class ItemContentFactory : ContentFactory<Item> {
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<ResourceKey<out Item>>>()
 
-    open fun begin(key: Identifier): Builder<Item, *> {
-        return begin(ResourceKey.create(registry, key))
+    override fun begin(key: Identifier): Builder<Item, *> {
+        return beginComplex(key) { Item(it) }
     }
 
-    override fun begin(key: ResourceKey<Item>): Builder<Item, *> {
-        return beginComplex(key)
+    open fun beginBlockItem(key: Identifier, block: () -> Block): Builder<BlockItem, *> {
+        return beginComplex(key) { BlockItem(block(), it) }
     }
 
-    open fun <V : Item> beginComplex(key: Identifier): Builder<V, *> {
-        return beginComplex(ResourceKey.create(registry, key) as ResourceKey<V>)
-    }
-
-    open fun <V : Item> beginComplex(key: ResourceKey<V>): Builder<V, *> {
-        return BuilderImpl(key, this)
+    open fun <V : Item> beginComplex(key: Identifier, constructor: (properties: Item.Properties) -> V): Builder<V, *> {
+        return BuilderImpl(ResourceKey.create(registry, key) as ResourceKey<V>, constructor, this)
     }
 
     override fun end(bus: NeoEventBus) {
@@ -82,17 +79,18 @@ open class ItemContentFactory : ContentFactory<Item> {
 
     private class BuilderImpl<T : Item>(
         key: ResourceKey<T>,
+        constructor: (properties: Item.Properties) -> T,
         parent: ItemContentFactory
-    ) : Builder<T, BuilderImpl<T>>(key, parent)
+    ) : Builder<T, BuilderImpl<T>>(key, constructor, parent)
 
     open class Builder<T : Item, B : Builder<T, B>>(
         @JvmField
         val key: ResourceKey<T>,
         @JvmField
+        protected val constructor: (properties: Item.Properties) -> T,
+        @JvmField
         protected val parent: ItemContentFactory
     ) : ObjectBuilder<RegisteredObject<T>> {
-        @JvmField
-        protected var constructor: (properties: Item.Properties) -> T = { properties -> Item(properties) as? T ?: throw ClassCastException("Must specify a constructor for $key as it doesn't use the base Item class.") }
         @JvmField
         protected var properties: Item.Properties = Item.Properties()
         @JvmField
@@ -119,11 +117,6 @@ open class ItemContentFactory : ContentFactory<Item> {
                 clientInfo = info.apply(clientInfo ?: ClientInfoImpl())
             }
 
-            return this as B
-        }
-
-        fun constructor(constructor: (properties: Item.Properties) -> T): B {
-            this.constructor = constructor
             return this as B
         }
 
