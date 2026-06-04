@@ -116,9 +116,17 @@ open class BlockContentFactory<O : NeoEventBus> protected constructor(
         @JvmField
         protected val tags: MutableList<TagKey<Block>> = arrayListOf()
         @JvmField
+        protected var item: Runnable? = parent.items?.let {
+            Runnable {
+                it.beginComplex<BlockItem>(key)
+                    .constructor { BlockItem(registered!!.get(), it) }
+                    .end()
+            }
+        }
+        @JvmField
         protected var registered: RegisteredObject<T>? = null
 
-        fun properties(properties: (BlockBehaviour.Properties) -> BlockBehaviour.Properties): B {
+        fun properties(properties: BlockBehaviour.Properties.() -> BlockBehaviour.Properties): B {
             this.properties = properties(this.properties)
             return this as B
         }
@@ -147,13 +155,25 @@ open class BlockContentFactory<O : NeoEventBus> protected constructor(
         }
 
         @JvmOverloads
-        fun item(key: Identifier = this.key, properties: Item.Properties = Item.Properties()): B {
+        fun item(
+            builder: ItemContentFactory.Builder<BlockItem, *>.() -> ItemContentFactory.Builder<BlockItem, *> = { this },
+            properties: Item.Properties = Item.Properties(),
+            key: Identifier = this.key
+        ): B {
             parent.items ?: throw NullPointerException("Must pass an ItemContentFactory to the BlockContentFactory to be able to call Builder.item()")
 
-            parent.items.beginComplex<BlockItem>(key, properties)
-                .constructor { BlockItem(registered!!.get(), it) }
-                .end()
+            item = Runnable {
+                parent.items.beginComplex<BlockItem>(key, properties)
+                    .constructor { BlockItem(registered!!.get(), it) }
+                    .let(builder)
+                    .end()
+            }
 
+            return this as B
+        }
+
+        fun noItem(): B {
+            item = null
             return this as B
         }
 
@@ -173,6 +193,8 @@ open class BlockContentFactory<O : NeoEventBus> protected constructor(
             for (tag in tags) {
                 parent.dynamicTags.computeIfAbsent(tag) { hashSetOf() }.add(key)
             }
+
+            item?.run()
 
             return block
         }
