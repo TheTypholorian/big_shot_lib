@@ -30,6 +30,10 @@ object ContentTest : BigShotCommonEntrypoint {
     val items = ItemContentFactory()
     val blocks = BlockContentFactory(items, loot)
     val blockSetTypes = BlockSetTypeContentFactory()
+    val creativeTabs = CreativeTabContentFactory()
+
+    val tab = creativeTabs.begin(id("tab"))
+        .end()
 
     val testItem = items.begin(id("test_item"))
         .properties {
@@ -69,6 +73,7 @@ object ContentTest : BigShotCommonEntrypoint {
                     .rarity(Rarity.RARE)
             }
         }
+        .tabs(tab)
         .end()
     val testBlock2 = blocks.begin(id("test_block_b"))
         .properties {
@@ -76,16 +81,17 @@ object ContentTest : BigShotCommonEntrypoint {
                 .lightLevel { 15 }
                 .sound(SoundType.MUD)
         }
+        .tabs(tab)
         .end()
-    val testStairs = blocks.beginStairs(id("test_stairs"), testBlock1).end()
-    val testSlab = blocks.beginSlab(id("test_slab"), testBlock1).end()
-    val testDoor = blocks.beginDoor(id("test_door"), testBlockSetType).end()
-    val testTrapdoor = blocks.beginTrapdoor(id("test_trapdoor"), testBlockSetType, true).end()
-    val testPressurePlate = blocks.beginPressurePlate(id("test_pressure_plate"), testBlockSetType, testBlock1).end()
-    val testWall = blocks.beginWall(id("test_wall"), testBlock1).end()
-    val testFence = blocks.beginFence(id("test_fence"), testBlock1).end()
+    val testStairs = blocks.beginStairs(id("test_stairs"), testBlock1).tabs(tab).end()
+    val testSlab = blocks.beginSlab(id("test_slab"), testBlock1).tabs(tab).end()
+    val testDoor = blocks.beginDoor(id("test_door"), testBlockSetType).tabs(tab).end()
+    val testTrapdoor = blocks.beginTrapdoor(id("test_trapdoor"), testBlockSetType, true).tabs(tab).end()
+    val testPressurePlate = blocks.beginPressurePlate(id("test_pressure_plate"), testBlockSetType, testBlock1).tabs(tab).end()
+    val testWall = blocks.beginWall(id("test_wall"), testBlock1).tabs(tab).end()
+    val testFence = blocks.beginFence(id("test_fence"), testBlock1).tabs(tab).end()
     // TODO fence gate
-    val testButton = blocks.beginButton(id("test_button"), 50, testBlockSetType, testBlock1).end()
+    val testButton = blocks.beginButton(id("test_button"), 50, testBlockSetType, testBlock1).tabs(tab).end()
 
     val testAdvancement = advancements.begin(id("test_advancement"))
         .parent(Identifier.minecraft("adventure/trade"))
@@ -100,6 +106,7 @@ object ContentTest : BigShotCommonEntrypoint {
         advancements.end(bus)
         loot.end(bus)
         blockSetTypes.end(bus)
+        creativeTabs.end(bus)
     }
 
     object Client : BigShotClientEntrypoint {

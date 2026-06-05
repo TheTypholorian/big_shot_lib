@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.ButtonBlock
 import net.minecraft.world.level.block.DoorBlock
@@ -40,6 +41,7 @@ import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.plugin.Environment
 import net.typho.big_shot_lib.api.plugin.OnlyIn
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import net.typho.big_shot_lib.api.util.resource.RegisteredResource
 import java.util.function.BiFunction
 import java.util.function.Function
 import java.util.function.Supplier
@@ -531,12 +533,7 @@ open class BlockContentFactory @JvmOverloads constructor(
         @JvmField
         protected val tags: MutableList<TagKey<Block>> = arrayListOf()
         @JvmField
-        protected var item: Function<Supplier<T>, RegisteredObject<out BlockItem>>? = parent.items?.let { items ->
-            Function { block ->
-                items.beginBlockItem(key.location(), block)
-                    .end()
-            }
-        }
+        protected var item: ItemContentFactory.Builder<BlockItem, *>? = parent.items?.beginBlockItem(key.location()) { registered!!.get() }
         @JvmField
         protected var registered: RegisteredObject<T>? = null
 
@@ -568,13 +565,24 @@ open class BlockContentFactory @JvmOverloads constructor(
             return this as B
         }
 
-        fun item(builder: UnaryOperator<ItemContentFactory.Builder<out BlockItem, *>>): B {
-            item = Function { block ->
-                (parent.items ?: throw UnsupportedOperationException("Must pass an ItemContentFactory to the BlockContentFactory to be able to call Builder.item()")).beginBlockItem(key.location(), block)
-                    .let(builder::apply)
-                    .end()
-            }
+        fun item(builder: UnaryOperator<ItemContentFactory.Builder<BlockItem, *>>): B {
+            item = item?.let(builder::apply)
 
+            return this as B
+        }
+
+        fun noItem(): B {
+            item = null
+            return this as B
+        }
+
+        fun tabs(vararg tabs: ResourceKey<CreativeModeTab>): B {
+            item { it.tabs(*tabs) }
+            return this as B
+        }
+
+        fun tabs(vararg tabs: RegisteredResource<CreativeModeTab>): B {
+            item { it.tabs(*tabs) }
             return this as B
         }
 
@@ -585,11 +593,6 @@ open class BlockContentFactory @JvmOverloads constructor(
                     .end()
             }
 
-            return this as B
-        }
-
-        fun noItem(): B {
-            item = null
             return this as B
         }
 
@@ -612,11 +615,7 @@ open class BlockContentFactory @JvmOverloads constructor(
                 parent.dynamicTags.computeIfAbsent(tag) { hashSetOf() }.add(key)
             }
 
-            item?.apply(block)?.addListener { item ->
-                block.addListener { block ->
-                    lootTable?.apply(block, item)
-                }
-            }
+            item?.end()
             clientInfo?.end(block)
 
             return block

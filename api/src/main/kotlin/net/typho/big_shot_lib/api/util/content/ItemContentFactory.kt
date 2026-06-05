@@ -4,18 +4,20 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.model.DelegatedModel
 import net.minecraft.data.models.model.ModelLocationUtils
-import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
+import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
@@ -23,7 +25,7 @@ import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.plugin.Environment
 import net.typho.big_shot_lib.api.plugin.OnlyIn
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
-import java.util.function.BiFunction
+import net.typho.big_shot_lib.api.util.resource.RegisteredResource
 import java.util.function.Function
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
@@ -41,6 +43,8 @@ open class ItemContentFactory : ContentFactory<Item> {
     protected val dynamicExistingRecipes = hashMapOf<ResourceKey<out Recipe<*>>, Supplier<out Recipe<*>>>()
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<ResourceKey<out Item>>>()
+    @JvmField
+    protected val creativeTabs = hashMapOf<ResourceKey<CreativeModeTab>, MutableList<RegisteredObject<out Item>>>()
     @JvmField
     @OnlyIn(Environment.CLIENT)
     protected val models = arrayListOf<ModelLoadingEvent>()
@@ -85,6 +89,9 @@ open class ItemContentFactory : ContentFactory<Item> {
             registered = true
 
             dynamicTags.forEach { (key, value) -> out.addItems(key, *value.toTypedArray()) }
+        })
+        bus.register(AddCreativeTabEntriesEvent { out ->
+            creativeTabs.forEach { (key, entries) -> out.begin(key) { out -> entries.forEach { out.addLast(ItemStack(it)) } } }
         })
     }
 
@@ -138,16 +145,15 @@ open class ItemContentFactory : ContentFactory<Item> {
         @JvmField
         protected var properties: Item.Properties = Item.Properties()
         @JvmField
-        protected var clientInfo: ClientInfo<T, *>? = null // TODO do stuff with this
-        // TODO creative tab
-        // TODO model
-        // TODO recipe
+        protected var clientInfo: ClientInfo<T, *>? = null
         @JvmField
-        protected var burnTime: Int? = null
+        protected var burnTime: Int? = null // TODO
         @JvmField
         protected var compostable: Float? = null
         @JvmField
         protected val tags: MutableList<TagKey<Item>> = arrayListOf()
+        @JvmField
+        protected val tabs: MutableList<ResourceKey<CreativeModeTab>> = arrayListOf()
         @JvmField
         protected var registered: RegisteredObject<T>? = null
 
@@ -181,6 +187,16 @@ open class ItemContentFactory : ContentFactory<Item> {
             return this as B
         }
 
+        fun tabs(vararg tabs: ResourceKey<CreativeModeTab>): B {
+            this.tabs.addAll(tabs)
+            return this as B
+        }
+
+        fun tabs(vararg tabs: RegisteredResource<CreativeModeTab>): B {
+            tabs.mapTo(this.tabs) { it.key }
+            return this as B
+        }
+
         override fun end(): RegisteredObject<T> {
             if (parent.registered) {
                 throw IllegalStateException("ContentFactory $parent has ended, it cannot receive more entries")
@@ -198,6 +214,10 @@ open class ItemContentFactory : ContentFactory<Item> {
 
             for (tag in tags) {
                 parent.dynamicTags.computeIfAbsent(tag) { hashSetOf() }.add(key)
+            }
+
+            for (tab in tabs) {
+                parent.creativeTabs.computeIfAbsent(tab) { arrayListOf() }.add(item)
             }
 
             clientInfo?.end(item)

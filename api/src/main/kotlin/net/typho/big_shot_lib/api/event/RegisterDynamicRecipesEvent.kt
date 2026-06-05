@@ -15,6 +15,7 @@ import net.minecraft.world.item.crafting.Recipe
 import net.neoforged.neoforge.common.conditions.ICondition
 //? }
 
+// TODO why stonecutter in api????
 fun interface RegisterDynamicRecipesEvent {
     fun register(output: Output, registries: HolderLookup.Provider)
 

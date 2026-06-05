@@ -210,6 +210,7 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.neoforged.neoforge.event.RegisterCommandsEvent
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
+import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
@@ -335,6 +336,10 @@ class NeoClientEventBusImpl(
 
     override fun register(event: RenderTooltipEvent) {
         TODO("Not yet implemented")
+    }
+
+    override fun register(event: AddCreativeTabEntriesEvent) {
+        common.register(event)
     }
 
     override fun register(event: AddDataReloadListenersEvent) {

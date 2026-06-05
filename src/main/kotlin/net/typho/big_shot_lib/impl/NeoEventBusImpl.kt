@@ -5,6 +5,9 @@ import net.minecraft.core.WritableRegistry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import net.minecraft.world.flag.FeatureFlagSet
+import net.minecraft.world.item.CreativeModeTab
+import net.minecraft.world.item.ItemStack
 import net.typho.big_shot_lib.api.event.AddDataReloadListenersEvent
 import net.typho.big_shot_lib.api.event.BlockChangedEvent
 import net.typho.big_shot_lib.api.event.BonemealEvent
@@ -148,14 +151,17 @@ object NeoEventBusImpl : NeoEventBus {
 *///? } neoforge {
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.event.AddReloadListenerEvent
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent
 import net.neoforged.neoforge.event.ServerChatEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
 import net.neoforged.neoforge.event.tick.ServerTickEvent
 import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.util.content.RegisteredObject
+import org.spongepowered.asm.mixin.injection.InjectionPoint.before
 
 class NeoEventBusImpl(
     @JvmField
@@ -170,6 +176,65 @@ class NeoEventBusImpl(
         val DYNAMIC_RECIPE_EVENTS = arrayListOf<RegisterDynamicRecipesEvent>()
         @JvmField
         val DYNAMIC_TAG_EVENTS = arrayListOf<RegisterDynamicTagsEvent>()
+    }
+
+    override fun register(event: AddCreativeTabEntriesEvent) {
+        inner.addListener { e: BuildCreativeModeTabContentsEvent ->
+            event.addEntries(object : AddCreativeTabEntriesEvent.Output {
+                fun begin(out: Consumer<AddCreativeTabEntriesEvent.EntryConsumer>) {
+                    out.accept(object : AddCreativeTabEntriesEvent.EntryConsumer {
+                        override val flags: FeatureFlagSet = e.flags
+
+                        override fun showOperatorItems() = e.hasPermissions()
+
+                        override fun addFirst(visibility: CreativeModeTab.TabVisibility, stack: ItemStack) {
+                            e.insertFirst(stack, visibility)
+                        }
+
+                        override fun addLast(visibility: CreativeModeTab.TabVisibility, stack: ItemStack) {
+                            e.accept(stack, visibility)
+                        }
+
+                        override fun addBefore(visibility: CreativeModeTab.TabVisibility, before: ItemStack, vararg insert: ItemStack) {
+                            var last = before
+
+                            for (stack in insert.reversed()) {
+                                e.insertBefore(last, stack, visibility)
+                                last = stack
+                            }
+                        }
+
+                        override fun addAfter(visibility: CreativeModeTab.TabVisibility, after: ItemStack, vararg insert: ItemStack) {
+                            var last = after
+
+                            for (stack in insert) {
+                                e.insertAfter(last, stack, visibility)
+                                last = stack
+                            }
+                        }
+
+                        override fun remove(visibility: CreativeModeTab.TabVisibility, stack: ItemStack) {
+                            e.remove(stack, visibility)
+                        }
+                    })
+                }
+
+                override fun begin(tab: CreativeModeTab, out: Consumer<AddCreativeTabEntriesEvent.EntryConsumer>) {
+                    if (e.tab == tab) {
+                        begin(out)
+                    }
+                }
+
+                override fun begin(
+                    tab: ResourceKey<CreativeModeTab>,
+                    out: Consumer<AddCreativeTabEntriesEvent.EntryConsumer>
+                ) {
+                    if (e.tabKey == tab) {
+                        begin(out)
+                    }
+                }
+            })
+        }
     }
 
     override fun register(event: AddDataReloadListenersEvent) {

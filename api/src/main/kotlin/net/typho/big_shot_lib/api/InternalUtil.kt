@@ -12,6 +12,7 @@ import net.minecraft.core.Direction
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import net.minecraft.world.item.CreativeModeTab
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
@@ -101,6 +102,8 @@ interface InternalUtil {
     fun <T> createRegistryBuilder(
         key: ResourceKey<Registry<T>>
     ): RegistryBuilder<T>
+
+    fun createCreativeTabBuilder(): CreativeModeTab.Builder
 
     companion object {
         @JvmStatic

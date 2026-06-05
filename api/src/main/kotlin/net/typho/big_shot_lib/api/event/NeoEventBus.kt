@@ -1,6 +1,8 @@
 package net.typho.big_shot_lib.api.event
 
 interface NeoEventBus {
+    fun register(event: AddCreativeTabEntriesEvent)
+
     fun register(event: AddDataReloadListenersEvent)
 
     fun register(event: BlockChangedEvent)

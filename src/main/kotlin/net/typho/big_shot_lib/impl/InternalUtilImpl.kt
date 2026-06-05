@@ -18,6 +18,7 @@ import net.minecraft.core.Direction
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import net.minecraft.world.item.CreativeModeTab
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.BigShotApi.toShortString
 import net.typho.big_shot_lib.api.InternalUtil
@@ -294,5 +295,9 @@ object InternalUtilImpl : InternalUtil {
 
     override fun <T> createRegistryBuilder(key: ResourceKey<Registry<T>>): RegistryBuilder<T> {
         return RegistryBuilderImpl(key)
+    }
+
+    override fun createCreativeTabBuilder(): CreativeModeTab.Builder {
+        return CreativeModeTab.builder()
     }
 }
