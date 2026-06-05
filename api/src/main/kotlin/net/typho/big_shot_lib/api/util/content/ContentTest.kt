@@ -76,7 +76,10 @@ object ContentTest : BigShotCommonEntrypoint {
             sound(SoundType.MUD)
         }
         .end()
-    val testStairs = blocks.beginStairs(testBlock1, id("test_stairs")).end()
+    val testStairs = blocks.beginStairs(id("test_stairs"), testBlock1).end()
+    val testSlab = blocks.beginSlab(id("test_slab"), testBlock1).end()
+    val testFence = blocks.beginFence(id("test_fence"), testBlock1).end()
+    val testWall = blocks.beginWall(id("test_wall"), testBlock1).end()
 
     val testAdvancement = advancements.begin(id("test_advancement"))
         .parent(Identifier.minecraft("adventure/trade"))

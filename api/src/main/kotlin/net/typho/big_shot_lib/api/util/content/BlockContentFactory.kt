@@ -4,6 +4,7 @@ import net.minecraft.client.color.block.BlockColor
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.BlockModelGenerators
+import net.minecraft.data.models.model.ModelLocationUtils
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.resources.Identifier
@@ -83,7 +84,7 @@ open class BlockContentFactory @JvmOverloads constructor(
     }
 
     @JvmOverloads
-    open fun beginStairs(copyState: RegisteredObject<out Block>, key: Identifier, copyTextures: RegisteredObject<out Block>? = copyState): Builder<StairBlock, *> {
+    open fun beginStairs(key: Identifier, copyState: RegisteredObject<out Block>, copyTextures: RegisteredObject<out Block>? = copyState): Builder<StairBlock, *> {
         return beginComplex(key) { StairBlock(copyState.get().defaultBlockState(), it) }
             .client {
                 model { block, textures ->
@@ -107,43 +108,181 @@ open class BlockContentFactory @JvmOverloads constructor(
             .tags(BlockTags.STAIRS)
     }
 
-    open fun beginSlab(key: Identifier): Builder<SlabBlock, *> {
+    open fun beginSlab(key: Identifier, fullBlock: RegisteredObject<out Block>): Builder<SlabBlock, *> {
         return beginComplex(key) { SlabBlock(it) }
+            .client {
+                model { block, textures ->
+                    BlockModelLoadingEvent { out ->
+                        val block = block.get()
+                        val textures = textures.get()
+
+                        out.register(
+                            block,
+                            BlockModelGenerators.createSlab(
+                                block,
+                                out.register(ModelTemplates.SLAB_BOTTOM, block, textures),
+                                out.register(ModelTemplates.SLAB_TOP, block, textures),
+                                ModelLocationUtils.getModelLocation(fullBlock.get())
+                            )
+                        )
+                    }
+                }
+                textureParent(fullBlock)
+            }
             .tags(BlockTags.SLABS)
     }
 
-    open fun beginDoor(blockSet: () -> BlockSetType, key: Identifier): Builder<DoorBlock, *> {
+    @JvmOverloads
+    open fun beginDoor(key: Identifier, blockSet: () -> BlockSetType): Builder<DoorBlock, *> {
         return beginComplex(key) { DoorBlock(blockSet(), it) }
+            .client {
+                model { block, textures ->
+                    BlockModelLoadingEvent { out ->
+                        val block = block.get()
+                        val textures = textures.get()
+
+                        TODO()
+                        /*
+                        out.register(
+                            block,
+                            BlockModelGenerators.createDoor(
+                                block,
+                                out.register(ModelTemplates.SLAB_BOTTOM, block, textures),
+                            )
+                        )
+                         */
+                    }
+                }
+            }
             .tags(BlockTags.DOORS)
     }
 
-    open fun beginTrapdoor(blockSet: () -> BlockSetType, key: Identifier): Builder<TrapDoorBlock, *> {
+    open fun beginTrapdoor(key: Identifier, blockSet: () -> BlockSetType): Builder<TrapDoorBlock, *> {
         return beginComplex(key) { TrapDoorBlock(blockSet(), it) }
             .tags(BlockTags.TRAPDOORS)
     }
 
-    open fun beginPressurePlate(blockSet: () -> BlockSetType, key: Identifier): Builder<PressurePlateBlock, *> {
+    @JvmOverloads
+    open fun beginPressurePlate(key: Identifier, blockSet: () -> BlockSetType, copyTextures: RegisteredObject<out Block>? = null): Builder<PressurePlateBlock, *> {
         return beginComplex(key) { PressurePlateBlock(blockSet(), it) }
+            .client {
+                model { block, textures ->
+                    BlockModelLoadingEvent { out ->
+                        val block = block.get()
+                        val textures = textures.get()
+
+                        out.register(
+                            block,
+                            BlockModelGenerators.createPressurePlate(
+                                block,
+                                out.register(ModelTemplates.PRESSURE_PLATE_UP, block, textures),
+                                out.register(ModelTemplates.PRESSURE_PLATE_DOWN, block, textures)
+                            )
+                        )
+                    }
+                }
+                textureParent(copyTextures)
+            }
             .tags(BlockTags.PRESSURE_PLATES)
     }
 
-    open fun beginWall(key: Identifier): Builder<WallBlock, *> {
+    @JvmOverloads
+    open fun beginWall(key: Identifier, copyTextures: RegisteredObject<out Block>? = null): Builder<WallBlock, *> {
         return beginComplex(key) { WallBlock(it) }
+            .client {
+                model { block, textures ->
+                    BlockModelLoadingEvent { out ->
+                        val block = block.get()
+                        val textures = textures.get()
+
+                        out.register(
+                            block,
+                            BlockModelGenerators.createWall(
+                                block,
+                                out.register(ModelTemplates.WALL_POST, block, textures),
+                                out.register(ModelTemplates.WALL_LOW_SIDE, block, textures),
+                                out.register(ModelTemplates.WALL_TALL_SIDE, block, textures)
+                            )
+                        )
+                    }
+                }
+                textureParent(copyTextures)
+            }
             .tags(BlockTags.WALLS)
     }
 
-    open fun beginFence(key: Identifier): Builder<FenceBlock, *> {
+    @JvmOverloads
+    open fun beginFence(key: Identifier, copyTextures: RegisteredObject<out Block>? = null): Builder<FenceBlock, *> {
         return beginComplex(key) { FenceBlock(it) }
+            .client {
+                model { block, textures ->
+                    BlockModelLoadingEvent { out ->
+                        val block = block.get()
+                        val textures = textures.get()
+
+                        out.register(
+                            block,
+                            BlockModelGenerators.createFence(
+                                block,
+                                out.register(ModelTemplates.FENCE_POST, block, textures),
+                                out.register(ModelTemplates.FENCE_SIDE, block, textures)
+                            )
+                        )
+                    }
+                }
+                textureParent(copyTextures)
+            }
             .tags(BlockTags.FENCES)
     }
 
-    open fun beginFenceGate(woodType: () -> WoodType, key: Identifier): Builder<FenceGateBlock, *> {
+    @JvmOverloads
+    open fun beginFenceGate(key: Identifier, woodType: () -> WoodType, uvLock: Boolean = true, copyTextures: RegisteredObject<out Block>? = null): Builder<FenceGateBlock, *> {
         return beginComplex(key) { FenceGateBlock(woodType(), it) }
+            .client {
+                model { block, textures ->
+                    BlockModelLoadingEvent { out ->
+                        val block = block.get()
+                        val textures = textures.get()
+
+                        out.register(
+                            block,
+                            BlockModelGenerators.createFenceGate(
+                                block,
+                                out.register(ModelTemplates.FENCE_GATE_OPEN, block, textures),
+                                out.register(ModelTemplates.FENCE_GATE_CLOSED, block, textures),
+                                out.register(ModelTemplates.FENCE_GATE_WALL_OPEN, block, textures),
+                                out.register(ModelTemplates.FENCE_GATE_WALL_CLOSED, block, textures),
+                                uvLock
+                            )
+                        )
+                    }
+                }
+                textureParent(copyTextures)
+            }
             .tags(BlockTags.FENCE_GATES)
     }
 
-    open fun beginButton(setType: () -> BlockSetType, pressDuration: Int, key: Identifier): Builder<ButtonBlock, *> {
+    @JvmOverloads
+    open fun beginButton(pressDuration: Int, key: Identifier, setType: () -> BlockSetType, copyTextures: RegisteredObject<out Block>? = null): Builder<ButtonBlock, *> {
         return beginComplex(key) { ButtonBlock(setType(), pressDuration, it) }
+            .client {
+                model { block, textures ->
+                    BlockModelLoadingEvent { out ->
+                        val block = block.get()
+                        val textures = textures.get()
+
+                        out.register(
+                            block,
+                            BlockModelGenerators.createButton(
+                                block,
+                                out.register(ModelTemplates.BUTTON, block, textures),
+                                out.register(ModelTemplates.BUTTON_PRESSED, block, textures)
+                            )
+                        )
+                    }
+                }
+                textureParent(copyTextures)
+            }
             .tags(BlockTags.BUTTONS)
     }
 
