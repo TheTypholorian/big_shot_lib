@@ -15,31 +15,36 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
+import net.typho.big_shot_lib.api.BigShotLibMod
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 
 @Suppress("UNCHECKED_CAST")
-open class AdvancementFactory : ContentFactory<Advancement> {
+open class AdvancementFactory(
+    mod: BigShotLibMod
+) : ContentFactory<Advancement> {
     override val registry: ResourceKey<Registry<Advancement>> = Registries.ADVANCEMENT
     @JvmField
     protected var registered = false
     @JvmField
     protected val toRegister = hashSetOf<RegisteredObject.Late<Advancement>>()
 
-    override fun begin(key: Identifier): Builder<*> {
-        return BuilderImpl(ResourceKey.create(registry, key), this)
+    init {
+        mod.addListener { bus ->
+            bus.register(RegisterDynamicAdvancementsEvent { out, registries ->
+                registered = true
+
+                toRegister.forEach {
+                    val value = it.constructor()
+                    it.value = value
+                    out.register(AdvancementHolder(it.location, value))
+                }
+            })
+        }
     }
 
-    override fun end(bus: NeoEventBus) {
-        bus.register(RegisterDynamicAdvancementsEvent { out, registries ->
-            registered = true
-
-            toRegister.forEach {
-                val value = it.constructor()
-                it.value = value
-                out.register(AdvancementHolder(it.location, value))
-            }
-        })
+    override fun begin(key: Identifier): Builder<*> {
+        return BuilderImpl(ResourceKey.create(registry, key), this)
     }
 
     private class BuilderImpl(

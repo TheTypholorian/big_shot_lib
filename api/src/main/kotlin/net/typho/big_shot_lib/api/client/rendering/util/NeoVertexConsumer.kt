@@ -1,8 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.util
 
 import com.mojang.blaze3d.vertex.PoseStack
-import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.math.rect.IRect3
 import net.typho.big_shot_lib.api.math.vec.IVec2

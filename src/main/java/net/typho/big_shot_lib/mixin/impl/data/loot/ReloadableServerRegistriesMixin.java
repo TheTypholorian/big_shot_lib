@@ -6,7 +6,7 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.ReloadableServerRegistries;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.storage.loot.LootDataType;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.event.RegisterEvent;
 import net.typho.big_shot_lib.impl.NeoEventBusImpl;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,6 +32,6 @@ public class ReloadableServerRegistriesMixin {
             event.register(out);
         }
 
-        BigShotApi.LOGGER.info("Loaded {} dynamic loot tables", out.getCount());
+        BigShotLib.LOGGER.info("Loaded {} dynamic loot tables", out.getCount());
     }
 }

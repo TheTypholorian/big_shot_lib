@@ -32,10 +32,9 @@ import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.entries.LootItem
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
+import net.typho.big_shot_lib.api.BigShotLibMod
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
-import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
-import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.plugin.Environment
@@ -50,6 +49,7 @@ import kotlin.collections.addAll
 
 @Suppress("UNCHECKED_CAST")
 open class BlockFactory @JvmOverloads constructor(
+    mod: BigShotLibMod,
     @JvmField
     protected val items: ItemFactory? = null,
     @JvmField
@@ -65,6 +65,26 @@ open class BlockFactory @JvmOverloads constructor(
     @JvmField
     @OnlyIn(Environment.CLIENT)
     protected val models = arrayListOf<ModelLoadingEvent>()
+
+    init {
+        mod.addListener { bus ->
+            bus.register(RegisterEvent { out ->
+                out.beginBlocks { out ->
+                    registered = true
+
+                    toRegister.forEach { out.register(it) }
+                }
+            })
+            bus.register(RegisterDynamicTagsEvent { out ->
+                registered = true
+
+                dynamicTags.forEach { (key, value) -> out.addBlocks(key, *value.toTypedArray()) }
+            })
+        }
+        mod.addClientListener { bus ->
+            models.forEach { bus.register(it) }
+        }
+    }
 
     override fun begin(key: Identifier): Builder<Block, *> {
         return beginComplex(key) { Block(it) }
@@ -429,26 +449,6 @@ open class BlockFactory @JvmOverloads constructor(
 
     open fun <V : Block> beginComplex(key: Identifier, constructor: (properties: BlockBehaviour.Properties) -> V): Builder<V, *> {
         return BuilderImpl(ResourceKey.create(registry, key) as ResourceKey<V>, constructor, this)
-    }
-
-    override fun end(bus: NeoEventBus) {
-        bus.register(RegisterEvent { out ->
-            out.beginBlocks { out ->
-                registered = true
-
-                toRegister.forEach { out.register(it) }
-            }
-        })
-        bus.register(RegisterDynamicTagsEvent { out ->
-            registered = true
-
-            dynamicTags.forEach { (key, value) -> out.addBlocks(key, *value.toTypedArray()) }
-        })
-    }
-
-    @OnlyIn(Environment.CLIENT)
-    override fun endClient(bus: NeoClientEventBus) {
-        models.forEach { bus.register(it) }
     }
 
     private class ClientInfoImpl<T : Block>(

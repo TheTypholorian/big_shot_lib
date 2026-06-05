@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.typho.big_shot_lib.api.client.util.NeoCamera;
 import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlFramebuffer;
 import net.typho.big_shot_lib.api.client.util.event.RenderEventData;
 import net.typho.big_shot_lib.impl.client.util.BigShotClientEvents;
@@ -72,7 +72,7 @@ public class LevelRendererMixin {
             @Local Frustum frustum
     ) {
         if (!BigShotClientEvents.INSTANCE.getLevelRenderEnd().isEmpty()) {
-            FramePass pass = graph.addPass(BigShotApi.id("post").toString());
+            FramePass pass = graph.addPass(BigShotLib.id("post").toString());
 
             targets.main = pass.readsAndWrites(targets.main);
 

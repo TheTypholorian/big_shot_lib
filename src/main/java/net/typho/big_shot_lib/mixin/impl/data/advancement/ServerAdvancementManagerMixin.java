@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent;
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent;
 import net.typho.big_shot_lib.impl.NeoEventBusImpl;
@@ -57,7 +57,7 @@ public class ServerAdvancementManagerMixin {
             event.register(output, registries);
         }
 
-        BigShotApi.LOGGER.info("Loaded {} dynamic recipe advancements", recipeOutput.count);
-        BigShotApi.LOGGER.info("Loaded {} regular dynamic advancements", count[0]);
+        BigShotLib.LOGGER.info("Loaded {} dynamic recipe advancements", recipeOutput.count);
+        BigShotLib.LOGGER.info("Loaded {} regular dynamic advancements", count[0]);
     }
 }

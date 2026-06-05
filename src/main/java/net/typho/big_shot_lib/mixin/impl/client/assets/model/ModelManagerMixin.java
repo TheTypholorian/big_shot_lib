@@ -7,7 +7,7 @@ import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.Identifier;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent;
 import net.typho.big_shot_lib.impl.client.NeoClientEventBusImpl;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public class ModelManagerMixin {
             var output = new ModelLoadingEvent.Output() {
                 @Override
                 public void registerStateJson(@NotNull Identifier location, @NotNull JsonElement state) {
-                    var old = mutableStates.putIfAbsent(location.withPrefix("blockstates/").withSuffix(".json"), Collections.singletonList(new BlockStateModelLoader.LoadedJson(BigShotApi.id("dynamic_block_models").toString(), state)));
+                    var old = mutableStates.putIfAbsent(location.withPrefix("blockstates/").withSuffix(".json"), Collections.singletonList(new BlockStateModelLoader.LoadedJson(BigShotLib.id("dynamic_block_models").toString(), state)));
 
                     if (old == null) {
                         numModels[0]++;
@@ -64,7 +64,7 @@ public class ModelManagerMixin {
                 event.load(output);
             }
 
-            BigShotApi.LOGGER.info("Loaded {} dynamic models, and {} dynamic block states", numModels[0], numStates[0]);
+            BigShotLib.LOGGER.info("Loaded {} dynamic models, and {} dynamic block states", numModels[0], numStates[0]);
 
             return func.apply(mutableModels, mutableStates);
         };

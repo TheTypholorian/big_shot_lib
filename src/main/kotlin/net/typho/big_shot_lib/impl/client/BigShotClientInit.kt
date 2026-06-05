@@ -17,17 +17,12 @@ import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
 import net.neoforged.fml.common.Mod
-import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.util.NeoClientInitializer
-import net.typho.big_shot_lib.api.util.NeoCommonInitializer
-import net.typho.big_shot_lib.impl.NeoEventBusImpl
-import kotlin.collections.component1
-import kotlin.collections.component2
+import net.typho.big_shot_lib.api.BigShotLibMod
 
-@Mod(value = BigShotApi.MOD_ID, dist = [Dist.CLIENT])
+@Mod(value = "big_shot_lib", dist = [Dist.CLIENT])
 class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
-        val buses = NeoClientInitializer.entrypoints.associateWith {
+        val buses = BigShotLibMod.mods.associateWith {
             NeoClientEventBusImpl(
                 ModList.get()
                     .getModContainerById(it.modId)
@@ -36,18 +31,18 @@ class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
             )
         }
 
-        buses.forEach { (init, bus) -> init.onInitialize(bus) }
+        buses.forEach { (init, bus) -> init.onInitializeClient(bus) }
 
-        while (!NeoClientInitializer.listeners.isEmpty()) {
-            val listeners = NeoClientInitializer.listeners.toMutableMap()
-            NeoClientInitializer.listeners.clear()
+        while (!BigShotLibMod.clientListeners.isEmpty()) {
+            val listeners = BigShotLibMod.clientListeners.toMutableMap()
+            BigShotLibMod.clientListeners.clear()
             listeners.forEach { (mod, listeners) ->
                 val bus = buses[mod] ?: throw NullPointerException("$mod isn't registered")
                 listeners.forEach { it.accept(bus) }
             }
         }
 
-        NeoClientInitializer.isInitDone = true
+        BigShotLibMod.isInitDone = true
     }
 }
 //? }

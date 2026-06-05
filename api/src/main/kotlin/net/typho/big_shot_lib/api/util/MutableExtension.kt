@@ -1,7 +1,5 @@
 package net.typho.big_shot_lib.api.util
 
-import net.typho.big_shot_lib.api.BigShotApi
-
 @Suppress("UNCHECKED_CAST")
 fun <V> Any.setExtensionValue(value: V) {
     (this as MutableExtension<V>).extensionValue = value

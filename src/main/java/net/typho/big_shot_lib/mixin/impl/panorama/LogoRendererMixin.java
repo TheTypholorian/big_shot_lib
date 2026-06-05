@@ -9,12 +9,10 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.client.rendering.AdvancedLogoRenderer;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram;
-import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoGuiGraphics;
-import net.typho.big_shot_lib.api.client.util.NeoClientInitializer;
 import net.typho.big_shot_lib.impl.client.MainMenuModeManager;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -84,7 +82,7 @@ public class LogoRendererMixin implements AdvancedLogoRenderer {
                 textureWidth += extraX * 2;
                 textureHeight += extraY * 2;
 
-                GlProgram shader = GlProgram.getOrThrow(BigShotApi.id("hovered_edition"));
+                GlProgram shader = GlProgram.getOrThrow(BigShotLib.id("hovered_edition"));
 
                 shader.setUniform("MousePos", uniform -> uniform.set((float) mouseX, (float) mouseY));
                 shader.setUniform("GuiSize", uniform -> uniform.set((float) guiGraphics.guiWidth(), (float) guiGraphics.guiHeight()));

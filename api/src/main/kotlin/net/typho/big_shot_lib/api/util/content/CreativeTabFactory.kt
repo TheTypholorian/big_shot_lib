@@ -7,29 +7,34 @@ import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
+import net.typho.big_shot_lib.api.BigShotLibMod
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import java.util.function.Supplier
 
 @Suppress("UNCHECKED_CAST")
-open class CreativeTabFactory : ContentFactory<CreativeModeTab> {
+open class CreativeTabFactory(
+    mod: BigShotLibMod
+) : ContentFactory<CreativeModeTab> {
     override val registry: ResourceKey<Registry<CreativeModeTab>> = Registries.CREATIVE_MODE_TAB
     @JvmField
     protected var registered = false
     @JvmField
     protected val toRegister = arrayListOf<RegisteredObject.Immediate<CreativeModeTab>>()
 
-    override fun begin(key: Identifier): Builder<*> {
-        return BuilderImpl(ResourceKey.create(registry, key), this)
+    init {
+        mod.addListener { bus ->
+            bus.register(RegisterEvent { out ->
+                out.begin(registry) { out ->
+                    toRegister.forEach { out.register(it) }
+                }
+            })
+        }
     }
 
-    override fun end(bus: NeoEventBus) {
-        bus.register(RegisterEvent { out ->
-            out.begin(registry) { out ->
-                toRegister.forEach { out.register(it) }
-            }
-        })
+    override fun begin(key: Identifier): Builder<*> {
+        return BuilderImpl(ResourceKey.create(registry, key), this)
     }
 
     private class BuilderImpl(

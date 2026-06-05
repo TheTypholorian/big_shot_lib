@@ -155,13 +155,10 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent
 import net.neoforged.neoforge.event.ServerChatEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
 import net.neoforged.neoforge.event.tick.ServerTickEvent
-import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
-import net.typho.big_shot_lib.api.util.content.RegisteredObject
-import org.spongepowered.asm.mixin.injection.InjectionPoint.before
 
 class NeoEventBusImpl(
     @JvmField

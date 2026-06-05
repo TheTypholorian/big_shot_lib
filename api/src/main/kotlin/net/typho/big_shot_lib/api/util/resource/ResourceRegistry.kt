@@ -10,7 +10,7 @@ import net.minecraft.resources.Identifier
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.FileToIdConverter
 import net.minecraft.server.packs.resources.ResourceManager
-import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.BigShotLib
 import java.io.BufferedReader
 import java.util.*
 import kotlin.collections.iterator
@@ -59,7 +59,7 @@ abstract class ResourceRegistry<T>(
 
                     decode(id, reader, manager).resultOrPartial { error ->
                         val message = "Error loading $id of resource registry $location: $error"
-                        BigShotApi.LOGGER.error(message)
+                        BigShotLib.LOGGER.error(message)
 
                         if (Minecraft.getInstance().level != null) {
                             Minecraft.getInstance().chatListener.handleSystemMessage(Component.literal(message).withStyle(ChatFormatting.RED), false)
@@ -71,7 +71,7 @@ abstract class ResourceRegistry<T>(
             }
         }
 
-        BigShotApi.LOGGER.info("Loaded ${map.size} entries of resource registry $location")
+        BigShotLib.LOGGER.info("Loaded ${map.size} entries of resource registry $location")
 
         oldMap.values.forEach { value -> if (value is AutoCloseable) value.close() }
     }

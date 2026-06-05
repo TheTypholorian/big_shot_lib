@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import net.minecraft.client.renderer.RenderStateShard;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction;
 import net.typho.big_shot_lib.api.util.MutableExtension;
@@ -36,7 +36,7 @@ public class DepthTestStateShardMixin implements MutableExtension<GlAlphaFunctio
         if (depthFunction == null) {
             if (!warned) {
                 warned = true;
-                BigShotApi.LOGGER.warn("Depth Test State Shard {} does not have a defined GlAlphaFunction value (this should NEVER happen), defaulting to disabled", this);
+                BigShotLib.LOGGER.warn("Depth Test State Shard {} does not have a defined GlAlphaFunction value (this should NEVER happen), defaulting to disabled", this);
             }
             return null;
         } else {

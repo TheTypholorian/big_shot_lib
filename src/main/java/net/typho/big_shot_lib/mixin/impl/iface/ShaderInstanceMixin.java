@@ -12,7 +12,7 @@ import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.Identifier;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.*;
 import net.typho.big_shot_lib.api.client.rendering.state.TextureBinding;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat;
@@ -263,7 +263,7 @@ public abstract class ShaderInstanceMixin implements GlProgram, ShaderInstanceEx
         uniforms = Lists.newArrayList();
         uniformLocations = Lists.newArrayList();
         uniformMap = Maps.newHashMap();
-        name = BigShotApi.toShortString(location);
+        name = BigShotLib.toShortString(location);
         vertexFormat = format;
         programId = glId;
     }

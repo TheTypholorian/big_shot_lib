@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.state
 
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlLogicOp
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram

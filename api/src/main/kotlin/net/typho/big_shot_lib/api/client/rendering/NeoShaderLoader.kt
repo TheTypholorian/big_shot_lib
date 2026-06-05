@@ -5,22 +5,21 @@ import com.mojang.serialization.DataResult
 import net.minecraft.resources.FileToIdConverter
 import net.minecraft.resources.Identifier
 import net.minecraft.server.packs.resources.ResourceManager
-import net.typho.big_shot_lib.api.BigShotApi
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.client.event.AddAssetReloadListenersEvent
-import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
+import net.typho.big_shot_lib.api.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats
-import net.typho.big_shot_lib.api.client.util.NeoClientInitializer
 import net.typho.big_shot_lib.api.util.resource.ResourceRegistry
 import net.typho.big_shot_lib.api.util.*
 import java.io.BufferedReader
 
 @JvmField
 val shaderIncludes = object : ResourceRegistry<String>(
-    BigShotApi.id("shaders/include"),
+    BigShotLib.id("shaders/include"),
     mutableListOf(),
     mutableListOf(
         FileToIdConverter("neo/shaders/include", ".glsl"),
@@ -45,7 +44,7 @@ val shaderIncludes = object : ResourceRegistry<String>(
 @JvmField
 val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> { shaderType ->
     object : ResourceRegistry<GlShader>(
-        BigShotApi.id("shaders/${shaderType.name.lowercase()}"),
+        BigShotLib.id("shaders/${shaderType.name.lowercase()}"),
         mutableListOf(),
         mutableListOf(FileToIdConverter("neo/shaders", shaderType.extension))
     ) {
@@ -75,15 +74,14 @@ val shaderRegistries = enumArrayMapOf<GlShaderType, ResourceRegistry<GlShader>> 
 }
 
 object NeoShaderLoader : ResourceRegistry<GlProgram>(
-    BigShotApi.id("shaders"),
+    BigShotLib.id("shaders"),
     mutableListOf<ResourceRegistry<*>>(shaderIncludes).also { it.addAll(shaderRegistries.values) },
     mutableListOf(FileToIdConverter.json("neo/shaders"))
-), NeoClientInitializer {
+) {
     @JvmField
     val preprocessors = hashSetOf<ShaderPreprocessor>(ShaderIncludePreprocessor)
-    override val modId: String = BigShotApi.MOD_ID
 
-    override fun onInitialize(bus: NeoClientEventBus) {
+    internal fun onInitializeClient(bus: NeoClientEventBus) {
         bus.register(AddAssetReloadListenersEvent {
             it(this)
         })

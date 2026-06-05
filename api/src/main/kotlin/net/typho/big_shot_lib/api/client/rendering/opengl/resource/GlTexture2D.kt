@@ -2,8 +2,6 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
 

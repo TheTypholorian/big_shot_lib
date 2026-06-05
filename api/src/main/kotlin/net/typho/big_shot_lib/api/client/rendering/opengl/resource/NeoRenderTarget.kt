@@ -1,8 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 
 import com.mojang.blaze3d.pipeline.RenderTarget
-import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit
 

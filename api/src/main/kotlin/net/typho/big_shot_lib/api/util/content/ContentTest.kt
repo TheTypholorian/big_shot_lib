@@ -13,24 +13,23 @@ import net.minecraft.world.food.FoodProperties
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.Rarity
 import net.minecraft.world.level.block.SoundType
-import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
-import net.typho.big_shot_lib.api.client.util.NeoClientInitializer
+import net.typho.big_shot_lib.api.BigShotLib
+import net.typho.big_shot_lib.api.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.event.NeoEventBus
-import net.typho.big_shot_lib.api.util.NeoCommonInitializer
+import net.typho.big_shot_lib.api.BigShotLibMod
 
-object ContentTest : NeoCommonInitializer {
-    override val modId: String = BigShotApi.MOD_ID
+object ContentTest : BigShotLibMod {
+    override val modId: String = BigShotLib.modId
 
     @JvmStatic
     fun id(path: String): Identifier = Identifier.of(modId, path)
 
-    val loot = LootTableFactory()
-    val advancements = AdvancementFactory()
-    val items = ItemFactory()
-    val blocks = BlockFactory(items, loot)
+    val loot = LootTableFactory(this)
+    val advancements = AdvancementFactory(this)
+    val items = ItemFactory(this)
+    val blocks = BlockFactory(this, items, loot)
     val blockSetTypes = BlockSetTypeFactory()
-    val creativeTabs = CreativeTabFactory()
+    val creativeTabs = CreativeTabFactory(this)
 
     val tab = creativeTabs.begin(id("tab"))
         .end()
@@ -101,23 +100,8 @@ object ContentTest : NeoCommonInitializer {
         .end()
 
     override fun onInitialize(bus: NeoEventBus) {
-        blocks.end(bus)
-        items.end(bus)
-        advancements.end(bus)
-        loot.end(bus)
-        blockSetTypes.end(bus)
-        creativeTabs.end(bus)
     }
 
-    object Client : NeoClientInitializer {
-        override val modId: String = ContentTest.modId
-
-        override fun onInitialize(bus: NeoClientEventBus) {
-            blocks.endClient(bus)
-            items.endClient(bus)
-            advancements.endClient(bus)
-            loot.endClient(bus)
-            blockSetTypes.endClient(bus)
-        }
+    override fun onInitializeClient(bus: NeoClientEventBus) {
     }
 }

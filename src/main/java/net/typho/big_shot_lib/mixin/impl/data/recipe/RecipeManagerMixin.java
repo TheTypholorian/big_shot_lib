@@ -11,7 +11,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent;
 import net.typho.big_shot_lib.impl.NeoEventBusImpl;
 import org.spongepowered.asm.mixin.Final;
@@ -55,6 +55,6 @@ public class RecipeManagerMixin {
             }, registries);
         }
 
-        BigShotApi.LOGGER.info("Loaded {} dynamic recipes", counter[0]);
+        BigShotLib.LOGGER.info("Loaded {} dynamic recipes", counter[0]);
     }
 }

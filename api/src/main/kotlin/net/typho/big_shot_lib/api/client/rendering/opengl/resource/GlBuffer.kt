@@ -1,7 +1,5 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 
-import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage

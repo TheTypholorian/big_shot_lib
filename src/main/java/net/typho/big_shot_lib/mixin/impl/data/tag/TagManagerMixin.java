@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.tags.TagManager;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent;
 import net.typho.big_shot_lib.impl.NeoEventBusImpl;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +65,7 @@ public class TagManagerMixin {
         long numTags = modifiedTags.size();
 
         if (numEntries > 0) {
-            BigShotApi.LOGGER.info("Loaded {} dynamic tag entries into {} tags of registry {}", numEntries, numTags, key.location());
+            BigShotLib.LOGGER.info("Loaded {} dynamic tag entries into {} tags of registry {}", numEntries, numTags, key.location());
         }
 
         args.set(1, tags);

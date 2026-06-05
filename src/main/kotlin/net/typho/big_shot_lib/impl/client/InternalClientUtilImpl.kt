@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.BigShotApi.toShortString
+import net.typho.big_shot_lib.api.BigShotLib.toShortString
 import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction

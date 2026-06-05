@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import kotlin.Pair;
 import net.minecraft.client.renderer.RenderStateShard;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,7 +35,7 @@ public class WriteMaskStateShardMixin implements MutableExtension<Pair<Boolean, 
         if (mask == null) {
             if (!warned) {
                 warned = true;
-                BigShotApi.LOGGER.warn("Write Mask State Shard {} does not have defined mask values (this should NEVER happen), defaulting to disabled", this);
+                BigShotLib.LOGGER.warn("Write Mask State Shard {} does not have defined mask values (this should NEVER happen), defaulting to disabled", this);
             }
             return null;
         } else {

@@ -4,12 +4,14 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import net.typho.big_shot_lib.api.util.WrapperUtil
+import net.typho.big_shot_lib.api.event.NeoClientEventBus
+import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
+import net.typho.big_shot_lib.api.event.NeoEventBus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-object BigShotApi {
-    const val MOD_ID = "big_shot_lib"
+object BigShotLib : BigShotLibMod {
+    override val modId: String = "big_shot_lib"
     @JvmField
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
 
@@ -21,5 +23,12 @@ object BigShotApi {
     fun Identifier.toShortString(): String = if (namespace == Identifier.DEFAULT_NAMESPACE) path else toString()
 
     @JvmStatic
-    fun id(path: String): Identifier = Identifier.of(MOD_ID, path)
+    fun id(path: String): Identifier = Identifier.of(modId, path)
+
+    override fun onInitialize(bus: NeoEventBus) {
+    }
+
+    override fun onInitializeClient(bus: NeoClientEventBus) {
+        NeoShaderLoader.onInitializeClient(bus)
+    }
 }

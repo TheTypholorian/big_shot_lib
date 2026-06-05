@@ -8,7 +8,6 @@ import net.typho.big_shot_lib.api.client.event.ClientLevelChangedEvent
 import net.typho.big_shot_lib.api.client.event.ClientStartTickEvent
 import net.typho.big_shot_lib.api.client.event.DisplayResizedEvent
 import net.typho.big_shot_lib.api.client.event.InitialScreenEvent
-import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.client.event.RegisterDebugScreenEntriesEvent
 import net.typho.big_shot_lib.api.client.event.RegisterMainMenuModesEvent
 import net.typho.big_shot_lib.api.client.event.RenderGUIEvent
@@ -211,6 +210,7 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.neoforged.neoforge.event.RegisterCommandsEvent
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
+import net.typho.big_shot_lib.api.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
@@ -336,70 +336,6 @@ class NeoClientEventBusImpl(
 
     override fun register(event: RenderTooltipEvent) {
         TODO("Not yet implemented")
-    }
-
-    override fun register(event: AddCreativeTabEntriesEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: AddDataReloadListenersEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: BlockChangedEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: BonemealEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: ChatMessageEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: ChunkLoadedEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: ChunkUnloadedEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: CommandsEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: NewRegistryEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: RegisterDynamicAdvancementsEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: RegisterDynamicRecipesEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: RegisterDynamicTagsEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: RegisterEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: ServerStartTickEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: ServerEndTickEvent) {
-        common.register(event)
-    }
-
-    override fun register(event: UseItemOnBlockEvent) {
-        common.register(event)
     }
 }
 //? }

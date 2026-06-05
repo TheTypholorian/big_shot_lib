@@ -14,11 +14,10 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
+import net.typho.big_shot_lib.api.BigShotLibMod
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
-import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
-import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
@@ -31,7 +30,9 @@ import java.util.function.Supplier
 import java.util.function.UnaryOperator
 
 @Suppress("UNCHECKED_CAST")
-open class ItemFactory : ContentFactory<Item> {
+open class ItemFactory(
+    mod: BigShotLibMod
+) : ContentFactory<Item> {
     override val registry: ResourceKey<Registry<Item>> = Registries.ITEM
     @JvmField
     protected var registered = false
@@ -48,6 +49,35 @@ open class ItemFactory : ContentFactory<Item> {
     @JvmField
     @OnlyIn(Environment.CLIENT)
     protected val models = arrayListOf<ModelLoadingEvent>()
+
+    init {
+        mod.addListener { bus ->
+            bus.register(RegisterEvent { out ->
+                out.beginItems { out ->
+                    registered = true
+
+                    toRegister.forEach { out.register(it) }
+                }
+            })
+            bus.register(RegisterDynamicRecipesEvent { out, registries ->
+                registered = true
+
+                dynamicRecipes.forEach { (key, value) -> out.register(key, value.get()) }
+                dynamicExistingRecipes.forEach { (key, value) -> out.register(key, value.get()) }
+            })
+            bus.register(RegisterDynamicTagsEvent { out ->
+                registered = true
+
+                dynamicTags.forEach { (key, value) -> out.addItems(key, *value.toTypedArray()) }
+            })
+            bus.register(AddCreativeTabEntriesEvent { out ->
+                creativeTabs.forEach { (key, entries) -> out.begin(key) { out -> entries.forEach { out.addLast(ItemStack(it)) } } }
+            })
+        }
+        mod.addClientListener { bus ->
+            models.forEach { bus.register(it) }
+        }
+    }
 
     override fun begin(key: Identifier): Builder<Item, *> {
         return beginComplex(key) { Item(it) }
@@ -69,35 +99,6 @@ open class ItemFactory : ContentFactory<Item> {
 
     open fun <V : Item> beginComplex(key: Identifier, constructor: (properties: Item.Properties) -> V): Builder<V, *> {
         return BuilderImpl(ResourceKey.create(registry, key) as ResourceKey<V>, constructor, this)
-    }
-
-    override fun end(bus: NeoEventBus) {
-        bus.register(RegisterEvent { out ->
-            out.beginItems { out ->
-                registered = true
-
-                toRegister.forEach { out.register(it) }
-            }
-        })
-        bus.register(RegisterDynamicRecipesEvent { out, registries ->
-            registered = true
-
-            dynamicRecipes.forEach { (key, value) -> out.register(key, value.get()) }
-            dynamicExistingRecipes.forEach { (key, value) -> out.register(key, value.get()) }
-        })
-        bus.register(RegisterDynamicTagsEvent { out ->
-            registered = true
-
-            dynamicTags.forEach { (key, value) -> out.addItems(key, *value.toTypedArray()) }
-        })
-        bus.register(AddCreativeTabEntriesEvent { out ->
-            creativeTabs.forEach { (key, entries) -> out.begin(key) { out -> entries.forEach { out.addLast(ItemStack(it)) } } }
-        })
-    }
-
-    @OnlyIn(Environment.CLIENT)
-    override fun endClient(bus: NeoClientEventBus) {
-        models.forEach { bus.register(it) }
     }
 
     private class ClientInfoImpl<T : Item>(

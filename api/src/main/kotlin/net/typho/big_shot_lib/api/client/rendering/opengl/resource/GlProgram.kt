@@ -2,8 +2,6 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.UniformOutput

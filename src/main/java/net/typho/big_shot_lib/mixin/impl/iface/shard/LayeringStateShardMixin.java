@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.mixin.impl.iface.shard;
 
 import net.minecraft.client.renderer.RenderStateShard;
-import net.typho.big_shot_lib.api.BigShotApi;
+import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.client.rendering.state.LayeringState;
 import net.typho.big_shot_lib.api.util.MutableExtension;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +24,7 @@ public class LayeringStateShardMixin implements MutableExtension<LayeringState> 
         if (layering == null) {
             if (!warned) {
                 warned = true;
-                BigShotApi.LOGGER.warn("Layering State Shard {} does not have a defined LayeringState value, defaulting to disabled", this);
+                BigShotLib.LOGGER.warn("Layering State Shard {} does not have a defined LayeringState value, defaulting to disabled", this);
             }
             return LayeringState.DISABLED;
         } else {

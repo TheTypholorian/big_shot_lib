@@ -8,29 +8,34 @@ import net.minecraft.world.level.storage.loot.LootPool
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet
+import net.typho.big_shot_lib.api.BigShotLibMod
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterEvent
 
 @Suppress("UNCHECKED_CAST")
-open class LootTableFactory : ContentFactory<LootTable> {
+open class LootTableFactory(
+    mod: BigShotLibMod
+) : ContentFactory<LootTable> {
     override val registry: ResourceKey<Registry<LootTable>> = Registries.LOOT_TABLE
     @JvmField
     protected var registered = false
     @JvmField
     protected val toRegister = hashSetOf<RegisteredObject.Late<LootTable>>()
 
-    override fun begin(key: Identifier): Builder<*> {
-        return BuilderImpl(ResourceKey.create(registry, key), this)
+    init {
+        mod.addListener { bus ->
+            bus.register(RegisterEvent { out ->
+                out.begin(registry) { out ->
+                    registered = true
+
+                    toRegister.forEach { out.register(it) }
+                }
+            })
+        }
     }
 
-    override fun end(bus: NeoEventBus) {
-        bus.register(RegisterEvent { out ->
-            out.begin(registry) { out ->
-                registered = true
-
-                toRegister.forEach { out.register(it) }
-            }
-        })
+    override fun begin(key: Identifier): Builder<*> {
+        return BuilderImpl(ResourceKey.create(registry, key), this)
     }
 
     private class BuilderImpl(

@@ -7,10 +7,8 @@ import net.minecraft.core.WritableRegistry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import net.minecraft.server.packs.repository.KnownPack
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
-import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.util.content.RegisteredObject
 import java.util.*
 import java.util.function.Consumer

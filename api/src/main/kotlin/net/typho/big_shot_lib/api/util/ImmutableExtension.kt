@@ -1,7 +1,5 @@
 package net.typho.big_shot_lib.api.util
 
-import net.typho.big_shot_lib.api.BigShotApi
-
 @Suppress("UNCHECKED_CAST")
 inline fun <reified V> Any.getExtensionValue(): V {
     return if (this is V) {

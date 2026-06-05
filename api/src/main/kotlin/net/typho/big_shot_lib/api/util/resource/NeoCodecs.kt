@@ -10,8 +10,7 @@ import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.MapLike
 import com.mojang.serialization.RecordBuilder
-import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.BigShotLib
 import java.util.Optional
 import java.util.function.Consumer
 import java.util.function.Function
@@ -211,7 +210,7 @@ object NeoCodecs {
                     val elementResult = elementCodec.decode(ops, value)
                     elementResult.error()
                         .ifPresent(Consumer { error -> failed.add(value) })
-                    elementResult.resultOrPartial(BigShotApi.LOGGER::warn)
+                    elementResult.resultOrPartial(BigShotLib.LOGGER::warn)
                         .ifPresent(Consumer { pair -> elements.add(pair.getFirst()) })
                     result = result.apply2stable(
                         { result, element -> result },
