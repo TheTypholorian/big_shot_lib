@@ -17,32 +17,38 @@ import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
 import net.neoforged.fml.common.Mod
-import net.typho.big_shot_lib.api.BigShotLibMod
+import net.typho.big_shot_lib.api.NeoCommonInitializer
+import net.typho.big_shot_lib.api.client.NeoClientInitializer
+import net.typho.big_shot_lib.api.event.NeoClientEventBus
 
 @Mod(value = "big_shot_lib", dist = [Dist.CLIENT])
 class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
-        val buses = BigShotLibMod.mods.associateWith {
-            NeoClientEventBusImpl(
-                ModList.get()
-                    .getModContainerById(it.modId)
-                    .orElseThrow { IllegalArgumentException("Unrecognized mod ${it.modId}, $it says it's part of it") }
-                    .eventBus ?: throw NullPointerException("Cannot get event bus for ${it.modId}")
-            )
+        val buses: MutableMap<String, NeoClientEventBus> = hashMapOf()
+
+        fun getBus(mod: String): NeoClientEventBus {
+            return buses.computeIfAbsent(mod) {
+                NeoClientEventBusImpl(
+                    ModList.get()
+                        .getModContainerById(it)
+                        .orElseThrow { IllegalArgumentException("Unrecognized mod $it") }
+                        .eventBus ?: throw NullPointerException("Cannot get event bus for $it")
+                )
+            }
         }
 
-        buses.forEach { (init, bus) -> init.onInitializeClient(bus) }
+        NeoClientInitializer.mods.forEach { it.onInitializeClient(getBus(it.modId)) }
 
-        while (!BigShotLibMod.clientListeners.isEmpty()) {
-            val listeners = BigShotLibMod.clientListeners.toMutableMap()
-            BigShotLibMod.clientListeners.clear()
+        while (!NeoClientInitializer.clientListeners.isEmpty()) {
+            val listeners = NeoClientInitializer.clientListeners.toMutableMap()
+            NeoClientInitializer.clientListeners.clear()
             listeners.forEach { (mod, listeners) ->
-                val bus = buses[mod] ?: throw NullPointerException("$mod isn't registered")
+                val bus = getBus(mod)
                 listeners.forEach { it.accept(bus) }
             }
         }
 
-        BigShotLibMod.isInitDone = true
+        NeoClientInitializer.isClientInitDone = true
     }
 }
 //? }

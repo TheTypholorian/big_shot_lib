@@ -10,7 +10,7 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-object BigShotLib : BigShotLibMod {
+object BigShotLib : NeoCommonInitializer {
     override val modId: String = "big_shot_lib"
     @JvmField
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
@@ -26,9 +26,5 @@ object BigShotLib : BigShotLibMod {
     fun id(path: String): Identifier = Identifier.of(modId, path)
 
     override fun onInitialize(bus: NeoEventBus) {
-    }
-
-    override fun onInitializeClient(bus: NeoClientEventBus) {
-        NeoShaderLoader.onInitializeClient(bus)
     }
 }

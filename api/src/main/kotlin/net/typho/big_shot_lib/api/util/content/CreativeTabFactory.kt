@@ -7,15 +7,14 @@ import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
-import net.typho.big_shot_lib.api.BigShotLibMod
+import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.InternalUtil
-import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import java.util.function.Supplier
 
 @Suppress("UNCHECKED_CAST")
 open class CreativeTabFactory(
-    mod: BigShotLibMod
+    mod: NeoCommonInitializer
 ) : ContentFactory<CreativeModeTab> {
     override val registry: ResourceKey<Registry<CreativeModeTab>> = Registries.CREATIVE_MODE_TAB
     @JvmField

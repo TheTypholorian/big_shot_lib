@@ -14,7 +14,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
-import net.typho.big_shot_lib.api.BigShotLibMod
+import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
@@ -31,7 +31,7 @@ import java.util.function.UnaryOperator
 
 @Suppress("UNCHECKED_CAST")
 open class ItemFactory(
-    mod: BigShotLibMod
+    mod: NeoCommonInitializer
 ) : ContentFactory<Item> {
     override val registry: ResourceKey<Registry<Item>> = Registries.ITEM
     @JvmField

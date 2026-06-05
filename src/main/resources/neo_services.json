@@ -1,5 +1,5 @@
 {
-  "net.typho.big_shot_lib.api.BigShotLibMod": [
+  "net.typho.big_shot_lib.api.NeoCommonInitializer": [
     "net.typho.big_shot_lib.api.BigShotLib"
   ],
   "net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue": [

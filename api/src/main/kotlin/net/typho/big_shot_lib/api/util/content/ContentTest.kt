@@ -16,9 +16,10 @@ import net.minecraft.world.level.block.SoundType
 import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.event.NeoEventBus
-import net.typho.big_shot_lib.api.BigShotLibMod
+import net.typho.big_shot_lib.api.NeoCommonInitializer
+import net.typho.big_shot_lib.api.client.NeoClientInitializer
 
-object ContentTest : BigShotLibMod {
+object ContentTest : NeoCommonInitializer {
     override val modId: String = BigShotLib.modId
 
     @JvmStatic
@@ -100,8 +101,5 @@ object ContentTest : BigShotLibMod {
         .end()
 
     override fun onInitialize(bus: NeoEventBus) {
-    }
-
-    override fun onInitializeClient(bus: NeoClientEventBus) {
     }
 }

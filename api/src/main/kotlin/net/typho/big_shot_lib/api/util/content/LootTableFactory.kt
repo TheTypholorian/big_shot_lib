@@ -8,13 +8,12 @@ import net.minecraft.world.level.storage.loot.LootPool
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet
-import net.typho.big_shot_lib.api.BigShotLibMod
-import net.typho.big_shot_lib.api.event.NeoEventBus
+import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.event.RegisterEvent
 
 @Suppress("UNCHECKED_CAST")
 open class LootTableFactory(
-    mod: BigShotLibMod
+    mod: NeoCommonInitializer
 ) : ContentFactory<LootTable> {
     override val registry: ResourceKey<Registry<LootTable>> = Registries.LOOT_TABLE
     @JvmField

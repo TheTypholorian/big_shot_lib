@@ -32,7 +32,7 @@ import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.entries.LootItem
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
-import net.typho.big_shot_lib.api.BigShotLibMod
+import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
@@ -49,7 +49,7 @@ import kotlin.collections.addAll
 
 @Suppress("UNCHECKED_CAST")
 open class BlockFactory @JvmOverloads constructor(
-    mod: BigShotLibMod,
+    mod: NeoCommonInitializer,
     @JvmField
     protected val items: ItemFactory? = null,
     @JvmField

@@ -15,13 +15,12 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
-import net.typho.big_shot_lib.api.BigShotLibMod
-import net.typho.big_shot_lib.api.event.NeoEventBus
+import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 
 @Suppress("UNCHECKED_CAST")
 open class AdvancementFactory(
-    mod: BigShotLibMod
+    mod: NeoCommonInitializer
 ) : ContentFactory<Advancement> {
     override val registry: ResourceKey<Registry<Advancement>> = Registries.ADVANCEMENT
     @JvmField
