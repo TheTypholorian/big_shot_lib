@@ -190,9 +190,11 @@ open class ItemContentFactory : ContentFactory<Item> {
 
             registered = item
 
-            if (!parent.toRegister.add(item)) {
+            if (parent.toRegister.contains(item)) {
                 throw IllegalArgumentException("Cannot create two items under the same ID $key")
             }
+
+            parent.toRegister.add(item)
 
             for (tag in tags) {
                 parent.dynamicTags.computeIfAbsent(tag) { hashSetOf() }.add(key)

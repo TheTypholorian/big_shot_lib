@@ -40,6 +40,12 @@ bigShotLib {
     }
 }
 
+val accessWidener = "big_shot_lib.accesswidener"
+
+loom {
+    accessWidenerPath = rootProject.file("src/main/resources/${accessWidener}")
+}
+
 repositories {
     gradlePluginPortal()
     mavenCentral()

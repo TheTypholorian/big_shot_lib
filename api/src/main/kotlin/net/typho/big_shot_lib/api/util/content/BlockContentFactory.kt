@@ -160,23 +160,28 @@ open class BlockContentFactory @JvmOverloads constructor(
     open fun beginDoor(key: Identifier, blockSet: Supplier<BlockSetType>): Builder<DoorBlock, *> {
         return beginComplex(key) { DoorBlock(blockSet.get(), it) }
             .client {
-                it.model { block, textures ->
-                    ModelLoadingEvent { out ->
-                        val block = block.get()
-                        val textures = textures.get()
+                it.textureMapping { TextureMapping.door(it.get()) }
+                    .model { block, textures ->
+                        ModelLoadingEvent { out ->
+                            val block = block.get()
+                            val textures = textures.get()
 
-                        TODO()
-                        /*
-                        out.register(
-                            block,
-                            BlockModelGenerators.createDoor(
+                            out.register(
                                 block,
-                                out.register(ModelTemplates.SLAB_BOTTOM, block, textures),
+                                BlockModelGenerators.createDoor(
+                                    block,
+                                    out.register(ModelTemplates.DOOR_BOTTOM_LEFT, block, textures),
+                                    out.register(ModelTemplates.DOOR_BOTTOM_LEFT_OPEN, block, textures),
+                                    out.register(ModelTemplates.DOOR_BOTTOM_RIGHT, block, textures),
+                                    out.register(ModelTemplates.DOOR_BOTTOM_RIGHT_OPEN, block, textures),
+                                    out.register(ModelTemplates.DOOR_TOP_LEFT, block, textures),
+                                    out.register(ModelTemplates.DOOR_TOP_LEFT_OPEN, block, textures),
+                                    out.register(ModelTemplates.DOOR_TOP_RIGHT, block, textures),
+                                    out.register(ModelTemplates.DOOR_TOP_RIGHT_OPEN, block, textures),
+                                )
                             )
-                        )
-                         */
+                        }
                     }
-                }
             }
             .item {
                 it.client {
@@ -193,15 +198,47 @@ open class BlockContentFactory @JvmOverloads constructor(
             .tags(BlockTags.DOORS)
     }
 
-    open fun beginTrapdoor(key: Identifier, blockSet: Supplier<BlockSetType>): Builder<TrapDoorBlock, *> {
+    open fun beginTrapdoor(key: Identifier, blockSet: Supplier<BlockSetType>, rotatable: Boolean): Builder<TrapDoorBlock, *> {
         return beginComplex(key) { TrapDoorBlock(blockSet.get(), it) }
+            .client {
+                it.textureMapping { TextureMapping.defaultTexture(it.get()) }
+                    .model { block, textures ->
+                        ModelLoadingEvent { out ->
+                            val block = block.get()
+                            val textures = textures.get()
+
+                            out.register(
+                                block,
+                                if (rotatable) {
+                                    BlockModelGenerators.createOrientableTrapdoor(
+                                        block,
+                                        out.register(ModelTemplates.ORIENTABLE_TRAPDOOR_TOP, block, textures),
+                                        out.register(ModelTemplates.ORIENTABLE_TRAPDOOR_BOTTOM, block, textures),
+                                        out.register(ModelTemplates.ORIENTABLE_TRAPDOOR_OPEN, block, textures)
+                                    )
+                                } else {
+                                    BlockModelGenerators.createTrapdoor(
+                                        block,
+                                        out.register(ModelTemplates.TRAPDOOR_TOP, block, textures),
+                                        out.register(ModelTemplates.TRAPDOOR_BOTTOM, block, textures),
+                                        out.register(ModelTemplates.TRAPDOOR_OPEN, block, textures)
+                                    )
+                                }
+                            )
+                        }
+                    }
+            }
             .item {
                 it.client {
                     it.model { item ->
                         ModelLoadingEvent { out ->
                             out.registerModelJson(
                                 ModelLocationUtils.getModelLocation(item.get()),
-                                DelegatedModel(ModelTemplates.TRAPDOOR_BOTTOM.getDefaultModelLocation(item.get().block)).get()
+                                if (rotatable) {
+                                    DelegatedModel(ModelTemplates.ORIENTABLE_TRAPDOOR_BOTTOM.getDefaultModelLocation(item.get().block)).get()
+                                } else {
+                                    DelegatedModel(ModelTemplates.TRAPDOOR_BOTTOM.getDefaultModelLocation(item.get().block)).get()
+                                }
                             )
                         }
                     }
@@ -565,9 +602,11 @@ open class BlockContentFactory @JvmOverloads constructor(
 
             registered = block
 
-            if (!parent.toRegister.add(block)) {
+            if (parent.toRegister.contains(block)) {
                 throw IllegalArgumentException("Cannot create two blocks under the same ID $key")
             }
+
+            parent.toRegister.add(block)
 
             for (tag in tags) {
                 parent.dynamicTags.computeIfAbsent(tag) { hashSetOf() }.add(key)

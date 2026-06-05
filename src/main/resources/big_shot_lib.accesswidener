@@ -158,3 +158,5 @@ accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlo
 # accessible method net/minecraft/data/models/BlockModelGenerators createSlab (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
 # accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;
 #? }
+
+accessible method net/minecraft/world/level/block/state/properties/BlockSetType register (Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/state/properties/BlockSetType;

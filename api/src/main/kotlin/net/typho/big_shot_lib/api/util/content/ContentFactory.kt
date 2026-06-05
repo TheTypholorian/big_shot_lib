@@ -13,7 +13,8 @@ interface ContentFactory<T : Any> {
 
     fun begin(key: Identifier): ObjectBuilder<RegisteredObject<T>>
 
-    fun end(bus: NeoEventBus)
+    fun end(bus: NeoEventBus) {
+    }
 
     @OnlyIn(Environment.CLIENT)
     fun endClient(bus: NeoClientEventBus) {

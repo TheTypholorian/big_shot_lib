@@ -29,6 +29,7 @@ object ContentTest : BigShotCommonEntrypoint {
     val advancements = AdvancementContentFactory()
     val items = ItemContentFactory()
     val blocks = BlockContentFactory(items, loot)
+    val blockSetTypes = BlockSetTypeContentFactory()
 
     val testItem = items.begin(id("test_item"))
         .properties {
@@ -54,6 +55,9 @@ object ContentTest : BigShotCommonEntrypoint {
         .tags(ItemTags.HORSE_TEMPT_ITEMS, ItemTags.ARROWS)
         .end()
 
+    val testBlockSetType = blockSetTypes.begin(id("test_block_set"))
+        .end()
+
     val testBlock1 = blocks.begin(id("test_block"))
         .properties {
             it.instabreak()
@@ -75,8 +79,13 @@ object ContentTest : BigShotCommonEntrypoint {
         .end()
     val testStairs = blocks.beginStairs(id("test_stairs"), testBlock1).end()
     val testSlab = blocks.beginSlab(id("test_slab"), testBlock1).end()
-    val testFence = blocks.beginFence(id("test_fence"), testBlock1).end()
+    val testDoor = blocks.beginDoor(id("test_door"), testBlockSetType).end()
+    val testTrapdoor = blocks.beginTrapdoor(id("test_trapdoor"), testBlockSetType, true).end()
+    val testPressurePlate = blocks.beginPressurePlate(id("test_pressure_plate"), testBlockSetType, testBlock1).end()
     val testWall = blocks.beginWall(id("test_wall"), testBlock1).end()
+    val testFence = blocks.beginFence(id("test_fence"), testBlock1).end()
+    // TODO fence gate
+    val testButton = blocks.beginButton(id("test_button"), 50, testBlockSetType, testBlock1).end()
 
     val testAdvancement = advancements.begin(id("test_advancement"))
         .parent(Identifier.minecraft("adventure/trade"))
@@ -90,6 +99,7 @@ object ContentTest : BigShotCommonEntrypoint {
         items.end(bus)
         advancements.end(bus)
         loot.end(bus)
+        blockSetTypes.end(bus)
     }
 
     object Client : BigShotClientEntrypoint {
@@ -100,6 +110,7 @@ object ContentTest : BigShotCommonEntrypoint {
             items.endClient(bus)
             advancements.endClient(bus)
             loot.endClient(bus)
+            blockSetTypes.endClient(bus)
         }
     }
 }
