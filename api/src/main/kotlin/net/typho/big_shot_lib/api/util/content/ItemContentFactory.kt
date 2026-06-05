@@ -2,6 +2,9 @@ package net.typho.big_shot_lib.api.util.content
 
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
+import net.minecraft.data.models.model.DelegatedModel
+import net.minecraft.data.models.model.ModelLocationUtils
+import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
@@ -10,12 +13,18 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
+import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
+import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
+import net.typho.big_shot_lib.api.plugin.Environment
+import net.typho.big_shot_lib.api.plugin.OnlyIn
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import java.util.function.BiFunction
+import java.util.function.Function
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
 
@@ -32,6 +41,9 @@ open class ItemContentFactory : ContentFactory<Item> {
     protected val dynamicExistingRecipes = hashMapOf<ResourceKey<out Recipe<*>>, Supplier<out Recipe<*>>>()
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<ResourceKey<out Item>>>()
+    @JvmField
+    @OnlyIn(Environment.CLIENT)
+    protected val models = arrayListOf<ModelLoadingEvent>()
 
     override fun begin(key: Identifier): Builder<Item, *> {
         return beginComplex(key) { Item(it) }
@@ -39,6 +51,16 @@ open class ItemContentFactory : ContentFactory<Item> {
 
     open fun beginBlockItem(key: Identifier, block: Supplier<out Block>): Builder<BlockItem, *> {
         return beginComplex(key) { BlockItem(block.get(), it) }
+            .client {
+                it.model { item ->
+                    ModelLoadingEvent { out ->
+                        out.registerModelJson(
+                            ModelLocationUtils.getModelLocation(item.get()),
+                            DelegatedModel(ModelLocationUtils.getModelLocation(block.get())).get()
+                        )
+                    }
+                }
+            }
     }
 
     open fun <V : Item> beginComplex(key: Identifier, constructor: (properties: Item.Properties) -> V): Builder<V, *> {
@@ -66,15 +88,36 @@ open class ItemContentFactory : ContentFactory<Item> {
         })
     }
 
-    private class ClientInfoImpl : ClientInfo<ClientInfoImpl>()
+    @OnlyIn(Environment.CLIENT)
+    override fun endClient(bus: NeoClientEventBus) {
+        models.forEach { bus.register(it) }
+    }
 
-    open class ClientInfo<B : ClientInfo<B>> {
+    private class ClientInfoImpl<T : Item>(
+        parent: ItemContentFactory
+    ) : ClientInfo<T, ClientInfoImpl<T>>(parent)
+
+    open class ClientInfo<T : Item, B : ClientInfo<T, B>>(
+        @JvmField
+        protected val parent: ItemContentFactory
+    ) {
         @JvmField
         protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
+        @JvmField
+        protected var model: Function<Supplier<T>, ModelLoadingEvent>? = null
 
         fun renderType(renderType: NeoRenderType): B {
             this.renderType = renderType
             return this as B
+        }
+
+        fun model(model: Function<Supplier<T>, ModelLoadingEvent>): B {
+            this.model = Function { item -> model.apply(item) }
+            return this as B
+        }
+
+        fun end(item: RegisteredObject<T>) {
+            model?.apply(item)?.let { parent.models.add(it) }
         }
     }
 
@@ -95,7 +138,7 @@ open class ItemContentFactory : ContentFactory<Item> {
         @JvmField
         protected var properties: Item.Properties = Item.Properties()
         @JvmField
-        protected var clientInfo: ClientInfo<*>? = null // TODO do stuff with this
+        protected var clientInfo: ClientInfo<T, *>? = null // TODO do stuff with this
         // TODO creative tab
         // TODO model
         // TODO recipe
@@ -113,9 +156,9 @@ open class ItemContentFactory : ContentFactory<Item> {
             return this as B
         }
 
-        fun client(info: UnaryOperator<ClientInfo<*>>): B {
+        fun client(info: UnaryOperator<ClientInfo<T, *>>): B {
             if (PlatformUtil.INSTANCE.isClient()) {
-                clientInfo = info.apply(clientInfo ?: ClientInfoImpl())
+                clientInfo = info.apply(clientInfo ?: ClientInfoImpl(parent))
             }
 
             return this as B
@@ -154,6 +197,8 @@ open class ItemContentFactory : ContentFactory<Item> {
             for (tag in tags) {
                 parent.dynamicTags.computeIfAbsent(tag) { hashSetOf() }.add(key)
             }
+
+            clientInfo?.end(item)
 
             return item
         }

@@ -9,7 +9,7 @@ import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.resources.Identifier
 import net.minecraft.world.level.block.Block
 
-fun interface BlockModelLoadingEvent {
+fun interface ModelLoadingEvent {
     fun load(out: Output)
 
     interface Output {
@@ -39,27 +39,6 @@ fun interface BlockModelLoadingEvent {
 
         fun registerStateJson(block: Block, state: JsonElement) {
             registerStateJson(BuiltInRegistries.BLOCK.getKey(block), state)
-        }
-    }
-
-    data class Storage(
-        @JvmField
-        val models: MutableList<Pair<Identifier, BlockModel>> = arrayListOf(),
-        @JvmField
-        val states: MutableList<Pair<Identifier, JsonElement>> = arrayListOf()
-    ) : Output {
-        override fun register(
-            location: Identifier,
-            model: BlockModel
-        ) {
-            models.add(location to model)
-        }
-
-        override fun registerStateJson(
-            location: Identifier,
-            state: JsonElement
-        ) {
-            states.add(location to state)
         }
     }
 }

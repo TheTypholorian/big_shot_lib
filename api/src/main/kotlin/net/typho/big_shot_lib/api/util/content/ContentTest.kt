@@ -2,14 +2,6 @@ package net.typho.big_shot_lib.api.util.content
 
 import net.minecraft.advancements.AdvancementRewards
 import net.minecraft.advancements.critereon.InventoryChangeTrigger
-import net.minecraft.data.models.BlockModelGenerators
-import net.minecraft.data.models.blockstates.BlockStateGenerator
-import net.minecraft.data.models.blockstates.MultiVariantGenerator
-import net.minecraft.data.models.blockstates.Variant
-import net.minecraft.data.models.blockstates.VariantProperties
-import net.minecraft.data.models.model.ModelTemplates
-import net.minecraft.data.models.model.TextureMapping
-import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.recipes.RecipeCategory
 import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.data.recipes.ShapedRecipeBuilder
@@ -22,7 +14,6 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.Rarity
 import net.minecraft.world.level.block.SoundType
 import net.typho.big_shot_lib.api.BigShotApi
-import net.typho.big_shot_lib.api.client.event.BlockModelLoadingEvent
 import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
 import net.typho.big_shot_lib.api.event.NeoEventBus

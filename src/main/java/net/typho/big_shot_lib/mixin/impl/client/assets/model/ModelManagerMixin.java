@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.mixin.impl.client.assets.model;
 
 import com.google.gson.JsonElement;
-import kotlin.collections.CollectionsKt;
 import kotlin.collections.MapsKt;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
@@ -9,7 +8,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.BigShotApi;
-import net.typho.big_shot_lib.api.client.event.BlockModelLoadingEvent;
+import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent;
 import net.typho.big_shot_lib.impl.client.NeoClientEventBusImpl;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,25 +40,31 @@ public class ModelManagerMixin {
             int[] numModels = { 0 };
             int[] numStates = { 0 };
 
-            var output = new BlockModelLoadingEvent.Output() {
+            var output = new ModelLoadingEvent.Output() {
                 @Override
                 public void registerStateJson(@NotNull Identifier location, @NotNull JsonElement state) {
-                    mutableStates.put(location.withPrefix("blockstates/").withSuffix(".json"), Collections.singletonList(new BlockStateModelLoader.LoadedJson(BigShotApi.id("dynamic_block_models").toString(), state)));
-                    numModels[0]++;
+                    var old = mutableStates.putIfAbsent(location.withPrefix("blockstates/").withSuffix(".json"), Collections.singletonList(new BlockStateModelLoader.LoadedJson(BigShotApi.id("dynamic_block_models").toString(), state)));
+
+                    if (old == null) {
+                        numModels[0]++;
+                    }
                 }
 
                 @Override
                 public void register(@NotNull Identifier location, @NotNull BlockModel model) {
-                    mutableModels.put(location.withPrefix("models/").withSuffix(".json"), model);
-                    numStates[0]++;
+                    var old = mutableModels.putIfAbsent(location.withPrefix("models/").withSuffix(".json"), model);
+
+                    if (old == null) {
+                        numStates[0]++;
+                    }
                 }
             };
 
-            for (BlockModelLoadingEvent event : NeoClientEventBusImpl.BLOCK_MODEL_LOADING_EVENTS) {
+            for (ModelLoadingEvent event : NeoClientEventBusImpl.MODEL_LOADING_EVENTS) {
                 event.load(output);
             }
 
-            BigShotApi.LOGGER.info("Loaded {} dynamic models, and {} block states", numModels[0], numStates[0]);
+            BigShotApi.LOGGER.info("Loaded {} dynamic models, and {} dynamic block states", numModels[0], numStates[0]);
 
             return func.apply(mutableModels, mutableStates);
         };
