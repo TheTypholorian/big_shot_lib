@@ -16,6 +16,7 @@ import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import java.util.function.Supplier
 import java.util.function.UnaryOperator
 
 @Suppress("UNCHECKED_CAST")
@@ -26,9 +27,9 @@ open class ItemContentFactory : ContentFactory<Item> {
     @JvmField
     protected val toRegister = arrayListOf<RegisteredObject<out Item>>()
     @JvmField
-    protected val dynamicRecipes = hashMapOf<ResourceKey<out Recipe<*>>, () -> RecipeBuilder>()
+    protected val dynamicRecipes = hashMapOf<ResourceKey<out Recipe<*>>, Supplier<out RecipeBuilder>>()
     @JvmField
-    protected val dynamicExistingRecipes = hashMapOf<ResourceKey<out Recipe<*>>, () -> Recipe<*>>()
+    protected val dynamicExistingRecipes = hashMapOf<ResourceKey<out Recipe<*>>, Supplier<out Recipe<*>>>()
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<ResourceKey<out Item>>>()
 
@@ -36,8 +37,8 @@ open class ItemContentFactory : ContentFactory<Item> {
         return beginComplex(key) { Item(it) }
     }
 
-    open fun beginBlockItem(key: Identifier, block: () -> Block): Builder<BlockItem, *> {
-        return beginComplex(key) { BlockItem(block(), it) }
+    open fun beginBlockItem(key: Identifier, block: Supplier<out Block>): Builder<BlockItem, *> {
+        return beginComplex(key) { BlockItem(block.get(), it) }
     }
 
     open fun <V : Item> beginComplex(key: Identifier, constructor: (properties: Item.Properties) -> V): Builder<V, *> {
@@ -55,8 +56,8 @@ open class ItemContentFactory : ContentFactory<Item> {
         bus.register(RegisterDynamicRecipesEvent { out, registries ->
             registered = true
 
-            dynamicRecipes.forEach { (key, value) -> out.register(key, value()) }
-            dynamicExistingRecipes.forEach { (key, value) -> out.register(key, value()) }
+            dynamicRecipes.forEach { (key, value) -> out.register(key, value.get()) }
+            dynamicExistingRecipes.forEach { (key, value) -> out.register(key, value.get()) }
         })
         bus.register(RegisterDynamicTagsEvent { out ->
             registered = true
@@ -107,14 +108,14 @@ open class ItemContentFactory : ContentFactory<Item> {
         @JvmField
         protected var registered: RegisteredObject<T>? = null
 
-        fun properties(properties: Item.Properties.() -> Item.Properties): B {
-            this.properties = properties(this.properties)
+        fun properties(properties: UnaryOperator<Item.Properties>): B {
+            this.properties = properties.apply(this.properties)
             return this as B
         }
 
-        fun client(info: ClientInfo<*>.() -> ClientInfo<*>): B {
+        fun client(info: UnaryOperator<ClientInfo<*>>): B {
             if (PlatformUtil.INSTANCE.isClient()) {
-                clientInfo = info(clientInfo ?: ClientInfoImpl())
+                clientInfo = info.apply(clientInfo ?: ClientInfoImpl())
             }
 
             return this as B

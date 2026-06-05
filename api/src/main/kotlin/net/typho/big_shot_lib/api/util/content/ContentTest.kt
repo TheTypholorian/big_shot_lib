@@ -41,19 +41,19 @@ object ContentTest : BigShotCommonEntrypoint {
 
     val testItem = items.begin(id("test_item"))
         .properties {
-            stacksTo(31)
-            rarity(Rarity.RARE)
-            food(FoodProperties.Builder()
-                .fast()
-                .nutrition(2000)
-                .alwaysEdible()
-                .saturationModifier(200f)
-                .effect(MobEffectInstance(MobEffects.WITHER, 200, 200), 1f)
-                .usingConvertsTo { Items.MUD }
-                .build())
+            it.stacksTo(99)
+                .rarity(Rarity.RARE)
+                .food(FoodProperties.Builder()
+                    .fast()
+                    .nutrition(2000)
+                    .alwaysEdible()
+                    .saturationModifier(200f)
+                    .effect(MobEffectInstance(MobEffects.WITHER, 200, 200), 1f)
+                    .usingConvertsTo { Items.MUD }
+                    .build())
         }
-        .recipe { item ->
-            ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, item)
+        .recipe {
+            ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, it)
                 .unlockedBy("has_mud", RecipeProvider.has(Items.MUD))
                 .define('M', Items.MUD)
                 .pattern("M M")
@@ -65,15 +65,21 @@ object ContentTest : BigShotCommonEntrypoint {
 
     val testBlock1 = blocks.begin(id("test_block"))
         .properties {
-            instabreak()
-            ignitedByLava()
+            it.instabreak()
+                .ignitedByLava()
+        }
+        .item {
+            it.properties {
+                it.stacksTo(99)
+                    .rarity(Rarity.RARE)
+            }
         }
         .end()
     val testBlock2 = blocks.begin(id("test_block_b"))
         .properties {
-            emissiveRendering { state, getter, pos -> true }
-            lightLevel { 15 }
-            sound(SoundType.MUD)
+            it.emissiveRendering { state, getter, pos -> true }
+                .lightLevel { 15 }
+                .sound(SoundType.MUD)
         }
         .end()
     val testStairs = blocks.beginStairs(id("test_stairs"), testBlock1).end()
