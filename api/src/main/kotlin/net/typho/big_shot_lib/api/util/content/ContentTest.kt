@@ -77,11 +77,13 @@ object ContentTest : BigShotCommonEntrypoint {
             sound(SoundType.MUD)
         }
         .end()
+    /*
     val testStairs = blocks.beginStairs(testBlock1, id("test_stairs"))
         .properties {
             sound(SoundType.WOOL)
         }
         .end()
+     */
 
     val testAdvancement = advancements.begin(id("test_advancement"))
         .parent(Identifier.minecraft("adventure/trade"))
@@ -101,21 +103,10 @@ object ContentTest : BigShotCommonEntrypoint {
         override val modId: String = ContentTest.modId
 
         override fun onInitializeClient(bus: NeoClientEventBus) {
-            bus.register(object : BlockModelLoadingEvent {
-                override fun loadModels(out: BlockModelLoadingEvent.ModelOutput) {
-                    out.register(ModelTemplates.CUBE_ALL, testBlock1) {
-                        TextureMapping().put(TextureSlot.ALL, TextureMapping.getBlockTexture(testBlock1.get()))
-                    }
-                }
-
-                override fun loadStates(out: BlockModelLoadingEvent.StateOutput) {
-                    out.register(testBlock1.get()) {
-                        MultiVariantGenerator.multiVariant(testBlock1.get(), Variant.variant().with(VariantProperties.MODEL, ModelTemplates.CUBE_ALL.getDefaultModelLocation(testBlock1.get())))
-                        // TODO
-                        //BlockModelGenerators.createSimpleBlock()
-                    }
-                }
-            })
+            blocks.endClient(bus)
+            items.endClient(bus)
+            advancements.endClient(bus)
+            loot.endClient(bus)
         }
     }
 }

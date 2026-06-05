@@ -3,6 +3,10 @@ package net.typho.big_shot_lib.api.util.content
 import net.minecraft.client.color.block.BlockColor
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
+import net.minecraft.data.models.BlockModelGenerators
+import net.minecraft.data.models.model.ModelTemplates
+import net.minecraft.data.models.model.TextureMapping
+import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.BlockTags
@@ -27,14 +31,18 @@ import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.entries.LootItem
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
+import net.typho.big_shot_lib.api.client.event.BlockModelLoadingEvent
+import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
+import net.typho.big_shot_lib.api.plugin.Environment
+import net.typho.big_shot_lib.api.plugin.OnlyIn
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import java.util.function.BiFunction
 import java.util.function.Function
-import java.util.function.UnaryOperator
+import java.util.function.Supplier
 import kotlin.collections.addAll
 
 @Suppress("UNCHECKED_CAST")
@@ -51,13 +59,51 @@ open class BlockContentFactory @JvmOverloads constructor(
     protected val toRegister = hashMapOf<ResourceKey<out Block>, RegisteredObject<out Block>>()
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<out Block>, MutableSet<ResourceKey<out Block>>>()
+    @JvmField
+    @OnlyIn(Environment.CLIENT)
+    protected val models = arrayListOf<BlockModelLoadingEvent>()
 
     override fun begin(key: Identifier): Builder<Block, *> {
         return beginComplex(key) { Block(it) }
+            .client {
+                model { block, textures ->
+                    BlockModelLoadingEvent { out ->
+                        val block = block.get()
+                        val textures = textures.get()
+
+                        out.register(
+                            block,
+                            BlockModelGenerators.createSimpleBlock(
+                                block,
+                                out.register(ModelTemplates.CUBE_ALL, block, textures)
+                            )
+                        )
+                    }
+                }
+            }
     }
 
-    open fun beginStairs(parent: () -> Block, key: Identifier): Builder<StairBlock, *> {
+    @JvmOverloads
+    open fun beginStairs(parent: () -> Block, key: Identifier, textures: (block: Block) -> TextureMapping = TextureMapping::cube): Builder<StairBlock, *> {
         return beginComplex(key) { StairBlock(parent().defaultBlockState(), it) }
+            .client {
+                model { block, textures ->
+                    BlockModelLoadingEvent { out ->
+                        val block = block.get()
+                        val textures = textures.get()
+
+                        out.register(
+                            block,
+                            BlockModelGenerators.createStairs(
+                                block,
+                                out.register(ModelTemplates.STAIRS_INNER, block, textures),
+                                out.register(ModelTemplates.STAIRS_STRAIGHT, block, textures),
+                                out.register(ModelTemplates.STAIRS_OUTER, block, textures)
+                            )
+                        )
+                    }
+                }
+            }
             .tags(BlockTags.STAIRS)
     }
 
@@ -120,15 +166,43 @@ open class BlockContentFactory @JvmOverloads constructor(
         })
     }
 
-    private class ClientInfoImpl : ClientInfo<ClientInfoImpl>()
+    @OnlyIn(Environment.CLIENT)
+    override fun endClient(bus: NeoClientEventBus) {
+        models.forEach { bus.register(it) }
+    }
 
-    open class ClientInfo<B : ClientInfo<B>> {
+    private class ClientInfoImpl(
+        parent: BlockContentFactory
+    ) : ClientInfo<ClientInfoImpl>(parent)
+
+    open class ClientInfo<B : ClientInfo<B>>(
+        @JvmField
+        val parent: BlockContentFactory
+    ) {
         @JvmField
         protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
+        @JvmField
+        protected var model: Function<RegisteredObject<out Block>, BlockModelLoadingEvent>? = null
+        @JvmField
+        protected var textures: Function<RegisteredObject<out Block>, TextureMapping> = Function { TextureMapping.cube(it.get()) }
 
         fun renderType(renderType: NeoRenderType): B {
             this.renderType = renderType
             return this as B
+        }
+
+        fun model(model: BiFunction<RegisteredObject<out Block>, Supplier<TextureMapping>, BlockModelLoadingEvent>): B {
+            this.model = Function { block -> model.apply(block, Supplier { textures.apply(block) }) }
+            return this as B
+        }
+
+        fun textures(textures: Function<RegisteredObject<out Block>, TextureMapping>): B {
+            this.textures = textures
+            return this as B
+        }
+
+        fun end(block: RegisteredObject<out Block>) {
+            model?.apply(block)?.let { parent.models.add(it) }
         }
     }
 
@@ -149,7 +223,7 @@ open class BlockContentFactory @JvmOverloads constructor(
         @JvmField
         protected var properties: BlockBehaviour.Properties = BlockBehaviour.Properties.of()
         @JvmField
-        protected var clientInfo: ClientInfo<*>? = null // TODO do stuff with this
+        protected var clientInfo: ClientInfo<*>? = null
         // TODO block item
         // TODO block entity
         @JvmField
@@ -186,9 +260,9 @@ open class BlockContentFactory @JvmOverloads constructor(
             return this as B
         }
 
-        fun clientInfo(info: UnaryOperator<ClientInfo<*>>): B {
+        fun client(info: ClientInfo<*>.() -> ClientInfo<*>): B {
             if (PlatformUtil.INSTANCE.isClient()) {
-                clientInfo = info.apply(clientInfo ?: ClientInfoImpl())
+                clientInfo = info(clientInfo ?: ClientInfoImpl(parent))
             }
 
             return this as B
@@ -262,6 +336,7 @@ open class BlockContentFactory @JvmOverloads constructor(
                     lootTable?.apply(block, item)
                 }
             }
+            clientInfo?.end(block)
 
             return block
         }

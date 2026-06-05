@@ -112,9 +112,9 @@ open class ItemContentFactory : ContentFactory<Item> {
             return this as B
         }
 
-        fun clientInfo(info: UnaryOperator<ClientInfo<*>>): B {
+        fun client(info: ClientInfo<*>.() -> ClientInfo<*>): B {
             if (PlatformUtil.INSTANCE.isClient()) {
-                clientInfo = info.apply(clientInfo ?: ClientInfoImpl())
+                clientInfo = info(clientInfo ?: ClientInfoImpl())
             }
 
             return this as B

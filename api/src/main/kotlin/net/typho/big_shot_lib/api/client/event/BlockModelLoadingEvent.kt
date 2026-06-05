@@ -9,42 +9,57 @@ import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.resources.Identifier
 import net.minecraft.world.level.block.Block
 
-interface BlockModelLoadingEvent {
-    fun loadModels(out: ModelOutput)
+fun interface BlockModelLoadingEvent {
+    fun load(out: Output)
 
-    fun loadStates(out: StateOutput)
+    interface Output {
+        fun register(location: Identifier, model: BlockModel)
 
-    interface ModelOutput {
-        fun register(location: Identifier, model: () -> BlockModel)
-
-        fun registerJson(location: Identifier, model: () -> JsonElement) {
-            register(location) {
-                BlockModel.fromString(model().toString())
-            }
+        fun registerModelJson(location: Identifier, model: JsonElement) {
+            register(location, BlockModel.fromString(model.toString()))
         }
 
-        fun register(template: ModelTemplate, block: () -> Block, textures: () -> TextureMapping) {
-            template.create(block(), textures()) { location, json -> registerJson(location) { json.get() } }
+        fun register(template: ModelTemplate, block: Block, textures: TextureMapping): Identifier {
+            return template.create(block, textures) { location, json -> registerModelJson(location, json.get()) }
         }
 
-        fun register(template: ModelTemplate, location: Identifier, textures: () -> TextureMapping) {
-            template.create(location, textures()) { location, json -> registerJson(location) { json.get() } }
-        }
-    }
-
-    interface StateOutput {
-        fun register(location: Identifier, state: () -> BlockStateGenerator) {
-            registerJson(location) { state().get() }
+        fun register(template: ModelTemplate, location: Identifier, textures: TextureMapping): Identifier {
+            return template.create(location, textures) { location, json -> registerModelJson(location, json.get()) }
         }
 
-        fun registerJson(location: Identifier, state: () -> JsonElement)
+        fun register(location: Identifier, state: BlockStateGenerator) {
+            registerStateJson(location, state.get())
+        }
 
-        fun register(block: Block, state: () -> BlockStateGenerator) {
+        fun registerStateJson(location: Identifier, state: JsonElement)
+
+        fun register(block: Block, state: BlockStateGenerator) {
             register(BuiltInRegistries.BLOCK.getKey(block), state)
         }
 
-        fun registerJson(block: Block, state: () -> JsonElement) {
-            registerJson(BuiltInRegistries.BLOCK.getKey(block), state)
+        fun registerStateJson(block: Block, state: JsonElement) {
+            registerStateJson(BuiltInRegistries.BLOCK.getKey(block), state)
+        }
+    }
+
+    data class Storage(
+        @JvmField
+        val models: MutableList<Pair<Identifier, BlockModel>> = arrayListOf(),
+        @JvmField
+        val states: MutableList<Pair<Identifier, JsonElement>> = arrayListOf()
+    ) : Output {
+        override fun register(
+            location: Identifier,
+            model: BlockModel
+        ) {
+            models.add(location to model)
+        }
+
+        override fun registerStateJson(
+            location: Identifier,
+            state: JsonElement
+        ) {
+            states.add(location to state)
         }
     }
 }

@@ -48,7 +48,6 @@ fun interface RegisterEvent {
                 key: ResourceKey<out Registry<T>>,
                 out: Consumer<RegistrationConsumer<T>>
             ) {
-                BigShotApi.LOGGER.info("beginning $key ${registry.key()}")
                 if (key == registry.key()) {
                     val info = RegistrationInfo(Optional.empty(), Lifecycle.stable())
                     out.accept(object : RegistrationConsumer<T> {
