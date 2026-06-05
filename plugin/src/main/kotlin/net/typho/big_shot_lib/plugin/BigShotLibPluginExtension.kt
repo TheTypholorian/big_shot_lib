@@ -11,7 +11,12 @@ import javax.inject.Inject
 abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFactory) {
     abstract val version: Property<MCVersion>
     abstract val loader: Property<ModLoader>
+    abstract val hasFletchingTable: Property<Boolean>
     val transformInfo: TransformInfo = objects.newInstance(TransformInfo::class.java, version)
+
+    init {
+        hasFletchingTable.convention(false)
+    }
 
     fun transformInfo(action: Action<in TransformInfo>) {
         action.execute(transformInfo)

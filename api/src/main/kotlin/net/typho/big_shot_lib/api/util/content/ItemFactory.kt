@@ -31,7 +31,7 @@ import java.util.function.Supplier
 import java.util.function.UnaryOperator
 
 @Suppress("UNCHECKED_CAST")
-open class ItemContentFactory : ContentFactory<Item> {
+open class ItemFactory : ContentFactory<Item> {
     override val registry: ResourceKey<Registry<Item>> = Registries.ITEM
     @JvmField
     protected var registered = false
@@ -101,12 +101,12 @@ open class ItemContentFactory : ContentFactory<Item> {
     }
 
     private class ClientInfoImpl<T : Item>(
-        parent: ItemContentFactory
+        parent: ItemFactory
     ) : ClientInfo<T, ClientInfoImpl<T>>(parent)
 
     open class ClientInfo<T : Item, B : ClientInfo<T, B>>(
         @JvmField
-        protected val parent: ItemContentFactory
+        protected val parent: ItemFactory
     ) {
         @JvmField
         protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
@@ -131,7 +131,7 @@ open class ItemContentFactory : ContentFactory<Item> {
     private class BuilderImpl<T : Item>(
         key: ResourceKey<T>,
         constructor: (properties: Item.Properties) -> T,
-        parent: ItemContentFactory
+        parent: ItemFactory
     ) : Builder<T, BuilderImpl<T>>(key, constructor, parent)
 
     open class Builder<T : Item, B : Builder<T, B>>(
@@ -140,7 +140,7 @@ open class ItemContentFactory : ContentFactory<Item> {
         @JvmField
         protected val constructor: (properties: Item.Properties) -> T,
         @JvmField
-        protected val parent: ItemContentFactory
+        protected val parent: ItemFactory
     ) : ObjectBuilder<RegisteredObject<T>> {
         @JvmField
         protected var properties: Item.Properties = Item.Properties()

@@ -6,9 +6,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import com.mojang.serialization.Codec
 import net.minecraft.resources.Identifier
-import net.minecraft.resources.ResourceKey
-import net.typho.big_shot_lib.api.BigShotApi.lookupOrThrow
-import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.InternalClientUtil
 
 object NeoVertexFormats {
     @JvmField
@@ -44,7 +42,7 @@ object NeoVertexFormats {
      * - 1 byte padding
      */
     @JvmField
-    val BLOCK = InternalUtil.INSTANCE.blockVertexFormat
+    val BLOCK = InternalClientUtil.INSTANCE.blockVertexFormat
     /**
      * - Position
      * - Color
@@ -55,7 +53,7 @@ object NeoVertexFormats {
      * - 1 byte padding
      */
     @JvmField
-    val NEW_ENTITY = InternalUtil.INSTANCE.newEntityVertexFormat
+    val NEW_ENTITY = InternalClientUtil.INSTANCE.newEntityVertexFormat
     /**
      * - Position
      * - Texture UV
@@ -63,18 +61,18 @@ object NeoVertexFormats {
      * - Light UV
      */
     @JvmField
-    val PARTICLE = InternalUtil.INSTANCE.particleVertexFormat
+    val PARTICLE = InternalClientUtil.INSTANCE.particleVertexFormat
     /**
      * - Position
      */
     @JvmField
-    val POSITION = InternalUtil.INSTANCE.positionVertexFormat
+    val POSITION = InternalClientUtil.INSTANCE.positionVertexFormat
     /**
      * - Position
      * - Color
      */
     @JvmField
-    val POSITION_COLOR = InternalUtil.INSTANCE.positionColorVertexFormat
+    val POSITION_COLOR = InternalClientUtil.INSTANCE.positionColorVertexFormat
     /**
      * - Position
      * - Color
@@ -82,27 +80,27 @@ object NeoVertexFormats {
      * - 1 byte padding
      */
     @JvmField
-    val POSITION_COLOR_NORMAL = InternalUtil.INSTANCE.positionColorNormalVertexFormat
+    val POSITION_COLOR_NORMAL = InternalClientUtil.INSTANCE.positionColorNormalVertexFormat
     /**
      * - Position
      * - Color
      * - Light UV
      */
     @JvmField
-    val POSITION_COLOR_LIGHTMAP = InternalUtil.INSTANCE.positionColorLightVertexFormat
+    val POSITION_COLOR_LIGHTMAP = InternalClientUtil.INSTANCE.positionColorLightVertexFormat
     /**
      * - Position
      * - Texture UV
      */
     @JvmField
-    val POSITION_TEX = InternalUtil.INSTANCE.positionTexVertexFormat
+    val POSITION_TEX = InternalClientUtil.INSTANCE.positionTexVertexFormat
     /**
      * - Position
      * - Texture UV
      * - Color
      */
     @JvmField
-    val POSITION_TEX_COLOR = InternalUtil.INSTANCE.positionTexColorVertexFormat
+    val POSITION_TEX_COLOR = InternalClientUtil.INSTANCE.positionTexColorVertexFormat
     /**
      * - Position
      * - Color
@@ -110,7 +108,7 @@ object NeoVertexFormats {
      * - Light UV
      */
     @JvmField
-    val POSITION_COLOR_TEX_LIGHTMAP = InternalUtil.INSTANCE.positionColorTexLightVertexFormat
+    val POSITION_COLOR_TEX_LIGHTMAP = InternalClientUtil.INSTANCE.positionColorTexLightVertexFormat
     /**
      * - Position
      * - Texture UV
@@ -118,7 +116,7 @@ object NeoVertexFormats {
      * - Color
      */
     @JvmField
-    val POSITION_TEX_LIGHTMAP_COLOR = InternalUtil.INSTANCE.positionTexLightColorVertexFormat
+    val POSITION_TEX_LIGHTMAP_COLOR = InternalClientUtil.INSTANCE.positionTexLightColorVertexFormat
     /**
      * - Position
      * - Texture UV
@@ -127,7 +125,7 @@ object NeoVertexFormats {
      * - 1 byte padding
      */
     @JvmField
-    val POSITION_TEX_COLOR_NORMAL = InternalUtil.INSTANCE.positionTexColorNormalVertexFormat
+    val POSITION_TEX_COLOR_NORMAL = InternalClientUtil.INSTANCE.positionTexColorNormalVertexFormat
 
     /**
      * ```
@@ -141,7 +139,7 @@ object NeoVertexFormats {
      * ```
      */
     @JvmField
-    val POSITION_ELEMENT = InternalUtil.INSTANCE.positionVertexElement
+    val POSITION_ELEMENT = InternalClientUtil.INSTANCE.positionVertexElement
     /**
      * ```
      * Id: 1
@@ -154,7 +152,7 @@ object NeoVertexFormats {
      * ```
      */
     @JvmField
-    val COLOR_ELEMENT = InternalUtil.INSTANCE.colorVertexElement
+    val COLOR_ELEMENT = InternalClientUtil.INSTANCE.colorVertexElement
     /**
      * ```
      * Id: 2
@@ -167,7 +165,7 @@ object NeoVertexFormats {
      * ```
      */
     @JvmField
-    val TEXTURE_UV_ELEMENT = InternalUtil.INSTANCE.textureUVVertexElement
+    val TEXTURE_UV_ELEMENT = InternalClientUtil.INSTANCE.textureUVVertexElement
     /**
      * ```
      * Id: 3
@@ -180,7 +178,7 @@ object NeoVertexFormats {
      * ```
      */
     @JvmField
-    val OVERLAY_UV_ELEMENT = InternalUtil.INSTANCE.overlayUVVertexElement
+    val OVERLAY_UV_ELEMENT = InternalClientUtil.INSTANCE.overlayUVVertexElement
     /**
      * ```
      * Id: 4
@@ -193,7 +191,7 @@ object NeoVertexFormats {
      * ```
      */
     @JvmField
-    val LIGHT_UV_ELEMENT = InternalUtil.INSTANCE.lightUVVertexElement
+    val LIGHT_UV_ELEMENT = InternalClientUtil.INSTANCE.lightUVVertexElement
     /**
      * ```
      * Id: 5
@@ -206,7 +204,7 @@ object NeoVertexFormats {
      * ```
      */
     @JvmField
-    val NORMAL_ELEMENT = InternalUtil.INSTANCE.normalVertexElement
+    val NORMAL_ELEMENT = InternalClientUtil.INSTANCE.normalVertexElement
 
     init {
         register(Identifier.minecraft("block"), BLOCK)

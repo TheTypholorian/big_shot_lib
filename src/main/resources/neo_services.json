@@ -1,5 +1,5 @@
 {
-  "net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint": [
+  "net.typho.big_shot_lib.api.client.util.NeoClientInitializer": [
     "net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader"
   ],
   "net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue": [
@@ -7,6 +7,9 @@
   ],
   "net.typho.big_shot_lib.api.InternalUtil": [
     "net.typho.big_shot_lib.impl.InternalUtilImpl"
+  ],
+  "net.typho.big_shot_lib.api.client.InternalClientUtil": [
+    "net.typho.big_shot_lib.impl.client.InternalClientUtilImpl"
   ],
   "net.typho.big_shot_lib.api.util.BlockUtil": [
     "net.typho.big_shot_lib.impl.util.BlockUtilImpl"

@@ -12,7 +12,6 @@ import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 //? if <1.21.10 {
 @Mixin(RenderStateShard.class)
 //? } else {

@@ -7,6 +7,7 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.InternalClientUtil
 
 interface NeoBakedQuad {
     val vertices: Array<NeoVertexData>
@@ -38,7 +39,7 @@ interface NeoBakedQuad {
             direction: Direction,
             sprite: TextureAtlasSprite,
             shade: Boolean
-        ) = InternalUtil.INSTANCE.createBakedQuad(vertices, tintIndex, direction, sprite, shade)
+        ) = InternalClientUtil.INSTANCE.createBakedQuad(vertices, tintIndex, direction, sprite, shade)
     }
 
     abstract class Consumer(

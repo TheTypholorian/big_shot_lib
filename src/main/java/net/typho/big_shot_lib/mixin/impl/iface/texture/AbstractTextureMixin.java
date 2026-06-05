@@ -19,7 +19,6 @@ import static org.lwjgl.opengl.GL11.*;
 import com.mojang.blaze3d.opengl.GlTexture;
 *///? }
 
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(AbstractTexture.class)
 public abstract class AbstractTextureMixin implements GlTexture2D {
     //? if <1.21.5 {

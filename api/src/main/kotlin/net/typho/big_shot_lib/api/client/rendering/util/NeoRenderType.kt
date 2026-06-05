@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
@@ -38,7 +39,7 @@ interface NeoRenderType : GpuDrawState, MaybeNamedResource {
             affectsCrumbling: Boolean = true,
             sortOnUpload: Boolean = false,
             isOutline: Boolean = false
-        ): RenderType = InternalUtil.INSTANCE.createRenderType(
+        ): RenderType = InternalClientUtil.INSTANCE.createRenderType(
             location,
             format,
             drawState,

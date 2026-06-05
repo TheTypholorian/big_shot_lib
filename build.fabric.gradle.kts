@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
+import groovy.json.JsonOutput.prettyPrint
 import net.fabricmc.loom.task.RemapJarTask
 import net.fabricmc.loom.task.RemapSourcesJarTask
 
@@ -69,7 +70,9 @@ sourceSets {
 
 fletchingTable {
     mixins.create("main") {
-        mixin("default", "${project.property("mod.id")}.mixins.json")
+        mixin("default", "${project.property("mod.id")}.mixins.json") {
+            env("CLIENT", "net.typho.big_shot_lib.mixin.impl.client")
+        }
     }
 }
 

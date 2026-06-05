@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
@@ -42,6 +43,6 @@ interface GlBuffer : GlResource {
     companion object {
         @JvmStatic
         @JvmName("create")
-        operator fun invoke(size: Long, usage: GlBufferUsage, target: GlBufferTarget) = InternalUtil.INSTANCE.createBuffer(size, usage, target)
+        operator fun invoke(size: Long, usage: GlBufferUsage, target: GlBufferTarget) = InternalClientUtil.INSTANCE.createBuffer(size, usage, target)
     }
 }

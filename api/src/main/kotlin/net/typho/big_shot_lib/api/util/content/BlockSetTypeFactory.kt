@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.typho.big_shot_lib.api.BigShotApi.toShortString
 
 @Suppress("UNCHECKED_CAST")
-open class BlockSetTypeContentFactory : ContentFactory<BlockSetType> {
+open class BlockSetTypeFactory : ContentFactory<BlockSetType> {
     override val registry: ResourceKey<Registry<BlockSetType>> = ResourceKey.createRegistryKey(Identifier.minecraft("block_set_type"))
 
     override fun begin(key: Identifier): Builder<*> {

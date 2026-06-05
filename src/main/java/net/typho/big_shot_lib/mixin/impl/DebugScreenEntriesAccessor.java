@@ -17,7 +17,6 @@ import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(DebugScreenEntries.class)
 public interface DebugScreenEntriesAccessor {
     @Invoker("register")

@@ -34,7 +34,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 *///? }
 
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
     //? if >=1.21.9 {

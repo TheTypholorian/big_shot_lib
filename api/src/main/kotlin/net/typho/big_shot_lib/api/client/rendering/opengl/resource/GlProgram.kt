@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.UniformOutput
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormat
@@ -45,14 +46,14 @@ interface GlProgram : NamedResource, GlResource, UniformOutput {
         @JvmStatic
         @JvmOverloads
         @JvmName("create")
-        operator fun invoke(location: Identifier, format: VertexFormat, glId: Int = GlResourceType.PROGRAM.create()) = InternalUtil.INSTANCE.createProgram(
+        operator fun invoke(location: Identifier, format: VertexFormat, glId: Int = GlResourceType.PROGRAM.create()) = InternalClientUtil.INSTANCE.createProgram(
             location,
             format,
             glId,
         )
 
         @JvmStatic
-        operator fun get(location: Identifier): GlProgram? = InternalUtil.INSTANCE.getProgram(location)
+        operator fun get(location: Identifier): GlProgram? = InternalClientUtil.INSTANCE.getProgram(location)
 
         @JvmStatic
         fun getOrThrow(location: Identifier): GlProgram = get(location) ?: throw NullPointerException("No shader program $location")

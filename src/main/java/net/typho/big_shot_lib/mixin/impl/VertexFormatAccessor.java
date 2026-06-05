@@ -13,7 +13,6 @@ import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(VertexFormat.class)
 public interface VertexFormatAccessor {
     @Accessor("offsets")

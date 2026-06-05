@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
 import net.typho.big_shot_lib.api.error.ShaderCompileException
 import net.typho.big_shot_lib.api.util.resource.NamedResource
@@ -65,7 +66,7 @@ interface GlShader : NamedResource, GlResource {
         @JvmStatic
         @JvmOverloads
         @JvmName("create")
-        operator fun invoke(location: Identifier, type: GlShaderType, glId: Int = type.resourceType.create()) = InternalUtil.INSTANCE.createShader(
+        operator fun invoke(location: Identifier, type: GlShaderType, glId: Int = type.resourceType.create()) = InternalClientUtil.INSTANCE.createShader(
             location,
             type,
             glId,

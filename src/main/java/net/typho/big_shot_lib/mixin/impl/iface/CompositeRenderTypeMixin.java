@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 
 @MixinIgnore
 *///? }
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(RenderType.CompositeRenderType.class)
 public abstract class CompositeRenderTypeMixin extends RenderType implements NeoRenderType {
     //? if >=1.21.5 {

@@ -6,7 +6,6 @@ import org.joml.FrustumIntersection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(Frustum.class)
 public interface FrustumAccessor {
     @Accessor("intersection")

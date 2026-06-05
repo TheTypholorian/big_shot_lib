@@ -10,6 +10,7 @@ import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.Sta
 import net.typho.big_shot_lib.plugin.MCVersion
 import net.typho.big_shot_lib.plugin.ModLoader
 import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
+import org.gradle.api.Project
 import org.gradle.api.artifacts.transform.TransformParameters
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -38,6 +39,8 @@ interface NeoTransformParameters : TransformParameters {
     val clientOnlyPackages: ListProperty<String>
     @get:Input
     val serverOnlyPackages: ListProperty<String>
+    @get:Input
+    val hasFletchingTable: Property<Boolean>
 
     fun set(ext: BigShotLibPluginExtension) {
         classRenames.set(ext.transformInfo.classRenames)
@@ -55,5 +58,7 @@ interface NeoTransformParameters : TransformParameters {
 
         version.set(ext.version)
         loader.set(ext.loader)
+
+        hasFletchingTable.set(ext.hasFletchingTable)
     }
 }

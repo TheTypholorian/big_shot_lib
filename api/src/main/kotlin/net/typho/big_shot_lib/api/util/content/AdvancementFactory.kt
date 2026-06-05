@@ -19,7 +19,7 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 
 @Suppress("UNCHECKED_CAST")
-open class AdvancementContentFactory : ContentFactory<Advancement> {
+open class AdvancementFactory : ContentFactory<Advancement> {
     override val registry: ResourceKey<Registry<Advancement>> = Registries.ADVANCEMENT
     @JvmField
     protected var registered = false
@@ -44,14 +44,14 @@ open class AdvancementContentFactory : ContentFactory<Advancement> {
 
     private class BuilderImpl(
         key: ResourceKey<Advancement>,
-        parent: AdvancementContentFactory
+        parent: AdvancementFactory
     ) : Builder<BuilderImpl>(key, parent)
 
     open class Builder<B : Builder<B>>(
         @JvmField
         val key: ResourceKey<Advancement>,
         @JvmField
-        protected val parent: AdvancementContentFactory
+        protected val parent: AdvancementFactory
     ) : ObjectBuilder<RegisteredObject<Advancement>> {
         @JvmField
         protected val mutators = arrayListOf<(builder: Advancement.Builder) -> Advancement.Builder>()

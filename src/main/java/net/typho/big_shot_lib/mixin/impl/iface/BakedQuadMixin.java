@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(BakedQuad.class)
 public abstract class BakedQuadMixin implements NeoBakedQuad {
     @Unique

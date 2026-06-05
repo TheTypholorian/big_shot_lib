@@ -15,22 +15,22 @@ import net.minecraft.world.item.Rarity
 import net.minecraft.world.level.block.SoundType
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.client.event.NeoClientEventBus
-import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
+import net.typho.big_shot_lib.api.client.util.NeoClientInitializer
 import net.typho.big_shot_lib.api.event.NeoEventBus
-import net.typho.big_shot_lib.api.util.BigShotCommonEntrypoint
+import net.typho.big_shot_lib.api.util.NeoCommonInitializer
 
-object ContentTest : BigShotCommonEntrypoint {
+object ContentTest : NeoCommonInitializer {
     override val modId: String = BigShotApi.MOD_ID
 
     @JvmStatic
     fun id(path: String): Identifier = Identifier.of(modId, path)
 
-    val loot = LootTableContentFactory()
-    val advancements = AdvancementContentFactory()
-    val items = ItemContentFactory()
-    val blocks = BlockContentFactory(items, loot)
-    val blockSetTypes = BlockSetTypeContentFactory()
-    val creativeTabs = CreativeTabContentFactory()
+    val loot = LootTableFactory()
+    val advancements = AdvancementFactory()
+    val items = ItemFactory()
+    val blocks = BlockFactory(items, loot)
+    val blockSetTypes = BlockSetTypeFactory()
+    val creativeTabs = CreativeTabFactory()
 
     val tab = creativeTabs.begin(id("tab"))
         .end()
@@ -109,10 +109,10 @@ object ContentTest : BigShotCommonEntrypoint {
         creativeTabs.end(bus)
     }
 
-    object Client : BigShotClientEntrypoint {
+    object Client : NeoClientInitializer {
         override val modId: String = ContentTest.modId
 
-        override fun onInitializeClient(bus: NeoClientEventBus) {
+        override fun onInitialize(bus: NeoClientEventBus) {
             blocks.endClient(bus)
             items.endClient(bus)
             advancements.endClient(bus)

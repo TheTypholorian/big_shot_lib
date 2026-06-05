@@ -24,7 +24,6 @@ import dev.kikugie.fletching_table.annotation.MixinIgnore;
 @MixinIgnore
 //? }
 
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(GlTexture.class)
 public abstract class GlTextureMixin extends GpuTexture implements ImmutableExtension<GlTexture2D> {
     //? if <1.21.6 {

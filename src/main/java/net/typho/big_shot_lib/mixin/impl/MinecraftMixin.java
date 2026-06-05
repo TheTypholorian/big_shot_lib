@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.function.Function;
 
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
     @Shadow
@@ -40,7 +39,7 @@ public class MinecraftMixin {
     private void addInitialScreens(List<Function<Runnable, Screen>> list, CallbackInfo ci) {
         // TODO
         /*
-        BigShotClientEntrypoint.Companion.displayInitialScreens((text, onClose) -> {
+        NeoClientInitializer.Companion.displayInitialScreens((text, onClose) -> {
             list.add(onClose1 -> new InitialScreen(text, () -> {
                 onClose.invoke();
                 onClose1.run();

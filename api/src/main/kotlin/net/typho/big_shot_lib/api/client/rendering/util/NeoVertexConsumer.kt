@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering.util
 import com.mojang.blaze3d.vertex.PoseStack
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.math.rect.IRect3
 import net.typho.big_shot_lib.api.math.vec.IVec2
 import net.typho.big_shot_lib.api.math.vec.IVec3
@@ -164,7 +165,7 @@ interface NeoVertexConsumer {
     }
 
     fun normal(pose: PoseStack.Pose, x: Float, y: Float, z: Float): NeoVertexConsumer {
-        normal(InternalUtil.INSTANCE.transformNormal(pose, x, y, z))
+        normal(InternalClientUtil.INSTANCE.transformNormal(pose, x, y, z))
         return this
     }
 

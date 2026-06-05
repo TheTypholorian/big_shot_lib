@@ -13,7 +13,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats
-import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint
+import net.typho.big_shot_lib.api.client.util.NeoClientInitializer
 import net.typho.big_shot_lib.api.util.resource.ResourceRegistry
 import net.typho.big_shot_lib.api.util.*
 import java.io.BufferedReader
@@ -78,12 +78,12 @@ object NeoShaderLoader : ResourceRegistry<GlProgram>(
     BigShotApi.id("shaders"),
     mutableListOf<ResourceRegistry<*>>(shaderIncludes).also { it.addAll(shaderRegistries.values) },
     mutableListOf(FileToIdConverter.json("neo/shaders"))
-), BigShotClientEntrypoint {
+), NeoClientInitializer {
     @JvmField
     val preprocessors = hashSetOf<ShaderPreprocessor>(ShaderIncludePreprocessor)
     override val modId: String = BigShotApi.MOD_ID
 
-    override fun onInitializeClient(bus: NeoClientEventBus) {
+    override fun onInitialize(bus: NeoClientEventBus) {
         bus.register(AddAssetReloadListenersEvent {
             it(this)
         })

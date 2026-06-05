@@ -27,7 +27,6 @@ import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(GlBuffer.class)
 public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtension<net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer> {
     //? if <1.21.6 {

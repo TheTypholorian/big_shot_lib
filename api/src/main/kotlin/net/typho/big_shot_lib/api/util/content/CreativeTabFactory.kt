@@ -13,7 +13,7 @@ import net.typho.big_shot_lib.api.event.RegisterEvent
 import java.util.function.Supplier
 
 @Suppress("UNCHECKED_CAST")
-open class CreativeTabContentFactory : ContentFactory<CreativeModeTab> {
+open class CreativeTabFactory : ContentFactory<CreativeModeTab> {
     override val registry: ResourceKey<Registry<CreativeModeTab>> = Registries.CREATIVE_MODE_TAB
     @JvmField
     protected var registered = false
@@ -34,14 +34,14 @@ open class CreativeTabContentFactory : ContentFactory<CreativeModeTab> {
 
     private class BuilderImpl(
         key: ResourceKey<CreativeModeTab>,
-        parent: CreativeTabContentFactory
+        parent: CreativeTabFactory
     ) : Builder<BuilderImpl>(key, parent)
 
     open class Builder<B : Builder<B>>(
         @JvmField
         val key: ResourceKey<CreativeModeTab>,
         @JvmField
-        protected val parent: CreativeTabContentFactory
+        protected val parent: CreativeTabFactory
     ) : ObjectBuilder<RegisteredObject<CreativeModeTab>> {
         @JvmField
         protected val builder = InternalUtil.INSTANCE.createCreativeTabBuilder()

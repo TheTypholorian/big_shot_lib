@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 import com.mojang.blaze3d.pipeline.RenderTarget
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit
 
 interface NeoRenderTarget : GlResource {
@@ -27,7 +28,7 @@ interface NeoRenderTarget : GlResource {
         @JvmStatic
         @JvmOverloads
         @JvmName("create")
-        operator fun invoke(width: Int, height: Int, depth: Boolean = true, name: () -> String): RenderTarget = InternalUtil.INSTANCE.createRenderTarget(
+        operator fun invoke(width: Int, height: Int, depth: Boolean = true, name: () -> String): RenderTarget = InternalClientUtil.INSTANCE.createRenderTarget(
             width,
             height,
             depth,

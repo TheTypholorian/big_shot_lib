@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.BigShotApi
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
 
 interface GlTexture2D : GlResource {
@@ -15,11 +16,11 @@ interface GlTexture2D : GlResource {
 
     companion object {
         @JvmStatic
-        operator fun get(location: Identifier): AbstractTexture? = InternalUtil.INSTANCE.getTexture(location)
+        operator fun get(location: Identifier): AbstractTexture? = InternalClientUtil.INSTANCE.getTexture(location)
 
         @JvmStatic
         @JvmOverloads
         @JvmName("create")
-        operator fun invoke(width: Int, height: Int, format: GlTextureFormat = GlTextureFormat.RGBA8, blur: Boolean = false, mipmap: Boolean = false): GlTexture2D = InternalUtil.INSTANCE.createTexture(width, height, format, blur, mipmap)
+        operator fun invoke(width: Int, height: Int, format: GlTextureFormat = GlTextureFormat.RGBA8, blur: Boolean = false, mipmap: Boolean = false): GlTexture2D = InternalClientUtil.INSTANCE.createTexture(width, height, format, blur, mipmap)
     }
 }

@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(TextureAtlas.class)
 public abstract class TextureAtlasMixin extends AbstractTexture implements GlTexture2D {
     @Shadow

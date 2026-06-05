@@ -71,7 +71,9 @@ fletchingTable {
     }
 
     mixins.create("main") {
-        mixin("default", "${project.property("mod.id")}.mixins.json")
+        mixin("default", "${project.property("mod.id")}.mixins.json") {
+            env("CLIENT", "net.typho.big_shot_lib.mixin.impl.client")
+        }
     }
 }
 

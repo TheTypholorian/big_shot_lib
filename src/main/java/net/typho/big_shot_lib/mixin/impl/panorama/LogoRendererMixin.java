@@ -14,7 +14,7 @@ import net.typho.big_shot_lib.api.client.rendering.AdvancedLogoRenderer;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram;
 import net.typho.big_shot_lib.api.client.rendering.util.MainMenuMode;
 import net.typho.big_shot_lib.api.client.rendering.util.NeoGuiGraphics;
-import net.typho.big_shot_lib.api.client.util.BigShotClientEntrypoint;
+import net.typho.big_shot_lib.api.client.util.NeoClientInitializer;
 import net.typho.big_shot_lib.impl.client.MainMenuModeManager;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;

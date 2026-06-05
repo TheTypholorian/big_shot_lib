@@ -49,11 +49,11 @@ import java.util.function.UnaryOperator
 import kotlin.collections.addAll
 
 @Suppress("UNCHECKED_CAST")
-open class BlockContentFactory @JvmOverloads constructor(
+open class BlockFactory @JvmOverloads constructor(
     @JvmField
-    protected val items: ItemContentFactory? = null,
+    protected val items: ItemFactory? = null,
     @JvmField
-    protected val loot: LootTableContentFactory? = null
+    protected val loot: LootTableFactory? = null
 ) : ContentFactory<Block> {
     override val registry: ResourceKey<Registry<Block>> = Registries.BLOCK
     @JvmField
@@ -452,12 +452,12 @@ open class BlockContentFactory @JvmOverloads constructor(
     }
 
     private class ClientInfoImpl<T : Block>(
-        parent: BlockContentFactory
+        parent: BlockFactory
     ) : ClientInfo<T, ClientInfoImpl<T>>(parent)
 
     open class ClientInfo<T : Block, B : ClientInfo<T, B>>(
         @JvmField
-        protected val parent: BlockContentFactory
+        protected val parent: BlockFactory
     ) {
         @JvmField
         protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
@@ -496,7 +496,7 @@ open class BlockContentFactory @JvmOverloads constructor(
     private class BuilderImpl<T : Block>(
         key: ResourceKey<T>,
         constructor: (properties: BlockBehaviour.Properties) -> T,
-        parent: BlockContentFactory
+        parent: BlockFactory
     ) : Builder<T, BuilderImpl<T>>(key, constructor, parent)
 
     open class Builder<T : Block, B : Builder<T, B>>(
@@ -505,7 +505,7 @@ open class BlockContentFactory @JvmOverloads constructor(
         @JvmField
         protected val constructor: (properties: BlockBehaviour.Properties) -> T,
         @JvmField
-        protected val parent: BlockContentFactory
+        protected val parent: BlockFactory
     ) : ObjectBuilder<RegisteredObject<T>> {
         @JvmField
         protected var properties: BlockBehaviour.Properties = BlockBehaviour.Properties.of()
@@ -533,7 +533,7 @@ open class BlockContentFactory @JvmOverloads constructor(
         @JvmField
         protected val tags: MutableList<TagKey<Block>> = arrayListOf()
         @JvmField
-        protected var item: ItemContentFactory.Builder<BlockItem, *>? = parent.items?.beginBlockItem(key.location()) { registered!!.get() }
+        protected var item: ItemFactory.Builder<BlockItem, *>? = parent.items?.beginBlockItem(key.location()) { registered!!.get() }
         @JvmField
         protected var registered: RegisteredObject<T>? = null
 
@@ -565,7 +565,7 @@ open class BlockContentFactory @JvmOverloads constructor(
             return this as B
         }
 
-        fun item(builder: UnaryOperator<ItemContentFactory.Builder<BlockItem, *>>): B {
+        fun item(builder: UnaryOperator<ItemFactory.Builder<BlockItem, *>>): B {
             item = item?.let(builder::apply)
 
             return this as B
@@ -586,7 +586,7 @@ open class BlockContentFactory @JvmOverloads constructor(
             return this as B
         }
 
-        fun drops(builder: UnaryOperator<LootTableContentFactory.Builder<*>>): B {
+        fun drops(builder: UnaryOperator<LootTableFactory.Builder<*>>): B {
             lootTable = BiFunction { block, item ->
                 (parent.loot ?: throw UnsupportedOperationException("Must pass a LootTableContentFactory to the BlockContentFactory to be able to call Builder.drops()")).begin(block.lootTable.location())
                     .let(builder::apply)

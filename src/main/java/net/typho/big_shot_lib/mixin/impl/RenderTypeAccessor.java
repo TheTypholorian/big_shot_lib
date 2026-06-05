@@ -10,7 +10,6 @@ import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
 //? }
-@MixinEnvironment(type = MixinEnvironment.Env.CLIENT)
 @Mixin(RenderType.class)
 public interface RenderTypeAccessor {
     @Accessor("sortOnUpload")

@@ -12,7 +12,7 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterEvent
 
 @Suppress("UNCHECKED_CAST")
-open class LootTableContentFactory : ContentFactory<LootTable> {
+open class LootTableFactory : ContentFactory<LootTable> {
     override val registry: ResourceKey<Registry<LootTable>> = Registries.LOOT_TABLE
     @JvmField
     protected var registered = false
@@ -35,14 +35,14 @@ open class LootTableContentFactory : ContentFactory<LootTable> {
 
     private class BuilderImpl(
         key: ResourceKey<LootTable>,
-        parent: LootTableContentFactory
+        parent: LootTableFactory
     ) : Builder<BuilderImpl>(key, parent)
 
     open class Builder<B : Builder<B>>(
         @JvmField
         val key: ResourceKey<LootTable>,
         @JvmField
-        protected val parent: LootTableContentFactory
+        protected val parent: LootTableFactory
     ) : ObjectBuilder<RegisteredObject<LootTable>> {
         @JvmField
         protected val mutators = arrayListOf<(builder: LootTable.Builder) -> LootTable.Builder>()
