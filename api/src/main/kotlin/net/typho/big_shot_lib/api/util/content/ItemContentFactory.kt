@@ -24,7 +24,7 @@ open class ItemContentFactory : ContentFactory<Item> {
     @JvmField
     protected var registered = false
     @JvmField
-    protected val toRegister = hashMapOf<ResourceKey<out Item>, RegisteredObject<out Item>>()
+    protected val toRegister = arrayListOf<RegisteredObject<out Item>>()
     @JvmField
     protected val dynamicRecipes = hashMapOf<ResourceKey<out Recipe<*>>, () -> RecipeBuilder>()
     @JvmField
@@ -49,7 +49,7 @@ open class ItemContentFactory : ContentFactory<Item> {
             out.beginItems { out ->
                 registered = true
 
-                toRegister.values.forEach { out.register(it) }
+                toRegister.forEach { out.register(it) }
             }
         })
         bus.register(RegisterDynamicRecipesEvent { out, registries ->
@@ -146,7 +146,7 @@ open class ItemContentFactory : ContentFactory<Item> {
 
             registered = item
 
-            parent.toRegister.put(key, item)?.let {
+            if (!parent.toRegister.add(item)) {
                 throw IllegalArgumentException("Cannot create two items under the same ID $key")
             }
 

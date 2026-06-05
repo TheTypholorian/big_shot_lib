@@ -63,7 +63,6 @@ object ContentTest : BigShotCommonEntrypoint {
         .tags(ItemTags.HORSE_TEMPT_ITEMS, ItemTags.ARROWS)
         .end()
 
-
     val testBlock1 = blocks.begin(id("test_block"))
         .properties {
             instabreak()
@@ -77,13 +76,7 @@ object ContentTest : BigShotCommonEntrypoint {
             sound(SoundType.MUD)
         }
         .end()
-    /*
-    val testStairs = blocks.beginStairs(testBlock1, id("test_stairs"))
-        .properties {
-            sound(SoundType.WOOL)
-        }
-        .end()
-     */
+    val testStairs = blocks.beginStairs(testBlock1, id("test_stairs")).end()
 
     val testAdvancement = advancements.begin(id("test_advancement"))
         .parent(Identifier.minecraft("adventure/trade"))

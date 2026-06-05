@@ -6,7 +6,6 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.BlockModelGenerators
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureMapping
-import net.minecraft.data.models.model.TexturedModel
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.BlockTags
@@ -56,7 +55,7 @@ open class BlockContentFactory @JvmOverloads constructor(
     @JvmField
     protected var registered = false
     @JvmField
-    protected val toRegister = hashMapOf<ResourceKey<out Block>, RegisteredObject<out Block>>()
+    protected val toRegister = arrayListOf<RegisteredObject<out Block>>()
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<out Block>, MutableSet<ResourceKey<out Block>>>()
     @JvmField
@@ -84,8 +83,8 @@ open class BlockContentFactory @JvmOverloads constructor(
     }
 
     @JvmOverloads
-    open fun beginStairs(parent: () -> Block, key: Identifier, textures: (block: Block) -> TextureMapping = TextureMapping::cube): Builder<StairBlock, *> {
-        return beginComplex(key) { StairBlock(parent().defaultBlockState(), it) }
+    open fun beginStairs(copyState: RegisteredObject<out Block>, key: Identifier, copyTextures: RegisteredObject<out Block>? = copyState): Builder<StairBlock, *> {
+        return beginComplex(key) { StairBlock(copyState.get().defaultBlockState(), it) }
             .client {
                 model { block, textures ->
                     BlockModelLoadingEvent { out ->
@@ -103,6 +102,7 @@ open class BlockContentFactory @JvmOverloads constructor(
                         )
                     }
                 }
+                textureParent(copyTextures)
             }
             .tags(BlockTags.STAIRS)
     }
@@ -156,7 +156,7 @@ open class BlockContentFactory @JvmOverloads constructor(
             out.beginBlocks { out ->
                 registered = true
 
-                toRegister.values.forEach { out.register(it) }
+                toRegister.forEach { out.register(it) }
             }
         })
         bus.register(RegisterDynamicTagsEvent { out ->
@@ -184,7 +184,9 @@ open class BlockContentFactory @JvmOverloads constructor(
         @JvmField
         protected var model: Function<RegisteredObject<out Block>, BlockModelLoadingEvent>? = null
         @JvmField
-        protected var textures: Function<RegisteredObject<out Block>, TextureMapping> = Function { TextureMapping.cube(it.get()) }
+        protected var textureParent: RegisteredObject<out Block>? = null
+        @JvmField
+        protected var textureMapping: Function<RegisteredObject<out Block>, TextureMapping> = Function { TextureMapping.cube(it.get()) }
 
         fun renderType(renderType: NeoRenderType): B {
             this.renderType = renderType
@@ -192,12 +194,17 @@ open class BlockContentFactory @JvmOverloads constructor(
         }
 
         fun model(model: BiFunction<RegisteredObject<out Block>, Supplier<TextureMapping>, BlockModelLoadingEvent>): B {
-            this.model = Function { block -> model.apply(block, Supplier { textures.apply(block) }) }
+            this.model = Function { block -> model.apply(block, Supplier { textureMapping.apply(textureParent ?: block) }) }
             return this as B
         }
 
-        fun textures(textures: Function<RegisteredObject<out Block>, TextureMapping>): B {
-            this.textures = textures
+        fun textureParent(parent: RegisteredObject<out Block>?): B {
+            this.textureParent = parent
+            return this as B
+        }
+
+        fun textureMapping(textures: Function<RegisteredObject<out Block>, TextureMapping>): B {
+            this.textureMapping = textures
             return this as B
         }
 
@@ -323,8 +330,8 @@ open class BlockContentFactory @JvmOverloads constructor(
 
             registered = block
 
-            parent.toRegister.put(key, block)?.let { old ->
-                throw IllegalArgumentException("Cannot create two blocks ($block and $old) under the same ID $key")
+            if (!parent.toRegister.add(block)) {
+                throw IllegalArgumentException("Cannot create two blocks under the same ID $key")
             }
 
             for (tag in tags) {
