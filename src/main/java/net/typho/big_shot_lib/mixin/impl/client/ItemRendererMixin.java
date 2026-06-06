@@ -32,9 +32,7 @@ public class ItemRendererMixin {
                 return ModelIdentifier.inventory(EyeSpy.id("empty_spyglass"));
             }
 
-            if (data.lens.getItem() != EyeSpy.basicLens.get()) {
-                return ModelIdentifier.inventory(BuiltInRegistries.ITEM.getKey(data.lens.getItem()).withSuffix("_in_spyglass"));
-            }
+            return ModelIdentifier.inventory(BuiltInRegistries.ITEM.getKey(data.lens.getItem()).withSuffix("_in_spyglass"));
         }
 
         return model;
@@ -59,9 +57,7 @@ public class ItemRendererMixin {
                 return ModelIdentifier.inventory(EyeSpy.id("empty_spyglass_in_hand"));
             }
 
-            if (data.lens.getItem() != EyeSpy.basicLens.get()) {
-                return ModelIdentifier.inventory(BuiltInRegistries.ITEM.getKey(data.lens.getItem()).withSuffix("_in_spyglass_in_hand"));
-            }
+            return ModelIdentifier.inventory(BuiltInRegistries.ITEM.getKey(data.lens.getItem()).withSuffix("_in_spyglass_in_hand"));
         }
 
         return model;
