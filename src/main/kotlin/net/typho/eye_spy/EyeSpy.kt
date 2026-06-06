@@ -1,8 +1,6 @@
 package net.typho.eye_spy
 
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.data.models.model.DelegatedModel
-import net.minecraft.data.models.model.ModelLocationUtils
 import net.minecraft.data.models.model.ModelTemplate
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureMapping
@@ -13,6 +11,7 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder
 import net.minecraft.resources.Identifier
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
+import net.typho.big_shot_lib.api.BigShotLib.toShortString
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.event.ModifyDefaultItemComponentsEvent
@@ -28,7 +27,7 @@ object EyeSpy : NeoCommonInitializer {
     @JvmStatic
     fun id(path: String): Identifier = Identifier.of(modId, path)
 
-    const val SOUND_DISTANCE_MULTIPLIER = 0.25f
+    const val MAX_ATTACHMENTS = 2
 
     @JvmField
     val items = ItemFactory(this)
@@ -55,7 +54,7 @@ object EyeSpy : NeoCommonInitializer {
         return lens(id, color)
             .recipe { item ->
                 ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, item)
-                    .unlockedBy("has_${BuiltInRegistries.ITEM.getKey(centerItem.asItem())}", RecipeProvider.has(centerItem))
+                    .unlockedBy("has_${BuiltInRegistries.ITEM.getKey(centerItem.asItem()).toShortString('_')}", RecipeProvider.has(centerItem))
                     .define('C', centerItem)
                     .define('B', borderItem)
                     .pattern(" B ")
@@ -74,6 +73,15 @@ object EyeSpy : NeoCommonInitializer {
     val dissipationLens = lens(id("dissipation_lens"), NeoColor.RGB(178, 8, 8), Items.GLASS, Items.QUARTZ).end()
     @JvmField
     val nightVisionLens = lens(id("night_vision_lens"), NeoColor.RGB(124, 178, 71), Items.TINTED_GLASS, Items.GOLDEN_CARROT).end()
+    // TODO spelunker lens?
+
+    @JvmStatic
+    fun attachment(id: Identifier): ItemFactory.Builder<AttachmentItem, *> {
+        return items.beginComplex(id) { AttachmentItem(it) }
+            .properties { properties ->
+                properties.stacksTo(1)
+            }
+    }
 
     init {
         addClientListener { bus ->

@@ -23,6 +23,12 @@ object BigShotLib : NeoCommonInitializer {
     fun Identifier.toShortString(): String = if (namespace == Identifier.DEFAULT_NAMESPACE) path else toString()
 
     @JvmStatic
+    fun Identifier.toString(delimiter: Char): String = "$namespace$delimiter$path"
+
+    @JvmStatic
+    fun Identifier.toShortString(delimiter: Char): String = if (namespace == Identifier.DEFAULT_NAMESPACE) path else toString(delimiter)
+
+    @JvmStatic
     fun id(path: String): Identifier = Identifier.of(modId, path)
 
     override fun onInitialize(bus: NeoEventBus) {
