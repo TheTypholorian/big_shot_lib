@@ -13,7 +13,7 @@ import net.typho.big_shot_lib.api.BigShotLib.toShortString
 open class BlockSetTypeFactory : ContentFactory<BlockSetType> {
     override val registry: ResourceKey<Registry<BlockSetType>> = ResourceKey.createRegistryKey(Identifier.minecraft("block_set_type"))
 
-    override fun begin(key: Identifier): Builder<*> {
+    open fun begin(key: Identifier): Builder<*> {
         return BuilderImpl(ResourceKey.create(registry, key))
     }
 

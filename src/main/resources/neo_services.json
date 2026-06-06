@@ -1,6 +1,7 @@
 {
   "net.typho.big_shot_lib.api.NeoCommonInitializer": [
-    "net.typho.big_shot_lib.api.BigShotLib"
+    "net.typho.big_shot_lib.api.BigShotLib",
+    "net.typho.eye_spy.EyeSpy"
   ],
   "net.typho.big_shot_lib.api.client.NeoClientInitializer": [
     "net.typho.big_shot_lib.api.client.BigShotLibClient"

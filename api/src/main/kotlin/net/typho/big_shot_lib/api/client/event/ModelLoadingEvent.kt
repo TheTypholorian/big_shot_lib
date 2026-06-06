@@ -2,6 +2,7 @@ package net.typho.big_shot_lib.api.client.event
 
 import com.google.gson.JsonElement
 import net.minecraft.client.renderer.block.model.BlockModel
+import net.minecraft.client.resources.model.UnbakedModel
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.blockstates.BlockStateGenerator
 import net.minecraft.data.models.model.ModelTemplate

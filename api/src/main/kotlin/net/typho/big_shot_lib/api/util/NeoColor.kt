@@ -54,7 +54,7 @@ interface NeoColor {
         @JvmField
         val CODEC_PACKED: Codec<NeoColor> = Codec.INT.xmap(
             { vec -> RGBA(vec) },
-            { color -> color.toPackedARGB().toInt() }
+            { color -> color.toPackedARGB() }
         )
         @JvmField
         val CODEC_3I: Codec<NeoColor> = IVec3.INT_CODEC.xmap(
@@ -110,35 +110,35 @@ interface NeoColor {
 
     fun toVec4i(): IVec4<Int> = NeoVec4i(red.toInt(), green.toInt(), blue.toInt(), alpha?.toInt() ?: 255)
 
-    fun toPackedARGB() = packUInt(alpha ?: 255.toUByte(), red, green, blue)
+    fun toPackedARGB() = packUInt(alpha ?: 255.toUByte(), red, green, blue).toInt()
 
-    fun toPackedABGR() = packUInt(alpha ?: 255.toUByte(), blue, green, red)
+    fun toPackedABGR() = packUInt(alpha ?: 255.toUByte(), blue, green, red).toInt()
 
-    fun toPackedRGBA() = packUInt(red, green, blue, alpha ?: 255.toUByte())
+    fun toPackedRGBA() = packUInt(red, green, blue, alpha ?: 255.toUByte()).toInt()
 
-    fun toPackedBGRA() = packUInt(blue, green, red, alpha ?: 255.toUByte())
+    fun toPackedBGRA() = packUInt(blue, green, red, alpha ?: 255.toUByte()).toInt()
 
-    fun toPackedRGB() = packUInt(0.toUByte(), red, green, blue)
+    fun toPackedRGB() = packUInt(0.toUByte(), red, green, blue).toInt()
 
-    fun toPackedBGR() = packUInt(0.toUByte(), blue, green, red)
-
-    @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesARGB() = ubyteArrayOf(alpha ?: 255.toUByte(), red, green, blue)
+    fun toPackedBGR() = packUInt(0.toUByte(), blue, green, red).toInt()
 
     @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesABGR() = ubyteArrayOf(alpha ?: 255.toUByte(), blue, green, red)
+    fun toBytesARGB() = ubyteArrayOf(alpha ?: 255.toUByte(), red, green, blue).toByteArray()
 
     @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesRGBA() = ubyteArrayOf(red, green, blue, alpha ?: 255.toUByte())
+    fun toBytesABGR() = ubyteArrayOf(alpha ?: 255.toUByte(), blue, green, red).toByteArray()
 
     @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesBGRA() = ubyteArrayOf(blue, green, red, alpha ?: 255.toUByte())
+    fun toBytesRGBA() = ubyteArrayOf(red, green, blue, alpha ?: 255.toUByte()).toByteArray()
 
     @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesRGB() = ubyteArrayOf(red, green, blue)
+    fun toBytesBGRA() = ubyteArrayOf(blue, green, red, alpha ?: 255.toUByte()).toByteArray()
 
     @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesBGR() = ubyteArrayOf(blue, green, red)
+    fun toBytesRGB() = ubyteArrayOf(red, green, blue).toByteArray()
+
+    @OptIn(ExperimentalUnsignedTypes::class)
+    fun toBytesBGR() = ubyteArrayOf(blue, green, red).toByteArray()
 
     fun toFloatsARGB() = floatArrayOf(alphaF ?: 1f, redF, greenF, blueF)
 

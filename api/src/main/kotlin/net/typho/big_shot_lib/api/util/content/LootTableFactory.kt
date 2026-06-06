@@ -33,7 +33,7 @@ open class LootTableFactory(
         }
     }
 
-    override fun begin(key: Identifier): Builder<*> {
+    open fun begin(key: Identifier): Builder<*> {
         return BuilderImpl(ResourceKey.create(registry, key), this)
     }
 

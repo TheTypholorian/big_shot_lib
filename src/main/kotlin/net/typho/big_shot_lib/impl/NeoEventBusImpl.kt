@@ -2,12 +2,16 @@ package net.typho.big_shot_lib.impl
 
 import net.minecraft.core.Registry
 import net.minecraft.core.WritableRegistry
+import net.minecraft.core.component.DataComponentPatch
+import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.flag.FeatureFlagSet
 import net.minecraft.world.item.CreativeModeTab
+import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.ItemLike
 import net.typho.big_shot_lib.api.event.AddDataReloadListenersEvent
 import net.typho.big_shot_lib.api.event.BlockChangedEvent
 import net.typho.big_shot_lib.api.event.BonemealEvent
@@ -152,13 +156,16 @@ object NeoEventBusImpl : NeoEventBus {
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent
+import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent
 import net.neoforged.neoforge.event.ServerChatEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
 import net.neoforged.neoforge.event.tick.ServerTickEvent
 import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
+import net.typho.big_shot_lib.api.event.ModifyDefaultItemComponentsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
+import java.util.function.Predicate
 
 class NeoEventBusImpl(
     @JvmField
@@ -284,6 +291,38 @@ class NeoEventBusImpl(
 
     override fun register(event: CommandsEvent) {
         TODO("Not yet implemented")
+    }
+
+    override fun register(event: ModifyDefaultItemComponentsEvent) {
+        inner.addListener { e: ModifyDefaultComponentsEvent ->
+            event.modify(object : ModifyDefaultItemComponentsEvent.Output {
+                fun begin(builder: DataComponentPatch.Builder): ModifyDefaultItemComponentsEvent.Builder {
+                    return object : ModifyDefaultItemComponentsEvent.Builder {
+                        override fun <T : Any> remove(type: DataComponentType<T>) {
+                            builder.remove(type)
+                        }
+
+                        override fun <T : Any> set(type: DataComponentType<T>, value: T) {
+                            builder.set(type, value)
+                        }
+                    }
+                }
+
+                override fun modify(
+                    item: ItemLike,
+                    out: Consumer<ModifyDefaultItemComponentsEvent.Builder>
+                ) {
+                    e.modify(item) { out.accept(begin(it)) }
+                }
+
+                override fun modify(
+                    item: Predicate<Item>,
+                    out: Consumer<ModifyDefaultItemComponentsEvent.Builder>
+                ) {
+                    e.modifyMatching(item) { out.accept(begin(it)) }
+                }
+            })
+        }
     }
 
     override fun register(event: NewRegistryEvent) {

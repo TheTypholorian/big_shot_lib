@@ -79,7 +79,7 @@ open class ItemFactory(
         }
     }
 
-    override fun begin(key: Identifier): Builder<Item, *> {
+    open fun begin(key: Identifier): Builder<Item, *> {
         return beginComplex(key) { Item(it) }
     }
 

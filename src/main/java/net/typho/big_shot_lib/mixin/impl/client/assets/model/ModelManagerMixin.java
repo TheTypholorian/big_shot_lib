@@ -37,8 +37,8 @@ public class ModelManagerMixin {
             var mutableModels = MapsKt.toMutableMap(models);
             var mutableStates = MapsKt.toMutableMap(states);
 
-            int[] numModels = { 0 };
             int[] numStates = { 0 };
+            int[] numModels = { 0 };
 
             var output = new ModelLoadingEvent.Output() {
                 @Override
@@ -46,7 +46,7 @@ public class ModelManagerMixin {
                     var old = mutableStates.putIfAbsent(location.withPrefix("blockstates/").withSuffix(".json"), Collections.singletonList(new BlockStateModelLoader.LoadedJson(BigShotLib.id("dynamic_block_models").toString(), state)));
 
                     if (old == null) {
-                        numModels[0]++;
+                        numStates[0]++;
                     }
                 }
 
@@ -55,7 +55,7 @@ public class ModelManagerMixin {
                     var old = mutableModels.putIfAbsent(location.withPrefix("models/").withSuffix(".json"), model);
 
                     if (old == null) {
-                        numStates[0]++;
+                        numModels[0]++;
                     }
                 }
             };

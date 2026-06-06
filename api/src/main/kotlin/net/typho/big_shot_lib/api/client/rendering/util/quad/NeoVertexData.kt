@@ -72,7 +72,7 @@ data class NeoVertexData(
         array[offset + 1] = pos.y.toRawBits()
         array[offset + 2] = pos.z.toRawBits()
         color?.let {
-            array[offset + 3] = it.toPackedRGBA().toInt()
+            array[offset + 3] = it.toPackedRGBA()
         }
         textureUV?.let {
             array[offset + 4] = it.x.toRawBits()

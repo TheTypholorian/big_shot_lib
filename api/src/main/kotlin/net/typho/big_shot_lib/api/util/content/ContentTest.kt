@@ -35,6 +35,7 @@ object ContentTest : NeoCommonInitializer {
     val tab = creativeTabs.begin(id("tab"))
         .end()
 
+    /*
     val testItem = items.begin(id("test_item"))
         .properties {
             it.stacksTo(99)
@@ -99,6 +100,7 @@ object ContentTest : NeoCommonInitializer {
         .rewards(AdvancementRewards.Builder.experience(100000))
         .addCriterion("test_item") { InventoryChangeTrigger.TriggerInstance.hasItems(testItem) }
         .end()
+     */
 
     override fun onInitialize(bus: NeoEventBus) {
     }

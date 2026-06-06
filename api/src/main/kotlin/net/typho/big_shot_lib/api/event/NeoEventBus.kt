@@ -17,6 +17,8 @@ interface NeoEventBus {
 
     fun register(event: CommandsEvent)
 
+    fun register(event: ModifyDefaultItemComponentsEvent)
+
     fun register(event: NewRegistryEvent)
 
     fun register(event: RegisterDynamicAdvancementsEvent)

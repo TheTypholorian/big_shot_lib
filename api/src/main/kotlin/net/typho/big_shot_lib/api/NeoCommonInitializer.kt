@@ -26,7 +26,6 @@ interface NeoCommonInitializer {
             }
 
             NeoClientInitializer.clientListeners.computeIfAbsent(modId) { arrayListOf() }.add(listener)
-
         }
     }
 

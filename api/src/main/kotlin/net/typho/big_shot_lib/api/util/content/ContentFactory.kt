@@ -6,6 +6,4 @@ import net.minecraft.resources.ResourceKey
 
 interface ContentFactory<T : Any> {
     val registry: ResourceKey<Registry<T>>
-
-    fun begin(key: Identifier): ObjectBuilder<RegisteredObject<T>>
 }
