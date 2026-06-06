@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalFloatRef;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpyglassItem;
@@ -35,8 +36,8 @@ public class LightTextureMixin {
             CallbackInfo ci,
             @Local(ordinal = 7) LocalFloatRef brightness
     ) {
-        if (minecraft.cameraEntity instanceof Player player && !minecraft.gameRenderer.getMainCamera().isDetached()) {
-            var data = player.getUseItem().get(EyeSpy.spyglassDataComponent.get());
+        if (minecraft.cameraEntity instanceof LivingEntity living && !minecraft.gameRenderer.getMainCamera().isDetached()) {
+            var data = living.getUseItem().get(EyeSpy.spyglassDataComponent.get());
 
             if (data != null && data.lens.is(EyeSpy.nightVisionLens.get())) {
                 brightness.set(1f);
@@ -59,8 +60,8 @@ public class LightTextureMixin {
             @Local(ordinal = 0) int skyLight,
             @Local(ordinal = 1) int blockLight
     ) {
-        if (minecraft.cameraEntity instanceof Player player && !minecraft.gameRenderer.getMainCamera().isDetached()) {
-            var data = player.getUseItem().get(EyeSpy.spyglassDataComponent.get());
+        if (minecraft.cameraEntity instanceof LivingEntity living && !minecraft.gameRenderer.getMainCamera().isDetached()) {
+            var data = living.getUseItem().get(EyeSpy.spyglassDataComponent.get());
 
             if (data != null) {
                 if (data.lens.is(EyeSpy.nightVisionLens.get())) {

@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.typho.eye_spy.EyeSpy;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,8 +25,8 @@ public abstract class GameRendererMixin {
             at = @At("TAIL")
     )
     private void checkEntityPostEffect(Entity entity, CallbackInfo ci) {
-        if (entity instanceof Player player) {
-            var data = player.getUseItem().get(EyeSpy.spyglassDataComponent.get());
+        if (entity instanceof LivingEntity living) {
+            var data = living.getUseItem().get(EyeSpy.spyglassDataComponent.get());
 
             if (data != null) {
                 if (data.lens.is(EyeSpy.creeperLens.get())) {

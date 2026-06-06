@@ -74,10 +74,6 @@ object EyeSpy : NeoCommonInitializer {
     val dissipationLens = lens(id("dissipation_lens"), NeoColor.RGB(229, 114, 200), Items.GLASS, Items.QUARTZ).end()
     @JvmField
     val nightVisionLens = lens(id("night_vision_lens"), NeoColor.RGB(124, 178, 71), Items.TINTED_GLASS, Items.GOLDEN_CARROT).end()
-    @JvmField
-    val pyroVisionLens = lens(id("pyro_vision_lens"), NeoColor.RGB(230, 152, 54), Items.TINTED_GLASS, Items.GLOWSTONE_DUST).end()
-    @JvmField
-    val thermalLens = lens(id("thermal_lens"), NeoColor.RGB(255, 174, 0), Items.GLASS, Items.MAGMA_CREAM).end()
 
     init {
         addClientListener { bus ->
