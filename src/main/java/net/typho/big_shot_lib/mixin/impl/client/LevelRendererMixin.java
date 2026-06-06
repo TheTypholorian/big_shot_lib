@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SpyglassItem;
+import net.typho.eye_spy.EyeSpy;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,10 +37,10 @@ public class LevelRendererMixin {
             CallbackInfo ci,
             @Local(ordinal = 2) LocalBooleanRef foggy
     ) {
-        if (minecraft.cameraEntity instanceof Player player) {
-            ItemStack item = player.getUseItem();
+        if (minecraft.cameraEntity instanceof Player player && !minecraft.gameRenderer.getMainCamera().isDetached()) {
+            var data = player.getUseItem().get(EyeSpy.spyglassDataComponent.get());
 
-            if (item.getItem() instanceof SpyglassItem) {
+            if (data != null && data.lens.is(EyeSpy.dissipationLens.get())) {
                 foggy.set(false);
             }
         }

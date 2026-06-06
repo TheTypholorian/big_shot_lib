@@ -1,22 +1,29 @@
 package net.typho.big_shot_lib.mixin.impl;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SpyglassItem;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
 import net.typho.eye_spy.EyeSpy;
 import net.typho.eye_spy.LensItem;
 import net.typho.eye_spy.SpyglassData;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
@@ -111,5 +118,34 @@ public abstract class SpyglassItemMixin extends Item {
         }
 
         return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
+    }
+
+    @Inject(
+            method = "use",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    public void use(Level level, Player player, InteractionHand usedHand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
+        SpyglassData data = player.getItemInHand(usedHand).get(EyeSpy.spyglassDataComponent.get());
+
+        if (data == null || data.lens.isEmpty()) {
+            cir.setReturnValue(InteractionResultHolder.pass(player.getItemInHand(usedHand)));
+        } else if (level.isClientSide && player == Minecraft.getInstance().cameraEntity) {
+            if (data.lens.is(EyeSpy.creeperLens.get())) {
+                Minecraft.getInstance().gameRenderer.loadEffect(Identifier.minecraft("shaders/post/creeper.json"));
+            } else if (data.lens.is(EyeSpy.endermanLens.get())) {
+                Minecraft.getInstance().gameRenderer.loadEffect(Identifier.minecraft("shaders/post/invert.json"));
+            }
+        }
+    }
+
+    @Inject(
+            method = "stopUsing",
+            at = @At("HEAD")
+    )
+    public void stopUsing(LivingEntity user, CallbackInfo ci) {
+        if (user.level().isClientSide && user == Minecraft.getInstance().cameraEntity) {
+            Minecraft.getInstance().gameRenderer.shutdownEffect();
+        }
     }
 }

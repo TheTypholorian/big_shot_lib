@@ -65,13 +65,13 @@ object EyeSpy : NeoCommonInitializer {
     }
 
     @JvmField
+    val creeperLens = lens(id("creeper_lens"), NeoColor.RGB(77, 186, 76), Items.GLASS, Items.GUNPOWDER).end()
+    @JvmField
     val basicLens = lens(id("basic_lens"), null).end()
     @JvmField
+    val endermanLens = lens(id("enderman_lens"), NeoColor.RGB(224, 121, 250), Items.GLASS, Items.ENDER_PEARL).end()
+    @JvmField
     val dissipationLens = lens(id("dissipation_lens"), NeoColor.RGB(229, 114, 200), Items.GLASS, Items.QUARTZ).end()
-    @JvmField
-    val hydroVisionLens = lens(id("hydro_vision_lens"), NeoColor.RGB(70, 140, 175), Items.TINTED_GLASS, Items.SEA_PICKLE).end()
-    @JvmField
-    val lightVisionLens = lens(id("light_vision_lens"), NeoColor.RGB(249, 212, 156), Items.GLASS, Items.GLOWSTONE_DUST).end()
     @JvmField
     val nightVisionLens = lens(id("night_vision_lens"), NeoColor.RGB(124, 178, 71), Items.TINTED_GLASS, Items.GOLDEN_CARROT).end()
     @JvmField
