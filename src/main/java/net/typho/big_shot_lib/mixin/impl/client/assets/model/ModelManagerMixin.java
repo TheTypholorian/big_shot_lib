@@ -53,6 +53,7 @@ public class ModelManagerMixin {
                 @Override
                 public void register(@NotNull Identifier location, @NotNull BlockModel model) {
                     var old = mutableModels.putIfAbsent(location.withPrefix("models/").withSuffix(".json"), model);
+                    BigShotLib.LOGGER.info("Registering model {}, old: {}", location, old);
 
                     if (old == null) {
                         numModels[0]++;

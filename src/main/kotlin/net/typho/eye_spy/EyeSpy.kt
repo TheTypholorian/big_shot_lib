@@ -1,6 +1,5 @@
 package net.typho.eye_spy
 
-import net.minecraft.client.resources.model.ModelIdentifier
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureMapping
@@ -11,7 +10,6 @@ import net.minecraft.resources.Identifier
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.client.event.ItemModelLoadingEvent
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.event.ModifyDefaultItemComponentsEvent
 import net.typho.big_shot_lib.api.event.NeoEventBus

@@ -4,6 +4,8 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.models.model.DelegatedModel
 import net.minecraft.data.models.model.ModelLocationUtils
+import net.minecraft.data.models.model.ModelTemplates
+import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
@@ -99,6 +101,17 @@ open class ItemFactory(
 
     open fun <V : Item> beginComplex(key: Identifier, constructor: (properties: Item.Properties) -> V): Builder<V, *> {
         return BuilderImpl(ResourceKey.create(registry, key) as ResourceKey<V>, constructor, this)
+            .client {
+                it.model { item ->
+                    ModelLoadingEvent { out ->
+                        out.register(
+                            ModelTemplates.FLAT_ITEM,
+                            item.get(),
+                            TextureMapping.layer0(item.get())
+                        )
+                    }
+                }
+            }
     }
 
     private class ClientInfoImpl<T : Item>(

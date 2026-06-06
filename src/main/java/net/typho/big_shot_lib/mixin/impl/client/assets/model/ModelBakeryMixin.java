@@ -9,7 +9,6 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.typho.big_shot_lib.api.BigShotLib;
-import net.typho.big_shot_lib.api.client.event.ItemModelLoadingEvent;
 import net.typho.big_shot_lib.impl.client.NeoClientEventBusImpl;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,6 +25,7 @@ public abstract class ModelBakeryMixin {
     @Shadow
     protected abstract void registerModelAndLoadDependencies(ModelIdentifier modelLocation, UnbakedModel model);
 
+    /*
     @Inject(
             method = "<init>",
             at = @At(
@@ -56,4 +56,5 @@ public abstract class ModelBakeryMixin {
 
         BigShotLib.LOGGER.info("Loaded {} dynamic item models", numModels[0]);
     }
+     */
 }

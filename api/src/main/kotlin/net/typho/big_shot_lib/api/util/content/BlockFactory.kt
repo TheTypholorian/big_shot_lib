@@ -86,7 +86,7 @@ open class BlockFactory @JvmOverloads constructor(
         }
     }
 
-    override fun begin(key: Identifier): Builder<Block, *> {
+    open fun begin(key: Identifier): Builder<Block, *> {
         return beginComplex(key) { Block(it) }
             .client {
                 it.model { block, textures ->

@@ -5,9 +5,11 @@ import net.minecraft.client.renderer.block.model.BlockModel
 import net.minecraft.client.resources.model.UnbakedModel
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.blockstates.BlockStateGenerator
+import net.minecraft.data.models.model.ModelLocationUtils
 import net.minecraft.data.models.model.ModelTemplate
 import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.resources.Identifier
+import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 
 fun interface ModelLoadingEvent {
@@ -21,7 +23,19 @@ fun interface ModelLoadingEvent {
         }
 
         fun register(template: ModelTemplate, block: Block, textures: TextureMapping): Identifier {
-            return template.create(block, textures) { location, json -> registerModelJson(location, json.get()) }
+            return template.create(ModelLocationUtils.getModelLocation(block), textures) { location, json -> registerModelJson(location, json.get()) }
+        }
+
+        fun register(template: ModelTemplate, block: Block, suffix: String, textures: TextureMapping): Identifier {
+            return template.create(ModelLocationUtils.getModelLocation(block, suffix), textures) { location, json -> registerModelJson(location, json.get()) }
+        }
+
+        fun register(template: ModelTemplate, item: Item, textures: TextureMapping): Identifier {
+            return template.create(ModelLocationUtils.getModelLocation(item), textures) { location, json -> registerModelJson(location, json.get()) }
+        }
+
+        fun register(template: ModelTemplate, item: Item, suffix: String, textures: TextureMapping): Identifier {
+            return template.create(ModelLocationUtils.getModelLocation(item, suffix), textures) { location, json -> registerModelJson(location, json.get()) }
         }
 
         fun register(template: ModelTemplate, location: Identifier, textures: TextureMapping): Identifier {
