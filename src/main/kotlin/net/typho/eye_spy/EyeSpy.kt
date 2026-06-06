@@ -1,6 +1,8 @@
 package net.typho.eye_spy
 
 import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.data.models.model.DelegatedModel
+import net.minecraft.data.models.model.ModelLocationUtils
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.data.recipes.RecipeCategory

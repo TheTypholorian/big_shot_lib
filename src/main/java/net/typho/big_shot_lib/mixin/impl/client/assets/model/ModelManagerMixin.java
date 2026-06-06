@@ -5,6 +5,7 @@ import kotlin.collections.MapsKt;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelIdentifier;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.BigShotLib;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -34,8 +36,8 @@ public class ModelManagerMixin {
             BiFunction<Map<Identifier, BlockModel>, Map<Identifier, List<BlockStateModelLoader.LoadedJson>>, ModelBakery> func
     ) {
         return (models, states) -> {
-            var mutableModels = MapsKt.toMutableMap(models);
-            var mutableStates = MapsKt.toMutableMap(states);
+            var extraModels = new HashMap<Identifier, BlockModel>();
+            var extraStates = new HashMap<Identifier, List<BlockStateModelLoader.LoadedJson>>();
 
             int[] numStates = { 0 };
             int[] numModels = { 0 };
@@ -43,7 +45,7 @@ public class ModelManagerMixin {
             var output = new ModelLoadingEvent.Output() {
                 @Override
                 public void registerStateJson(@NotNull Identifier location, @NotNull JsonElement state) {
-                    var old = mutableStates.putIfAbsent(location.withPrefix("blockstates/").withSuffix(".json"), Collections.singletonList(new BlockStateModelLoader.LoadedJson(BigShotLib.id("dynamic_block_models").toString(), state)));
+                    var old = extraStates.putIfAbsent(location.withPrefix("blockstates/").withSuffix(".json"), Collections.singletonList(new BlockStateModelLoader.LoadedJson(BigShotLib.id("dynamic_block_models").toString(), state)));
 
                     if (old == null) {
                         numStates[0]++;
@@ -52,7 +54,7 @@ public class ModelManagerMixin {
 
                 @Override
                 public void register(@NotNull Identifier location, @NotNull BlockModel model) {
-                    var old = mutableModels.putIfAbsent(location.withPrefix("models/").withSuffix(".json"), model);
+                    var old = extraModels.putIfAbsent(location, model);
                     BigShotLib.LOGGER.info("Registering model {}, old: {}", location, old);
 
                     if (old == null) {
@@ -67,7 +69,27 @@ public class ModelManagerMixin {
 
             BigShotLib.LOGGER.info("Loaded {} dynamic models, and {} dynamic block states", numModels[0], numStates[0]);
 
-            return func.apply(mutableModels, mutableStates);
+            var mutableModels = MapsKt.toMutableMap(models);
+            var mutableStates = MapsKt.toMutableMap(states);
+
+            extraModels.forEach((id, model) -> mutableModels.putIfAbsent(id.withPrefix("models/").withSuffix(".json"), model));
+            extraStates.forEach(mutableStates::putIfAbsent);
+
+            var bakery = func.apply(mutableModels, mutableStates);
+            var accessor = (ModelBakeryAccessor) bakery;
+
+            extraModels.forEach((id, model) -> {
+                if (id.getPath().startsWith("item/")) {
+                    BigShotLib.LOGGER.info("Loading item {} {}", id, model);
+                    accessor.big_shot_lib$registerModelAndLoadDependencies(ModelIdentifier.inventory(id.withPath(path -> path.substring("item/".length()))), model);
+                }
+            });
+
+            for (BlockModel model : extraModels.values()) {
+                model.resolveParents(accessor::big_shot_lib$getModel);
+            }
+
+            return bakery;
         };
     }
 }
