@@ -21,7 +21,7 @@ public class ItemRendererMixin {
                     ordinal = 1
             )
     )
-    private ModelIdentifier getModel(
+    private ModelIdentifier render(
             ModelIdentifier model,
             @Local(argsOnly = true) ItemStack stack
     ) {
@@ -34,6 +34,33 @@ public class ItemRendererMixin {
 
             if (data.lens.getItem() != EyeSpy.basicLens.get()) {
                 return ModelIdentifier.inventory(BuiltInRegistries.ITEM.getKey(data.lens.getItem()).withSuffix("_in_spyglass"));
+            }
+        }
+
+        return model;
+    }
+
+    @ModifyArg(
+            method = "getModel",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/resources/model/ModelManager;getModel(Lnet/minecraft/client/resources/model/ModelIdentifier;)Lnet/minecraft/client/resources/model/BakedModel;",
+                    ordinal = 1
+            )
+    )
+    private ModelIdentifier getModel(
+            ModelIdentifier model,
+            @Local(argsOnly = true) ItemStack stack
+    ) {
+        SpyglassData data = stack.get(EyeSpy.spyglassDataComponent.get());
+
+        if (data != null) {
+            if (data.lens.isEmpty()) {
+                return ModelIdentifier.inventory(EyeSpy.id("empty_spyglass_in_hand"));
+            }
+
+            if (data.lens.getItem() != EyeSpy.basicLens.get()) {
+                return ModelIdentifier.inventory(BuiltInRegistries.ITEM.getKey(data.lens.getItem()).withSuffix("_in_spyglass_in_hand"));
             }
         }
 

@@ -3,8 +3,10 @@ package net.typho.eye_spy
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.data.models.model.DelegatedModel
 import net.minecraft.data.models.model.ModelLocationUtils
+import net.minecraft.data.models.model.ModelTemplate
 import net.minecraft.data.models.model.ModelTemplates
 import net.minecraft.data.models.model.TextureMapping
+import net.minecraft.data.models.model.TextureSlot
 import net.minecraft.data.recipes.RecipeCategory
 import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.data.recipes.ShapedRecipeBuilder
@@ -18,6 +20,7 @@ import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.content.ItemComponentFactory
 import net.typho.big_shot_lib.api.util.content.ItemFactory
+import java.util.Optional
 
 object EyeSpy : NeoCommonInitializer {
     override val modId: String = "big_shot_lib" // TODO
@@ -79,6 +82,12 @@ object EyeSpy : NeoCommonInitializer {
     init {
         addClientListener { bus ->
             bus.register(ModelLoadingEvent { out ->
+                val spyglassInHandTemplate = ModelTemplate(
+                    Optional.of(id("item/spyglass_in_hand")),
+                    Optional.empty(),
+                    TextureSlot.LAYER1
+                )
+
                 out.register(
                     ModelTemplates.TWO_LAYERED_ITEM,
                     id("item/empty_spyglass"),
@@ -86,6 +95,11 @@ object EyeSpy : NeoCommonInitializer {
                         TextureMapping.getItemTexture(Items.SPYGLASS),
                         id("item/empty_spyglass")
                     )
+                )
+                out.register(
+                    spyglassInHandTemplate,
+                    id("item/empty_spyglass_in_hand"),
+                    TextureMapping().put(TextureSlot.LAYER1, id("item/empty_spyglass_model"))
                 )
 
                 BuiltInRegistries.ITEM.entrySet().forEach { (key, item) ->
@@ -98,6 +112,12 @@ object EyeSpy : NeoCommonInitializer {
                                 TextureMapping.getItemTexture(Items.SPYGLASS),
                                 TextureMapping.getItemTexture(item, "_in_spyglass")
                             )
+                        )
+                        out.register(
+                            spyglassInHandTemplate,
+                            item,
+                            "_in_spyglass_in_hand",
+                            TextureMapping().put(TextureSlot.LAYER1, TextureMapping.getItemTexture(item, "_in_spyglass_model"))
                         )
                     }
                 }
