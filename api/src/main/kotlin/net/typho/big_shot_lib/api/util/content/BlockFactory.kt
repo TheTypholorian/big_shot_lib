@@ -32,6 +32,7 @@ import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.entries.LootItem
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
+import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
@@ -108,7 +109,7 @@ open class BlockFactory @JvmOverloads constructor(
 
     @JvmOverloads
     open fun beginStairs(key: Identifier, copyState: Supplier<out Block>, copyTextures: Supplier<out Block> = copyState): Builder<StairBlock, *> {
-        return beginComplex(key) { StairBlock(copyState.get().defaultBlockState(), it) }
+        return beginComplex(key) { InternalUtil.INSTANCE.createStairBlock(copyState.get().defaultBlockState(), it) }
             .client {
                 it.textureParent(copyTextures)
                     .model { block, textures ->
@@ -180,7 +181,7 @@ open class BlockFactory @JvmOverloads constructor(
     }
 
     open fun beginDoor(key: Identifier, blockSet: Supplier<BlockSetType>): Builder<DoorBlock, *> {
-        return beginComplex(key) { DoorBlock(blockSet.get(), it) }
+        return beginComplex(key) { InternalUtil.INSTANCE.createDoorBlock(blockSet.get(), it) }
             .client {
                 it.textureMapping { TextureMapping.door(it.get()) }
                     .model { block, textures ->
@@ -221,7 +222,7 @@ open class BlockFactory @JvmOverloads constructor(
     }
 
     open fun beginTrapdoor(key: Identifier, blockSet: Supplier<BlockSetType>, rotatable: Boolean): Builder<TrapDoorBlock, *> {
-        return beginComplex(key) { TrapDoorBlock(blockSet.get(), it) }
+        return beginComplex(key) { InternalUtil.INSTANCE.createTrapDoorBlock(blockSet.get(), it) }
             .client {
                 it.textureMapping { TextureMapping.defaultTexture(it.get()) }
                     .model { block, textures ->
@@ -271,7 +272,7 @@ open class BlockFactory @JvmOverloads constructor(
 
     @JvmOverloads
     open fun beginPressurePlate(key: Identifier, blockSet: Supplier<BlockSetType>, copyTextures: Supplier<out Block>? = null): Builder<PressurePlateBlock, *> {
-        return beginComplex(key) { PressurePlateBlock(blockSet.get(), it) }
+        return beginComplex(key) { InternalUtil.INSTANCE.createPressurePlateBlock(blockSet.get(), it) }
             .client {
                 it.textureParent(copyTextures)
                     .model { block, textures ->
@@ -411,7 +412,7 @@ open class BlockFactory @JvmOverloads constructor(
 
     @JvmOverloads
     open fun beginButton(key: Identifier, pressDuration: Int, setType: Supplier<BlockSetType>, copyTextures: Supplier<out Block>? = null): Builder<ButtonBlock, *> {
-        return beginComplex(key) { ButtonBlock(setType.get(), pressDuration, it) }
+        return beginComplex(key) { InternalUtil.INSTANCE.createButtonBlock(setType.get(), pressDuration, it) }
             .client {
                 it.textureParent(copyTextures)
                     .model { block, textures ->

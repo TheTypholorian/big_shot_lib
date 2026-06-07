@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
@@ -17,6 +16,7 @@ import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent;
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent;
 import net.typho.big_shot_lib.api.event.RemoveAdvancementsEvent;
 import net.typho.big_shot_lib.impl.NeoEventBusImpl;
+import net.typho.big_shot_lib.impl.util.RegisterDynamicRecipesEventOutputImpl;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -68,7 +68,7 @@ public class ServerAdvancementManagerMixin {
             CallbackInfo ci,
             @Local ImmutableMap.Builder<Identifier, AdvancementHolder> builder
     ) {
-        RegisterDynamicRecipesEvent.Output.Advancements recipeOutput = new RegisterDynamicRecipesEvent.Output.Advancements(builder);
+        var recipeOutput = new RegisterDynamicRecipesEventOutputImpl.Advancements(builder);
         int[] count = { 0 };
         RegisterDynamicAdvancementsEvent.Output output = advancement -> {
             builder.put(advancement.id(), advancement);

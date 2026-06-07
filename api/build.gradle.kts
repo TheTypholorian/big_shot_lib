@@ -2,6 +2,19 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.loom)
     id("net.typho.big_shot_lib.plugin")
+    `maven-publish`
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "net.typho"
+            artifactId = "big_shot_lib"
+            version = project.version.toString()
+
+            from(components["java"])
+        }
+    }
 }
 
 val version: String by project
