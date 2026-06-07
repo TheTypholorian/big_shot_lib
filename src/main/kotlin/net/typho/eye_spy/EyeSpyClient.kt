@@ -1,6 +1,5 @@
 package net.typho.eye_spy
 
-import com.google.gson.Gson
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.block.model.BlockModel
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
@@ -26,6 +25,7 @@ import net.typho.big_shot_lib.api.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.plugin.Environment
 import net.typho.big_shot_lib.api.plugin.OnlyIn
 import net.typho.big_shot_lib.api.util.resource.SingleStepNeoReloadListener
+import net.typho.big_shot_lib.mixin.impl.client.TextureSlotAccessor
 import net.typho.big_shot_lib.mixin.impl.client.assets.model.ModelBakeryAccessor
 import java.util.Optional
 import java.util.function.Function
@@ -41,39 +41,34 @@ object EyeSpyClient : NeoClientInitializer {
         TextureSlot.LAYER0,
         TextureSlot.LAYER1,
         TextureSlot.LAYER2,
+        TextureSlotAccessor.`eye_spy$create`("layer3"),
+        TextureSlotAccessor.`eye_spy$create`("layer4")
     )
     @JvmField
     val spyglassModelCache = hashMapOf<SpyglassData, BakedModel>()
-    @JvmField
-    val spyglassInventoryTemplate = ModelTemplate(
-        Optional.of(Identifier.minecraft("item/generated")),
-        Optional.empty(),
-        textureLayers[0],
-        textureLayers[1],
-        textureLayers[2]
-    )
-    @JvmField
-    val spyglassInventoryNoLensTemplate = ModelTemplate(
-        Optional.of(Identifier.minecraft("item/generated")),
-        Optional.empty(),
-        textureLayers[0],
-        textureLayers[1]
-    )
 
     @JvmStatic
     fun getSpyglassModel(data: SpyglassData): BakedModel {
         return spyglassModelCache.computeIfAbsent(data) {
-            var model: UnbakedModel? = null
-
+            var layerIndex = 0
             val mapping = TextureMapping()
-                    .put(textureLayers[0], data.base.textureLocation)
-                    .put(textureLayers[1], data.trim.textureLocation)
+                    .put(textureLayers[layerIndex++], data.base.textureLocation)
+                    .put(textureLayers[layerIndex++], data.trim.textureLocation)
 
             if (!data.lens.isEmpty) {
-                mapping.put(textureLayers[2], TextureMapping.getItemTexture(data.lens.item, "_in_spyglass"))
+                mapping.put(textureLayers[layerIndex++], TextureMapping.getItemTexture(data.lens.item, "_in_spyglass"))
             }
 
-            (if (data.lens.isEmpty) spyglassInventoryNoLensTemplate else spyglassInventoryTemplate).create(
+            for (attachment in data.attachments) {
+                mapping.put(textureLayers[layerIndex++], TextureMapping.getItemTexture(attachment.item, "_in_spyglass"))
+            }
+
+            var model: UnbakedModel? = null
+            ModelTemplate(
+                Optional.of(Identifier.minecraft("item/generated")),
+                Optional.empty(),
+                *textureLayers.copyOfRange(0, layerIndex)
+            ).create(
                 EyeSpy.id("spyglass"),
                 mapping
             ) { _, json ->

@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.mixin.impl;
 
+import kotlin.collections.CollectionsKt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -14,6 +15,7 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.typho.eye_spy.AttachmentItem;
 import net.typho.eye_spy.EyeSpy;
 import net.typho.eye_spy.LensItem;
 import net.typho.eye_spy.SpyglassData;
@@ -25,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(SpyglassItem.class)
@@ -52,9 +55,21 @@ public abstract class SpyglassItemMixin extends Item {
         if (data != null) {
             if (data.lens.getItem() instanceof LensItem lens) {
                 if (lens.color == null) {
-                    tooltip.add(data.lens.getDisplayName());
+                    tooltip.add(Component.translatable("eye_spy.lens", data.lens.getHoverName()));
                 } else {
-                    tooltip.add(data.lens.getDisplayName().copy().withColor(lens.color.toPackedRGB()));
+                    tooltip.add(Component.translatable("eye_spy.lens", data.lens.getHoverName().copy().withColor(lens.color.toPackedRGB())));
+                }
+            } else {
+                tooltip.add(Component.translatable("eye_spy.no_lens"));
+            }
+
+            if (data.attachments.isEmpty()) {
+                tooltip.add(Component.translatable("eye_spy.no_attachments"));
+            } else {
+                tooltip.add(Component.translatable("eye_spy.attachments"));
+
+                for (ItemStack attachment : data.attachments) {
+                    tooltip.add(Component.translatable("eye_spy.attachment", attachment.getHoverName()));
                 }
             }
         }
@@ -83,13 +98,38 @@ public abstract class SpyglassItemMixin extends Item {
                         eye_spy$playSound(player);
                         return true;
                     }
+                } else if (slot.getItem().getItem() instanceof AttachmentItem) {
+                    List<ItemStack> attachments = data == null ? new ArrayList<>() : CollectionsKt.toMutableList(data.attachments);
+
+                    if (attachments.size() < EyeSpy.MAX_ATTACHMENTS) {
+                        attachments.add(slot.safeTake(1, 1, player));
+                        stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, attachments));
+                        slot.setByPlayer(ItemStack.EMPTY);
+                        eye_spy$playSound(player);
+                        return true;
+                    } else if (slot.getItem().getCount() == 1) {
+                        ItemStack attachment = attachments.removeLast();
+                        stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, attachments));
+                        slot.setByPlayer(attachment);
+                        eye_spy$playSound(player);
+                        return true;
+                    }
                 }
             } else {
-                if (data != null && !data.lens.isEmpty()) {
-                    stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, ItemStack.EMPTY));
-                    slot.setByPlayer(data.lens);
-                    eye_spy$playSound(player);
-                    return true;
+                if (data != null) {
+                    if (!data.lens.isEmpty()) {
+                        stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, ItemStack.EMPTY));
+                        slot.setByPlayer(data.lens);
+                        eye_spy$playSound(player);
+                        return true;
+                    } else if (!data.attachments.isEmpty()) {
+                        List<ItemStack> attachments = CollectionsKt.toMutableList(data.attachments);
+                        ItemStack attachment = attachments.removeLast();
+                        stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, attachments));
+                        slot.setByPlayer(attachment);
+                        eye_spy$playSound(player);
+                        return true;
+                    }
                 }
             }
         }
@@ -106,14 +146,26 @@ public abstract class SpyglassItemMixin extends Item {
             @NotNull Player player,
             @NotNull SlotAccess access
     ) {
-        if (action == ClickAction.SECONDARY && slot.allowModification(player) && other.getItem() instanceof LensItem) {
+        if (action == ClickAction.SECONDARY && slot.allowModification(player)) {
             SpyglassData data = stack.get(EyeSpy.spyglassDataComponent.get());
 
-            if (data == null || data.lens.isEmpty()) {
-                stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, other.copyWithCount(1)));
-                other.shrink(1);
-                eye_spy$playSound(player);
-                return true;
+            if (other.getItem() instanceof LensItem) {
+                if (data == null || data.lens.isEmpty()) {
+                    stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, other.copyWithCount(1)));
+                    other.shrink(1);
+                    eye_spy$playSound(player);
+                    return true;
+                }
+            } else if (other.getItem() instanceof AttachmentItem) {
+                List<ItemStack> attachments = data == null ? new ArrayList<>() : CollectionsKt.toMutableList(data.attachments);
+
+                if (attachments.size() < EyeSpy.MAX_ATTACHMENTS) {
+                    attachments.add(other.copyWithCount(1));
+                    stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, attachments));
+                    other.shrink(1);
+                    eye_spy$playSound(player);
+                    return true;
+                }
             }
         }
 

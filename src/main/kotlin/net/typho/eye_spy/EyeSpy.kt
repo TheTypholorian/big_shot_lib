@@ -1,28 +1,16 @@
 package net.typho.eye_spy
 
-import net.minecraft.advancements.AdvancementHolder
 import net.minecraft.advancements.AdvancementRewards
-import net.minecraft.advancements.Criterion
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger
 import net.minecraft.core.registries.BuiltInRegistries
-import net.minecraft.core.registries.Registries
-import net.minecraft.data.models.model.ModelTemplate
-import net.minecraft.data.models.model.ModelTemplates
-import net.minecraft.data.models.model.TextureMapping
-import net.minecraft.data.models.model.TextureSlot
-import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.data.recipes.RecipeCategory
-import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.data.recipes.ShapedRecipeBuilder
 import net.minecraft.resources.Identifier
-import net.minecraft.resources.ResourceKey
-import net.minecraft.world.item.Item
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.ItemLike
 import net.typho.big_shot_lib.api.BigShotLib.toShortString
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.event.ModifyDefaultItemComponentsEvent
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
@@ -32,7 +20,6 @@ import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.content.ItemComponentFactory
 import net.typho.big_shot_lib.api.util.content.ItemFactory
 import net.typho.big_shot_lib.api.util.content.RecipeTypeFactory
-import java.util.Optional
 
 object EyeSpy : NeoCommonInitializer {
     override val modId: String = "big_shot_lib" // TODO
@@ -50,7 +37,7 @@ object EyeSpy : NeoCommonInitializer {
     val recipes = RecipeTypeFactory(this)
 
     @JvmField
-    val spyglassRecipe = recipes.create(id("spyglass_recipe"), SpyglassRecipe.serializer)
+    val spyglassRecipeType = recipes.create(id("spyglass_recipe"), SpyglassRecipe.serializer)
 
     @JvmField
     val spyglassDataComponent = itemComponents.begin<SpyglassData>(id("spyglass_data"))
@@ -100,6 +87,19 @@ object EyeSpy : NeoCommonInitializer {
                 properties.stacksTo(1)
             }
     }
+
+    @JvmField
+    val rangeFinder = attachment(id("range_finder"))
+        .recipe { item ->
+            ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, item)
+                .unlockedBy("has_redstone", RecipeProvider.has(Items.REDSTONE))
+                .define('R', Items.REDSTONE)
+                .define('I', Items.IRON_INGOT)
+                .pattern("R")
+                .pattern("I")
+                .pattern("I")
+        }
+        .end()
 
     override fun onInitialize(bus: NeoEventBus) {
         bus.register(ModifyDefaultItemComponentsEvent { out ->

@@ -3,5 +3,13 @@
   "item.big_shot_lib.creeper_lens": "Creeper Lens",
   "item.big_shot_lib.enderman_lens": "Enderman Lens",
   "item.big_shot_lib.dissipation_lens": "Dissipation Lens",
-  "item.big_shot_lib.night_vision_lens": "Night Vision Lens"
+  "item.big_shot_lib.night_vision_lens": "Night Vision Lens",
+  "item.big_shot_lib.range_finder": "Range Finder",
+  "eye_spy.no_lens": "No Lens",
+  "eye_spy.lens": "Lens: %s",
+  "eye_spy.no_attachments": "No Attachments",
+  "eye_spy.attachments": "Attachments:",
+  "eye_spy.attachment": " - %s",
+  "eye_spy.range_finder.range": "%s blocks",
+  "eye_spy.range_finder.out_of_range": ">%s blocks"
 }

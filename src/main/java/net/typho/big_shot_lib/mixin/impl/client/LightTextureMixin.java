@@ -45,6 +45,7 @@ public class LightTextureMixin {
         }
     }
 
+    /*
     @Inject(
             method = "updateLightTexture",
             at = @At(
@@ -68,4 +69,5 @@ public class LightTextureMixin {
             }
         }
     }
+     */
 }
