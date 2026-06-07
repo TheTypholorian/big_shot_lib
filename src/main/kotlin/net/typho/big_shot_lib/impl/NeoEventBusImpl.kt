@@ -165,6 +165,8 @@ import net.typho.big_shot_lib.api.event.ModifyDefaultItemComponentsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
 import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
+import net.typho.big_shot_lib.api.event.RemoveAdvancementsEvent
+import net.typho.big_shot_lib.api.event.RemoveRecipesEvent
 import java.util.function.Predicate
 
 class NeoEventBusImpl(
@@ -178,6 +180,10 @@ class NeoEventBusImpl(
         val DYNAMIC_ADVANCEMENT_EVENTS = arrayListOf<RegisterDynamicAdvancementsEvent>()
         @JvmField
         val DYNAMIC_RECIPE_EVENTS = arrayListOf<RegisterDynamicRecipesEvent>()
+        @JvmField
+        val REMOVE_ADVANCEMENT_EVENTS = arrayListOf<RemoveAdvancementsEvent>()
+        @JvmField
+        val REMOVE_RECIPE_EVENTS = arrayListOf<RemoveRecipesEvent>()
         @JvmField
         val DYNAMIC_TAG_EVENTS = arrayListOf<RegisterDynamicTagsEvent>()
     }
@@ -389,15 +395,23 @@ class NeoEventBusImpl(
         }
     }
 
-    override fun register(event: ServerStartTickEvent) {
-        inner.addListener { e: ServerTickEvent.Pre ->
-            event.serverStartTick(e.server)
-        }
+    override fun register(event: RemoveAdvancementsEvent) {
+        REMOVE_ADVANCEMENT_EVENTS.add(event)
+    }
+
+    override fun register(event: RemoveRecipesEvent) {
+        REMOVE_RECIPE_EVENTS.add(event)
     }
 
     override fun register(event: ServerEndTickEvent) {
         inner.addListener { e: ServerTickEvent.Post ->
             event.serverEndTick(e.server)
+        }
+    }
+
+    override fun register(event: ServerStartTickEvent) {
+        inner.addListener { e: ServerTickEvent.Pre ->
+            event.serverStartTick(e.server)
         }
     }
 

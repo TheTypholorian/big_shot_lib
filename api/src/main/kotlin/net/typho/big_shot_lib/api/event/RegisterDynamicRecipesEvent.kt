@@ -10,6 +10,7 @@ import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.crafting.Recipe
+import java.util.function.Consumer
 
 //? neoforge {
 import net.neoforged.neoforge.common.conditions.ICondition
@@ -20,8 +21,8 @@ fun interface RegisterDynamicRecipesEvent {
     fun register(output: Output, registries: HolderLookup.Provider)
 
     interface Output {
-        fun register(location: ResourceKey<out Recipe<*>>, recipe: RecipeBuilder) {
-            recipe.save(object : RecipeOutput {
+        fun register(out: Consumer<RecipeOutput>) {
+            out.accept(object : RecipeOutput {
                 //? fabric {
                 /*override fun accept(location: Identifier, recipe: Recipe<*>, advancement: AdvancementHolder?) {
                     register(ResourceKey.create(Registries.RECIPE, location), recipe)
@@ -35,7 +36,11 @@ fun interface RegisterDynamicRecipesEvent {
                 override fun advancement(): Advancement.Builder {
                     return Advancement.Builder.recipeAdvancement() // TODO advancements
                 }
-            }, location.location())
+            })
+        }
+
+        fun register(location: ResourceKey<out Recipe<*>>, recipe: RecipeBuilder) {
+            register { recipe.save(it, location.location()) }
         }
 
         fun register(location: ResourceKey<out Recipe<*>>, recipe: Recipe<*>)
@@ -47,8 +52,8 @@ fun interface RegisterDynamicRecipesEvent {
             @JvmField
             var count = 0
 
-            override fun register(location: ResourceKey<out Recipe<*>>, recipe: RecipeBuilder) {
-                recipe.save(object : RecipeOutput {
+            override fun register(out: Consumer<RecipeOutput>) {
+                out.accept(object : RecipeOutput {
                     override fun advancement(): Advancement.Builder {
                         return Advancement.Builder.recipeAdvancement()
                     }
@@ -76,7 +81,7 @@ fun interface RegisterDynamicRecipesEvent {
                         }
                     }
                     //? }
-                }, location.location())
+                })
             }
 
             override fun register(location: ResourceKey<out Recipe<*>>, recipe: Recipe<*>) {

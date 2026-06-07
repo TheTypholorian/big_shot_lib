@@ -56,17 +56,14 @@ public class LightTextureMixin {
     private void updateLightTexture(
             float partialTicks,
             CallbackInfo ci,
-            @Local(ordinal = 1) Vector3f color,
-            @Local(ordinal = 0) int skyLight,
-            @Local(ordinal = 1) int blockLight
+            @Local(ordinal = 1) Vector3f color
     ) {
         if (minecraft.cameraEntity instanceof LivingEntity living && !minecraft.gameRenderer.getMainCamera().isDetached()) {
             var data = living.getUseItem().get(EyeSpy.spyglassDataComponent.get());
 
             if (data != null) {
                 if (data.lens.is(EyeSpy.nightVisionLens.get())) {
-                    float light = 1 - Math.max(skyLight, blockLight) / 15f;
-                    color.lerp(new Vector3f(124 / 255f, 178 / 255f, 71 / 255f), light * light);
+                    color.lerp(new Vector3f(124 / 255f, 178 / 255f, 71 / 255f), 0.75f);
                 }
             }
         }

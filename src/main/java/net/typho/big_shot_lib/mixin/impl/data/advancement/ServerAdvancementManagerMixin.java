@@ -2,7 +2,10 @@ package net.typho.big_shot_lib.mixin.impl.data.advancement;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.Identifier;
@@ -12,6 +15,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.typho.big_shot_lib.api.BigShotLib;
 import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent;
 import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent;
+import net.typho.big_shot_lib.api.event.RemoveAdvancementsEvent;
 import net.typho.big_shot_lib.impl.NeoEventBusImpl;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,6 +31,28 @@ public class ServerAdvancementManagerMixin {
     @Shadow
     @Final
     private HolderLookup.Provider registries;
+
+    @WrapOperation(
+            method = "lambda$apply$0",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/google/common/collect/ImmutableMap$Builder;put(Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableMap$Builder;"
+            )
+    )
+    private <K, V> ImmutableMap.Builder<K, V> apply(
+            ImmutableMap.Builder<K, V> instance,
+            K key,
+            V value,
+            Operation<ImmutableMap.Builder<K, V>> original
+    ) {
+        for (RemoveAdvancementsEvent event : NeoEventBusImpl.REMOVE_ADVANCEMENT_EVENTS) {
+            if (event.shouldRemove((AdvancementHolder) value)) {
+                return instance;
+            }
+        }
+
+        return original.call(instance, key, value);
+    }
 
     @Inject(
             method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",

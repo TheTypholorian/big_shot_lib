@@ -29,9 +29,13 @@ interface NeoEventBus {
 
     fun register(event: RegisterEvent)
 
-    fun register(event: ServerStartTickEvent)
+    fun register(event: RemoveAdvancementsEvent)
+
+    fun register(event: RemoveRecipesEvent)
 
     fun register(event: ServerEndTickEvent)
+
+    fun register(event: ServerStartTickEvent)
 
     fun register(event: UseItemOnBlockEvent)
 }
