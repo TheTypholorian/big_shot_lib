@@ -73,12 +73,12 @@ public abstract class SpyglassItemMixin extends Item {
             if (slot.hasItem()) {
                 if (slot.getItem().getItem() instanceof LensItem) {
                     if (data == null || data.lens.isEmpty()) {
-                        stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(slot.safeTake(1, 1, player)));
+                        stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, slot.safeTake(1, 1, player)));
                         slot.setByPlayer(ItemStack.EMPTY);
                         eye_spy$playSound(player);
                         return true;
                     } else if (slot.getItem().getCount() == 1) {
-                        stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(slot.getItem()));
+                        stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, slot.getItem()));
                         slot.setByPlayer(data.lens);
                         eye_spy$playSound(player);
                         return true;
@@ -86,7 +86,7 @@ public abstract class SpyglassItemMixin extends Item {
                 }
             } else {
                 if (data != null && !data.lens.isEmpty()) {
-                    stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(ItemStack.EMPTY));
+                    stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, ItemStack.EMPTY));
                     slot.setByPlayer(data.lens);
                     eye_spy$playSound(player);
                     return true;
@@ -110,7 +110,7 @@ public abstract class SpyglassItemMixin extends Item {
             SpyglassData data = stack.get(EyeSpy.spyglassDataComponent.get());
 
             if (data == null || data.lens.isEmpty()) {
-                stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(other.copyWithCount(1)));
+                stack.set(EyeSpy.spyglassDataComponent.get(), new SpyglassData(data, other.copyWithCount(1)));
                 other.shrink(1);
                 eye_spy$playSound(player);
                 return true;

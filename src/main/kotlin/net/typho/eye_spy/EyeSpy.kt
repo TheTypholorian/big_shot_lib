@@ -83,52 +83,6 @@ object EyeSpy : NeoCommonInitializer {
             }
     }
 
-    init {
-        addClientListener { bus ->
-            bus.register(ModelLoadingEvent { out ->
-                val spyglassInHandTemplate = ModelTemplate(
-                    Optional.of(id("item/spyglass_in_hand")),
-                    Optional.empty(),
-                    TextureSlot.LAYER1
-                )
-
-                out.register(
-                    ModelTemplates.TWO_LAYERED_ITEM,
-                    id("item/empty_spyglass"),
-                    TextureMapping.layered(
-                        TextureMapping.getItemTexture(Items.SPYGLASS),
-                        id("item/empty_spyglass")
-                    )
-                )
-                out.register(
-                    spyglassInHandTemplate,
-                    id("item/empty_spyglass_in_hand"),
-                    TextureMapping().put(TextureSlot.LAYER1, id("item/empty_spyglass_model"))
-                )
-
-                BuiltInRegistries.ITEM.entrySet().forEach { (key, item) ->
-                    if (item is LensItem) {
-                        out.register(
-                            ModelTemplates.TWO_LAYERED_ITEM,
-                            item,
-                            "_in_spyglass",
-                            TextureMapping.layered(
-                                TextureMapping.getItemTexture(Items.SPYGLASS),
-                                TextureMapping.getItemTexture(item, "_in_spyglass")
-                            )
-                        )
-                        out.register(
-                            spyglassInHandTemplate,
-                            item,
-                            "_in_spyglass_in_hand",
-                            TextureMapping().put(TextureSlot.LAYER1, TextureMapping.getItemTexture(item, "_in_spyglass_model"))
-                        )
-                    }
-                }
-            })
-        }
-    }
-
     override fun onInitialize(bus: NeoEventBus) {
         bus.register(ModifyDefaultItemComponentsEvent { out ->
             out.modify(Items.SPYGLASS) { out ->
