@@ -39,8 +39,6 @@ interface NeoTransformParameters : TransformParameters {
     val clientOnlyPackages: ListProperty<String>
     @get:Input
     val serverOnlyPackages: ListProperty<String>
-    @get:Input
-    val hasFletchingTable: Property<Boolean>
 
     fun set(ext: BigShotLibPluginExtension) {
         classRenames.set(ext.transformInfo.classRenames)
@@ -58,7 +56,5 @@ interface NeoTransformParameters : TransformParameters {
 
         version.set(ext.version)
         loader.set(ext.loader)
-
-        hasFletchingTable.set(ext.hasFletchingTable)
     }
 }
