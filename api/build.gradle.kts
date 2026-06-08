@@ -12,7 +12,8 @@ publishing {
             artifactId = "big_shot_lib"
             version = project.version.toString()
 
-            from(components["java"])
+            artifact(tasks.jar)
+            artifact(tasks.kotlinSourcesJar)
         }
     }
 }
@@ -103,16 +104,11 @@ dependencies {
 }
 
 tasks.jar {
-    destinationDirectory.set(rootProject.file("build/libs/${project.version}"))
     archiveClassifier = ""
 }
 
 java {
     withSourcesJar()
-}
-
-tasks.remapSourcesJar {
-    destinationDirectory.set(rootProject.file("build/libs/${project.version}"))
 }
 
 configurations {
