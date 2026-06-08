@@ -23,14 +23,6 @@ bigShotLib {
         defaultDeprecatedMethods()
         defaultInterfaceInjections()
 
-        overloadArguments(
-            "net/minecraft/client/renderer/RenderType",
-            "net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType",
-            "net/typho/big_shot_lib/impl/client/Overloads",
-            "convertRenderType",
-            false
-        )
-
         clientOnlyPackages.add("net/typho/big_shot_lib/api/client")
         clientOnlyPackages.add("net/typho/big_shot_lib/impl/client")
         clientOnlyPackages.add("net/typho/big_shot_lib/mixin/api/client")

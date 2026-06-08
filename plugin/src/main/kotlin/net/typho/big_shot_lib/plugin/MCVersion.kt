@@ -14,11 +14,11 @@ enum class MCVersion(
     MC1_21_9(arrayOf("1.21.9")),
     MC1_21_10(arrayOf("1.21.10")),
     MC1_21_11(arrayOf("1.21.11")),
-    MC26_1(arrayOf("26.1")),
+    MC26_1(arrayOf("26.1", "26.1.1", "26.1.2")),
     MC26_2(arrayOf("26.2"));
 
     companion object {
         @JvmStatic
-        operator fun get(key: String) = MCVersion.entries.firstOrNull { it.matches.contains(key) }
+        operator fun get(key: String) = MCVersion.entries.first { it.matches.contains(key) }
     }
 }

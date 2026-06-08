@@ -1,9 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import groovy.json.JsonOutput.prettyPrint
-import net.fabricmc.loom.task.RemapJarTask
-import net.fabricmc.loom.task.RemapSourcesJarTask
-
 plugins {
     kotlin("jvm")
     alias(libs.plugins.loom)
@@ -28,14 +24,6 @@ bigShotLib {
         shortIdentifierMethods()
         defaultDeprecatedMethods()
         defaultInterfaceInjections()
-
-        overloadArguments(
-            "net/minecraft/client/renderer/RenderType",
-            "net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType",
-            "net/typho/big_shot_lib/impl/client/Overloads",
-            "convertRenderType",
-            false
-        )
 
         clientOnlyPackages.add("net/typho/big_shot_lib/api/client")
         clientOnlyPackages.add("net/typho/big_shot_lib/impl/client")
