@@ -36,7 +36,7 @@ interface IRect3<N : Number> {
     }
 
     fun intersects(other: IRect3<N>): Boolean {
-        return min.anyLessThan(other.max) && max.anyGreaterThan(other.min)
+        return min.allLessThan(other.max) && max.allGreaterThan(other.min)
     }
 
     companion object {
