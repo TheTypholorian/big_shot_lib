@@ -4,7 +4,6 @@ import net.typho.big_shot_lib.api.client.NeoClientInitializer
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
-import net.typho.big_shot_lib.api.util.content.ContentTest
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import java.util.function.Consumer
 
@@ -34,14 +33,7 @@ interface NeoCommonInitializer {
     companion object {
         @JvmStatic
         @get:JvmName("getMods")
-        val mods by lazy {
-            NeoCommonInitializer::class.loadServices()
-                .also {
-                    if (PlatformUtil.INSTANCE.isDevEnv()) {
-                        it.add(ContentTest)
-                    }
-                }
-        }
+        val mods by lazy { NeoCommonInitializer::class.loadServices() }
 
         @get:JvmStatic
         @get:JvmName("isInitDone")

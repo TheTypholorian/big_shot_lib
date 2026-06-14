@@ -3,7 +3,7 @@ kotlin = "2.2.0"
 moddev = "2.0.141"
 loom = "1.16-SNAPSHOT"
 
-minecraftForAPI = "1.21"
+minecraftForAPI = "1.21.1"
 
 mixin = "0.8.5"
 mixinExtras = "0.5.3"

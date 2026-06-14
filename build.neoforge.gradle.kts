@@ -19,9 +19,7 @@ bigShotLib {
     loader("neoforge")
 
     transformInfo {
-        shortIdentifierMethods()
-        defaultDeprecatedMethods()
-        defaultInterfaceInjections()
+        setupDefaults()
 
         clientOnlyPackages.add("net/typho/big_shot_lib/api/client")
         clientOnlyPackages.add("net/typho/big_shot_lib/impl/client")
@@ -80,7 +78,7 @@ val processResources = tasks.named<ProcessResources>("processResources") {
         }
         this["mod_id"] = project.property("mod.id") as String
         this["mod_name"] = project.property("mod.name") as String
-        this["mod_version"] = project.property("mod.version") as String
+        this["mod_version"] = rootProject.version as String
         this["mod_author"] = project.property("mod.author") as String
         this["mod_description"] = project.property("mod.description") as String
         this["mod_credits"] = project.property("mod.credits") as String
@@ -95,7 +93,7 @@ val processResources = tasks.named<ProcessResources>("processResources") {
     }
 }
 
-version = "${property("mod.version")}+${property("deps.minecraft")}-neoforge"
+version = "${rootProject.version}+${property("deps.minecraft")}-neoforge"
 base.archivesName = property("mod.id") as String
 
 jsonlang {
@@ -165,7 +163,7 @@ tasks {
     register<Copy>("buildAndCollect") {
         group = "build"
         from(jar.map { it.archiveFile })
-        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
+        into(rootProject.layout.buildDirectory.file("libs/${rootProject.version}"))
         dependsOn("build")
     }
 }
@@ -204,8 +202,8 @@ publishMods {
     additionalFiles.from(tasks.named<org.gradle.jvm.tasks.Jar>("sourcesJar").map { it.archiveFile.get() })
 
     type = BETA
-    displayName = "${property("mod.name")} ${property("mod.version")} for ${stonecutter.current.version} Neoforge"
-    version = "${property("mod.version")}+${stonecutter.current.version}-neoforge"
+    displayName = "${property("mod.name")} ${rootProject.version} for ${stonecutter.current.version} Neoforge"
+    version = "${rootProject.version}+${stonecutter.current.version}-neoforge"
     changelog = provider { rootProject.file("CHANGELOG.md").readText() }
     modLoaders.add("neoforge")
 
