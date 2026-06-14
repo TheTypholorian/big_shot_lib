@@ -44,11 +44,17 @@ class KotlinAndMixinSupportingClassRemapper(
     ): MethodVisitor {
         return object : MethodVisitor(api, super.visitMethod(access, name, descriptor, signature, exceptions)) {
             override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor {
-                return if (descriptor.contains("mixin")) {
-                    MixinInjectionRemapper(api, super.visitAnnotation(descriptor, visible), remapper, target!!)
-                } else {
-                    super.visitAnnotation(descriptor, visible)
+                if (descriptor.contains("mixin")) {
+                    val target = target
+
+                    if (target == null) {
+                        System.err.println("Target for mixin class ${this@KotlinAndMixinSupportingClassRemapper.name} is null")
+                    } else {
+                        return MixinInjectionRemapper(api, super.visitAnnotation(descriptor, visible), remapper, target)
+                    }
                 }
+
+                return super.visitAnnotation(descriptor, visible)
             }
         }
     }

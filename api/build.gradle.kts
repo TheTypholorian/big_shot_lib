@@ -35,9 +35,7 @@ bigShotLib {
     loader("fabric")
 
     transformInfo {
-        shortIdentifierMethods()
-        defaultDeprecatedMethods()
-        defaultInterfaceInjections()
+        setupDefaults()
 
         overloadArguments(
             "net/minecraft/client/renderer/RenderType",

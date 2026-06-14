@@ -12,9 +12,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.attributes.Attribute
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.AbstractCompile
-import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompileTool
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
@@ -25,11 +23,6 @@ class BigShotLibPlugin : Plugin<Project> {
     @JvmField
     val neoTweakedAttrib: Attribute<Boolean> = Attribute.of(
         "big_shot_lib:tweaked",
-        Boolean::class.javaObjectType
-    )
-    @JvmField
-    val neoReverseTweakedAttrib: Attribute<Boolean> = Attribute.of(
-        "big_shot_lib:reverse_tweaked",
         Boolean::class.javaObjectType
     )
 
