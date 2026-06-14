@@ -65,7 +65,7 @@ class BigShotLibPlugin : Plugin<Project> {
             project.dependencies.registerTransform(BigShotLibTransformAction::class.java) {
                 it.from.attribute(neoTweakedAttrib, false)
                 it.to.attribute(neoTweakedAttrib, true)
-                it.parameters.set(ext)
+                it.parameters.set(ext) { project.objects }
             }
 
             project.afterEvaluate {
@@ -104,7 +104,7 @@ class BigShotLibPlugin : Plugin<Project> {
                 project.tasks.getByName("classes") { task ->
                     println("[Big Shot Lib] Attaching project transforms to task '${task.name}'")
                     val parameters = project.provider {
-                        project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) }
+                        project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) { project.objects } }
                     }
 
                     task.inputs.property("neoParameters", parameters)
@@ -152,7 +152,7 @@ class BigShotLibPlugin : Plugin<Project> {
                             it.group = "big_shot_lib"
 
                             val parameters = project.provider {
-                                project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) }
+                                project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) { project.objects } }
                             }
 
                             it.inputs.property("neoParameters", parameters)

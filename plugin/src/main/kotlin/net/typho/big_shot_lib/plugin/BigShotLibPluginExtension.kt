@@ -87,136 +87,80 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         abstract val serverOnlyPackages: ListProperty<String>
 
         init {
-            classRenames.convention(version.map {
-                val list = mutableListOf<ClassRename>()
-
-                if (it < MCVersion.MC1_21_11) {
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/resources/ResourceLocation")
-                        it.to.set("net/minecraft/resources/Identifier")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/util/ResourceLocationPattern")
-                        it.to.set("net/minecraft/util/IdentifierPattern")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/ResourceLocationException")
-                        it.to.set("net/minecraft/IdentifierException")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/client/resources/model/ModelResourceLocation")
-                        it.to.set("net/minecraft/client/resources/model/ModelIdentifier")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/commands/arguments/ResourceLocationArgument")
-                        it.to.set("net/minecraft/commands/arguments/IdentifierArgument")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/util/parsing/packrat/commands/ResourceLocationParseRule")
-                        it.to.set("net/minecraft/util/parsing/packrat/commands/IdentifierParseRule")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/client/searchtree/ResourceLocationSearchTree")
-                        it.to.set("net/minecraft/client/searchtree/IdentifierSearchTree")
-                    })
-                } else {
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/client/renderer/rendertype/LayeringTransform")
-                        it.to.set("net/minecraft/client/renderer/LayeringTransform")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/client/renderer/rendertype/OutputTarget")
-                        it.to.set("net/minecraft/client/renderer/OutputTarget")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/client/renderer/rendertype/RenderSetup")
-                        it.to.set("net/minecraft/client/renderer/RenderSetup")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/client/renderer/rendertype/RenderType")
-                        it.to.set("net/minecraft/client/renderer/RenderType")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/client/renderer/rendertype/RenderTypes")
-                        it.to.set("net/minecraft/client/renderer/RenderTypes")
-                    })
-                    list.add(objects.newInstance(ClassRename::class.java).also {
-                        it.from.set("net/minecraft/client/renderer/rendertype/TextureTransform")
-                        it.to.set("net/minecraft/client/renderer/TextureTransform")
-                    })
-                }
-
-                list
-            })
+            classRenames.convention(listOf())
             methodRenames.convention(listOf())
             fieldRenames.convention(listOf())
             interfaceInjections.convention(listOf())
             markAsDeprecated.convention(listOf())
-            staticMethodInjections.convention(version.map {
-                val list = mutableListOf<StaticMethodInjection>()
-
-                if (it < MCVersion.MC1_21) {
-                    list.add(objects.newInstance(StaticMethodInjection::class.java).also {
-                        it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
-                            it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
-                            it.name.set("fromNamespaceAndPath")
-                            it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
-                        })
-                        it.targetClass.set("net/minecraft/resources/Identifier")
-                        it.targetMethodName.set("fromNamespaceAndPath")
-                    })
-                    list.add(objects.newInstance(StaticMethodInjection::class.java).also {
-                        it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
-                            it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
-                            it.name.set("fromNamespaceAndPath")
-                            it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
-                        })
-                        it.targetClass.set("net/minecraft/resources/Identifier")
-                        it.targetMethodName.set("createUntrusted")
-                    })
-                    list.add(objects.newInstance(StaticMethodInjection::class.java).also {
-                        it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
-                            it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
-                            it.name.set("parse")
-                            it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
-                        })
-                        it.targetClass.set("net/minecraft/resources/Identifier")
-                        it.targetMethodName.set("parse")
-                    })
-                    list.add(objects.newInstance(StaticMethodInjection::class.java).also {
-                        it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
-                            it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
-                            it.name.set("withDefaultNamespace")
-                            it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
-                        })
-                        it.targetClass.set("net/minecraft/resources/Identifier")
-                        it.targetMethodName.set("withDefaultNamespace")
-                    })
-                    list.add(objects.newInstance(StaticMethodInjection::class.java).also {
-                        it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
-                            it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
-                            it.name.set("bySeparator")
-                            it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
-                        })
-                        it.targetClass.set("net/minecraft/resources/Identifier")
-                        it.targetMethodName.set("bySeparator")
-                    })
-                    list.add(objects.newInstance(StaticMethodInjection::class.java).also {
-                        it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
-                            it.cls.set("net/typho/big_shot_lib/impl/util/OldIdentifierUtil")
-                            it.name.set("tryBySeparator")
-                            it.desc.set("(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
-                        })
-                        it.targetClass.set("net/minecraft/resources/Identifier")
-                        it.targetMethodName.set("tryBySeparator")
-                    })
-                }
-
-                list
-            })
+            staticMethodInjections.convention(listOf())
             argumentOverloadConverters.convention(listOf())
             clientOnlyPackages.convention(listOf())
             serverOnlyPackages.convention(listOf())
+        }
+
+        fun setupDefaults() {
+            val version = version.get()
+
+            if (version < MCVersion.MC1_21) {
+                injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "fromNamespaceAndPath", "fromNamespaceAndPath", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
+                injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "createUntrusted", "createUntrusted", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
+                injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "parse", "parse", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
+                injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "withDefaultNamespace", "withDefaultNamespace", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
+                injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "bySeparator", "bySeparator", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
+                injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "tryBySeparator", "tryBySeparator", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
+            }
+
+            if (version < MCVersion.MC1_21_11) {
+                renameClass("net/minecraft/resources/ResourceLocation", "net/minecraft/resources/Identifier")
+                renameClass("net/minecraft/util/ResourceLocationPattern", "net/minecraft/util/IdentifierPattern")
+                renameClass("net/minecraft/ResourceLocationException", "net/minecraft/IdentifierException")
+                renameClass("net/minecraft/client/resources/model/ModelResourceLocation", "net/minecraft/client/resources/model/ModelIdentifier")
+                renameClass("net/minecraft/commands/arguments/ResourceLocationArgument", "net/minecraft/commands/arguments/IdentifierArgument")
+                renameClass("net/minecraft/util/parsing/packrat/commands/ResourceLocationParseRule", "net/minecraft/util/parsing/packrat/commands/IdentifierParseRule")
+                renameClass("net/minecraft/client/searchtree/ResourceLocationSearchTree", "net/minecraft/client/searchtree/IdentifierSearchTree")
+
+                renameMethod("net/minecraft/resources/ResourceKey", "()Lnet/minecraft/resources/Identifier;", "location", "identifier")
+                renameMethod("net/minecraft/tags/TagKey", "()Lnet/minecraft/resources/Identifier;", "location", "identifier")
+
+                renameField("net/minecraft/resources/ResourceKey", "Lnet/minecraft/resources/Identifier;", "location", "identifier")
+                renameField("net/minecraft/tags/TagKey", "Lnet/minecraft/resources/Identifier;", "location", "identifier")
+            } else {
+                renameClass("net/minecraft/client/renderer/rendertype/LayeringTransform", "net/minecraft/client/renderer/LayeringTransform")
+                renameClass("net/minecraft/client/renderer/rendertype/OutputTarget", "net/minecraft/client/renderer/OutputTarget")
+                renameClass("net/minecraft/client/renderer/rendertype/RenderSetup", "net/minecraft/client/renderer/RenderSetup")
+                renameClass("net/minecraft/client/renderer/rendertype/RenderType", "net/minecraft/client/renderer/RenderType")
+                renameClass("net/minecraft/client/renderer/rendertype/RenderTypes", "net/minecraft/client/renderer/RenderTypes")
+                renameClass("net/minecraft/client/renderer/rendertype/TextureTransform", "net/minecraft/client/renderer/TextureTransform")
+            }
+
+            renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "createUntrusted", "untrusted")
+            renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "fromNamespaceAndPath", "of")
+            renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "withDefaultNamespace", "minecraft")
+
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setColor", "(IIII)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setUv", "(FF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setUv1", "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setUv2", "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setNormal", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setColor", "(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setColor", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setWhiteAlpha", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setLight", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setOverlay", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", "(Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setNormal", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType", "net/minecraft/client/renderer/RenderType")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoVertexConsumer", "com/mojang/blaze3d/vertex/VertexConsumer")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlUniform", "com/mojang/blaze3d/shaders/AbstractUniform")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoVertexFormat", "com/mojang/blaze3d/vertex/VertexFormat")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoGuiGraphics", "net/minecraft/client/gui/GuiGraphics")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/NeoRenderTarget", "com/mojang/blaze3d/pipeline/RenderTarget")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlTexture2D", "net/minecraft/client/renderer/texture/AbstractTexture")
         }
 
         fun renameClass(from: String, to: String) {
@@ -264,120 +208,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             })
         }
 
-        fun defaultDeprecatedMethods() {
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "addVertex",
-                "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setColor",
-                "(IIII)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setUv",
-                "(FF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setUv1",
-                "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setUv2",
-                "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setNormal",
-                "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setColor",
-                "(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setColor",
-                "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setWhiteAlpha",
-                "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setLight",
-                "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setOverlay",
-                "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "addVertex",
-                "(Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "addVertex",
-                $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "addVertex",
-                $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "addVertex",
-                "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-            markAsDeprecated(
-                "com/mojang/blaze3d/vertex/VertexConsumer",
-                "setNormal",
-                $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;"
-            )
-        }
-
-        fun defaultInterfaceInjections() {
-            injectInterface(
-                "net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType",
-                "net/minecraft/client/renderer/RenderType"
-            )
-            injectInterface(
-                "net/typho/big_shot_lib/api/client/rendering/util/NeoVertexConsumer",
-                "com/mojang/blaze3d/vertex/VertexConsumer"
-            )
-            injectInterface(
-                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlUniform",
-                "com/mojang/blaze3d/shaders/AbstractUniform"
-            )
-            injectInterface(
-                "net/typho/big_shot_lib/api/client/rendering/util/NeoVertexFormat",
-                "com/mojang/blaze3d/vertex/VertexFormat"
-            )
-            injectInterface(
-                "net/typho/big_shot_lib/api/client/rendering/util/NeoGuiGraphics",
-                "net/minecraft/client/gui/GuiGraphics"
-            )
-            injectInterface(
-                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/NeoRenderTarget",
-                "com/mojang/blaze3d/pipeline/RenderTarget"
-            )
-            injectInterface(
-                "net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlTexture2D",
-                "net/minecraft/client/renderer/texture/AbstractTexture"
-            )
-        }
-
         @JvmOverloads
         fun injectInterface(iface: String, target: String, typeParams: Array<String> = arrayOf(), vararg methods: Pair<String, String>) {
             interfaceInjections.add(objects.newInstance(InterfaceInjection::class.java).also {
@@ -415,27 +245,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 })
                 it.permutate.set(permutate)
             })
-        }
-
-        fun shortIdentifierMethods() {
-            renameMethod(
-                "net/minecraft/resources/Identifier",
-                "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
-                "createUntrusted",
-                "untrusted"
-            )
-            renameMethod(
-                "net/minecraft/resources/Identifier",
-                "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
-                "fromNamespaceAndPath",
-                "of"
-            )
-            renameMethod(
-                "net/minecraft/resources/Identifier",
-                "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;",
-                "withDefaultNamespace",
-                "minecraft"
-            )
         }
     }
 }

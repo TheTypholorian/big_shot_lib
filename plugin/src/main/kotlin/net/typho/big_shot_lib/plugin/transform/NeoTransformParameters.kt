@@ -9,9 +9,11 @@ import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.Met
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.StaticMethodInjection
 import net.typho.big_shot_lib.plugin.MCVersion
 import net.typho.big_shot_lib.plugin.ModLoader
+import net.typho.big_shot_lib.plugin.transform.util.FieldDesc
 import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
 import org.gradle.api.Project
 import org.gradle.api.artifacts.transform.TransformParameters
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -40,7 +42,7 @@ interface NeoTransformParameters : TransformParameters {
     @get:Input
     val serverOnlyPackages: ListProperty<String>
 
-    fun set(ext: BigShotLibPluginExtension) {
+    fun set(ext: BigShotLibPluginExtension, objects: () -> ObjectFactory) {
         classRenames.set(ext.transformInfo.classRenames)
         methodRenames.set(ext.transformInfo.methodRenames)
         fieldRenames.set(ext.transformInfo.fieldRenames)
