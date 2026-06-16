@@ -2,13 +2,10 @@
   "required": true,
   "minVersion": "0.8",
   "package": "net.typho.big_shot_lib.mixin",
-  "refmap": "${mod_id}.refmap.json",
-  "compatibilityLevel": "JAVA_${java}",
-  "mixins": [
-    "impl.iface.ShaderInstanceMixin"
-  ],
+  "refmap": "big_shot_lib.refmap.json",
+  "compatibilityLevel": "JAVA_${java_version}",
+  "mixins": [],
   "client": [],
-  "server": [],
   "injectors": {
     "defaultRequire": 1
   }

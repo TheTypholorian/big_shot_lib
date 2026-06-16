@@ -1,17 +1,18 @@
+import io.github.klahap.dotenv.DotEnvBuilder
+
 plugins {
     kotlin("jvm")
-    id("net.neoforged.moddev")
-    id("dev.kikugie.postprocess.jsonlang")
-    //id("me.modmuss50.mod-publish-plugin")
-    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
-    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
-    id("net.typho.big_shot_lib.plugin")
-}
 
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xjvm-default=all")
-    }
+    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
+
+    id("me.modmuss50.mod-publish-plugin") version "2.0.0-beta.1"
+    id("io.github.klahap.dotenv") version "1.1.3"
+
+    id("com.google.devtools.ksp") version "2.3.9"
+
+    id("dev.isxander.modstitch.base") version "0.8.5"
+
+    id("net.typho.big_shot_lib.plugin") version "1.0.0"
 }
 
 bigShotLib {
@@ -21,10 +22,8 @@ bigShotLib {
     transformInfo {
         setupDefaults()
 
-        clientOnlyPackages.add("net/typho/big_shot_lib/api/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/impl/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/api/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/impl/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/client")
     }
 }
 
@@ -61,118 +60,98 @@ fletchingTable {
     }
 
     mixins.create("main") {
-        mixin("default", "${project.property("mod.id")}.mixins.json") {
-            env("CLIENT", "net.typho.big_shot_lib.mixin.impl.client")
+        mixin("default", "${project.property("id")}.mixins.json")
+    }
+}
+
+modstitch {
+    modLoaderVersion = property("deps.loader_version") as String
+    minecraftVersion = property("deps.minecraft") as String
+
+    parchment {
+        findProperty("deps.parchment")?.let {
+            val (mc, mappings) = (it as String).split(':')
+            minecraftVersion = mc
+            mappingsVersion = mappings
+        }
+    }
+
+    metadata {
+        modId = project.property("id") as String
+        modName = project.property("displayName") as String
+        modVersion = project.property("version") as String
+        modGroup = project.property("group") as String
+
+        findProperty("authors")?.let { modAuthor = it as String }
+        findProperty("description")?.let { modDescription = it as String }
+        findProperty("license")?.let { modLicense = it as String }
+        findProperty("credits")?.let { modCredits = it as String }
+
+        replacementProperties.put("id", project.property("id") as String)
+        replacementProperties.put("version", project.version as String)
+        replacementProperties.put("name", project.property("displayName") as String)
+        replacementProperties.put("description", project.property("description") as String)
+        replacementProperties.put("authors", project.property("authors") as String)
+        replacementProperties.put("license", project.property("license") as String)
+        replacementProperties.put("group", project.group as String)
+        replacementProperties.put("minecraft_version_range", project.property("deps.minecraft_range") as String)
+        replacementProperties.put("big_shot_version", project.property("deps.big_shot") as String)
+        replacementProperties.put("yacl_version", project.property("deps.yacl") as String)
+        replacementProperties.put("sodium_version", project.property("deps.sodium") as String)
+        replacementProperties.put("java_version", "21")
+    }
+
+    mixin {
+        configs.register(project.property("id") as String)
+        addMixinsToModManifest = true
+    }
+
+    finalJarTask.configure {
+        archiveVersion.set("${rootProject.version}+${project.property("deps.minecraft")}-neoforge")
+    }
+
+    namedJarTask.configure {
+        archiveVersion.set("${rootProject.version}+${project.property("deps.minecraft")}-neoforge")
+    }
+
+    moddevgradle {
+        findProperty("deps.forge")?.let { forgeVersion = it as String }
+        findProperty("deps.neoform")?.let { neoFormVersion = it as String }
+        findProperty("deps.neoforge")?.let { neoForgeVersion = it as String }
+        findProperty("deps.mcp")?.let { mcpVersion = it as String }
+
+        defaultRuns()
+
+        configureNeoForge {
+            accessTransformers.from(accessTransformer)
         }
     }
 }
 
-val processResources = tasks.named<ProcessResources>("processResources") {
-    val props = HashMap<String, String>().apply {
-        this["minecraft"] = (project.property("deps.minecraft_range") ?: "[${project.property("deps.minecraft")}]") as String
-        this["java"] = when {
-            sc.current.parsed >= "1.20.5" -> "21"
-            sc.current.parsed >= "1.18" -> "17"
-            sc.current.parsed >= "1.17" -> "16"
-            else -> "8"
-        }
-        this["mod_id"] = project.property("mod.id") as String
-        this["mod_name"] = project.property("mod.name") as String
-        this["mod_version"] = rootProject.version as String
-        this["mod_author"] = project.property("mod.author") as String
-        this["mod_description"] = project.property("mod.description") as String
-        this["mod_credits"] = project.property("mod.credits") as String
-        this["mod_license"] = project.property("mod.license") as String
-        this["vibrancy_incompat_version"] = project.property("vibrancyIncompatVersion") as String
-    }
-
-    inputs.properties(props)
-
-    filesMatching(listOf("big_shot_lib.mod.json", "fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml", "**/*.mixins.json")) {
-        expand(props)
-    }
+val env = DotEnvBuilder.dotEnv {
+    addFileIfExists("$rootDir/.env")
+    addFileIfExists("$projectDir/.env")
 }
 
-version = "${rootProject.version}+${property("deps.minecraft")}-neoforge"
-base.archivesName = property("mod.id") as String
-
-jsonlang {
-    languageDirectories = listOf("assets/${property("mod.id")}/lang")
-    prettyPrint = true
-}
-
-neoForge {
-    version = property("deps.neoforge") as String
-
-    if (accessTransformer.exists()) {
-        accessTransformers.from(accessTransformer)
+tasks.compileJava.configure {
+    val javaCompat = when {
+        sc.current.parsed >= "26.1" -> "25"
+        sc.current.parsed >= "1.20.5" -> "21"
+        sc.current.parsed >= "1.18" -> "17"
+        sc.current.parsed >= "1.17" -> "16"
+        else -> "8"
     }
-
-    validateAccessTransformers = true
-
-    if (hasProperty("deps.parchment")) parchment {
-        val (mc, ver) = (property("deps.parchment") as String).split(':')
-        mappingsVersion = ver
-        minecraftVersion = mc
-    }
-
-    runs {
-        register("client") {
-            gameDirectory = file("run/")
-            client()
-        }
-        register("server") {
-            gameDirectory = file("run/")
-            server()
-        }
-    }
-
-    mods {
-        register(property("mod.id") as String) {
-            sourceSet(sourceSets["main"])
-        }
-    }
-    sourceSets["main"].resources.srcDir("src/main/generated")
-}
-
-repositories {
-    mavenLocal()
-    maven("https://thedarkcolour.github.io/KotlinForForge/") { name = "KotlinForForge" }
-    maven("https://maven.parchmentmc.org") { name = "Parchment" }
-}
-
-dependencies {
-    implementation(libs.kff)
-    implementation(kotlin("stdlib"))
-    implementation(kotlin("stdlib-jdk8"))
-}
-
-tasks {
-    jar {
-        exclude("**/*.accesswidener")
-    }
-
-    processResources {
-        exclude("**/fabric.mod.json", "**/mods.toml")
-    }
-
-    named("createMinecraftArtifacts") {
-        dependsOn("stonecutterGenerate")
-    }
-
-    register<Copy>("buildAndCollect") {
-        group = "build"
-        from(jar.map { it.archiveFile })
-        into(rootProject.layout.buildDirectory.file("libs/${rootProject.version}"))
-        dependsOn("build")
-    }
+    sourceCompatibility = javaCompat
+    targetCompatibility = javaCompat
 }
 
 java {
-    val javaCompat = if (stonecutter.eval(stonecutter.current.version, ">=1.20.5")) {
-        JavaVersion.VERSION_21
-    } else {
-        JavaVersion.VERSION_17
+    val javaCompat = when {
+        sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
+        sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
+        sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17
+        sc.current.parsed >= "1.17" -> JavaVersion.VERSION_16
+        else -> JavaVersion.VERSION_1_8
     }
     sourceCompatibility = javaCompat
     targetCompatibility = javaCompat
@@ -181,52 +160,97 @@ java {
 kotlin {
     jvmToolchain(
         when {
+            sc.current.parsed >= "26.1" -> 25
             sc.current.parsed >= "1.20.5" -> 21
             sc.current.parsed >= "1.18" -> 17
             sc.current.parsed >= "1.17" -> 16
             else -> 8
         }
     )
+    compilerOptions {
+        freeCompilerArgs.add("-Xjvm-default=all")
+    }
 }
 
-val additionalVersionsStr = findProperty("publish.additionalVersions") as String?
-val additionalVersions: List<String> = additionalVersionsStr
+tasks.processResources {
+    exclude("fabric.mod.json")
+}
+
+version = "${property("version")}+${property("deps.minecraft")}-neoforge"
+base.archivesName = property("id") as String
+
+repositories {
+    mavenLocal()
+    maven("https://thedarkcolour.github.io/KotlinForForge/")
+    maven("https://api.modrinth.com/maven")
+    maven("https://maven.isxander.dev/releases")
+    maven("https://maven.ryanhcode.dev/releases")
+    maven("https://maven.fabricmc.net")
+    maven("https://maven.parchmentmc.org")
+
+    ivy {
+        url = uri("https://github.com/TheTypholorian/big_shot_lib/releases/download")
+        patternLayout {
+            artifact("[revision]/[artifact]-[revision](-[classifier]).[ext]")
+        }
+        metadataSources {
+            artifact()
+        }
+    }
+}
+
+dependencies {
+    modstitchModImplementation("thedarkcolour:kotlinforforge-neoforge:5.9.0")
+
+    //modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
+    modstitchModCompileOnly("net.typho:big_shot_lib:${property("deps.big_shot")}")
+    modstitchModCompileOnly("maven.modrinth:yacl:${property("deps.yacl")}")
+
+    findProperty("deps.sable_companion")?.let {
+        modstitchJiJ(modstitchModApi("dev.ryanhcode.sable-companion:sable-companion-common-${property("deps.minecraft")}:[${it},)")!!)
+    }
+}
+
+tasks {
+    jar {
+        exclude("**/*.accesswidener")
+    }
+}
+
+val additionalVersions: List<String> = (findProperty("publish.additionalVersions") as? String)
     ?.split(",")
     ?.map { it.trim() }
     ?.filter { it.isNotEmpty() }
     ?: emptyList()
 
-/*
 publishMods {
-    file = tasks.jar.map { it.archiveFile.get() }
-    additionalFiles.from(tasks.named<org.gradle.jvm.tasks.Jar>("sourcesJar").map { it.archiveFile.get() })
+    file = modstitch.finalJarTask.map { it.archiveFile.get() }
+    additionalFiles.from(tasks.kotlinSourcesJar)
 
-    type = BETA
-    displayName = "${property("mod.name")} ${rootProject.version} for ${stonecutter.current.version} Neoforge"
-    version = "${rootProject.version}+${stonecutter.current.version}-neoforge"
-    changelog = provider { rootProject.file("CHANGELOG.md").readText() }
-    modLoaders.add("neoforge")
+    type = STABLE
+    displayName = "${property("name")} ${property("version")} for ${property("deps.minecraft") as String} Fabric"
+    version = "${property("version")}+${property("deps.minecraft") as String}-fabric"
+    changelog = ""
+    //changelog = provider { rootProject.file("CHANGELOG.md").readText() }
+    modLoaders.add("fabric")
 
-    modrinth {
-        projectId = property("publish.modrinth") as String
-        accessToken = env.MODRINTH_API_KEY.orNull()
-        minecraftVersions.add(stonecutter.current.version)
-        minecraftVersions.addAll(additionalVersions)
-        requires("kotlin-for-forge")
+    findProperty("publish.modrinth")?.let {
+        modrinth {
+            projectId = it as String
+            accessToken = env["MODRINTH_TOKEN"]
+            minecraftVersions.add(property("deps.minecraft") as String)
+            minecraftVersions.addAll(additionalVersions)
+            requires("fabric-api", "kotlin-for-forge", "big-shot-lib", "yacl")
+        }
     }
 
-    curseforge {
-        projectId = property("publish.curseforge") as String
-        accessToken = env.CURSEFORGE_API_KEY.orNull()
-        minecraftVersions.add(stonecutter.current.version)
-        minecraftVersions.addAll(additionalVersions)
-        requires("kotlin-for-forge")
+    findProperty("publish.curseforge")?.let {
+        curseforge {
+            projectId = it as String
+            accessToken = env["CURSEFORGE_TOKEN"]
+            minecraftVersions.add(property("deps.minecraft") as String)
+            minecraftVersions.addAll(additionalVersions)
+            requires("fabric-api", "kotlin-for-forge", "big-shot-lib", "yacl")
+        }
     }
-}
- */
-
-sourceSets.named("main") {
-    java.srcDirs(project(":api").sourceSets["main"].java.srcDirs)
-    kotlin.srcDirs(project(":api").sourceSets["main"].kotlin.srcDirs)
-    resources.srcDirs(project(":api").sourceSets["main"].resources.srcDirs)
 }

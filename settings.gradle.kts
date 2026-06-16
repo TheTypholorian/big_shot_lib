@@ -8,47 +8,25 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         mavenLocal()
-        maven {
-            name = "Fabric"
-            url = uri("https://maven.fabricmc.net")
-        }
-        maven("https://maven.kikugie.dev/snapshots") { name = "KikuGie" }
-        maven("https://maven.kikugie.dev/releases") { name = "KikuGie Releases" }
-        maven("https://maven.parchmentmc.org") { name = "Parchment" }
-    }
-}
-
-dependencyResolutionManagement {
-    versionCatalogs {
-        register("libs") {
-            from(files("libs.versions.toml"))
-        }
+        maven("https://maven.fabricmc.net")
+        maven("https://maven.kikugie.dev/snapshots")
+        maven("https://maven.kikugie.dev/releases")
     }
 }
 
 plugins {
-    kotlin("jvm") version "2.2.0" apply false
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
     id("dev.kikugie.stonecutter") version "0.9"
-    id("net.typho.big_shot_lib.plugin") version "1.0.0" apply false
 }
-include("api")
 
 stonecutter {
     create(rootProject) {
         fun match(loader: String, vararg versions: String) = versions
             .forEach { version("mc${it.replace('.', '_')}_$loader", it).buildscript = "build.$loader.gradle.kts" }
 
-        match("fabric", "1.21")
-        match("neoforge", "1.21")
+        match("fabric", "1.21.1", "1.21.11", "26.1.2")
+        match("neoforge", "1.21.1", "1.21.11", "26.1.2")
 
-        //match("fabric", "1.20", "1.21", "1.21.11")
-        //match("neoforge", "1.21", "1.21.11")
-
-        //match("fabric", "1.20", "1.20.1", "1.20.2", "1.20.3", "1.20.4", "1.20.5", "1.20.6", "1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11")
-        //match("neoforge", "1.20.6", "1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11")
-        //match("forge", "1.20", "1.20.1", "1.20.2", "1.20.3", "1.20.4", "1.20.5")
-
-        vcsVersion = "mc1_21_fabric"
+        vcsVersion = "mc1_21_1_fabric"
     }
 }

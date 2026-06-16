@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": [
+    "${authors}"
+  ],
+  "license": "${license}",
+  "contact": {
+    "issues": "https://github.com/TheTypholorian/big_shot_lib/issues/",
+    "sources": "https://github.com/TheTypholorian/big_shot_lib/"
+  },
+  "icon": "icon.png",
+  "entrypoints": {
+    "modmenu": [
+      {
+        "adapter": "kotlin",
+        "value": "net.typho.big_shot_lib.ModMenuCompat"
+      }
+    ]
+  },
+  "depends": {
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version_range}",
+    "fabric-language-kotlin": "*"
+  }
+}

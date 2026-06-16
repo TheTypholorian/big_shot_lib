@@ -23,5 +23,5 @@ eclipse
 run
 runs
 
-.env
 .kotlin/*
+.env
