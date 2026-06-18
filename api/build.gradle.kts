@@ -1,131 +1,103 @@
+import io.github.klahap.dotenv.DotEnvBuilder
+
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.loom)
-    id("net.typho.big_shot_lib.plugin")
-    `maven-publish`
+    kotlin("jvm")
+
+    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
+
+    id("me.modmuss50.mod-publish-plugin") version "2.0.0-beta.1"
+    id("io.github.klahap.dotenv") version "1.1.3"
+
+    id("com.google.devtools.ksp") version "2.3.9"
+
+    id("dev.isxander.modstitch.base") version "0.8.5"
+
+    id("net.typho.big_shot_lib.plugin") version "1.0.0"
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "net.typho"
-            artifactId = "big_shot_lib"
-            version = project.version.toString()
+bigShotLib {
+    version("1.21.1")
+    loader("fabric")
 
-            artifact(tasks.jar)
-            artifact(tasks.kotlinSourcesJar)
+    transformInfo {
+        setupDefaults()
+    }
+}
+
+val accessWidener = rootProject.file("src/main/resources/big_shot_lib.accesswidener")
+
+modstitch {
+    modLoaderVersion = property("deps.loader_version") as String
+    minecraftVersion = "1.21.1"
+
+    parchment {
+        findProperty("deps.parchment")?.let {
+            val (mc, mappings) = (it as String).split(':')
+            minecraftVersion = mc
+            mappingsVersion = mappings
+        }
+    }
+
+    metadata {
+        modId = rootProject.property("id") as String
+        modName = rootProject.property("displayName") as String
+        modVersion = rootProject.property("version") as String
+        modGroup = rootProject.property("group") as String
+
+        rootProject.findProperty("authors")?.let { modAuthor = it as String }
+        rootProject.findProperty("description")?.let { modDescription = it as String }
+        rootProject.findProperty("license")?.let { modLicense = it as String }
+        rootProject.findProperty("credits")?.let { modCredits = it as String }
+    }
+
+    finalJarTask.configure {
+        archiveVersion.set("${rootProject.version}-api")
+    }
+
+    namedJarTask.configure {
+        archiveVersion.set("${rootProject.version}-api")
+    }
+
+    loom {
+        configureLoom {
+            accessWidenerPath = accessWidener
         }
     }
 }
 
-val version: String by project
+val env = DotEnvBuilder.dotEnv {
+    addFileIfExists("$rootDir/.env")
+    addFileIfExists("$projectDir/.env")
+}
 
-base {
-    archivesName = project.property("mod.id") as String
+tasks.compileJava.configure {
+    sourceCompatibility = "21"
+    targetCompatibility = "21"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 kotlin {
+    jvmToolchain(21)
     compilerOptions {
         freeCompilerArgs.add("-Xjvm-default=all")
     }
 }
 
-bigShotLib {
-    version("1.21")
-    loader("fabric")
-
-    transformInfo {
-        setupDefaults()
-
-        overloadArguments(
-            "net/minecraft/client/renderer/RenderType",
-            "net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType",
-            "net/typho/big_shot_lib/impl/client/Overloads",
-            "convertRenderType",
-            false
-        )
-
-        clientOnlyPackages.add("net/typho/big_shot_lib/api/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/impl/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/api/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/impl/client")
-    }
-}
-
-val accessWidener = "big_shot_lib.accesswidener"
-
-loom {
-    accessWidenerPath = rootProject.file("src/main/resources/${accessWidener}")
-}
+version = "${rootProject.property("version")}-api"
+base.archivesName = rootProject.property("id") as String
 
 repositories {
-    gradlePluginPortal()
-    mavenCentral()
-    maven {
-        name = "Modrinth"
-        url = uri("https://api.modrinth.com/maven")
-    }
-    maven {
-        name = "Spongepowered"
-        url = uri("https://repo.spongepowered.org/repository/maven-public")
-    }
-    maven("https://maven.parchmentmc.org") { name = "Parchment" }
-    ivy {
-        url = uri("https://github.com/TheTypholorian/")
-        patternLayout {
-            artifact("[organisation]/releases/download/[revision]/[artifact]-[revision](-[classifier]).[ext]")
-        }
-        metadataSources {
-            artifact()
-        }
-    }
+    mavenLocal()
+    maven("https://api.modrinth.com/maven")
+    maven("https://maven.isxander.dev/releases")
+    maven("https://maven.ryanhcode.dev/releases")
+    maven("https://maven.fabricmc.net")
+    maven("https://maven.parchmentmc.org")
 }
 
 dependencies {
-    minecraft(libs.minecraftForAPI)
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.21.1:2024.11.17@zip")
-    })
-    implementation(kotlin("reflect"))
-
-    compileOnly(libs.mixin)
-    compileOnly(libs.mixinExtras.common)
-    annotationProcessor(libs.mixinExtras.common)
-
-    implementation(libs.asm.tree)
-    implementation(libs.asm.commons)
-    implementation(libs.asm.util)
-
-    implementation(kotlin("stdlib"))
-    implementation(kotlin("stdlib-jdk8"))
-}
-
-tasks.jar {
-    archiveClassifier = ""
-}
-
-java {
-    withSourcesJar()
-}
-
-configurations {
-    create("commonJava") {
-        isCanBeResolved = false
-        isCanBeConsumed = true
-    }
-    create("commonKotlin") {
-        isCanBeResolved = false
-        isCanBeConsumed = true
-    }
-    create("commonResources") {
-        isCanBeResolved = false
-        isCanBeConsumed = true
-    }
-}
-
-artifacts {
-    add("commonJava", sourceSets.main.get().java.sourceDirectories.singleFile)
-    add("commonKotlin", sourceSets.main.get().kotlin.sourceDirectories.filter { !it.name.endsWith("java") }.singleFile)
-    add("commonResources", sourceSets.main.get().resources.sourceDirectories.singleFile)
 }

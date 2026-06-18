@@ -30,3 +30,5 @@ stonecutter {
         vcsVersion = "mc1_21_1_fabric"
     }
 }
+
+include("api")

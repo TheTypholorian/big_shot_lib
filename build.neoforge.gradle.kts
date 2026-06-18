@@ -123,7 +123,9 @@ modstitch {
         defaultRuns()
 
         configureNeoForge {
-            accessTransformers.from(accessTransformer)
+            if (accessTransformer.exists()) {
+                accessTransformers.from(accessTransformer)
+            }
         }
     }
 }
