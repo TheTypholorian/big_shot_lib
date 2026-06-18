@@ -1,13 +1,12 @@
 package net.typho.big_shot_lib.api.util.content
 
-import net.minecraft.client.color.block.BlockColor
+import net.minecraft.client.data.models.BlockModelGenerators
+import net.minecraft.client.data.models.model.DelegatedModel
+import net.minecraft.client.data.models.model.ModelLocationUtils
+import net.minecraft.client.data.models.model.ModelTemplates
+import net.minecraft.client.data.models.model.TextureMapping
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
-import net.minecraft.data.models.BlockModelGenerators
-import net.minecraft.data.models.model.DelegatedModel
-import net.minecraft.data.models.model.ModelLocationUtils
-import net.minecraft.data.models.model.ModelTemplates
-import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.BlockTags
@@ -34,9 +33,7 @@ import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
-import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.plugin.Environment
 import net.typho.big_shot_lib.api.plugin.OnlyIn
@@ -63,9 +60,11 @@ open class BlockFactory @JvmOverloads constructor(
     protected val toRegister = arrayListOf<RegisteredObject<out Block>>()
     @JvmField
     protected val dynamicTags = hashMapOf<TagKey<out Block>, MutableSet<ResourceKey<out Block>>>()
+    /*
     @JvmField
     @OnlyIn(Environment.CLIENT)
     protected val models = arrayListOf<ModelLoadingEvent>()
+     */
 
     init {
         mod.addListener { bus ->
@@ -76,19 +75,26 @@ open class BlockFactory @JvmOverloads constructor(
                     toRegister.forEach { out.register(it) }
                 }
             })
+            TODO("tags")
+            /*
             bus.register(RegisterDynamicTagsEvent { out ->
                 registered = true
 
                 dynamicTags.forEach { (key, value) -> out.addBlocks(key, *value.toTypedArray()) }
             })
+             */
         }
+        TODO("models")
+        /*
         mod.addClientListener { bus ->
             models.forEach { bus.register(it) }
         }
+         */
     }
 
     open fun begin(key: Identifier): Builder<Block, *> {
         return beginComplex(key) { Block(it) }
+            /*
             .client {
                 it.model { block, textures ->
                     ModelLoadingEvent { out ->
@@ -105,11 +111,13 @@ open class BlockFactory @JvmOverloads constructor(
                     }
                 }
             }
+             */
     }
 
     @JvmOverloads
     open fun beginStairs(key: Identifier, copyState: Supplier<out Block>, copyTextures: Supplier<out Block> = copyState): Builder<StairBlock, *> {
         return beginComplex(key) { InternalUtil.INSTANCE.createStairBlock(copyState.get().defaultBlockState(), it) }
+            /*
             .client {
                 it.textureParent(copyTextures)
                     .model { block, textures ->
@@ -141,11 +149,13 @@ open class BlockFactory @JvmOverloads constructor(
                     }
                 }
             }
+             */
             .tags(BlockTags.STAIRS)
     }
 
     open fun beginSlab(key: Identifier, fullBlock: Supplier<out Block>): Builder<SlabBlock, *> {
         return beginComplex(key) { SlabBlock(it) }
+            /*
             .client {
                 it.textureParent(fullBlock)
                     .model { block, textures ->
@@ -177,11 +187,13 @@ open class BlockFactory @JvmOverloads constructor(
                     }
                 }
             }
+             */
             .tags(BlockTags.SLABS)
     }
 
     open fun beginDoor(key: Identifier, blockSet: Supplier<BlockSetType>): Builder<DoorBlock, *> {
         return beginComplex(key) { InternalUtil.INSTANCE.createDoorBlock(blockSet.get(), it) }
+            /*
             .client {
                 it.textureMapping { TextureMapping.door(it.get()) }
                     .model { block, textures ->
@@ -212,17 +224,25 @@ open class BlockFactory @JvmOverloads constructor(
                         ModelLoadingEvent { out ->
                             out.registerModelJson(
                                 ModelLocationUtils.getModelLocation(item.get()),
-                                DelegatedModel(out.register(ModelTemplates.FLAT_ITEM, item.get().block, TextureMapping.layer0(item.get()))).get()
+                                DelegatedModel(
+                                    out.register(
+                                        ModelTemplates.FLAT_ITEM,
+                                        item.get().block,
+                                        TextureMapping.layer0(item.get())
+                                    )
+                                ).get()
                             )
                         }
                     }
                 }
             }
+             */
             .tags(BlockTags.DOORS)
     }
 
     open fun beginTrapdoor(key: Identifier, blockSet: Supplier<BlockSetType>, rotatable: Boolean): Builder<TrapDoorBlock, *> {
         return beginComplex(key) { InternalUtil.INSTANCE.createTrapDoorBlock(blockSet.get(), it) }
+            /*
             .client {
                 it.textureMapping { TextureMapping.defaultTexture(it.get()) }
                     .model { block, textures ->
@@ -258,7 +278,11 @@ open class BlockFactory @JvmOverloads constructor(
                             out.registerModelJson(
                                 ModelLocationUtils.getModelLocation(item.get()),
                                 if (rotatable) {
-                                    DelegatedModel(ModelTemplates.ORIENTABLE_TRAPDOOR_BOTTOM.getDefaultModelLocation(item.get().block)).get()
+                                    DelegatedModel(
+                                        ModelTemplates.ORIENTABLE_TRAPDOOR_BOTTOM.getDefaultModelLocation(
+                                            item.get().block
+                                        )
+                                    ).get()
                                 } else {
                                     DelegatedModel(ModelTemplates.TRAPDOOR_BOTTOM.getDefaultModelLocation(item.get().block)).get()
                                 }
@@ -267,12 +291,14 @@ open class BlockFactory @JvmOverloads constructor(
                     }
                 }
             }
+             */
             .tags(BlockTags.TRAPDOORS)
     }
 
     @JvmOverloads
     open fun beginPressurePlate(key: Identifier, blockSet: Supplier<BlockSetType>, copyTextures: Supplier<out Block>? = null): Builder<PressurePlateBlock, *> {
         return beginComplex(key) { InternalUtil.INSTANCE.createPressurePlateBlock(blockSet.get(), it) }
+            /*
             .client {
                 it.textureParent(copyTextures)
                     .model { block, textures ->
@@ -303,12 +329,14 @@ open class BlockFactory @JvmOverloads constructor(
                     }
                 }
             }
+             */
             .tags(BlockTags.PRESSURE_PLATES)
     }
 
     @JvmOverloads
     open fun beginWall(key: Identifier, copyTextures: Supplier<out Block>? = null): Builder<WallBlock, *> {
         return beginComplex(key) { WallBlock(it) }
+            /*
             .client {
                 it.textureParent(copyTextures)
                     .model { block, textures ->
@@ -342,12 +370,14 @@ open class BlockFactory @JvmOverloads constructor(
                     }
                 }
             }
+             */
             .tags(BlockTags.WALLS)
     }
 
     @JvmOverloads
     open fun beginFence(key: Identifier, copyTextures: Supplier<out Block>? = null): Builder<FenceBlock, *> {
         return beginComplex(key) { FenceBlock(it) }
+            /*
             .client {
                 it.textureParent(copyTextures)
                     .model { block, textures ->
@@ -380,12 +410,14 @@ open class BlockFactory @JvmOverloads constructor(
                     }
                 }
             }
+             */
             .tags(BlockTags.FENCES)
     }
 
     @JvmOverloads
     open fun beginFenceGate(key: Identifier, woodType: Supplier<WoodType>, uvLock: Boolean = true, copyTextures: Supplier<out Block>? = null): Builder<FenceGateBlock, *> {
         return beginComplex(key) { FenceGateBlock(woodType.get(), it) }
+            /*
             .client {
                 it.textureParent(copyTextures)
                     .model { block, textures ->
@@ -407,12 +439,14 @@ open class BlockFactory @JvmOverloads constructor(
                         }
                     }
             }
+             */
             .tags(BlockTags.FENCE_GATES)
     }
 
     @JvmOverloads
     open fun beginButton(key: Identifier, pressDuration: Int, setType: Supplier<BlockSetType>, copyTextures: Supplier<out Block>? = null): Builder<ButtonBlock, *> {
         return beginComplex(key) { InternalUtil.INSTANCE.createButtonBlock(setType.get(), pressDuration, it) }
+            /*
             .client {
                 it.textureParent(copyTextures)
                     .model { block, textures ->
@@ -445,6 +479,7 @@ open class BlockFactory @JvmOverloads constructor(
                     }
                 }
             }
+             */
             .tags(BlockTags.BUTTONS)
     }
 
@@ -462,8 +497,8 @@ open class BlockFactory @JvmOverloads constructor(
     ) {
         @JvmField
         protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
-        @JvmField
-        protected var model: Function<Supplier<T>, ModelLoadingEvent>? = null
+        //@JvmField
+        //protected var model: Function<Supplier<T>, ModelLoadingEvent>? = null
         @JvmField
         protected var textureParent: Supplier<out Block>? = null
         @JvmField
@@ -474,10 +509,12 @@ open class BlockFactory @JvmOverloads constructor(
             return this as B
         }
 
+        /*
         fun model(model: BiFunction<Supplier<out Block>, Supplier<TextureMapping>, ModelLoadingEvent>): B {
             this.model = Function { block -> model.apply(block, Supplier { textureMapping.apply(textureParent ?: block) }) }
             return this as B
         }
+         */
 
         fun textureParent(parent: Supplier<out Block>?): B {
             this.textureParent = parent
@@ -490,7 +527,7 @@ open class BlockFactory @JvmOverloads constructor(
         }
 
         fun end(block: RegisteredObject<T>) {
-            model?.apply(block)?.let { parent.models.add(it) }
+            //model?.apply(block)?.let { parent.models.add(it) }
         }
     }
 
@@ -512,11 +549,11 @@ open class BlockFactory @JvmOverloads constructor(
         protected var properties: BlockBehaviour.Properties = BlockBehaviour.Properties.of()
         @JvmField
         protected var clientInfo: ClientInfo<T, *>? = null
-        // TODO block item
         // TODO block entity
-        @JvmField
-        protected var color: BlockColor? = null
+        //@JvmField
+        //protected var color: BlockColor? = null
         // TODO model
+        /*
         @JvmField
         protected var lootTable: BiFunction<T, BlockItem, RegisteredObject<LootTable>>? = parent.loot?.let { loot ->
             BiFunction { block, item ->
@@ -530,7 +567,7 @@ open class BlockFactory @JvmOverloads constructor(
                     .end()
             }
         }
-        // TODO client side extensions
+         */
         @JvmField
         protected val tags: MutableList<TagKey<Block>> = arrayListOf()
         @JvmField
@@ -551,20 +588,24 @@ open class BlockFactory @JvmOverloads constructor(
             return this as B
         }
 
+        /*
         fun color(color: BlockColor): B {
             this.color = color
             return this as B
         }
+         */
 
         fun tags(vararg tags: TagKey<Block>): B {
             this.tags.addAll(tags)
             return this as B
         }
 
+        /*
         fun noLoot(): B {
             lootTable = null
             return this as B
         }
+         */
 
         fun item(builder: UnaryOperator<ItemFactory.Builder<BlockItem, *>>): B {
             item = item?.let(builder::apply)
@@ -587,6 +628,7 @@ open class BlockFactory @JvmOverloads constructor(
             return this as B
         }
 
+        /*
         fun drops(builder: UnaryOperator<LootTableFactory.Builder<*>>): B {
             lootTable = BiFunction { block, item ->
                 (parent.loot ?: throw UnsupportedOperationException("Must pass a LootTableContentFactory to the BlockContentFactory to be able to call Builder.drops()")).begin(block.lootTable.identifier())
@@ -596,6 +638,7 @@ open class BlockFactory @JvmOverloads constructor(
 
             return this as B
         }
+         */
 
         override fun end(): RegisteredObject<T> {
             if (parent.registered) {

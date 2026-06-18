@@ -16,7 +16,6 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.ItemLike
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
 
 @Suppress("UNCHECKED_CAST")
 open class AdvancementFactory(
@@ -29,7 +28,9 @@ open class AdvancementFactory(
     protected val toRegister = hashSetOf<RegisteredObject.Late<Advancement>>()
 
     init {
+        TODO("advancements")
         mod.addListener { bus ->
+            /*
             bus.register(RegisterDynamicAdvancementsEvent { out, registries ->
                 registered = true
 
@@ -39,6 +40,7 @@ open class AdvancementFactory(
                     out.register(AdvancementHolder(it.location, value))
                 }
             })
+             */
         }
     }
 
@@ -68,21 +70,6 @@ open class AdvancementFactory(
         @Suppress("DEPRECATION", "REMOVAL")
         fun parent(parent: Identifier): B {
             mutators.add { it.parent(parent) }
-            return this as B
-        }
-
-        @JvmOverloads
-        fun display(
-            icon: () -> ItemStack,
-            title: Component = Component.translatable(key.identifier().toLanguageKey("advancements", "title")),
-            description: Component = Component.translatable(key.identifier().toLanguageKey("advancements", "description")),
-            background: Identifier? = null,
-            type: AdvancementType = AdvancementType.TASK,
-            showToast: Boolean = true,
-            announceChat: Boolean = true,
-            hidden: Boolean = false
-        ): B {
-            mutators.add { it.display(icon(), title, description, background, type, showToast, announceChat, hidden) }
             return this as B
         }
 

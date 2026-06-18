@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.level.storage.loot.LootPool
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.event.RegisterEvent
 
@@ -56,10 +55,12 @@ open class LootTableFactory(
             return this as B
         }
 
-        fun setParamSet(paramSet: () -> LootContextParamSet): B {
+        /*
+        fun setParamSet(paramSet: () -> ContextKeySet): B {
             mutators.add { it.setParamSet(paramSet()) }
             return this as B
         }
+         */
 
         fun setRandomSequence(randomSequence: () -> Identifier): B {
             mutators.add { it.setRandomSequence(randomSequence()) }

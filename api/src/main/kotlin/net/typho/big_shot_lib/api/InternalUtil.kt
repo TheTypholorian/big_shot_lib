@@ -15,7 +15,7 @@ import net.typho.big_shot_lib.api.event.RegistryBuilder
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 
 interface InternalUtil {
-    fun <T> createRegistryBuilder(
+    fun <T : Any> createRegistryBuilder(
         key: ResourceKey<Registry<T>>
     ): RegistryBuilder<T>
 

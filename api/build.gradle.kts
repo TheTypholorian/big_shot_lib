@@ -18,7 +18,7 @@ plugins {
 }
 
 bigShotLib {
-    version("1.21.1")
+    version("26.1.2")
     loader("fabric")
 
     transformInfo {
@@ -39,11 +39,9 @@ publishing {
     }
 }
 
-val accessWidener = rootProject.file("src/main/resources/big_shot_lib.accesswidener")
-
 modstitch {
     modLoaderVersion = property("deps.loader_version") as String
-    minecraftVersion = "1.21.1"
+    minecraftVersion = "26.1.2"
 
     parchment {
         findProperty("deps.parchment")?.let {
@@ -71,12 +69,6 @@ modstitch {
 
     namedJarTask.configure {
         archiveVersion.set("${rootProject.version}-api")
-    }
-
-    loom {
-        configureLoom {
-            accessWidenerPath = accessWidener
-        }
     }
 }
 

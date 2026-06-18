@@ -1,11 +1,11 @@
 package net.typho.big_shot_lib.api.util.content
 
+import net.minecraft.client.data.models.model.DelegatedModel
+import net.minecraft.client.data.models.model.ModelLocationUtils
+import net.minecraft.client.data.models.model.ModelTemplates
+import net.minecraft.client.data.models.model.TextureMapping
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
-import net.minecraft.data.models.model.DelegatedModel
-import net.minecraft.data.models.model.ModelLocationUtils
-import net.minecraft.data.models.model.ModelTemplates
-import net.minecraft.data.models.model.TextureMapping
 import net.minecraft.data.recipes.RecipeBuilder
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
@@ -17,11 +17,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
-import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
-import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
-import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.plugin.Environment
 import net.typho.big_shot_lib.api.plugin.OnlyIn
@@ -48,9 +44,11 @@ open class ItemFactory(
     protected val dynamicTags = hashMapOf<TagKey<Item>, MutableSet<ResourceKey<out Item>>>()
     @JvmField
     protected val creativeTabs = hashMapOf<ResourceKey<CreativeModeTab>, MutableList<RegisteredObject<out Item>>>()
+    /*
     @JvmField
     @OnlyIn(Environment.CLIENT)
     protected val models = arrayListOf<ModelLoadingEvent>()
+     */
 
     init {
         mod.addListener { bus ->
@@ -61,6 +59,8 @@ open class ItemFactory(
                     toRegister.forEach { out.register(it) }
                 }
             })
+            TODO("recipes, tags, creative tabs")
+            /*
             bus.register(RegisterDynamicRecipesEvent { out, registries ->
                 registered = true
 
@@ -75,10 +75,14 @@ open class ItemFactory(
             bus.register(AddCreativeTabEntriesEvent { out ->
                 creativeTabs.forEach { (key, entries) -> out.begin(key) { out -> entries.forEach { out.addLast(ItemStack(it)) } } }
             })
+             */
         }
+        TODO("models")
+        /*
         mod.addClientListener { bus ->
             models.forEach { bus.register(it) }
         }
+         */
     }
 
     open fun begin(key: Identifier): Builder<Item, *> {
@@ -87,6 +91,7 @@ open class ItemFactory(
 
     open fun beginBlockItem(key: Identifier, block: Supplier<out Block>): Builder<BlockItem, *> {
         return beginComplex(key) { BlockItem(block.get(), it) }
+            /*
             .client {
                 it.model { item ->
                     ModelLoadingEvent { out ->
@@ -97,10 +102,12 @@ open class ItemFactory(
                     }
                 }
             }
+             */
     }
 
     open fun <V : Item> beginComplex(key: Identifier, constructor: (properties: Item.Properties) -> V): Builder<V, *> {
         return BuilderImpl(ResourceKey.create(registry, key) as ResourceKey<V>, constructor, this)
+            /*
             .client {
                 it.model { item ->
                     ModelLoadingEvent { out ->
@@ -112,6 +119,7 @@ open class ItemFactory(
                     }
                 }
             }
+             */
     }
 
     private class ClientInfoImpl<T : Item>(
@@ -124,21 +132,23 @@ open class ItemFactory(
     ) {
         @JvmField
         protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
-        @JvmField
-        protected var model: Function<Supplier<T>, ModelLoadingEvent>? = null
+        //@JvmField
+        //protected var model: Function<Supplier<T>, ModelLoadingEvent>? = null
 
         fun renderType(renderType: NeoRenderType): B {
             this.renderType = renderType
             return this as B
         }
 
+        /*
         fun model(model: Function<Supplier<T>, ModelLoadingEvent>): B {
             this.model = Function { item -> model.apply(item) }
             return this as B
         }
+         */
 
         fun end(item: RegisteredObject<T>) {
-            model?.apply(item)?.let { parent.models.add(it) }
+            //model?.apply(item)?.let { parent.models.add(it) }
         }
     }
 

@@ -7,8 +7,8 @@ fun interface NewRegistryEvent {
     fun registerRegistries(out: Output)
 
     interface Output {
-        fun <T> register(builder: RegistryBuilder<T>): Registry<T>
+        fun <T : Any> register(builder: RegistryBuilder<T>): Registry<T>
 
-        fun <T> register(registry: WritableRegistry<T>): WritableRegistry<T>
+        fun <T : Any> register(registry: WritableRegistry<T>): WritableRegistry<T>
     }
 }

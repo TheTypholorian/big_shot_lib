@@ -32,16 +32,16 @@ open class ItemComponentFactory(
         }
     }
 
-    open fun <T> begin(key: Identifier): Builder<T, *> {
+    open fun <T : Any> begin(key: Identifier): Builder<T, *> {
         return BuilderImpl(ResourceKey.create(registry, key) as ResourceKey<DataComponentType<T>>, this)
     }
 
-    private class BuilderImpl<T>(
+    private class BuilderImpl<T : Any>(
         key: ResourceKey<DataComponentType<T>>,
         parent: ItemComponentFactory
     ) : Builder<T, BuilderImpl<T>>(key, parent)
 
-    open class Builder<T, B : Builder<T, B>>(
+    open class Builder<T : Any, B : Builder<T, B>>(
         @JvmField
         val key: ResourceKey<DataComponentType<T>>,
         @JvmField

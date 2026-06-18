@@ -12,6 +12,6 @@ interface RegistryBuilder<T> {
     companion object {
         @JvmStatic
         @JvmName("create")
-        operator fun <T> invoke(key: ResourceKey<Registry<T>>) = InternalUtil.INSTANCE.createRegistryBuilder(key)
+        operator fun <T : Any> invoke(key: ResourceKey<Registry<T>>) = InternalUtil.INSTANCE.createRegistryBuilder(key)
     }
 }

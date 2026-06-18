@@ -135,7 +135,8 @@ open class BlockSetTypeFactory : ContentFactory<BlockSetType> {
                 buttonClickOnSound
             )
 
-            BlockSetType.register(type)
+            TODO("block set types")
+            //BlockSetType.register(type)
 
             return RegisteredObject.Immediate(key, type)
         }

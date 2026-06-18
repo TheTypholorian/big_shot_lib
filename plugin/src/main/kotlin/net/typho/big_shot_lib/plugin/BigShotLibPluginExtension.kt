@@ -133,6 +133,10 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 renameClass("net/minecraft/client/renderer/rendertype/TextureTransform", "net/minecraft/client/renderer/TextureTransform")
             }
 
+            if (version >= MCVersion.MC26_1) {
+                renameClass("net/minecraft/client/resources/model/geometry/BakedQuad", "net/minecraft/client/renderer/block/model/BakedQuad")
+            }
+
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "createUntrusted", "untrusted")
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "fromNamespaceAndPath", "of")
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "withDefaultNamespace", "minecraft")
@@ -161,6 +165,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoGuiGraphics", "net/minecraft/client/gui/GuiGraphics")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/NeoRenderTarget", "com/mojang/blaze3d/pipeline/RenderTarget")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlTexture2D", "net/minecraft/client/renderer/texture/AbstractTexture")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/quad/NeoBakedQuad", "net/minecraft/client/renderer/block/model/BakedQuad")
         }
 
         fun renameClass(from: String, to: String) {
