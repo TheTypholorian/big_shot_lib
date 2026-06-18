@@ -2,32 +2,15 @@ package net.typho.big_shot_lib.impl.client
 
 import net.minecraft.client.Minecraft
 import net.typho.big_shot_lib.api.client.event.AddAssetReloadListenersEvent
-import net.typho.big_shot_lib.api.client.event.ClientCommandsEvent
 import net.typho.big_shot_lib.api.client.event.ClientEndTickEvent
 import net.typho.big_shot_lib.api.client.event.ClientLevelChangedEvent
 import net.typho.big_shot_lib.api.client.event.ClientStartTickEvent
-import net.typho.big_shot_lib.api.client.event.DisplayResizedEvent
 import net.typho.big_shot_lib.api.client.event.InitialScreenEvent
 import net.typho.big_shot_lib.api.client.event.RegisterDebugScreenEntriesEvent
 import net.typho.big_shot_lib.api.client.event.RegisterMainMenuModesEvent
-import net.typho.big_shot_lib.api.client.event.RenderGUIEvent
-import net.typho.big_shot_lib.api.client.event.RenderHandEvent
 import net.typho.big_shot_lib.api.client.event.RenderLevelEvent
-import net.typho.big_shot_lib.api.client.event.RenderTooltipEvent
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
-import net.typho.big_shot_lib.api.event.AddDataReloadListenersEvent
-import net.typho.big_shot_lib.api.event.BlockChangedEvent
-import net.typho.big_shot_lib.api.event.BonemealEvent
-import net.typho.big_shot_lib.api.event.ChatMessageEvent
-import net.typho.big_shot_lib.api.event.ChunkLoadedEvent
-import net.typho.big_shot_lib.api.event.ChunkUnloadedEvent
-import net.typho.big_shot_lib.api.event.CommandsEvent
 import net.typho.big_shot_lib.api.event.NeoEventBus
-import net.typho.big_shot_lib.api.event.NewRegistryEvent
-import net.typho.big_shot_lib.api.event.RegisterEvent
-import net.typho.big_shot_lib.api.event.ServerEndTickEvent
-import net.typho.big_shot_lib.api.event.ServerStartTickEvent
-import net.typho.big_shot_lib.api.event.UseItemOnBlockEvent
 import net.typho.big_shot_lib.impl.NeoEventBusImpl
 import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
 
@@ -205,15 +188,8 @@ object NeoClientEventBusImpl : NeoClientEventBus {
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
-import net.neoforged.neoforge.client.event.RenderGuiEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
-import net.neoforged.neoforge.event.RegisterCommandsEvent
-import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent
-import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
-import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
-import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
-import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
 
 class NeoClientEventBusImpl(
     @JvmField
@@ -222,8 +198,10 @@ class NeoClientEventBusImpl(
     val common: NeoEventBus = NeoEventBusImpl(inner)
 ) : NeoClientEventBus {
     companion object {
+        /*
         @JvmField
         val MODEL_LOADING_EVENTS = arrayListOf<ModelLoadingEvent>()
+         */
     }
 
     override fun register(event: AddAssetReloadListenersEvent) {
@@ -234,6 +212,7 @@ class NeoClientEventBusImpl(
         }
     }
 
+    /*
     override fun register(event: ModelLoadingEvent) {
         MODEL_LOADING_EVENTS.add(event)
     }
@@ -243,6 +222,7 @@ class NeoClientEventBusImpl(
             event.registerClientCommands(e.dispatcher, e.buildContext)
         }
     }
+     */
 
     override fun register(event: ClientEndTickEvent) {
         inner.addListener { e: ClientTickEvent.Post ->
@@ -260,9 +240,11 @@ class NeoClientEventBusImpl(
         }
     }
 
+    /*
     override fun register(event: DisplayResizedEvent) {
         TODO("Not yet implemented")
     }
+     */
 
     override fun register(event: InitialScreenEvent) {
         TODO("Not yet implemented")
@@ -276,6 +258,7 @@ class NeoClientEventBusImpl(
         MainMenuModeManager.register(event)
     }
 
+    /*
     override fun register(event: RenderGUIEvent) {
         inner.addListener { e: RenderGuiEvent ->
             event.renderGui(e.guiGraphics, e.partialTick)
@@ -297,6 +280,7 @@ class NeoClientEventBusImpl(
             )
         }
     }
+     */
 
     override fun register(
         stage: RenderLevelStage,
@@ -332,10 +316,6 @@ class NeoClientEventBusImpl(
                 )
             }
         }
-    }
-
-    override fun register(event: RenderTooltipEvent) {
-        TODO("Not yet implemented")
     }
 }
 //? }

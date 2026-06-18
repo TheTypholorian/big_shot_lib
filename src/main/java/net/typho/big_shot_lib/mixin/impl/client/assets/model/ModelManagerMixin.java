@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.mixin.impl.client.assets.model;
 
-import com.google.gson.JsonElement;
 import kotlin.collections.MapsKt;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
@@ -9,14 +8,10 @@ import net.minecraft.client.resources.model.ModelIdentifier;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.resources.Identifier;
 import net.typho.big_shot_lib.api.BigShotLib;
-import net.typho.big_shot_lib.api.client.event.ModelLoadingEvent;
-import net.typho.big_shot_lib.impl.client.NeoClientEventBusImpl;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +37,7 @@ public class ModelManagerMixin {
             int[] numStates = { 0 };
             int[] numModels = { 0 };
 
+            /*
             var output = new ModelLoadingEvent.Output() {
                 @Override
                 public void registerStateJson(@NotNull Identifier location, @NotNull JsonElement state) {
@@ -66,6 +62,7 @@ public class ModelManagerMixin {
             for (ModelLoadingEvent event : NeoClientEventBusImpl.MODEL_LOADING_EVENTS) {
                 event.load(output);
             }
+             */
 
             BigShotLib.LOGGER.info("Loaded {} dynamic models, and {} dynamic block states", numModels[0], numStates[0]);
 

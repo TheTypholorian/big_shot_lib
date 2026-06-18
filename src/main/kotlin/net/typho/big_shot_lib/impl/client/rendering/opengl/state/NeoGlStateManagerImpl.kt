@@ -9,7 +9,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFuncti
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendEquation
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlCullFace
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlPolygonMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
@@ -22,16 +21,11 @@ import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import net.typho.big_shot_lib.api.util.KeyedDelegate
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.mutableEnumArrayMapOf
-import org.lwjgl.opengl.ARBImaging.GL_BLEND_COLOR
-import org.lwjgl.opengl.ARBImaging.GL_BLEND_EQUATION
 import org.lwjgl.opengl.GL11.glGetInteger
 import org.lwjgl.opengl.GL13.GL_TEXTURE0
 import org.lwjgl.opengl.GL14.glBlendColor
 import org.lwjgl.opengl.GL30.*
-import org.lwjgl.opengl.GL41.GL_PROGRAM_PIPELINE_BINDING
-import org.lwjgl.opengl.GL41.glBindProgramPipeline
 import org.lwjgl.system.MemoryStack
-import kotlin.io.use
 
 object NeoGlStateManagerImpl : NeoGlStateManager {
     @JvmField

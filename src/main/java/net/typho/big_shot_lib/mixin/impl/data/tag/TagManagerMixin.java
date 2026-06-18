@@ -9,9 +9,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.tags.TagManager;
 import net.typho.big_shot_lib.api.BigShotLib;
-import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent;
-import net.typho.big_shot_lib.impl.NeoEventBusImpl;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
@@ -36,6 +33,7 @@ public class TagManagerMixin {
         Function<Identifier, Optional<? extends T>> func = ((TagLoaderAccessor<T>) loader).big_shot_lib$getIdToValue();
         Map<TagKey<?>, Set<Identifier>> modifiedTags = new HashMap<>();
 
+        /*
         for (RegisterDynamicTagsEvent event : NeoEventBusImpl.DYNAMIC_TAG_EVENTS) {
             event.register(new RegisterDynamicTagsEvent.Output() {
                 @Override
@@ -60,6 +58,7 @@ public class TagManagerMixin {
                 }
             });
         }
+         */
 
         long numEntries = modifiedTags.values().stream().mapToInt(Set::size).count();
         long numTags = modifiedTags.size();

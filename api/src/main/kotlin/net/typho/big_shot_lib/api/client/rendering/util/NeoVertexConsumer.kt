@@ -5,7 +5,6 @@ import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.math.rect.IRect3
 import net.typho.big_shot_lib.api.math.vec.IVec2
 import net.typho.big_shot_lib.api.math.vec.IVec3
-import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.Matrix4fc
 import org.joml.Vector3f
@@ -176,22 +175,22 @@ interface NeoVertexConsumer {
         box: IRect3<*>,
     ): NeoVertexConsumer {
         val vertices = arrayOf(
-            NeoVec3f(box.max.x.toFloat(), box.max.x.toFloat(), box.max.x.toFloat()),
-            NeoVec3f(box.min.x.toFloat(), box.max.x.toFloat(), box.max.x.toFloat()),
-            NeoVec3f(box.min.x.toFloat(), box.min.x.toFloat(), box.max.x.toFloat()),
-            NeoVec3f(box.max.x.toFloat(), box.min.x.toFloat(), box.max.x.toFloat()),
-            NeoVec3f(box.max.x.toFloat(), box.max.x.toFloat(), box.min.x.toFloat()),
-            NeoVec3f(box.min.x.toFloat(), box.max.x.toFloat(), box.min.x.toFloat()),
-            NeoVec3f(box.min.x.toFloat(), box.min.x.toFloat(), box.min.x.toFloat()),
-            NeoVec3f(box.max.x.toFloat(), box.min.x.toFloat(), box.min.x.toFloat()),
+            IVec3(box.max.x.toFloat(), box.max.x.toFloat(), box.max.x.toFloat()),
+            IVec3(box.min.x.toFloat(), box.max.x.toFloat(), box.max.x.toFloat()),
+            IVec3(box.min.x.toFloat(), box.min.x.toFloat(), box.max.x.toFloat()),
+            IVec3(box.max.x.toFloat(), box.min.x.toFloat(), box.max.x.toFloat()),
+            IVec3(box.max.x.toFloat(), box.max.x.toFloat(), box.min.x.toFloat()),
+            IVec3(box.min.x.toFloat(), box.max.x.toFloat(), box.min.x.toFloat()),
+            IVec3(box.min.x.toFloat(), box.min.x.toFloat(), box.min.x.toFloat()),
+            IVec3(box.max.x.toFloat(), box.min.x.toFloat(), box.min.x.toFloat()),
         )
 
-        quad(vertices[0], vertices[1], vertices[2], vertices[3], NeoVec3f(0f, 0f, 1f))
-        quad(vertices[1], vertices[5], vertices[6], vertices[2], NeoVec3f(-1f, 0f, 0f))
-        quad(vertices[5], vertices[4], vertices[7], vertices[6], NeoVec3f(0f, 0f, -1f))
-        quad(vertices[4], vertices[0], vertices[3], vertices[7], NeoVec3f(1f, 0f, 0f))
-        quad(vertices[1], vertices[0], vertices[4], vertices[5], NeoVec3f(0f, 1f, 0f))
-        quad(vertices[3], vertices[2], vertices[6], vertices[7], NeoVec3f(0f, -1f, 0f))
+        quad(vertices[0], vertices[1], vertices[2], vertices[3], IVec3(0f, 0f, 1f))
+        quad(vertices[1], vertices[5], vertices[6], vertices[2], IVec3(-1f, 0f, 0f))
+        quad(vertices[5], vertices[4], vertices[7], vertices[6], IVec3(0f, 0f, -1f))
+        quad(vertices[4], vertices[0], vertices[3], vertices[7], IVec3(1f, 0f, 0f))
+        quad(vertices[1], vertices[0], vertices[4], vertices[5], IVec3(0f, 1f, 0f))
+        quad(vertices[3], vertices[2], vertices[6], vertices[7], IVec3(0f, -1f, 0f))
 
         return this
     }

@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.plugin
 
 import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.objectweb.asm.AnnotationVisitor
-import org.objectweb.asm.ClassVisitor
 
 enum class ModLoader {
     NONE {

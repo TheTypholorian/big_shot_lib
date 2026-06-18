@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.util
 
-import com.google.common.util.concurrent.Striped.lock
 import java.io.Serializable
 import kotlin.reflect.KProperty
 

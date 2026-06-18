@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.mixin.impl;
 
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.client.renderer.LevelRenderer;
 

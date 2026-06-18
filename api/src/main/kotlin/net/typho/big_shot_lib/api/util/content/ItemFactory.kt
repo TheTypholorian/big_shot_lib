@@ -1,9 +1,5 @@
 package net.typho.big_shot_lib.api.util.content
 
-import net.minecraft.client.data.models.model.DelegatedModel
-import net.minecraft.client.data.models.model.ModelLocationUtils
-import net.minecraft.client.data.models.model.ModelTemplates
-import net.minecraft.client.data.models.model.TextureMapping
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.data.recipes.RecipeBuilder
@@ -13,17 +9,13 @@ import net.minecraft.tags.TagKey
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.RegisterEvent
-import net.typho.big_shot_lib.api.plugin.Environment
-import net.typho.big_shot_lib.api.plugin.OnlyIn
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.RegisteredResource
-import java.util.function.Function
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
 

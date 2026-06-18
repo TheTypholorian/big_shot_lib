@@ -9,7 +9,6 @@ import com.mojang.blaze3d.buffers.BufferUsage;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.opengl.GlBuffer;
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundBuffer;

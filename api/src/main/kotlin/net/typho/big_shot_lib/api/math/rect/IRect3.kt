@@ -3,8 +3,6 @@ package net.typho.big_shot_lib.api.math.rect
 import net.minecraft.core.Direction
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.vec.IVec3
-import net.typho.big_shot_lib.api.math.vec.IVec3.Companion.plus
-import net.typho.big_shot_lib.api.math.vec.NeoVec3i
 
 interface IRect3<N : Number> {
     val opSet: OperatorSet<N>
@@ -59,7 +57,7 @@ interface IRect3<N : Number> {
             }
 
             override fun next(): IVec3<Int> {
-                val pos = NeoVec3i(x, y, z)
+                val pos = IVec3(x, y, z)
 
                 z++
 

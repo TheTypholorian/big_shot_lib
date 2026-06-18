@@ -6,7 +6,6 @@ import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
 import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
 *///? }
 
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad;
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData;

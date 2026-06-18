@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import kotlin.Pair;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.Identifier;

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.RenderStateShard;
 /*import net.minecraft.client.renderer.RenderType;
 *///? }
 
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 

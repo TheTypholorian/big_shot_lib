@@ -13,12 +13,9 @@ import net.minecraft.client.gui.layouts.HeaderAndFooterLayout
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.LogoRenderer
-import net.minecraft.client.gui.layouts.FrameLayout
-import net.minecraft.client.gui.layouts.GridLayout
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
-import sun.tools.jconsole.LabeledComponent.layout
 
 open class InitialScreen(
     component: Component,

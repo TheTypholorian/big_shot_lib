@@ -5,8 +5,6 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
-import org.lwjgl.opengl.GL11.glBlendFunc
-import org.lwjgl.opengl.GL14.glBlendFuncSeparate
 
 sealed interface BlendFunction {
     companion object {

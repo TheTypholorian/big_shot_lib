@@ -2,30 +2,17 @@ package net.typho.big_shot_lib.impl
 
 import net.minecraft.core.Registry
 import net.minecraft.core.WritableRegistry
-import net.minecraft.core.component.DataComponentPatch
-import net.minecraft.core.component.DataComponentType
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import net.minecraft.world.flag.FeatureFlagSet
-import net.minecraft.world.item.CreativeModeTab
-import net.minecraft.world.item.Item
-import net.minecraft.world.item.ItemStack
-import net.minecraft.world.level.ItemLike
 import net.typho.big_shot_lib.api.event.AddDataReloadListenersEvent
 import net.typho.big_shot_lib.api.event.BlockChangedEvent
-import net.typho.big_shot_lib.api.event.BonemealEvent
-import net.typho.big_shot_lib.api.event.ChatMessageEvent
 import net.typho.big_shot_lib.api.event.ChunkLoadedEvent
 import net.typho.big_shot_lib.api.event.ChunkUnloadedEvent
-import net.typho.big_shot_lib.api.event.CommandsEvent
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.NewRegistryEvent
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.event.RegistryBuilder
-import net.typho.big_shot_lib.api.event.ServerEndTickEvent
-import net.typho.big_shot_lib.api.event.ServerStartTickEvent
-import net.typho.big_shot_lib.api.event.UseItemOnBlockEvent
 import java.util.function.Consumer
 
 //? fabric {
@@ -155,19 +142,7 @@ object NeoEventBusImpl : NeoEventBus {
 *///? } neoforge {
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.event.AddReloadListenerEvent
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent
-import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent
-import net.neoforged.neoforge.event.ServerChatEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
-import net.neoforged.neoforge.event.tick.ServerTickEvent
-import net.typho.big_shot_lib.api.event.AddCreativeTabEntriesEvent
-import net.typho.big_shot_lib.api.event.ModifyDefaultItemComponentsEvent
-import net.typho.big_shot_lib.api.event.RegisterDynamicAdvancementsEvent
-import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
-import net.typho.big_shot_lib.api.event.RegisterDynamicTagsEvent
-import net.typho.big_shot_lib.api.event.RemoveAdvancementsEvent
-import net.typho.big_shot_lib.api.event.RemoveRecipesEvent
-import java.util.function.Predicate
 
 class NeoEventBusImpl(
     @JvmField
@@ -176,6 +151,7 @@ class NeoEventBusImpl(
     companion object {
         @JvmField
         val REGISTER_EVENTS = arrayListOf<RegisterEvent>()
+        /*
         @JvmField
         val DYNAMIC_ADVANCEMENT_EVENTS = arrayListOf<RegisterDynamicAdvancementsEvent>()
         @JvmField
@@ -186,8 +162,10 @@ class NeoEventBusImpl(
         val REMOVE_RECIPE_EVENTS = arrayListOf<RemoveRecipesEvent>()
         @JvmField
         val DYNAMIC_TAG_EVENTS = arrayListOf<RegisterDynamicTagsEvent>()
+         */
     }
 
+    /*
     override fun register(event: AddCreativeTabEntriesEvent) {
         inner.addListener { e: BuildCreativeModeTabContentsEvent ->
             event.addEntries(object : AddCreativeTabEntriesEvent.Output {
@@ -246,6 +224,7 @@ class NeoEventBusImpl(
             })
         }
     }
+     */
 
     override fun register(event: AddDataReloadListenersEvent) {
         inner.addListener { e: AddReloadListenerEvent ->
@@ -259,6 +238,7 @@ class NeoEventBusImpl(
         TODO("Not yet implemented")
     }
 
+    /*
     override fun register(event: BonemealEvent) {
         inner.addListener { e: net.neoforged.neoforge.event.entity.player.BonemealEvent ->
             event.bonemeal(
@@ -282,6 +262,7 @@ class NeoEventBusImpl(
             )
         }
     }
+     */
 
     override fun register(event: ChunkLoadedEvent) {
         inner.addListener { e: ChunkEvent.Load ->
@@ -295,6 +276,7 @@ class NeoEventBusImpl(
         }
     }
 
+    /*
     override fun register(event: CommandsEvent) {
         TODO("Not yet implemented")
     }
@@ -330,11 +312,12 @@ class NeoEventBusImpl(
             })
         }
     }
+     */
 
     override fun register(event: NewRegistryEvent) {
         inner.addListener { e: net.neoforged.neoforge.registries.NewRegistryEvent ->
             event.registerRegistries(object : NewRegistryEvent.Output {
-                override fun <T> register(builder: RegistryBuilder<T>): Registry<T> {
+                override fun <T : Any> register(builder: RegistryBuilder<T>): Registry<T> {
                     if (builder !is RegistryBuilderImpl) {
                         throw ClassCastException("Cannot create a custom RegistryBuilder type ($builder), you must use RegistryBuilder.create()")
                     }
@@ -342,7 +325,7 @@ class NeoEventBusImpl(
                     return e.create(builder.build())
                 }
 
-                override fun <T> register(registry: WritableRegistry<T>): WritableRegistry<T> {
+                override fun <T : Any> register(registry: WritableRegistry<T>): WritableRegistry<T> {
                     e.register(registry)
                     return registry
                 }
@@ -350,6 +333,7 @@ class NeoEventBusImpl(
         }
     }
 
+    /*
     override fun register(event: RegisterDynamicAdvancementsEvent) {
         DYNAMIC_ADVANCEMENT_EVENTS.add(event)
     }
@@ -361,6 +345,7 @@ class NeoEventBusImpl(
     override fun register(event: RegisterDynamicTagsEvent) {
         DYNAMIC_TAG_EVENTS.add(event)
     }
+     */
 
     override fun register(event: RegisterEvent) {
         REGISTER_EVENTS.add(event)
@@ -395,6 +380,7 @@ class NeoEventBusImpl(
         }
     }
 
+    /*
     override fun register(event: RemoveAdvancementsEvent) {
         REMOVE_ADVANCEMENT_EVENTS.add(event)
     }
@@ -428,5 +414,6 @@ class NeoEventBusImpl(
             )
         }
     }
+     */
 }
 //? }

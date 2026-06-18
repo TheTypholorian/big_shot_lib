@@ -15,7 +15,7 @@ import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.event.RegistryBuilder
 
 object InternalUtilImpl : InternalUtil {
-    override fun <T> createRegistryBuilder(key: ResourceKey<Registry<T>>): RegistryBuilder<T> {
+    override fun <T : Any> createRegistryBuilder(key: ResourceKey<Registry<T>>): RegistryBuilder<T> {
         return RegistryBuilderImpl(key)
     }
 

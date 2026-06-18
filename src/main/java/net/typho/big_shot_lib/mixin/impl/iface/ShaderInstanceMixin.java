@@ -263,7 +263,7 @@ public abstract class ShaderInstanceMixin implements GlProgram, ShaderInstanceEx
         uniforms = Lists.newArrayList();
         uniformLocations = Lists.newArrayList();
         uniformMap = Maps.newHashMap();
-        name = BigShotLib.toShortString(location);
+        name = location.toShortString();
         vertexFormat = format;
         programId = glId;
     }

@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
 import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.BigShotLib.toShortString
 import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
@@ -35,7 +34,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManage
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
 import net.typho.big_shot_lib.api.math.vec.IVec3
-import net.typho.big_shot_lib.api.math.vec.NeoVec3f
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
 import net.typho.big_shot_lib.impl.client.rendering.state.NeoTextureStateShard
 import net.typho.big_shot_lib.api.util.getExtensionValue
@@ -144,9 +142,9 @@ object InternalClientUtilImpl : InternalClientUtil {
         z: Float
     ): IVec3<Float> {
         //? if >=1.20.5 {
-        return NeoVec3f(pose.transformNormal(x, y, z, Vector3f()))
+        return IVec3(pose.transformNormal(x, y, z, Vector3f()))
         //? } else {
-        /*return NeoVec3f(pose.normal().transform(Vector3f(x, y, z)))
+        /*return IVec3(pose.normal().transform(Vector3f(x, y, z)))
         *///? }
     }
 

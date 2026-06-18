@@ -1,11 +1,17 @@
 package net.typho.big_shot_lib.api.math.vec
 
 import com.mojang.serialization.Codec
+import net.typho.big_shot_lib.api.math.op.DoubleOperatorSet
+import net.typho.big_shot_lib.api.math.op.FloatOperatorSet
+import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import org.joml.Vector4d
+import org.joml.Vector4dc
 import org.joml.Vector4f
+import org.joml.Vector4fc
 import org.joml.Vector4i
+import org.joml.Vector4ic
 
 interface IVec4<N : Number> {
     val opSet: OperatorSet<N>
@@ -44,11 +50,11 @@ interface IVec4<N : Number> {
 
     fun copyWith(x: N, y: N, z: N, w: N): IVec4<N>
 
-    fun toInt(): IVec4<Int> = NeoVec4i(x.toInt(), y.toInt(), z.toInt(), w.toInt())
+    fun toInt(): IVec4<Int> = IVec4(x.toInt(), y.toInt(), z.toInt(), w.toInt())
 
-    fun toFloat(): IVec4<Float> = NeoVec4f(x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat())
+    fun toFloat(): IVec4<Float> = IVec4(x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat())
 
-    fun toDouble(): IVec4<Double> = NeoVec4d(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
+    fun toDouble(): IVec4<Double> = IVec4(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
 
     fun lerp(x: N, y: N, z: N, w: N, d: Float): IVec4<N> {
         return copyWith(opSet.lerp(this.x, x, d), opSet.lerp(this.y, y, d), opSet.lerp(this.z, z, d), opSet.lerp(this.w, w, d))
@@ -246,22 +252,213 @@ interface IVec4<N : Number> {
         return equals(other.x, other.y, other.z, other.w)
     }
 
+    fun immutable() = this
+
+    fun toJVec4i() = Vector4i(x.toInt(), y.toInt(), z.toInt(), w.toInt())
+
+    fun toJVec4f() = Vector4f(x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat())
+
+    fun toJVec4d() = Vector4d(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
+
+    private data class IntImpl(
+        override val x: Int,
+        override val y: Int,
+        override val z: Int,
+        override val w: Int
+    ) : IVec4<Int> {
+        override val opSet: OperatorSet<Int>
+            get() = IntOperatorSet
+        override val xy: IVec2<Int>
+            get() = IVec2(x, y)
+        override val yz: IVec2<Int>
+            get() = IVec2(y, z)
+        override val zw: IVec2<Int>
+            get() = IVec2(z, w)
+        override val xyz: IVec3<Int>
+            get() = IVec3(x, y, z)
+        override val rg: IVec2<Int>
+            get() = IVec2(r, g)
+        override val gb: IVec2<Int>
+            get() = IVec2(g, b)
+        override val ba: IVec2<Int>
+            get() = IVec2(b, a)
+        override val rgb: IVec3<Int>
+            get() = IVec3(r, g, b)
+
+        override fun copyWith(x: Int, y: Int, z: Int, w: Int) = IVec4(x, y, z, w)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is IVec4<*>) return false
+
+            if (x != other.x) return false
+            if (y != other.y) return false
+            if (z != other.z) return false
+            if (w != other.w) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = x.hashCode()
+            result = 41 * result + y.hashCode()
+            result = 41 * result + z.hashCode()
+            result = 41 * result + w.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "(x=$x, y=$y, z=$z, w=$w)"
+        }
+    }
+
+    private data class FloatImpl(
+        override val x: Float,
+        override val y: Float,
+        override val z: Float,
+        override val w: Float
+    ) : IVec4<Float> {
+        override val opSet: OperatorSet<Float>
+            get() = FloatOperatorSet
+        override val xy: IVec2<Float>
+            get() = IVec2(x, y)
+        override val yz: IVec2<Float>
+            get() = IVec2(y, z)
+        override val zw: IVec2<Float>
+            get() = IVec2(z, w)
+        override val xyz: IVec3<Float>
+            get() = IVec3(x, y, z)
+        override val rg: IVec2<Float>
+            get() = IVec2(r, g)
+        override val gb: IVec2<Float>
+            get() = IVec2(g, b)
+        override val ba: IVec2<Float>
+            get() = IVec2(b, a)
+        override val rgb: IVec3<Float>
+            get() = IVec3(r, g, b)
+
+        override fun copyWith(x: Float, y: Float, z: Float, w: Float) = IVec4(x, y, z, w)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is IVec4<*>) return false
+
+            if (x != other.x) return false
+            if (y != other.y) return false
+            if (z != other.z) return false
+            if (w != other.w) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = x.hashCode()
+            result = 41 * result + y.hashCode()
+            result = 41 * result + z.hashCode()
+            result = 41 * result + w.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "(x=$x, y=$y, z=$z, w=$w)"
+        }
+    }
+
+    private data class DoubleImpl(
+        override val x: Double,
+        override val y: Double,
+        override val z: Double,
+        override val w: Double
+    ) : IVec4<Double> {
+        override val opSet: OperatorSet<Double>
+            get() = DoubleOperatorSet
+        override val xy: IVec2<Double>
+            get() = IVec2(x, y)
+        override val yz: IVec2<Double>
+            get() = IVec2(y, z)
+        override val zw: IVec2<Double>
+            get() = IVec2(z, w)
+        override val xyz: IVec3<Double>
+            get() = IVec3(x, y, z)
+        override val rg: IVec2<Double>
+            get() = IVec2(r, g)
+        override val gb: IVec2<Double>
+            get() = IVec2(g, b)
+        override val ba: IVec2<Double>
+            get() = IVec2(b, a)
+        override val rgb: IVec3<Double>
+            get() = IVec3(r, g, b)
+
+        override fun copyWith(x: Double, y: Double, z: Double, w: Double) = IVec4(x, y, z, w)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is IVec4<*>) return false
+
+            if (x != other.x) return false
+            if (y != other.y) return false
+            if (z != other.z) return false
+            if (w != other.w) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = x.hashCode()
+            result = 41 * result + y.hashCode()
+            result = 41 * result + z.hashCode()
+            result = 41 * result + w.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "(x=$x, y=$y, z=$z, w=$w)"
+        }
+    }
+
     companion object {
         @JvmField
-        val INT_CODEC: Codec<IVec4<Int>> = NeoCodecs.createList(4, Codec.INT, { NeoVec4i(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
+        val INT_CODEC: Codec<IVec4<Int>> = NeoCodecs.createList(4, Codec.INT, { IVec4(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
         @JvmField
-        val FLOAT_CODEC: Codec<IVec4<Float>> = NeoCodecs.createList(4, Codec.FLOAT, { NeoVec4f(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
+        val FLOAT_CODEC: Codec<IVec4<Float>> = NeoCodecs.createList(4, Codec.FLOAT, { IVec4(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
         @JvmField
-        val DOUBLE_CODEC: Codec<IVec4<Double>> = NeoCodecs.createList(4, Codec.DOUBLE, { NeoVec4d(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
+        val DOUBLE_CODEC: Codec<IVec4<Double>> = NeoCodecs.createList(4, Codec.DOUBLE, { IVec4(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
 
         @JvmStatic
-        fun IVec4<Int>.toJOML() = Vector4i(x, y, z, w)
+        @JvmName("of")
+        operator fun invoke(x: Int, y: Int, z: Int, w: Int): IVec4<Int> = IntImpl(x, y, z, w)
 
         @JvmStatic
-        fun IVec4<Float>.toJOML() = Vector4f(x, y, z, w)
+        @JvmName("of")
+        operator fun invoke(other: Vector4ic): IVec4<Int> = IntImpl(other.x(), other.y(), other.z(), other.w())
 
         @JvmStatic
-        fun IVec4<Double>.toJOML() = Vector4d(x, y, z, w)
+        @JvmName("of")
+        operator fun invoke(x: Int): IVec4<Int> = IntImpl(x, x, x, x)
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(x: Float, y: Float, z: Float, w: Float): IVec4<Float> = FloatImpl(x, y, z, w)
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(other: Vector4fc): IVec4<Float> = FloatImpl(other.x(), other.y(), other.z(), other.w())
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(x: Float): IVec4<Float> = FloatImpl(x, x, x, x)
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(x: Double, y: Double, z: Double, w: Double): IVec4<Double> = DoubleImpl(x, y, z, w)
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(other: Vector4dc): IVec4<Double> = DoubleImpl(other.x(), other.y(), other.z(), other.w())
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(x: Double): IVec4<Double> = DoubleImpl(x, x, x, x)
 
         @JvmStatic
         inline fun <reified N : Number> Array<IVec4<N>>.flat(): Array<N> {

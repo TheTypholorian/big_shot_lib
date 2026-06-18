@@ -5,7 +5,6 @@ import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
 import net.typho.big_shot_lib.api.math.vec.*
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.buffer.packInt
-import net.typho.big_shot_lib.api.util.buffer.packUInt
 
 data class NeoVertexData(
     @JvmField
@@ -26,22 +25,22 @@ data class NeoVertexData(
         data: IntArray,
         offset: Int = 0
     ) : this(
-        NeoVec3f(
+        IVec3(
             Float.fromBits(data[offset]),
             Float.fromBits(data[offset + 1]),
             Float.fromBits(data[offset + 2])
         ),
         NeoColor.RGBA(data[offset + 3]),
-        NeoVec2f(
+        IVec2(
             Float.fromBits(data[offset + 4]),
             Float.fromBits(data[offset + 5])
         ),
-        NeoVec2i(
+        IVec2(
             data[offset + 6] ushr 16,
             data[offset + 6] and 0xFFFF
         ),
         null,
-        NeoVec3f(
+        IVec3(
             (data[offset + 7] ushr 24).toByte() / 127f,
             ((data[offset + 7] ushr 16) and 0xFF).toByte() / 127f,
             ((data[offset + 7] ushr 8) and 0xFF).toByte() / 127f
@@ -130,7 +129,7 @@ data class NeoVertexData(
             z: Float
         ): VertexConsumer {
             flush()
-            pos = NeoVec3f(x, y, z)
+            pos = IVec3(x, y, z)
             return this
         }
 
@@ -148,7 +147,7 @@ data class NeoVertexData(
             u: Float,
             v: Float
         ): VertexConsumer {
-            textureUV = NeoVec2f(u, v)
+            textureUV = IVec2(u, v)
             return this
         }
 
@@ -156,7 +155,7 @@ data class NeoVertexData(
             u: Int,
             v: Int
         ): VertexConsumer {
-            overlayUV = NeoVec2i(u, v)
+            overlayUV = IVec2(u, v)
             return this
         }
 
@@ -164,7 +163,7 @@ data class NeoVertexData(
             u: Int,
             v: Int
         ): VertexConsumer {
-            lightUV = NeoVec2i(u, v)
+            lightUV = IVec2(u, v)
             return this
         }
 
@@ -173,7 +172,7 @@ data class NeoVertexData(
             y: Float,
             z: Float
         ): VertexConsumer {
-            normal = NeoVec3f(x, y, z)
+            normal = IVec3(x, y, z)
             return this
         }
     }

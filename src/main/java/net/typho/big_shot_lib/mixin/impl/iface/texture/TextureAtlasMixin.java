@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.mixin.impl.iface.texture;
 
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;

@@ -1,10 +1,5 @@
 package net.typho.big_shot_lib.api.util.content
 
-import net.minecraft.client.data.models.BlockModelGenerators
-import net.minecraft.client.data.models.model.DelegatedModel
-import net.minecraft.client.data.models.model.ModelLocationUtils
-import net.minecraft.client.data.models.model.ModelTemplates
-import net.minecraft.client.data.models.model.TextureMapping
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier
@@ -26,21 +21,12 @@ import net.minecraft.world.level.block.WallBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.block.state.properties.WoodType
-import net.minecraft.world.level.storage.loot.LootPool
-import net.minecraft.world.level.storage.loot.LootTable
-import net.minecraft.world.level.storage.loot.entries.LootItem
-import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
 import net.typho.big_shot_lib.api.event.RegisterEvent
-import net.typho.big_shot_lib.api.plugin.Environment
-import net.typho.big_shot_lib.api.plugin.OnlyIn
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.RegisteredResource
-import java.util.function.BiFunction
-import java.util.function.Function
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
 import kotlin.collections.addAll
@@ -501,8 +487,8 @@ open class BlockFactory @JvmOverloads constructor(
         //protected var model: Function<Supplier<T>, ModelLoadingEvent>? = null
         @JvmField
         protected var textureParent: Supplier<out Block>? = null
-        @JvmField
-        protected var textureMapping: Function<Supplier<out Block>, TextureMapping> = Function { TextureMapping.cube(it.get()) }
+        //@JvmField
+        //protected var textureMapping: Function<Supplier<out Block>, TextureMapping> = Function { TextureMapping.cube(it.get()) }
 
         fun renderType(renderType: NeoRenderType): B {
             this.renderType = renderType
@@ -521,10 +507,12 @@ open class BlockFactory @JvmOverloads constructor(
             return this as B
         }
 
+        /*
         fun textureMapping(textures: Function<Supplier<out Block>, TextureMapping>): B {
             this.textureMapping = textures
             return this as B
         }
+         */
 
         fun end(block: RegisteredObject<T>) {
             //model?.apply(block)?.let { parent.models.add(it) }

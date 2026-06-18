@@ -1,9 +1,6 @@
 package net.typho.big_shot_lib.mixin.impl;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import kotlin.Pair;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import org.spongepowered.asm.mixin.Final;

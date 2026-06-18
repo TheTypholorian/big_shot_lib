@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.math.rect
 
 import net.typho.big_shot_lib.api.math.op.OperatorSet
+import net.typho.big_shot_lib.api.math.vec.IVec2
 import net.typho.big_shot_lib.api.math.vec.IVec4
-import net.typho.big_shot_lib.api.math.vec.NeoVec4i
 
 interface IRect4<N : Number> {
     val opSet: OperatorSet<N>
@@ -55,7 +55,7 @@ interface IRect4<N : Number> {
                 (min.z..max.z).map { z -> xy to z }
             }
             .flatMap { xyz ->
-                (min.z..max.z).map { w -> NeoVec4i(xyz.first.first, xyz.first.second, xyz.second, w) }
+                (min.z..max.z).map { w -> IVec4(xyz.first.first, xyz.first.second, xyz.second, w) }
             }
             .iterator()
     }

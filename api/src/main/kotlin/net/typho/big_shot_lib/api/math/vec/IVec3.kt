@@ -1,12 +1,21 @@
 package net.typho.big_shot_lib.api.math.vec
 
 import com.mojang.serialization.Codec
+import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.Vec3i
+import net.minecraft.world.phys.Vec3
+import net.typho.big_shot_lib.api.math.op.DoubleOperatorSet
+import net.typho.big_shot_lib.api.math.op.FloatOperatorSet
+import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import org.joml.Vector3d
+import org.joml.Vector3dc
 import org.joml.Vector3f
+import org.joml.Vector3fc
 import org.joml.Vector3i
+import org.joml.Vector3ic
 
 interface IVec3<N : Number> {
     val opSet: OperatorSet<N>
@@ -43,11 +52,11 @@ interface IVec3<N : Number> {
 
     fun copyWith(x: N, y: N, z: N): IVec3<N>
 
-    fun toInt(): IVec3<Int> = NeoVec3i(x.toInt(), y.toInt(), z.toInt())
+    fun toInt(): IVec3<Int> = IntImpl(x.toInt(), y.toInt(), z.toInt())
 
-    fun toFloat(): IVec3<Float> = NeoVec3f(x.toFloat(), y.toFloat(), z.toFloat())
+    fun toFloat(): IVec3<Float> = IVec3(x.toFloat(), y.toFloat(), z.toFloat())
 
-    fun toDouble(): IVec3<Double> = NeoVec3d(x.toDouble(), y.toDouble(), z.toDouble())
+    fun toDouble(): IVec3<Double> = IVec3(x.toDouble(), y.toDouble(), z.toDouble())
 
     fun lerp(x: N, y: N, z: N, d: Float): IVec3<N> {
         return copyWith(opSet.lerp(this.x, x, d), opSet.lerp(this.y, y, d), opSet.lerp(this.z, z, d))
@@ -256,24 +265,183 @@ interface IVec3<N : Number> {
         return equals(other.x, other.y, other.z)
     }
 
+    fun immutable() = this
+
+    fun toBlockPos() = BlockPos(x.toInt(), y.toInt(), z.toInt())
+
+    fun toVec3i(): Vec3i = toBlockPos()
+
+    fun toVec3() = Vec3(x.toDouble(), y.toDouble(), z.toDouble())
+
+    fun toJVec3i() = Vector3i(x.toInt(), y.toInt(), z.toInt())
+
+    fun toJVec3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
+
+    fun toJVec3d() = Vector3d(x.toDouble(), y.toDouble(), z.toDouble())
+
+    private data class IntImpl(
+        override val x: Int,
+        override val y: Int,
+        override val z: Int
+    ) : IVec3<Int> {
+        override val opSet: OperatorSet<Int>
+            get() = IntOperatorSet
+        override val xy: IVec2<Int>
+            get() = IVec2(x, y)
+        override val yz: IVec2<Int>
+            get() = IVec2(y, z)
+        override val xz: IVec2<Int>
+            get() = IVec2(x, z)
+
+        override fun copyWith(x: Int, y: Int, z: Int) = IntImpl(x, y, z)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is IVec3<*>) return false
+
+            if (x != other.x) return false
+            if (y != other.y) return false
+            if (z != other.z) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = x.hashCode()
+            result = 31 * result + y.hashCode()
+            result = 31 * result + z.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "(x=$x, y=$y, z=$z)"
+        }
+    }
+
+    private data class FloatImpl(
+        override val x: Float,
+        override val y: Float,
+        override val z: Float
+    ) : IVec3<Float> {
+        override val opSet: OperatorSet<Float>
+            get() = FloatOperatorSet
+        override val xy: IVec2<Float>
+            get() = IVec2(x, y)
+        override val yz: IVec2<Float>
+            get() = IVec2(y, z)
+        override val xz: IVec2<Float>
+            get() = IVec2(x, z)
+
+        override fun copyWith(x: Float, y: Float, z: Float) = FloatImpl(x, y, z)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is IVec3<*>) return false
+
+            if (x != other.x) return false
+            if (y != other.y) return false
+            if (z != other.z) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = x.hashCode()
+            result = 31 * result + y.hashCode()
+            result = 31 * result + z.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "(x=$x, y=$y, z=$z)"
+        }
+    }
+
+    private data class DoubleImpl(
+        override val x: Double,
+        override val y: Double,
+        override val z: Double
+    ) : IVec3<Double> {
+        override val opSet: OperatorSet<Double>
+            get() = DoubleOperatorSet
+        override val xy: IVec2<Double>
+            get() = IVec2(x, y)
+        override val yz: IVec2<Double>
+            get() = IVec2(y, z)
+        override val xz: IVec2<Double>
+            get() = IVec2(x, z)
+
+        override fun copyWith(x: Double, y: Double, z: Double) = DoubleImpl(x, y, z)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is IVec3<*>) return false
+
+            if (x != other.x) return false
+            if (y != other.y) return false
+            if (z != other.z) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = x.hashCode()
+            result = 31 * result + y.hashCode()
+            result = 31 * result + z.hashCode()
+            return result
+        }
+
+        override fun toString(): String {
+            return "(x=$x, y=$y, z=$z)"
+        }
+    }
+
     companion object {
         @JvmField
-        val INT_CODEC: Codec<IVec3<Int>> = NeoCodecs.createList(3, Codec.INT, { NeoVec3i(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
+        val INT_CODEC: Codec<IVec3<Int>> = NeoCodecs.createList(3, Codec.INT, { IVec3(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
         @JvmField
-        val FLOAT_CODEC: Codec<IVec3<Float>> = NeoCodecs.createList(3, Codec.FLOAT, { NeoVec3f(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
+        val FLOAT_CODEC: Codec<IVec3<Float>> = NeoCodecs.createList(3, Codec.FLOAT, { IVec3(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
         @JvmField
-        val DOUBLE_CODEC: Codec<IVec3<Double>> = NeoCodecs.createList(3, Codec.DOUBLE, { NeoVec3d(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
+        val DOUBLE_CODEC: Codec<IVec3<Double>> = NeoCodecs.createList(3, Codec.DOUBLE, { IVec3(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
 
         @JvmStatic
-        fun IVec3<Int>.toJOML() = Vector3i(x, y, z)
+        @JvmName("of")
+        operator fun invoke(x: Int, y: Int, z: Int): IVec3<Int> = IntImpl(x, y, z)
 
         @JvmStatic
-        fun IVec3<Float>.toJOML() = Vector3f(x, y, z)
+        @JvmName("of")
+        operator fun invoke(other: Vector3ic): IVec3<Int> = IntImpl(other.x(), other.y(), other.z())
 
         @JvmStatic
-        fun IVec3<Double>.toJOML() = Vector3d(x, y, z)
+        @JvmName("of")
+        operator fun invoke(x: Int): IVec3<Int> = IntImpl(x, x, x)
 
         @JvmStatic
+        @JvmName("of")
+        operator fun invoke(x: Float, y: Float, z: Float): IVec3<Float> = FloatImpl(x, y, z)
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(other: Vector3fc): IVec3<Float> = FloatImpl(other.x(), other.y(), other.z())
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(x: Float): IVec3<Float> = FloatImpl(x, x, x)
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(x: Double, y: Double, z: Double): IVec3<Double> = DoubleImpl(x, y, z)
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(other: Vector3dc): IVec3<Double> = DoubleImpl(other.x(), other.y(), other.z())
+
+        @JvmStatic
+        @JvmName("of")
+        operator fun invoke(x: Double): IVec3<Double> = DoubleImpl(x, x, x)
+
+        @JvmStatic
+        @Deprecated("")
         operator fun IVec3<Int>.plus(dir: Direction) = plus(dir.stepX, dir.stepY, dir.stepZ)
 
         @JvmStatic

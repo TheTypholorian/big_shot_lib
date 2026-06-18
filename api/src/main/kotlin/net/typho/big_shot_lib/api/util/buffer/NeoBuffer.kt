@@ -1,6 +1,8 @@
 package net.typho.big_shot_lib.api.util.buffer
 
 import net.typho.big_shot_lib.api.math.vec.*
+import net.typho.big_shot_lib.api.math.vec.IVec2
+import net.typho.big_shot_lib.api.math.vec.IVec3
 import org.lwjgl.system.MemoryUtil.*
 import java.io.DataInput
 import java.io.DataInputStream
@@ -85,23 +87,23 @@ abstract class NeoBuffer : Iterable<Byte> {
         return array
     }
 
-    fun getVec2d(index: Long): IVec2<Double> = NeoVec2d(getDouble(index), getDouble(index + 8))
+    fun getVec2d(index: Long): IVec2<Double> = IVec2(getDouble(index), getDouble(index + 8))
 
-    fun getVec2f(index: Long): IVec2<Float> = NeoVec2f(getFloat(index), getFloat(index + 4))
+    fun getVec2f(index: Long): IVec2<Float> = IVec2(getFloat(index), getFloat(index + 4))
 
-    fun getVec2i(index: Long): IVec2<Int> = NeoVec2i(getInt(index), getInt(index + 4))
+    fun getVec2i(index: Long): IVec2<Int> = IVec2(getInt(index), getInt(index + 4))
 
-    fun getVec3d(index: Long): IVec3<Double> = NeoVec3d(getDouble(index), getDouble(index + 8), getDouble(index + 16))
+    fun getVec3d(index: Long): IVec3<Double> = IVec3(getDouble(index), getDouble(index + 8), getDouble(index + 16))
 
-    fun getVec3f(index: Long): IVec3<Float> = NeoVec3f(getFloat(index), getFloat(index + 4), getFloat(index + 8))
+    fun getVec3f(index: Long): IVec3<Float> = IVec3(getFloat(index), getFloat(index + 4), getFloat(index + 8))
 
-    fun getVec3i(index: Long): IVec3<Int> = NeoVec3i(getInt(index), getInt(index + 4), getInt(index + 8))
+    fun getVec3i(index: Long): IVec3<Int> = IVec3(getInt(index), getInt(index + 4), getInt(index + 8))
 
-    fun getVec4d(index: Long): IVec4<Double> = NeoVec4d(getDouble(index), getDouble(index + 8), getDouble(index + 16), getDouble(index + 24))
+    fun getVec4d(index: Long): IVec4<Double> = IVec4(getDouble(index), getDouble(index + 8), getDouble(index + 16), getDouble(index + 24))
 
-    fun getVec4f(index: Long): IVec4<Float> = NeoVec4f(getFloat(index), getFloat(index + 4), getFloat(index + 8), getFloat(index + 12))
+    fun getVec4f(index: Long): IVec4<Float> = IVec4(getFloat(index), getFloat(index + 4), getFloat(index + 8), getFloat(index + 12))
 
-    fun getVec4i(index: Long): IVec4<Int> = NeoVec4i(getInt(index), getInt(index + 4), getInt(index + 8), getInt(index + 12))
+    fun getVec4i(index: Long): IVec4<Int> = IVec4(getInt(index), getInt(index + 4), getInt(index + 8), getInt(index + 12))
 
     operator fun set(index: Long, value: Byte) = memPutByte(checkIndex(index, 1), value)
 

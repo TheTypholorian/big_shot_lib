@@ -7,7 +7,6 @@ import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.world.level.block.SoundType
 import net.minecraft.world.level.block.state.properties.BlockSetType
-import net.typho.big_shot_lib.api.BigShotLib.toShortString
 
 @Suppress("UNCHECKED_CAST")
 open class BlockSetTypeFactory : ContentFactory<BlockSetType> {

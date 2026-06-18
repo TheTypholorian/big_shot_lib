@@ -1,20 +1,10 @@
 package net.typho.big_shot_lib.impl.util
 
-import com.google.common.collect.ImmutableMap
-import net.minecraft.advancements.Advancement
-import net.minecraft.advancements.AdvancementHolder
-import net.minecraft.core.registries.Registries
-import net.minecraft.data.recipes.RecipeOutput
-import net.minecraft.resources.Identifier
-import net.minecraft.resources.ResourceKey
-import net.minecraft.world.item.crafting.Recipe
-import net.typho.big_shot_lib.api.event.RegisterDynamicRecipesEvent
-import java.util.function.Consumer
-
 //? neoforge {
-import net.neoforged.neoforge.common.conditions.ICondition
+
 //? }
 
+/*
 interface RegisterDynamicRecipesEventOutputImpl : RegisterDynamicRecipesEvent.Output {
     override fun register(out: Consumer<RecipeOutput>) {
         out.accept(object : RecipeOutput {
@@ -77,3 +67,4 @@ interface RegisterDynamicRecipesEventOutputImpl : RegisterDynamicRecipesEvent.Ou
         }
     }
 }
+ */

@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixin;
 
 //? if >=1.21 {

@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.client.resources.model.geometry.BakedQuad
+import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode

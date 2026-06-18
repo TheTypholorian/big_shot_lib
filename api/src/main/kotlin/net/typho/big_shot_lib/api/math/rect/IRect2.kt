@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.api.math.rect
 
 import net.typho.big_shot_lib.api.math.op.OperatorSet
 import net.typho.big_shot_lib.api.math.vec.IVec2
-import net.typho.big_shot_lib.api.math.vec.NeoVec2i
 
 interface IRect2<N : Number> {
     val opSet: OperatorSet<N>
@@ -49,7 +48,7 @@ interface IRect2<N : Number> {
         @JvmStatic
         operator fun IRect2<Int>.iterator(): Iterator<IVec2<Int>> = (min.x..max.x)
             .flatMap { x ->
-                (min.y..max.y).map { y -> NeoVec2i(x, y) }
+                (min.y..max.y).map { y -> IVec2(x, y) }
             }
             .iterator()
     }

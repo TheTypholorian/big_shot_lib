@@ -1,12 +1,10 @@
 package net.typho.big_shot_lib.mixin.impl.iface.texture;
 
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 

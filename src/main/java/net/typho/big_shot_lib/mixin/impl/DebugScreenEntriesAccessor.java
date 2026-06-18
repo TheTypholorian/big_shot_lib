@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.mixin.impl;
 
-import dev.kikugie.fletching_table.annotation.MixinEnvironment;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
 import org.spongepowered.asm.mixin.Mixin;

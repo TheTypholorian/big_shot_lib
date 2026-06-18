@@ -2,12 +2,8 @@ package net.typho.big_shot_lib.api.util
 
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.math.vec.*
-import net.typho.big_shot_lib.api.util.NeoColor.RGB
-import net.typho.big_shot_lib.api.util.NeoColor.RGBA
-import net.typho.big_shot_lib.api.util.NeoColor.RGBAF
-import net.typho.big_shot_lib.api.util.NeoColor.RGBF
-import net.typho.big_shot_lib.api.util.buffer.byteAt
-import net.typho.big_shot_lib.api.util.buffer.packInt
+import net.typho.big_shot_lib.api.math.vec.IVec3
+import net.typho.big_shot_lib.api.math.vec.IVec4
 import net.typho.big_shot_lib.api.util.buffer.packUInt
 import net.typho.big_shot_lib.api.util.buffer.ubyteAt
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
@@ -102,13 +98,13 @@ interface NeoColor {
     val alpha: UByte?
         get() = alphaF?.times(255)?.toInt()?.ubyteAt(3)
 
-    fun toVec3F(): IVec3<Float> = NeoVec3f(redF, greenF, blueF)
+    fun toVec3F(): IVec3<Float> = IVec3(redF, greenF, blueF)
 
-    fun toVec4F(): IVec4<Float> = NeoVec4f(redF, greenF, blueF, alphaF ?: 1f)
+    fun toVec4F(): IVec4<Float> = IVec4(redF, greenF, blueF, alphaF ?: 1f)
 
-    fun toVec3i(): IVec3<Int> = NeoVec3i(red.toInt(), green.toInt(), blue.toInt())
+    fun toVec3i(): IVec3<Int> = IVec3(red.toInt(), green.toInt(), blue.toInt())
 
-    fun toVec4i(): IVec4<Int> = NeoVec4i(red.toInt(), green.toInt(), blue.toInt(), alpha?.toInt() ?: 255)
+    fun toVec4i(): IVec4<Int> = IVec4(red.toInt(), green.toInt(), blue.toInt(), alpha?.toInt() ?: 255)
 
     fun toPackedARGB() = packUInt(alpha ?: 255.toUByte(), red, green, blue).toInt()
 

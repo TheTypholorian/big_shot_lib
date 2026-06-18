@@ -5,13 +5,11 @@ package net.typho.big_shot_lib.impl.util.platform
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
 *///? } neoforge {
-import net.minecraft.resources.Identifier
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLEnvironment
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
-import net.typho.big_shot_lib.api.util.content.RegisteredObject
 //? }
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
