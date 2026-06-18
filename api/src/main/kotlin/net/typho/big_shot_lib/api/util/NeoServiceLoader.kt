@@ -4,7 +4,6 @@ import com.google.gson.JsonParser
 import net.typho.big_shot_lib.api.error.ServiceLoaderException
 import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility
-import kotlin.reflect.jvm.jvmName
 
 object NeoServiceLoader {
     private val services: Map<String, Set<String>> = NeoServiceLoader::class.java.classLoader.getResources("neo_services.json")
@@ -46,7 +45,7 @@ object NeoServiceLoader {
     }
 
     @JvmStatic
-    fun <T : Any> KClass<T>.loadService(): T = load(java).firstOrNull() ?: throw IllegalStateException("Could not find service implementation for $jvmName")
+    fun <T : Any> KClass<T>.loadService(): T = load(java).firstOrNull() ?: throw IllegalStateException("Could not find service implementation for $simpleName")
 
     @JvmStatic
     fun <T : Any> KClass<T>.loadServices(): MutableList<T> = load(java)

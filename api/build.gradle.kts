@@ -13,6 +13,8 @@ plugins {
     id("dev.isxander.modstitch.base") version "0.8.5"
 
     id("net.typho.big_shot_lib.plugin") version "1.0.0"
+
+    `maven-publish`
 }
 
 bigShotLib {
@@ -21,6 +23,19 @@ bigShotLib {
 
     transformInfo {
         setupDefaults()
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "net.typho"
+            artifactId = "big_shot_lib"
+            version = project.version.toString()
+
+            artifact(tasks.jar)
+            artifact(tasks.kotlinSourcesJar)
+        }
     }
 }
 
