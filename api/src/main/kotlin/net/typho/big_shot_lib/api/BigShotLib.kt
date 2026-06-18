@@ -17,7 +17,7 @@ object BigShotLib : NeoCommonInitializer {
 
     @JvmStatic
     @Suppress("UNCHECKED_CAST")
-    fun <T : Any> ResourceKey<out Registry<T>>.lookupOrThrow(error: String = "Couldn't find registry ${location()}") = BuiltInRegistries.REGISTRY.get(location())?.let { it as Registry<T> } ?: throw NullPointerException(error)
+    fun <T : Any> ResourceKey<out Registry<T>>.lookupOrThrow(error: String = "Couldn't find registry ${identifier()}") = BuiltInRegistries.REGISTRY.get(identifier())?.let { it as Registry<T> } ?: throw NullPointerException(error)
 
     @JvmStatic
     fun Identifier.toShortString(): String = if (namespace == Identifier.DEFAULT_NAMESPACE) path else toString()

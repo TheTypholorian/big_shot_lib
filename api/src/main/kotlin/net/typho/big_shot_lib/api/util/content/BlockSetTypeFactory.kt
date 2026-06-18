@@ -119,7 +119,7 @@ open class BlockSetTypeFactory : ContentFactory<BlockSetType> {
 
         override fun end(): RegisteredObject<BlockSetType> {
             val type = BlockSetType(
-                key.location().toShortString(),
+                key.identifier().toShortString(),
                 canOpenByHand,
                 canOpenByWindCharge,
                 canButtonBeActivatedByArrows,

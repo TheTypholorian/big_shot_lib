@@ -14,7 +14,7 @@ fun interface RegisterDynamicRecipesEvent {
         fun register(out: Consumer<RecipeOutput>)
 
         fun register(location: ResourceKey<out Recipe<*>>, recipe: RecipeBuilder) {
-            register { recipe.save(it, location.location()) }
+            register { recipe.save(it, location.identifier()) }
         }
 
         fun register(location: ResourceKey<out Recipe<*>>, recipe: Recipe<*>)

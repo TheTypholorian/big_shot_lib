@@ -375,7 +375,7 @@ class NeoEventBusImpl(
                     key: ResourceKey<out Registry<T>>,
                     out: Consumer<RegisterEvent.RegistrationConsumer<T>>
                 ) {
-                    return begin(key.location(), out)
+                    return begin(key.identifier(), out)
                 }
 
                 override fun <T : Any> begin(registry: Registry<T>, out: Consumer<RegisterEvent.RegistrationConsumer<T>>) {
@@ -386,7 +386,7 @@ class NeoEventBusImpl(
                             }
 
                             override fun register(key: ResourceKey<out T>, value: T) {
-                                register(key.location(), value)
+                                register(key.identifier(), value)
                             }
                         })
                     }

@@ -520,7 +520,7 @@ open class BlockFactory @JvmOverloads constructor(
         @JvmField
         protected var lootTable: BiFunction<T, BlockItem, RegisteredObject<LootTable>>? = parent.loot?.let { loot ->
             BiFunction { block, item ->
-                loot.begin(block.lootTable.location())
+                loot.begin(block.lootTable.identifier())
                     .withPool {
                         LootPool.lootPool()
                             .setRolls(ConstantValue.exactly(1f))
@@ -534,7 +534,7 @@ open class BlockFactory @JvmOverloads constructor(
         @JvmField
         protected val tags: MutableList<TagKey<Block>> = arrayListOf()
         @JvmField
-        protected var item: ItemFactory.Builder<BlockItem, *>? = parent.items?.beginBlockItem(key.location()) { registered!!.get() }
+        protected var item: ItemFactory.Builder<BlockItem, *>? = parent.items?.beginBlockItem(key.identifier()) { registered!!.get() }
         @JvmField
         protected var registered: RegisteredObject<T>? = null
 
@@ -589,7 +589,7 @@ open class BlockFactory @JvmOverloads constructor(
 
         fun drops(builder: UnaryOperator<LootTableFactory.Builder<*>>): B {
             lootTable = BiFunction { block, item ->
-                (parent.loot ?: throw UnsupportedOperationException("Must pass a LootTableContentFactory to the BlockContentFactory to be able to call Builder.drops()")).begin(block.lootTable.location())
+                (parent.loot ?: throw UnsupportedOperationException("Must pass a LootTableContentFactory to the BlockContentFactory to be able to call Builder.drops()")).begin(block.lootTable.identifier())
                     .let(builder::apply)
                     .end()
             }

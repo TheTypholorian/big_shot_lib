@@ -51,7 +51,7 @@ open class CreativeTabFactory(
         protected val builder = InternalUtil.INSTANCE.createCreativeTabBuilder()
 
         init {
-            builder.title(Component.translatable(key.location().toLanguageKey("itemGroup")))
+            builder.title(Component.translatable(key.identifier().toLanguageKey("itemGroup")))
         }
 
         fun title(title: Component): B {

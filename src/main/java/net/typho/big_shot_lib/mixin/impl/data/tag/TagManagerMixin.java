@@ -41,9 +41,9 @@ public class TagManagerMixin {
                 @Override
                 public <V> void add(@NotNull ResourceKey<Registry<V>> registry, @NotNull TagKey<? extends V> tag, @NotNull ResourceKey<? extends V>... entries) {
                     if (registry.equals(key) && entries.length > 0) {
-                        modifiedTags.computeIfAbsent(tag, key -> new HashSet<>()).addAll(Arrays.stream(entries).map(ResourceKey::location).toList());
+                        modifiedTags.computeIfAbsent(tag, key -> new HashSet<>()).addAll(Arrays.stream(entries).map(ResourceKey::identifier).toList());
 
-                        tags.compute(tag.location(), (key, value) -> {
+                        tags.compute(tag.identifier(), (key, value) -> {
                             if (value == null) {
                                 value = new HashSet<>();
                             } else {
@@ -51,7 +51,7 @@ public class TagManagerMixin {
                             }
 
                             for (ResourceKey<? extends V> entry : entries) {
-                                value.add((Holder<T>) func.apply(entry.location()).orElseThrow(() -> new NullPointerException("Nonexistent entry " + entry + " while injecting dynamic tags into " + registry + "." + tag)));
+                                value.add((Holder<T>) func.apply(entry.identifier()).orElseThrow(() -> new NullPointerException("Nonexistent entry " + entry + " while injecting dynamic tags into " + registry + "." + tag)));
                             }
 
                             return value;
@@ -65,7 +65,7 @@ public class TagManagerMixin {
         long numTags = modifiedTags.size();
 
         if (numEntries > 0) {
-            BigShotLib.LOGGER.info("Loaded {} dynamic tag entries into {} tags of registry {}", numEntries, numTags, key.location());
+            BigShotLib.LOGGER.info("Loaded {} dynamic tag entries into {} tags of registry {}", numEntries, numTags, key.identifier());
         }
 
         args.set(1, tags);

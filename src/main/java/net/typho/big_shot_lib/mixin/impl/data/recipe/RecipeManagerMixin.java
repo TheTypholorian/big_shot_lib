@@ -85,9 +85,9 @@ public class RecipeManagerMixin {
 
         for (RegisterDynamicRecipesEvent event : NeoEventBusImpl.DYNAMIC_RECIPE_EVENTS) {
             event.register((RegisterDynamicRecipesEventOutputImpl) (location, recipe) -> {
-                RecipeHolder<?> holder = new RecipeHolder<>(location.location(), recipe);
+                RecipeHolder<?> holder = new RecipeHolder<>(location.identifier(), recipe);
                 byTypeBuilder.put(recipe.getType(), holder);
-                byNameBuilder.put(location.location(), holder);
+                byNameBuilder.put(location.identifier(), holder);
                 counter[0]++;
             }, registries);
         }

@@ -203,14 +203,6 @@ repositories {
 
 dependencies {
     modstitchModImplementation("thedarkcolour:kotlinforforge-neoforge:5.9.0")
-
-    //modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
-    modstitchModCompileOnly("net.typho:big_shot_lib:${property("deps.big_shot")}")
-    modstitchModCompileOnly("maven.modrinth:yacl:${property("deps.yacl")}")
-
-    findProperty("deps.sable_companion")?.let {
-        modstitchJiJ(modstitchModApi("dev.ryanhcode.sable-companion:sable-companion-common-${property("deps.minecraft")}:[${it},)")!!)
-    }
 }
 
 tasks {
@@ -255,4 +247,10 @@ publishMods {
             requires("fabric-api", "kotlin-for-forge", "big-shot-lib", "yacl")
         }
     }
+}
+
+sourceSets.named("main") {
+    java.srcDirs(project(":api").sourceSets["main"].java.srcDirs)
+    kotlin.srcDirs(project(":api").sourceSets["main"].kotlin.srcDirs)
+    resources.srcDirs(project(":api").sourceSets["main"].resources.srcDirs)
 }

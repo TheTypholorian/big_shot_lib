@@ -74,8 +74,8 @@ open class AdvancementFactory(
         @JvmOverloads
         fun display(
             icon: () -> ItemStack,
-            title: Component = Component.translatable(key.location().toLanguageKey("advancements", "title")),
-            description: Component = Component.translatable(key.location().toLanguageKey("advancements", "description")),
+            title: Component = Component.translatable(key.identifier().toLanguageKey("advancements", "title")),
+            description: Component = Component.translatable(key.identifier().toLanguageKey("advancements", "description")),
             background: Identifier? = null,
             type: AdvancementType = AdvancementType.TASK,
             showToast: Boolean = true,
@@ -89,8 +89,8 @@ open class AdvancementFactory(
         @JvmOverloads
         fun display(
             icon: ItemLike,
-            title: Component = Component.translatable(key.location().toLanguageKey("advancements", "title")),
-            description: Component = Component.translatable(key.location().toLanguageKey("advancements", "description")),
+            title: Component = Component.translatable(key.identifier().toLanguageKey("advancements", "title")),
+            description: Component = Component.translatable(key.identifier().toLanguageKey("advancements", "description")),
             background: Identifier? = null,
             type: AdvancementType = AdvancementType.TASK,
             showToast: Boolean = true,
@@ -104,8 +104,8 @@ open class AdvancementFactory(
         @JvmOverloads
         fun display(
             icon: RegisteredObject<out Item>,
-            title: Component = Component.translatable(key.location().toLanguageKey("advancements", "title")),
-            description: Component = Component.translatable(key.location().toLanguageKey("advancements", "description")),
+            title: Component = Component.translatable(key.identifier().toLanguageKey("advancements", "title")),
+            description: Component = Component.translatable(key.identifier().toLanguageKey("advancements", "description")),
             background: Identifier? = null,
             type: AdvancementType = AdvancementType.TASK,
             showToast: Boolean = true,
@@ -159,7 +159,7 @@ open class AdvancementFactory(
                 throw IllegalStateException("ContentFactory $parent has ended, it cannot receive more entries")
             }
 
-            val obj = RegisteredObject.Late(key) { mutators.fold(Advancement.Builder.advancement()) { builder, mutator -> mutator(builder) }.build(key.location()).value }
+            val obj = RegisteredObject.Late(key) { mutators.fold(Advancement.Builder.advancement()) { builder, mutator -> mutator(builder) }.build(key.identifier()).value }
 
             if (!parent.toRegister.add(obj)) {
                 throw IllegalArgumentException("Cannot create two advancements under the same ID $key")

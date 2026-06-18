@@ -252,3 +252,9 @@ publishMods {
         }
     }
 }
+
+sourceSets.named("main") {
+    java.srcDirs(project(":api").sourceSets["main"].java.srcDirs)
+    kotlin.srcDirs(project(":api").sourceSets["main"].kotlin.srcDirs)
+    resources.srcDirs(project(":api").sourceSets["main"].resources.srcDirs)
+}

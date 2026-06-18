@@ -6,5 +6,5 @@ import net.minecraft.resources.ResourceKey
 interface RegisteredResource<T : Any> : NamedResource {
     val key: ResourceKey<T>
     override val location: Identifier
-        get() = key.location()
+        get() = key.identifier()
 }

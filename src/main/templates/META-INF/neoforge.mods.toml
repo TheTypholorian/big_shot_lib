@@ -2,6 +2,7 @@ modLoader = "kotlinforforge"
 loaderVersion = "*"
 issueTrackerURL="https://github.com/TheTypholorian/big_shot_lib/issues/"
 logoFile="icon.png"
+license = "${license}"
 
 [[mods]]
 modId = "${id}"
