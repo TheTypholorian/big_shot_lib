@@ -10,7 +10,7 @@ import java.io.DataOutput
 import java.lang.ref.Cleaner
 import java.nio.ByteBuffer
 
-abstract class NeoBuffer : Iterable<Byte> {
+abstract class NativeBuffer : Iterable<Byte> {
     abstract val address: Long
     abstract val size: Long
     protected abstract val nio: ByteBuffer
@@ -187,8 +187,8 @@ abstract class NeoBuffer : Iterable<Byte> {
     }
 
     @JvmOverloads
-    fun read(offset: Long = 0L): DataInput {
-        return object : DataInput {
+    fun read(offset: Long = 0L): NativeDataInput {
+        return object : NativeDataInput {
             var index = offset
 
             fun index(increment: Long): Long {
@@ -197,28 +197,15 @@ abstract class NeoBuffer : Iterable<Byte> {
                 return i
             }
 
-            override fun readFully(b: ByteArray) {
-                readFully(b, 0, b.size)
-            }
-
-            override fun readFully(b: ByteArray, off: Int, len: Int) {
-                nio.put(index(len.toLong()).toInt(), b, off, len)
-            }
-
-            override fun skipBytes(n: Int): Int {
-                index += n
-                return n
-            }
-
-            override fun readBoolean(): Boolean {
-                return get(index(1)) == 1.toByte()
+            override fun skip(bytes: Long) {
+                index += bytes
             }
 
             override fun readByte(): Byte {
                 return get(index(1))
             }
 
-            override fun readUnsignedByte(): Int {
+            override fun readUByte(): Int {
                 return get(index(1)).toUByte().toInt()
             }
 
@@ -226,12 +213,8 @@ abstract class NeoBuffer : Iterable<Byte> {
                 return getShort(index(2))
             }
 
-            override fun readUnsignedShort(): Int {
+            override fun readUShort(): Int {
                 return getShort(index(2)).toUShort().toInt()
-            }
-
-            override fun readChar(): Char {
-                return getShort(index(2)).toInt().toChar()
             }
 
             override fun readInt(): Int {
@@ -250,41 +233,15 @@ abstract class NeoBuffer : Iterable<Byte> {
                 return getDouble(index(8))
             }
 
-            override fun readLine(): String {
-                val builder = StringBuilder()
-                var available = size - index
-
-                loop@ do {
-                    val c = readUnsignedByte().toChar()
-                    --available
-
-                    when (c) {
-                        '\n' -> break@loop
-
-                        '\r' -> {
-                            if (available > 0 && get(index).toInt().toChar() == '\n') {
-                                index++
-                                --available
-                            }
-                            break@loop
-                        }
-
-                        else -> {
-                            builder.append(c)
-                        }
-                    }
-                } while (available > 0)
-
-                return builder.toString()
+            override fun readBoolean(): Boolean {
+                return get(index(1)) == 1.toByte()
             }
-
-            override fun readUTF() = DataInputStream.readUTF(this)
         }
     }
 
     @JvmOverloads
-    fun write(offset: Long = 0L): DataOutput {
-        return object : DataOutput {
+    fun write(offset: Long = 0L): NativeDataOutput {
+        return object : NativeDataOutput {
             var index = offset
 
             fun index(increment: Long): Long {
@@ -293,20 +250,8 @@ abstract class NeoBuffer : Iterable<Byte> {
                 return i
             }
 
-            override fun write(b: Int) {
-                set(index(1), b.toByte())
-            }
-
-            override fun write(b: ByteArray) {
-                write(b, 0, b.size)
-            }
-
-            override fun write(b: ByteArray, off: Int, len: Int) {
-                set(index(len.toLong()), b, off, len)
-            }
-
-            override fun writeBoolean(v: Boolean) {
-                set(index(1), if (v) 1 else 0)
+            override fun skip(bytes: Long) {
+                index += bytes
             }
 
             override fun writeByte(v: Int) {
@@ -314,10 +259,6 @@ abstract class NeoBuffer : Iterable<Byte> {
             }
 
             override fun writeShort(v: Int) {
-                set(index(2), v.toShort())
-            }
-
-            override fun writeChar(v: Int) {
                 set(index(2), v.toShort())
             }
 
@@ -337,16 +278,8 @@ abstract class NeoBuffer : Iterable<Byte> {
                 set(index(8), v)
             }
 
-            override fun writeBytes(s: String) {
-                write(s.toByteArray())
-            }
-
-            override fun writeChars(s: String) {
-                s.toCharArray().forEach { set(index(2), it.code.toShort()) }
-            }
-
-            override fun writeUTF(str: String) {
-                throw UnsupportedOperationException()
+            override fun writeBoolean(v: Boolean) {
+                set(index(1), if (v) 1 else 0)
             }
         }
     }
@@ -355,7 +288,7 @@ abstract class NeoBuffer : Iterable<Byte> {
 
     open class Nio(
         override val nio: ByteBuffer
-    ) : NeoBuffer() {
+    ) : NativeBuffer() {
         override val address: Long = memAddress(nio)
         override val size: Long = (nio.limit() - nio.position()).toLong()
     }
@@ -363,7 +296,7 @@ abstract class NeoBuffer : Iterable<Byte> {
     open class Native(
         override val address: Long,
         override val size: Long
-    ) : NeoBuffer(), AutoCloseable {
+    ) : NativeBuffer(), AutoCloseable {
         var isFreed: Boolean = false
             protected set
         override val nio: ByteBuffer = memByteBuffer(address, size.toInt())
