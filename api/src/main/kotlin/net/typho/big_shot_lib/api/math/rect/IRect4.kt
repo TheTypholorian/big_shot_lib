@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.api.math.rect
 
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.math.vec.IVec2
 import net.typho.big_shot_lib.api.math.vec.IVec4
 
 interface IRect4<N : Number> {
@@ -15,14 +14,14 @@ interface IRect4<N : Number> {
     val area: N
         get() = opSet.times(size.x, opSet.times(size.y, opSet.times(size.z, size.w)))
 
-    fun create(min: IVec4<N>, max: IVec4<N>): IRect4<N>
+    fun copyWith(min: IVec4<N>, max: IVec4<N>): IRect4<N>
 
     fun include(other: IRect4<N>): IRect4<N> {
-        return create(min.min(other.min), max.max(other.max))
+        return copyWith(min.min(other.min), max.max(other.max))
     }
 
     fun include(other: IVec4<N>): IRect4<N> {
-        return create(min.min(other), max.max(other))
+        return copyWith(min.min(other), max.max(other))
     }
 
     fun contains(other: IRect4<N>): Boolean {

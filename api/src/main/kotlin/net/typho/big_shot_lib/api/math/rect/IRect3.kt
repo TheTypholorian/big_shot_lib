@@ -15,14 +15,14 @@ interface IRect3<N : Number> {
     val area: N
         get() = opSet.times(size.x, opSet.times(size.y, size.z))
 
-    fun create(min: IVec3<N>, max: IVec3<N>): IRect3<N>
+    fun copyWith(min: IVec3<N>, max: IVec3<N>): IRect3<N>
 
     fun include(other: IRect3<N>): IRect3<N> {
-        return create(min.min(other.min), max.max(other.max))
+        return copyWith(min.min(other.min), max.max(other.max))
     }
 
     fun include(other: IVec3<N>): IRect3<N> {
-        return create(min.min(other), max.max(other))
+        return copyWith(min.min(other), max.max(other))
     }
 
     fun contains(other: IRect3<N>): Boolean {
@@ -78,13 +78,13 @@ interface IRect3<N : Number> {
         @JvmStatic
         fun IRect3<Int>.extend(direction: Direction): IRect3<Int> {
             return if (direction.axisDirection == Direction.AxisDirection.POSITIVE) {
-                create(min, max + direction)
+                copyWith(min, max + direction)
             } else {
-                create(min + direction, max)
+                copyWith(min + direction, max)
             }
         }
 
         @JvmStatic
-        fun IRect3<Int>.move(direction: Direction) = create(min + direction, max + direction)
+        fun IRect3<Int>.move(direction: Direction) = copyWith(min + direction, max + direction)
     }
 }

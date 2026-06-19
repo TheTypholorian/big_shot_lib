@@ -13,5 +13,5 @@ class NeoRect2i(
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet
 
-    override fun create(min: IVec2<Int>, max: IVec2<Int>) = NeoRect2i(min, max)
+    override fun copyWith(min: IVec2<Int>, max: IVec2<Int>) = NeoRect2i(min, max)
 }

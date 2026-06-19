@@ -13,5 +13,5 @@ class NeoRect3f(
     override val opSet: OperatorSet<Float>
         get() = FloatOperatorSet
 
-    override fun create(min: IVec3<Float>, max: IVec3<Float>) = NeoRect3f(min, max)
+    override fun copyWith(min: IVec3<Float>, max: IVec3<Float>) = NeoRect3f(min, max)
 }

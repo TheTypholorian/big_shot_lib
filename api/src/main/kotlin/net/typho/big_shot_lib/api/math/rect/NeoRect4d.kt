@@ -2,7 +2,6 @@ package net.typho.big_shot_lib.api.math.rect
 
 import net.typho.big_shot_lib.api.math.op.DoubleOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.math.vec.IVec3
 import net.typho.big_shot_lib.api.math.vec.IVec4
 
 class NeoRect4d(
@@ -14,5 +13,5 @@ class NeoRect4d(
     override val opSet: OperatorSet<Double>
         get() = DoubleOperatorSet
 
-    override fun create(min: IVec4<Double>, max: IVec4<Double>) = NeoRect4d(min, max)
+    override fun copyWith(min: IVec4<Double>, max: IVec4<Double>) = NeoRect4d(min, max)
 }

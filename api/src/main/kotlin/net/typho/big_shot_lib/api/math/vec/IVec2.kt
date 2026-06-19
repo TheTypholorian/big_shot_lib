@@ -5,16 +5,10 @@ import net.typho.big_shot_lib.api.math.op.DoubleOperatorSet
 import net.typho.big_shot_lib.api.math.op.FloatOperatorSet
 import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.math.vec.IVec3.DoubleImpl
-import net.typho.big_shot_lib.api.math.vec.IVec3.FloatImpl
-import net.typho.big_shot_lib.api.math.vec.IVec3.IntImpl
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import org.joml.Vector2d
-import org.joml.Vector2dc
 import org.joml.Vector2f
-import org.joml.Vector2fc
 import org.joml.Vector2i
-import org.joml.Vector2ic
 import org.joml.Vector3dc
 import org.joml.Vector3fc
 import org.joml.Vector3ic

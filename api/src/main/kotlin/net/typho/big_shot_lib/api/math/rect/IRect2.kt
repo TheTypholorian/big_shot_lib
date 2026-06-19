@@ -11,17 +11,27 @@ interface IRect2<N : Number> {
 
     val size: IVec2<N>
         get() = max - min
+    val sizeInclusive: IVec2<N>
+        get() = size + opSet.one
     val area: N
-        get() = opSet.times(size.x, size.y)
+        get() {
+            val size = size
+            return opSet.times(size.x, size.y)
+        }
+    val areaInclusive: N
+        get() {
+            val size = sizeInclusive
+            return opSet.times(size.x, size.y)
+        }
 
-    fun create(min: IVec2<N>, max: IVec2<N>): IRect2<N>
+    fun copyWith(min: IVec2<N>, max: IVec2<N>): IRect2<N>
 
     fun include(other: IRect2<N>): IRect2<N> {
-        return create(min.min(other.min), max.max(other.max))
+        return copyWith(min.min(other.min), max.max(other.max))
     }
 
     fun include(other: IVec2<N>): IRect2<N> {
-        return create(min.min(other), max.max(other))
+        return copyWith(min.min(other), max.max(other))
     }
 
     fun contains(other: IRect2<N>): Boolean {
@@ -36,20 +46,29 @@ interface IRect2<N : Number> {
         return min.allLessThan(other.max) && max.allGreaterThan(other.min)
     }
 
-    companion object {
-        @JvmStatic
-        val <N : Number> IRect2<N>.sizeInclusive: IVec2<N>
-            get() = size + opSet.one
+    operator fun iterator(): Iterator<IVec2<N>> {
+        return iterator(opSet.one)
+    }
 
-        @JvmStatic
-        val IRect2<Int>.areaInclusive: Int
-            get() = opSet.times(size.x + 1, size.y + 1)
+    fun iterator(inc: N) = object : Iterator<IVec2<N>> {
+        var x = min.x
+        var y = min.y
 
-        @JvmStatic
-        operator fun IRect2<Int>.iterator(): Iterator<IVec2<Int>> = (min.x..max.x)
-            .flatMap { x ->
-                (min.y..max.y).map { y -> IVec2(x, y) }
+        override fun hasNext(): Boolean {
+            return opSet.lequalThan(x, max.x)
+        }
+
+        override fun next(): IVec2<N> {
+            val pos = min.copyWith(x, y)
+
+            y = opSet.plus(y, inc)
+
+            if (opSet.greaterThan(y, max.y)) {
+                y = min.y
+                x = opSet.plus(x, inc)
             }
-            .iterator()
+
+            return pos
+        }
     }
 }

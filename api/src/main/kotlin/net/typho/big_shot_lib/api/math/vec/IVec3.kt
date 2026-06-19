@@ -25,7 +25,7 @@ interface IVec3<N : Number> {
     val z: N
 
     val gridLength: N
-        get() = opSet.plus(opSet.abs(x), opSet.plus(opSet.abs(y), opSet.abs(z)))
+        get() = opSet.max(opSet.abs(x), opSet.max(opSet.abs(y), opSet.abs(z)))
     val lengthSquared: N
         get() = opSet.plus(opSet.times(x, x), opSet.plus(opSet.times(y, y), opSet.times(z, z)))
     val length: Float
