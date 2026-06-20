@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.client.rendering.util.buffer
 
-import net.typho.big_shot_lib.api.math.vec.IVec2
-import net.typho.big_shot_lib.api.math.vec.IVec3
-import net.typho.big_shot_lib.api.math.vec.IVec4
+import net.typho.big_shot_lib.api.math.IVec2
+import net.typho.big_shot_lib.api.math.IVec3
+import net.typho.big_shot_lib.api.math.IVec4
 import net.typho.big_shot_lib.api.util.buffer.NativeDataInput
 import net.typho.big_shot_lib.api.util.buffer.NativeDataOutput
 import java.util.function.BiConsumer

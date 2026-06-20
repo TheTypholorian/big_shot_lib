@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.util.buffer
 
-import net.typho.big_shot_lib.api.math.vec.*
-import net.typho.big_shot_lib.api.math.vec.IVec2
-import net.typho.big_shot_lib.api.math.vec.IVec3
+import net.typho.big_shot_lib.api.math.*
+import net.typho.big_shot_lib.api.math.IVec2
+import net.typho.big_shot_lib.api.math.IVec3
 import org.lwjgl.system.MemoryUtil.*
 import java.io.DataInput
 import java.io.DataInputStream

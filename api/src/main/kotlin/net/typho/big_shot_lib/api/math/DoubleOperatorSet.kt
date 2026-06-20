@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.math.op
+package net.typho.big_shot_lib.api.math
 
 import org.lwjgl.system.MemoryUtil.memPutDouble
 

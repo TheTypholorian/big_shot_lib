@@ -2,9 +2,9 @@ package net.typho.big_shot_lib.api.client.rendering.util
 
 import com.mojang.blaze3d.vertex.PoseStack
 import net.typho.big_shot_lib.api.client.InternalClientUtil
-import net.typho.big_shot_lib.api.math.rect.IRect3
-import net.typho.big_shot_lib.api.math.vec.IVec2
-import net.typho.big_shot_lib.api.math.vec.IVec3
+import net.typho.big_shot_lib.api.math.IRect3
+import net.typho.big_shot_lib.api.math.IVec2
+import net.typho.big_shot_lib.api.math.IVec3
 import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.Matrix4fc
 import org.joml.Vector3f

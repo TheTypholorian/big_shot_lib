@@ -1,11 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 
-import net.typho.big_shot_lib.api.math.vec.IVec2
-import net.typho.big_shot_lib.api.math.vec.IVec2.Companion.flat
-import net.typho.big_shot_lib.api.math.vec.IVec3
-import net.typho.big_shot_lib.api.math.vec.IVec3.Companion.flat
-import net.typho.big_shot_lib.api.math.vec.IVec4
-import net.typho.big_shot_lib.api.math.vec.IVec4.Companion.flat
+import net.typho.big_shot_lib.api.math.IVec2
+import net.typho.big_shot_lib.api.math.IVec2.Companion.flat
+import net.typho.big_shot_lib.api.math.IVec3
+import net.typho.big_shot_lib.api.math.IVec3.Companion.flat
+import net.typho.big_shot_lib.api.math.IVec4
+import net.typho.big_shot_lib.api.math.IVec4.Companion.flat
 import net.typho.big_shot_lib.api.util.NeoColor
 import org.joml.*
 import org.lwjgl.opengl.GL20.*

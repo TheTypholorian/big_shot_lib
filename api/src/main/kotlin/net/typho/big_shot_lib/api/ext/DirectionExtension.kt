@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.api.ext
 
-import net.typho.big_shot_lib.api.math.op.IntOperatorSet
-import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.math.vec.IVec2
-import net.typho.big_shot_lib.api.math.vec.IVec3
+import net.typho.big_shot_lib.api.math.IntOperatorSet
+import net.typho.big_shot_lib.api.math.OperatorSet
+import net.typho.big_shot_lib.api.math.IVec2
+import net.typho.big_shot_lib.api.math.IVec3
 
 interface DirectionExtension : IVec3<Int> {
     override val opSet: OperatorSet<Int>

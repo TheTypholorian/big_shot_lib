@@ -1,8 +1,8 @@
 package net.typho.big_shot_lib.api.util
 
 import com.mojang.serialization.Codec
-import net.typho.big_shot_lib.api.math.vec.IVec3
-import net.typho.big_shot_lib.api.math.vec.IVec4
+import net.typho.big_shot_lib.api.math.IVec3
+import net.typho.big_shot_lib.api.math.IVec4
 import net.typho.big_shot_lib.api.util.buffer.packUInt
 import net.typho.big_shot_lib.api.util.buffer.ubyteAt
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs

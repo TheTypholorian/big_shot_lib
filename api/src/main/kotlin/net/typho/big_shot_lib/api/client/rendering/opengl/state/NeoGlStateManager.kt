@@ -9,7 +9,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.util.ColorMask
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
-import net.typho.big_shot_lib.api.math.rect.IRect2
+import net.typho.big_shot_lib.api.math.IRect2
 import net.typho.big_shot_lib.api.util.KeyedDelegate
 import net.typho.big_shot_lib.api.util.NeoColor
 

@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.math.op
+package net.typho.big_shot_lib.api.math
 
 interface OperatorSet<N : Number> {
     val zero: N

@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendEquati
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction;
-import net.typho.big_shot_lib.api.math.rect.IRect2;
+import net.typho.big_shot_lib.api.math.IRect2;
 import net.typho.big_shot_lib.impl.client.rendering.opengl.state.NeoGlStateManagerImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

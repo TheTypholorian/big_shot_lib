@@ -2,8 +2,8 @@ package net.typho.big_shot_lib.mixin.impl.iface;
 
 //? if >=1.21.11 {
 /*import org.joml.Vector3fc;
-import net.typho.big_shot_lib.api.math.vec.NeoVec2f;
-import net.typho.big_shot_lib.api.math.vec.NeoVec3f;
+import net.typho.big_shot_lib.api.math.NeoVec2f;
+import net.typho.big_shot_lib.api.math.NeoVec3f;
 *///? }
 
 import net.minecraft.client.renderer.block.model.BakedQuad;

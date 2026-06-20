@@ -3,7 +3,7 @@ package net.typho.big_shot_lib.mixin.impl.ext;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.typho.big_shot_lib.api.ext.DirectionExtension;
-import net.typho.big_shot_lib.api.math.vec.IVec3;
+import net.typho.big_shot_lib.api.math.IVec3;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

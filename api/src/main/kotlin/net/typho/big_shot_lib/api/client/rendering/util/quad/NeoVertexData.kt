@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.client.rendering.util.quad
 
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexConsumer
-import net.typho.big_shot_lib.api.math.vec.*
+import net.typho.big_shot_lib.api.math.*
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.buffer.packInt
 

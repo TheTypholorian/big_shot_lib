@@ -33,7 +33,7 @@ import net.typho.big_shot_lib.api.client.rendering.state.LayeringState
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
-import net.typho.big_shot_lib.api.math.vec.IVec3
+import net.typho.big_shot_lib.api.math.IVec3
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
 import net.typho.big_shot_lib.impl.client.rendering.state.NeoTextureStateShard
 import net.typho.big_shot_lib.api.util.getExtensionValue

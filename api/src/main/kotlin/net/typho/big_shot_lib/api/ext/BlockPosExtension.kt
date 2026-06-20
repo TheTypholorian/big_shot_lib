@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.ext
 
 import net.minecraft.core.BlockPos
-import net.typho.big_shot_lib.api.math.vec.IVec3
+import net.typho.big_shot_lib.api.math.IVec3
 
 interface BlockPosExtension : IVec3<Int> {
     override fun copyWith(

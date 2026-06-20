@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.math.rect
+package net.typho.big_shot_lib.api.math
 
 import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
@@ -6,11 +6,8 @@ import net.minecraft.core.Direction
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.typho.big_shot_lib.api.error.IllegalDimensionException
-import net.typho.big_shot_lib.api.math.op.DoubleOperatorSet
-import net.typho.big_shot_lib.api.math.op.FloatOperatorSet
-import net.typho.big_shot_lib.api.math.op.IntOperatorSet
-import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.math.vec.IVec2
+import net.typho.big_shot_lib.api.math.OperatorSet
+import net.typho.big_shot_lib.api.math.IVec2
 import kotlin.math.max
 import kotlin.math.min
 
