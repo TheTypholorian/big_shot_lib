@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.impl
 
 //? fabric {
 /*import net.fabricmc.api.ModInitializer
-import net.typho.big_shot_lib.api.util.NeoCommonInitializer
+import net.typho.big_shot_lib.api.NeoCommonInitializer
 
 class BigShotCommonInit : ModInitializer {
     override fun onInitialize() {

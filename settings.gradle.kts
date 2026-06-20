@@ -24,8 +24,10 @@ stonecutter {
         fun match(loader: String, vararg versions: String) = versions
             .forEach { version("mc${it.replace('.', '_')}_$loader", it).buildscript = "build.$loader.gradle.kts" }
 
-        match("fabric", "1.21.1", "1.21.11", "26.1.2")
-        match("neoforge", "1.21.1", "1.21.11", "26.1.2")
+        match("fabric", "1.21.1")
+        match("neoforge", "1.21.1")
+        //match("fabric", "1.21.1", "1.21.11", "26.1.2")
+        //match("neoforge", "1.21.1", "1.21.11", "26.1.2")
 
         vcsVersion = "mc1_21_1_fabric"
     }

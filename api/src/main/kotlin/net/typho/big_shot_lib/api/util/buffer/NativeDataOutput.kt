@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.api.util.buffer
 
-import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import java.nio.ByteOrder
 
 interface NativeDataOutput {
@@ -8,7 +7,7 @@ interface NativeDataOutput {
         @JvmStatic
         @get:JvmName("areChecksEnabled")
         @set:JvmName("setChecksEnabled")
-        var CHECKS = PlatformUtil.INSTANCE.isDevEnv()
+        var CHECKS = true//PlatformUtil.INSTANCE.isDevEnv()
 
         @JvmStatic
         fun checkIsByte(v: Int) {
@@ -43,6 +42,8 @@ interface NativeDataOutput {
     }
 
     fun skip(bytes: Long)
+
+    fun bytesLeft(): Long
 
     fun writeByte(v: Int)
 
@@ -112,9 +113,9 @@ interface NativeDataOutput {
         }
 
         if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
-            writeLong((a.toLong() shl 56) or (b.toLong() shl 48) or (c.toLong() shl 40) or (d.toLong() shl 36) (e.toLong() shl 24) or (f.toLong() shl 16) or (g.toLong() shl 8) or h.toLong())
+            writeLong((a.toLong() shl 56) or (b.toLong() shl 48) or (c.toLong() shl 40) or (d.toLong() shl 36) or (e.toLong() shl 24) or (f.toLong() shl 16) or (g.toLong() shl 8) or h.toLong())
         } else {
-            writeLong((h.toLong() shl 56) or (g.toLong() shl 48) or (f.toLong() shl 40) or (e.toLong() shl 36) (d.toLong() shl 24) or (c.toLong() shl 16) or (b.toLong() shl 8) or a.toLong())
+            writeLong((h.toLong() shl 56) or (g.toLong() shl 48) or (f.toLong() shl 40) or (e.toLong() shl 36) or (d.toLong() shl 24) or (c.toLong() shl 16) or (b.toLong() shl 8) or a.toLong())
         }
     }
 
@@ -179,12 +180,16 @@ interface NativeDataOutput {
             delegate.skip(bytes)
         }
 
+        override fun bytesLeft(): Long {
+            return delegate.bytesLeft()
+        }
+
         override fun writeByte(v: Int) {
             delegate.writeByte(v)
         }
 
         override fun writeShort(v: Int) {
-            delegate.writeByte(v)
+            delegate.writeShort(v)
         }
 
         override fun writeInt(v: Int) {

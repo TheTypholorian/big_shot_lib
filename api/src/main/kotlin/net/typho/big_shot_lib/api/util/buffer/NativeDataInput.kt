@@ -15,6 +15,8 @@ interface NativeDataInput {
 
     fun skip(bytes: Long)
 
+    fun bytesLeft(): Long
+
     fun readByte(): Byte
 
     fun readUByte(): Int
@@ -75,6 +77,10 @@ interface NativeDataInput {
     ) : NativeDataInput {
         override fun skip(bytes: Long) {
             delegate.skip(bytes)
+        }
+
+        override fun bytesLeft(): Long {
+            return delegate.bytesLeft()
         }
 
         override fun readByte(): Byte {

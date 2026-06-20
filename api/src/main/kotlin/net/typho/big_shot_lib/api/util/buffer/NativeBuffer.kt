@@ -9,6 +9,7 @@ import java.io.DataInputStream
 import java.io.DataOutput
 import java.lang.ref.Cleaner
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 abstract class NativeBuffer : Iterable<Byte> {
     abstract val address: Long
@@ -190,6 +191,7 @@ abstract class NativeBuffer : Iterable<Byte> {
     fun read(offset: Long = 0L): NativeDataInput {
         return object : NativeDataInput {
             var index = offset
+            override var byteOrder: ByteOrder = ByteOrder.nativeOrder()
 
             fun index(increment: Long): Long {
                 val i = index
@@ -199,6 +201,10 @@ abstract class NativeBuffer : Iterable<Byte> {
 
             override fun skip(bytes: Long) {
                 index += bytes
+            }
+
+            override fun bytesLeft(): Long {
+                return size - index
             }
 
             override fun readByte(): Byte {
@@ -243,6 +249,7 @@ abstract class NativeBuffer : Iterable<Byte> {
     fun write(offset: Long = 0L): NativeDataOutput {
         return object : NativeDataOutput {
             var index = offset
+            override var byteOrder: ByteOrder = ByteOrder.nativeOrder()
 
             fun index(increment: Long): Long {
                 val i = index
@@ -252,6 +259,10 @@ abstract class NativeBuffer : Iterable<Byte> {
 
             override fun skip(bytes: Long) {
                 index += bytes
+            }
+
+            override fun bytesLeft(): Long {
+                return size - index
             }
 
             override fun writeByte(v: Int) {
