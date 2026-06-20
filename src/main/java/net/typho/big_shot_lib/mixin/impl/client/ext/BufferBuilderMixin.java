@@ -28,7 +28,7 @@ public abstract class BufferBuilderMixin implements VertexConsumer, VertexConsum
         long ptr = beginElement(element);
 
         if (ptr != -1) {
-            out.accept(new NativeBuffer.Raw(ptr, element.byteSize()).write());
+            out.accept(NativeBuffer.wrap(ptr, element.byteSize()).write());
         }
 
         return this;

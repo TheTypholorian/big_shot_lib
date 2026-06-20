@@ -1,17 +1,17 @@
 package net.typho.big_shot_lib.api.client.rendering.util.buffer
 
-import net.typho.big_shot_lib.api.util.buffer.NativeDataInput
-import net.typho.big_shot_lib.api.util.buffer.NativeDataOutput
+import net.typho.big_shot_lib.api.util.buffer.MemoryReader
+import net.typho.big_shot_lib.api.util.buffer.MemoryWriter
 
 interface GpuPacking {
     fun structBuilder(): StructBuilder
 
-    fun <A> encode(codec: GpuCodec<*, A>, value: A, padding: Long, output: NativeDataOutput) {
+    fun <A> encode(codec: GpuCodec<*, A>, value: A, padding: Long, output: MemoryWriter) {
         codec.encode(value, output)
         output.skip(padding)
     }
 
-    fun <A> decode(codec: GpuCodec<*, A>, padding: Long, input: NativeDataInput): A {
+    fun <A> decode(codec: GpuCodec<*, A>, padding: Long, input: MemoryReader): A {
         val v = codec.decode(input)
         input.skip(padding)
         return v

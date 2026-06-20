@@ -1,28 +1,17 @@
 package net.typho.big_shot_lib.api.util.buffer
 
-import net.typho.big_shot_lib.api.math.*
+import net.typho.big_shot_lib.api.math.IVec4
 import net.typho.big_shot_lib.api.math.IVec2
 import net.typho.big_shot_lib.api.math.IVec3
 import org.lwjgl.system.MemoryUtil.*
-import java.io.DataInput
-import java.io.DataInputStream
-import java.io.DataOutput
-import java.lang.ref.Cleaner
+import org.lwjgl.system.NativeResource
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.function.Supplier
 
-abstract class NativeBuffer : Iterable<Byte> {
-    abstract val address: Long
-    abstract val size: Long
-    protected abstract val nio: ByteBuffer
-
-    protected fun checkIndex(index: Long, size: Long): Long {
-        if (index < 0 || index + size > this.size) {
-            throw IndexOutOfBoundsException("Invalid index $index + $size for size ${this.size}")
-        }
-
-        return address + index
-    }
+interface MemoryPointer : Iterable<Byte> {
+    val address: Long
+    val size: Long
 
     override fun iterator() = object : Iterator<Byte> {
         var index = 0L
@@ -51,42 +40,6 @@ abstract class NativeBuffer : Iterable<Byte> {
     fun getFloat(index: Long) = memGetFloat(checkIndex(index, 4))
 
     fun getDouble(index: Long) = memGetDouble(checkIndex(index, 8))
-
-    fun getByteArray(index: Long, length: Int): ByteArray {
-        val array = ByteArray(length)
-        nio.get(index.toInt(), array)
-        return array
-    }
-
-    fun getShortArray(index: Long, length: Int): ShortArray {
-        val array = ShortArray(length)
-        nio.asShortBuffer().get(index.toInt(), array)
-        return array
-    }
-
-    fun getIntArray(index: Long, length: Int): IntArray {
-        val array = IntArray(length)
-        nio.asIntBuffer().get(index.toInt(), array)
-        return array
-    }
-
-    fun getLongArray(index: Long, length: Int): LongArray {
-        val array = LongArray(length)
-        nio.asLongBuffer().get(index.toInt(), array)
-        return array
-    }
-
-    fun getFloatArray(index: Long, length: Int): FloatArray {
-        val array = FloatArray(length)
-        nio.asFloatBuffer().get(index.toInt(), array)
-        return array
-    }
-
-    fun getDoubleArray(index: Long, length: Int): DoubleArray {
-        val array = DoubleArray(length)
-        nio.asDoubleBuffer().get(index.toInt(), array)
-        return array
-    }
 
     fun getVec2d(index: Long): IVec2<Double> = IVec2(getDouble(index), getDouble(index + 8))
 
@@ -118,54 +71,6 @@ abstract class NativeBuffer : Iterable<Byte> {
 
     operator fun set(index: Long, value: Double) = memPutDouble(checkIndex(index, 8), value)
 
-    operator fun set(index: Long, value: ByteArray) {
-        nio.put(index.toInt(), value)
-    }
-
-    operator fun set(index: Long, value: ShortArray) {
-        nio.asShortBuffer().put(index.toInt(), value)
-    }
-
-    operator fun set(index: Long, value: IntArray) {
-        nio.asIntBuffer().put(index.toInt(), value)
-    }
-
-    operator fun set(index: Long, value: LongArray) {
-        nio.asLongBuffer().put(index.toInt(), value)
-    }
-
-    operator fun set(index: Long, value: FloatArray) {
-        nio.asFloatBuffer().put(index.toInt(), value)
-    }
-
-    operator fun set(index: Long, value: DoubleArray) {
-        nio.asDoubleBuffer().put(index.toInt(), value)
-    }
-
-    operator fun set(index: Long, value: ByteArray, offset: Int, length: Int) {
-        nio.put(index.toInt(), value, offset, length)
-    }
-
-    operator fun set(index: Long, value: ShortArray, offset: Int, length: Int) {
-        nio.asShortBuffer().put(index.toInt(), value, offset, length)
-    }
-
-    operator fun set(index: Long, value: IntArray, offset: Int, length: Int) {
-        nio.asIntBuffer().put(index.toInt(), value, offset, length)
-    }
-
-    operator fun set(index: Long, value: LongArray, offset: Int, length: Int) {
-        nio.asLongBuffer().put(index.toInt(), value, offset, length)
-    }
-
-    operator fun set(index: Long, value: FloatArray, offset: Int, length: Int) {
-        nio.asFloatBuffer().put(index.toInt(), value, offset, length)
-    }
-
-    operator fun set(index: Long, value: DoubleArray, offset: Int, length: Int) {
-        nio.asDoubleBuffer().put(index.toInt(), value, offset, length)
-    }
-
     operator fun <N : Number> set(index: Long, value: IVec2<N>) {
         val ptr = checkIndex(index, 2L * value.opSet.byteSize)
         value.opSet.put(ptr, value.x)
@@ -187,9 +92,10 @@ abstract class NativeBuffer : Iterable<Byte> {
         value.opSet.put(ptr + 3L * value.opSet.byteSize, value.w)
     }
 
-    @JvmOverloads
-    fun read(offset: Long = 0L): NativeDataInput {
-        return object : NativeDataInput {
+    fun read() = read(0L)
+
+    fun read(offset: Long): MemoryReader {
+        return object : MemoryReader {
             var index = offset
             override var byteOrder: ByteOrder = ByteOrder.nativeOrder()
 
@@ -245,9 +151,10 @@ abstract class NativeBuffer : Iterable<Byte> {
         }
     }
 
-    @JvmOverloads
-    fun write(offset: Long = 0L): NativeDataOutput {
-        return object : NativeDataOutput {
+    fun write() = write(0L)
+
+    fun write(offset: Long): MemoryWriter {
+        return object : MemoryWriter {
             var index = offset
             override var byteOrder: ByteOrder = ByteOrder.nativeOrder()
 
@@ -295,57 +202,44 @@ abstract class NativeBuffer : Iterable<Byte> {
         }
     }
 
-    fun asByteBuffer(): ByteBuffer = nio.duplicate()
+    interface Native : MemoryPointer, NativeResource
 
-    open class Nio(
-        override val nio: ByteBuffer
-    ) : NativeBuffer() {
+    companion object {
+        private fun MemoryPointer.checkIndex(index: Long, size: Long): Long {
+            if (index < 0 || index + size > this.size) {
+                throw IndexOutOfBoundsException("Invalid index $index + $size for size ${this.size}")
+            }
+
+            return address + index
+        }
+
+        @JvmStatic
+        fun wrap(buffer: ByteBuffer): MemoryPointer = Nio(buffer)
+
+        @JvmStatic
+        @JvmOverloads
+        fun wrap(address: Long, size: Long, id: Supplier<String> = { "Wrapped MemoryPointer with size $size" }, free: Boolean = false): Native = Raw(address, size, id, free)
+
+        @JvmStatic
+        fun alloc(size: Long, id: Supplier<String> = { "MemoryPointer with size $size" }): Native = Raw(nmemAllocChecked(size), size, id, true)
+    }
+
+    private class Nio(
+        nio: ByteBuffer
+    ) : MemoryPointer {
         override val address: Long = memAddress(nio)
         override val size: Long = (nio.limit() - nio.position()).toLong()
     }
 
-    open class Raw(
+    private class Raw(
         override val address: Long,
-        override val size: Long
-    ) : NativeBuffer(), AutoCloseable {
-        var isFreed: Boolean = false
-            protected set
-        override val nio: ByteBuffer = memByteBuffer(address, size.toInt())
-
-        constructor(size: Long) : this(nmemAllocChecked(size), size)
-
-        override fun close() {
-            if (!isFreed) {
-                isFreed = true
-                nmemFree(address)
-            }
-        }
-    }
-
-    open class GCNative : Raw {
-        companion object {
-            @JvmStatic
-            private val CLEANER = Cleaner.create()
-        }
-
-        protected val cleanup: Cleaner.Cleanable = CLEANER.register(this, createCleanup())
-
-        constructor(address: Long, size: Long) : super(address, size)
-
-        constructor(size: Long) : super(size)
-
-        override fun close() {
-            if (!isFreed) {
-                isFreed = true
-                cleanup.clean()
-            }
-        }
-
-        protected open fun createCleanup(): Runnable {
-            val ptr = address
-            return Runnable {
-                nmemFree(ptr)
-            }
+        override val size: Long,
+        id: Supplier<String>,
+        free: Boolean
+    ) : AntiLeakResource(id, free), Native {
+        override fun createCleanup(): Runnable {
+            val address = address
+            return { nmemFree(address) }
         }
     }
 }

@@ -3,8 +3,8 @@ package net.typho.big_shot_lib.api.client.rendering.util.buffer
 import net.typho.big_shot_lib.api.math.IVec2
 import net.typho.big_shot_lib.api.math.IVec3
 import net.typho.big_shot_lib.api.math.IVec4
-import net.typho.big_shot_lib.api.util.buffer.NativeDataInput
-import net.typho.big_shot_lib.api.util.buffer.NativeDataOutput
+import net.typho.big_shot_lib.api.util.buffer.MemoryReader
+import net.typho.big_shot_lib.api.util.buffer.MemoryWriter
 import java.util.function.BiConsumer
 import java.util.function.Function
 
@@ -28,14 +28,14 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
 
         override fun encode(
             value: List<A>,
-            output: NativeDataOutput
+            output: MemoryWriter
         ) {
             for (element in value) {
                 encode(element, output)
             }
         }
 
-        override fun decode(input: NativeDataInput): List<A> {
+        override fun decode(input: MemoryReader): List<A> {
             val size = (input.bytesLeft() / size).toInt()
             val list = ArrayList<A>(size)
             repeat(size) { list.add(this@GpuCodec.decode(input)) }
@@ -45,18 +45,18 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
 
     open class Impl<A>(
         @JvmField
-        val encode: BiConsumer<NativeDataOutput, A>,
+        val encode: BiConsumer<MemoryWriter, A>,
         @JvmField
-        val decode: Function<NativeDataInput, A>,
+        val decode: Function<MemoryReader, A>,
         override val size: Long,
         override val alignment: Long = size,
         override val packing: GpuPacking? = null,
     ) : GpuCodec<GpuPacking, A> {
-        override fun encode(value: A, output: NativeDataOutput) {
+        override fun encode(value: A, output: MemoryWriter) {
             encode.accept(output, value)
         }
 
-        override fun decode(input: NativeDataInput): A {
+        override fun decode(input: MemoryReader): A {
             return decode.apply(input)
         }
     }
@@ -202,11 +202,11 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip0 = builder[0]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input)
                 )
@@ -235,12 +235,12 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip1 = builder[1]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input)
@@ -274,13 +274,13 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip2 = builder[2]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),
@@ -319,14 +319,14 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip3 = builder[3]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
                 packing.encode(codec3, getter3(value), skip3, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),
@@ -370,7 +370,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip4 = builder[4]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
@@ -378,7 +378,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 packing.encode(codec4, getter4(value), skip4, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),
@@ -427,7 +427,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip5 = builder[5]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
@@ -436,7 +436,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 packing.encode(codec5, getter5(value), skip5, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),
@@ -490,7 +490,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip6 = builder[6]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
@@ -500,7 +500,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 packing.encode(codec6, getter6(value), skip6, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),
@@ -559,7 +559,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip7 = builder[7]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
@@ -570,7 +570,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 packing.encode(codec7, getter7(value), skip7, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),
@@ -634,7 +634,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip8 = builder[8]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
@@ -646,7 +646,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 packing.encode(codec8, getter8(value), skip8, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),
@@ -715,7 +715,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip9 = builder[9]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
@@ -728,7 +728,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 packing.encode(codec9, getter9(value), skip9, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),
@@ -802,7 +802,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip10 = builder[10]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
@@ -816,7 +816,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 packing.encode(codec10, getter10(value), skip10, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),
@@ -895,7 +895,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 skip11 = builder[11]
             }
 
-            override fun encode(value: A, output: NativeDataOutput) {
+            override fun encode(value: A, output: MemoryWriter) {
                 packing.encode(codec0, getter0(value), skip0, output)
                 packing.encode(codec1, getter1(value), skip1, output)
                 packing.encode(codec2, getter2(value), skip2, output)
@@ -910,7 +910,7 @@ interface GpuCodec<P : GpuPacking, A> : DynamicGpuCodec<P, A>, GpuEncoder<P, A>,
                 packing.encode(codec11, getter11(value), skip11, output)
             }
 
-            override fun decode(input: NativeDataInput): A {
+            override fun decode(input: MemoryReader): A {
                 return constructor(
                     packing.decode(codec0, skip0, input),
                     packing.decode(codec1, skip1, input),

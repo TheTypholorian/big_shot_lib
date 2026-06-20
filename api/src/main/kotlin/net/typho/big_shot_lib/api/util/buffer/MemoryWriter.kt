@@ -1,13 +1,14 @@
 package net.typho.big_shot_lib.api.util.buffer
 
+import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import java.nio.ByteOrder
 
-interface NativeDataOutput {
+interface MemoryWriter {
     companion object {
         @JvmStatic
         @get:JvmName("areChecksEnabled")
         @set:JvmName("setChecksEnabled")
-        var CHECKS = true//PlatformUtil.INSTANCE.isDevEnv()
+        var CHECKS = PlatformUtil.INSTANCE.isDevEnv()
 
         @JvmStatic
         fun checkIsByte(v: Int) {
@@ -37,7 +38,7 @@ interface NativeDataOutput {
             throw UnsupportedOperationException("Set byte order of NativeDataOutput $this")
         }
 
-    fun withByteOrder(order: ByteOrder): NativeDataOutput = object : Delegate(this) {
+    fun withByteOrder(order: ByteOrder): MemoryWriter = object : Delegate(this) {
         override var byteOrder: ByteOrder = order
     }
 
@@ -174,8 +175,8 @@ interface NativeDataOutput {
 
     open class Delegate(
         @JvmField
-        protected val delegate: NativeDataOutput
-    ) : NativeDataOutput {
+        protected val delegate: MemoryWriter
+    ) : MemoryWriter {
         override fun skip(bytes: Long) {
             delegate.skip(bytes)
         }

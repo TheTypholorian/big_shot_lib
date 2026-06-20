@@ -2,14 +2,14 @@ package net.typho.big_shot_lib.api.util.buffer
 
 import java.nio.ByteOrder
 
-interface NativeDataInput {
+interface MemoryReader {
     var byteOrder: ByteOrder
         get() = ByteOrder.nativeOrder()
         set(value) {
             throw UnsupportedOperationException("Set byte order of NativeDataInput $this")
         }
 
-    fun withByteOrder(order: ByteOrder): NativeDataInput = object : Delegate(this) {
+    fun withByteOrder(order: ByteOrder): MemoryReader = object : Delegate(this) {
         override var byteOrder: ByteOrder = order
     }
 
@@ -71,7 +71,7 @@ interface NativeDataInput {
         }
     }
 
-    fun readTo(output: NativeDataOutput, bytes: Int) {
+    fun readTo(output: MemoryWriter, bytes: Int) {
         repeat(bytes ushr 3) {
             output.writeLong(readLong())
         }
@@ -91,8 +91,8 @@ interface NativeDataInput {
 
     open class Delegate(
         @JvmField
-        protected val delegate: NativeDataInput
-    ) : NativeDataInput {
+        protected val delegate: MemoryReader
+    ) : MemoryReader {
         override fun skip(bytes: Long) {
             delegate.skip(bytes)
         }

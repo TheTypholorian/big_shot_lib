@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.api.client.rendering.util.buffer
 
-import net.typho.big_shot_lib.api.util.buffer.NativeBuffer
-import net.typho.big_shot_lib.api.util.buffer.NativeDataOutput
+import net.typho.big_shot_lib.api.util.buffer.MemoryPointer
+import net.typho.big_shot_lib.api.util.buffer.MemoryWriter
 
 interface DynamicGpuEncoder<P : GpuPacking, A> {
     val numPaddingBytes: Long
@@ -10,10 +10,11 @@ interface DynamicGpuEncoder<P : GpuPacking, A> {
 
     fun alignmentOf(value: A): Long
 
-    fun encode(value: A, output: NativeDataOutput)
+    fun encode(value: A, output: MemoryWriter)
 
-    fun encode(value: A): NativeBuffer.Raw {
-        val buffer = NativeBuffer.Raw(sizeOf(value))
+    fun encode(value: A): MemoryPointer.Native {
+        val parent = toString()
+        val buffer = MemoryPointer.alloc(sizeOf(value)) { "Encoded GPU Buffer from $parent" }
         encode(value, buffer.write())
         return buffer
     }

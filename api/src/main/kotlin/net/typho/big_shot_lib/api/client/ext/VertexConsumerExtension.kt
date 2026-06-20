@@ -10,7 +10,7 @@ import net.typho.big_shot_lib.api.math.IRect3
 import net.typho.big_shot_lib.api.math.IVec2
 import net.typho.big_shot_lib.api.math.IVec3
 import net.typho.big_shot_lib.api.util.NeoColor
-import net.typho.big_shot_lib.api.util.buffer.NativeDataOutput
+import net.typho.big_shot_lib.api.util.buffer.MemoryWriter
 import org.joml.Matrix4fc
 import org.joml.Vector3f
 import java.util.function.Consumer
@@ -147,7 +147,7 @@ interface VertexConsumerExtension : VertexBufferWriter {
 
     fun customElementsSupported() = false
 
-    fun custom(element: VertexFormatElement, out: Consumer<NativeDataOutput>): VertexConsumer {
+    fun custom(element: VertexFormatElement, out: Consumer<MemoryWriter>): VertexConsumer {
         return self()
     }
 
