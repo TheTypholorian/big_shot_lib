@@ -143,6 +143,10 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "fromNamespaceAndPath", "of")
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "withDefaultNamespace", "minecraft")
 
+            renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV0", "TEXTURE_UV")
+            renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV1", "OVERLAY_UV")
+            renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV2", "LIGHT_UV")
+
             renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
             renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
             renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")

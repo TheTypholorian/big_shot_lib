@@ -233,6 +233,10 @@ object InternalClientUtilImpl : InternalClientUtil {
         outType: GlVertexElementReadType,
         count: Int
     ): VertexFormatElement {
+        if (!outType.supports(inType)) {
+            throw IllegalArgumentException("GlDataType.$inType is not supported by GlVertexElementReadType.$outType")
+        }
+
         val element = VertexFormatElement.register(
             VertexFormatElement.BY_ID.size,
             index,

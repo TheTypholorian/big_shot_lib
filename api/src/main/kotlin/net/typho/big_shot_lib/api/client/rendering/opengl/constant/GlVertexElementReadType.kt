@@ -13,6 +13,10 @@ enum class GlVertexElementReadType {
         ) {
             GlStateManager._vertexAttribIPointer(index, count, type, stride, offset)
         }
+
+        override fun supports(inType: GlDataType): Boolean {
+            return inType != GlDataType.FLOAT
+        }
     },
     INT_TO_FLOAT {
         override fun setupBufferState(
@@ -23,6 +27,10 @@ enum class GlVertexElementReadType {
             index: Int
         ) {
             GlStateManager._vertexAttribPointer(index, count, type, true, stride, offset)
+        }
+
+        override fun supports(inType: GlDataType): Boolean {
+            return inType != GlDataType.FLOAT
         }
     },
     FLOAT_TO_FLOAT {
@@ -35,6 +43,10 @@ enum class GlVertexElementReadType {
         ) {
             GlStateManager._vertexAttribPointer(index, count, type, false, stride, offset)
         }
+
+        override fun supports(inType: GlDataType): Boolean {
+            return inType == GlDataType.FLOAT
+        }
     };
 
     abstract fun setupBufferState(
@@ -44,4 +56,6 @@ enum class GlVertexElementReadType {
         offset: Long,
         index: Int
     )
+
+    abstract fun supports(inType: GlDataType): Boolean
 }
