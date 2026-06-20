@@ -172,7 +172,7 @@ interface NeoGlStateManager {
                 MemoryStack.stackPush().use { stack ->
                     var box = stack.mallocInt(4)
                     glGetIntegerv(GL_SCISSOR_BOX, box)
-                    return@Impl NeoRect2i(
+                    return@Impl IRect2(
                         box.get(0),
                         box.get(1),
                         box.get(0) + box.get(2),
@@ -215,7 +215,7 @@ interface NeoGlStateManager {
                 MemoryStack.stackPush().use { stack ->
                     var box = stack.mallocInt(4)
                     glGetIntegerv(GL_VIEWPORT, box)
-                    return@Impl NeoRect2i(
+                    return@Impl IRect2(
                         box.get(0),
                         box.get(1),
                         box.get(0) + box.get(2),

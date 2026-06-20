@@ -17,7 +17,6 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.util.PolygonOffset
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.StencilOp
 import net.typho.big_shot_lib.api.math.rect.IRect2
-import net.typho.big_shot_lib.api.math.rect.NeoRect2i
 import net.typho.big_shot_lib.api.util.KeyedDelegate
 import net.typho.big_shot_lib.api.util.NeoColor
 import net.typho.big_shot_lib.api.util.mutableEnumArrayMapOf
@@ -114,7 +113,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         get() = currentScissor ?: MemoryStack.stackPush().use { stack ->
             val box = stack.mallocInt(4)
             glGetIntegerv(GL_SCISSOR_BOX, box)
-            return NeoRect2i(
+            return IRect2(
                 box.get(0),
                 box.get(1),
                 box.get(0) + box.get(2),
@@ -140,7 +139,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
         )
         set(value) = GlStateManager._stencilOp(value.stencilFail.glId, value.depthFail.glId, value.depthPass.glId)
     override var viewport: IRect2<Int>
-        get() = NeoRect2i(
+        get() = IRect2(
             GlStateManager.Viewport.x(),
             GlStateManager.Viewport.y(),
             GlStateManager.Viewport.x() + GlStateManager.Viewport.width(),
@@ -318,7 +317,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
             MemoryStack.stackPush().use { stack ->
                 val box = stack.mallocInt(4)
                 glGetIntegerv(GL_SCISSOR_BOX, box)
-                return@Impl NeoRect2i(
+                return@Impl IRect2(
                     box.get(0),
                     box.get(1),
                     box.get(0) + box.get(2),
@@ -361,7 +360,7 @@ object NeoGlStateManagerImpl : NeoGlStateManager {
             MemoryStack.stackPush().use { stack ->
                 val box = stack.mallocInt(4)
                 glGetIntegerv(GL_VIEWPORT, box)
-                return@Impl NeoRect2i(
+                return@Impl IRect2(
                     box.get(0),
                     box.get(1),
                     box.get(0) + box.get(2),

@@ -1,15 +1,17 @@
 package net.typho.big_shot_lib.api.math.vec
 
 import com.mojang.serialization.Codec
+import io.netty.buffer.ByteBuf
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Vec3i
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
 import net.minecraft.world.phys.Vec3
 import net.typho.big_shot_lib.api.math.op.DoubleOperatorSet
 import net.typho.big_shot_lib.api.math.op.FloatOperatorSet
 import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import org.joml.Vector3d
 import org.joml.Vector3dc
 import org.joml.Vector3f
@@ -128,6 +130,23 @@ interface IVec3<N : Number> {
 
     fun maxComponent(): N {
         return opSet.max(x, opSet.max(y, z))
+    }
+
+    operator fun get(index: Int): N {
+        return when (index) {
+            0 -> x
+            1 -> y
+            2 -> z
+            else -> throw IndexOutOfBoundsException(index)
+        }
+    }
+
+    operator fun get(axis: Direction.Axis): N {
+        return when (axis) {
+            Direction.Axis.X -> x
+            Direction.Axis.Y -> y
+            Direction.Axis.Z -> z
+        }
     }
 
     fun anyGreaterThan(x: N, y: N, z: N): Boolean {
@@ -250,13 +269,6 @@ interface IVec3<N : Number> {
 
     operator fun dec() = minus(opSet.one, opSet.one, opSet.one)
 
-    operator fun get(index: Int) = when (index) {
-        0 -> x
-        1 -> y
-        2 -> z
-        else -> throw IndexOutOfBoundsException(index)
-    }
-
     fun equals(x: N, y: N, z: N): Boolean {
         return this.x == x && this.y == y && this.z == z
     }
@@ -279,7 +291,7 @@ interface IVec3<N : Number> {
 
     fun toJVec3d() = Vector3d(x.toDouble(), y.toDouble(), z.toDouble())
 
-    private data class IntImpl(
+    private class IntImpl(
         override val x: Int,
         override val y: Int,
         override val z: Int
@@ -293,7 +305,7 @@ interface IVec3<N : Number> {
         override val xz: IVec2<Int>
             get() = IVec2(x, z)
 
-        override fun copyWith(x: Int, y: Int, z: Int) = IntImpl(x, y, z)
+        override fun copyWith(x: Int, y: Int, z: Int) = IVec3(x, y, z)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -318,7 +330,7 @@ interface IVec3<N : Number> {
         }
     }
 
-    private data class FloatImpl(
+    private class FloatImpl(
         override val x: Float,
         override val y: Float,
         override val z: Float
@@ -332,7 +344,7 @@ interface IVec3<N : Number> {
         override val xz: IVec2<Float>
             get() = IVec2(x, z)
 
-        override fun copyWith(x: Float, y: Float, z: Float) = FloatImpl(x, y, z)
+        override fun copyWith(x: Float, y: Float, z: Float) = IVec3(x, y, z)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -357,7 +369,7 @@ interface IVec3<N : Number> {
         }
     }
 
-    private data class DoubleImpl(
+    private class DoubleImpl(
         override val x: Double,
         override val y: Double,
         override val z: Double
@@ -371,7 +383,7 @@ interface IVec3<N : Number> {
         override val xz: IVec2<Double>
             get() = IVec2(x, z)
 
-        override fun copyWith(x: Double, y: Double, z: Double) = DoubleImpl(x, y, z)
+        override fun copyWith(x: Double, y: Double, z: Double) = IVec3(x, y, z)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -398,11 +410,42 @@ interface IVec3<N : Number> {
 
     companion object {
         @JvmField
-        val INT_CODEC: Codec<IVec3<Int>> = NeoCodecs.createList(3, Codec.INT, { IVec3(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
+        val INT_CODEC: Codec<IVec3<Int>> = Codec.list(Codec.INT, 3, 3).xmap(
+            { IVec3(it[0], it[1], it[2]) },
+            { listOf(it.x, it.y, it.z) }
+        )
         @JvmField
-        val FLOAT_CODEC: Codec<IVec3<Float>> = NeoCodecs.createList(3, Codec.FLOAT, { IVec3(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
+        val FLOAT_CODEC: Codec<IVec3<Float>> = Codec.list(Codec.FLOAT, 3, 3).xmap(
+            { IVec3(it[0], it[1], it[2]) },
+            { listOf(it.x, it.y, it.z) }
+        )
         @JvmField
-        val DOUBLE_CODEC: Codec<IVec3<Double>> = NeoCodecs.createList(3, Codec.DOUBLE, { IVec3(it[0], it[1], it[2]) }, { listOf(it.x, it.y, it.z) })
+        val DOUBLE_CODEC: Codec<IVec3<Double>> = Codec.list(Codec.DOUBLE, 3, 3).xmap(
+            { IVec3(it[0], it[1], it[2]) },
+            { listOf(it.x, it.y, it.z) }
+        )
+
+        @JvmField
+        val INT_STREAM_CODEC: StreamCodec<ByteBuf, IVec3<Int>> = StreamCodec.composite(
+            ByteBufCodecs.INT, IVec3<Int>::x,
+            ByteBufCodecs.INT, IVec3<Int>::y,
+            ByteBufCodecs.INT, IVec3<Int>::z,
+            ::invoke
+        )
+        @JvmField
+        val FLOAT_STREAM_CODEC: StreamCodec<ByteBuf, IVec3<Float>> = StreamCodec.composite(
+            ByteBufCodecs.FLOAT, IVec3<Float>::x,
+            ByteBufCodecs.FLOAT, IVec3<Float>::y,
+            ByteBufCodecs.FLOAT, IVec3<Float>::z,
+            ::invoke
+        )
+        @JvmField
+        val DOUBLE_STREAM_CODEC: StreamCodec<ByteBuf, IVec3<Double>> = StreamCodec.composite(
+            ByteBufCodecs.DOUBLE, IVec3<Double>::x,
+            ByteBufCodecs.DOUBLE, IVec3<Double>::y,
+            ByteBufCodecs.DOUBLE, IVec3<Double>::z,
+            ::invoke
+        )
 
         @JvmStatic
         @JvmName("of")

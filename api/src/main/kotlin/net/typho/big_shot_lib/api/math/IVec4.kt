@@ -1,11 +1,13 @@
 package net.typho.big_shot_lib.api.math.vec
 
 import com.mojang.serialization.Codec
+import io.netty.buffer.ByteBuf
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
 import net.typho.big_shot_lib.api.math.op.DoubleOperatorSet
 import net.typho.big_shot_lib.api.math.op.FloatOperatorSet
 import net.typho.big_shot_lib.api.math.op.IntOperatorSet
 import net.typho.big_shot_lib.api.math.op.OperatorSet
-import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 import org.joml.Vector4d
 import org.joml.Vector4dc
 import org.joml.Vector4f
@@ -118,6 +120,16 @@ interface IVec4<N : Number> {
 
     fun maxComponent(): N {
         return opSet.max(x, opSet.max(y, opSet.max(z, w)))
+    }
+
+    operator fun get(index: Int): N {
+        return when (index) {
+            0 -> x
+            1 -> y
+            2 -> z
+            3 -> w
+            else -> throw IndexOutOfBoundsException(index)
+        }
     }
 
     fun anyGreaterThan(x: N, y: N, z: N, w: N): Boolean {
@@ -236,14 +248,6 @@ interface IVec4<N : Number> {
 
     operator fun dec() = minus(opSet.one, opSet.one, opSet.one, opSet.one)
 
-    operator fun get(index: Int) = when (index) {
-        0 -> x
-        1 -> y
-        2 -> z
-        4 -> w
-        else -> throw IndexOutOfBoundsException(index)
-    }
-
     fun equals(x: N, y: N, z: N, w: N): Boolean {
         return this.x == x && this.y == y && this.z == z && this.w == w
     }
@@ -260,7 +264,7 @@ interface IVec4<N : Number> {
 
     fun toJVec4d() = Vector4d(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
 
-    private data class IntImpl(
+    private class IntImpl(
         override val x: Int,
         override val y: Int,
         override val z: Int,
@@ -312,7 +316,7 @@ interface IVec4<N : Number> {
         }
     }
 
-    private data class FloatImpl(
+    private class FloatImpl(
         override val x: Float,
         override val y: Float,
         override val z: Float,
@@ -364,7 +368,7 @@ interface IVec4<N : Number> {
         }
     }
 
-    private data class DoubleImpl(
+    private class DoubleImpl(
         override val x: Double,
         override val y: Double,
         override val z: Double,
@@ -418,11 +422,42 @@ interface IVec4<N : Number> {
 
     companion object {
         @JvmField
-        val INT_CODEC: Codec<IVec4<Int>> = NeoCodecs.createList(4, Codec.INT, { IVec4(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
+        val INT_CODEC: Codec<IVec4<Int>> = Codec.list(Codec.INT, 4, 4).xmap(
+            { IVec4(it[0], it[1], it[2], it[3]) },
+            { listOf(it.x, it.y, it.z, it.w) })
         @JvmField
-        val FLOAT_CODEC: Codec<IVec4<Float>> = NeoCodecs.createList(4, Codec.FLOAT, { IVec4(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
+        val FLOAT_CODEC: Codec<IVec4<Float>> = Codec.list(Codec.FLOAT, 4, 4).xmap(
+            { IVec4(it[0], it[1], it[2], it[3]) },
+            { listOf(it.x, it.y, it.z, it.w) })
         @JvmField
-        val DOUBLE_CODEC: Codec<IVec4<Double>> = NeoCodecs.createList(4, Codec.DOUBLE, { IVec4(it[0], it[1], it[2], it[3]) }, { listOf(it.x, it.y, it.z, it.w) })
+        val DOUBLE_CODEC: Codec<IVec4<Double>> = Codec.list(Codec.DOUBLE, 4, 4).xmap(
+            { IVec4(it[0], it[1], it[2], it[3]) },
+            { listOf(it.x, it.y, it.z, it.w) })
+
+        @JvmField
+        val INT_STREAM_CODEC: StreamCodec<ByteBuf, IVec4<Int>> = StreamCodec.composite(
+            ByteBufCodecs.INT, IVec4<Int>::x,
+            ByteBufCodecs.INT, IVec4<Int>::y,
+            ByteBufCodecs.INT, IVec4<Int>::z,
+            ByteBufCodecs.INT, IVec4<Int>::w,
+            ::invoke
+        )
+        @JvmField
+        val FLOAT_STREAM_CODEC: StreamCodec<ByteBuf, IVec4<Float>> = StreamCodec.composite(
+            ByteBufCodecs.FLOAT, IVec4<Float>::x,
+            ByteBufCodecs.FLOAT, IVec4<Float>::y,
+            ByteBufCodecs.FLOAT, IVec4<Float>::z,
+            ByteBufCodecs.FLOAT, IVec4<Float>::w,
+            ::invoke
+        )
+        @JvmField
+        val DOUBLE_STREAM_CODEC: StreamCodec<ByteBuf, IVec4<Double>> = StreamCodec.composite(
+            ByteBufCodecs.DOUBLE, IVec4<Double>::x,
+            ByteBufCodecs.DOUBLE, IVec4<Double>::y,
+            ByteBufCodecs.DOUBLE, IVec4<Double>::z,
+            ByteBufCodecs.DOUBLE, IVec4<Double>::w,
+            ::invoke
+        )
 
         @JvmStatic
         @JvmName("of")
