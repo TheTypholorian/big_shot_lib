@@ -250,24 +250,6 @@ object InternalClientUtilImpl : InternalClientUtil {
         )
     }
 
-    @OptIn(ExperimentalUnsignedTypes::class)
-    override fun createBakedQuad(
-        vertices: Array<NeoVertexData>,
-        tintIndex: Int,
-        direction: Direction,
-        sprite: TextureAtlasSprite,
-        shade: Boolean
-    ): BakedQuad {
-        val data = IntArray(32)
-
-        vertices[0].packToInts(data, 0)
-        vertices[1].packToInts(data, 8)
-        vertices[2].packToInts(data, 16)
-        vertices[3].packToInts(data, 24)
-
-        return BakedQuad(data, tintIndex, direction, sprite, shade)
-    }
-
     override fun createRenderTarget(width: Int, height: Int, useDepth: Boolean, name: () -> String): RenderTarget {
         return TextureTarget(width, height, useDepth, Minecraft.ON_OSX)
     }

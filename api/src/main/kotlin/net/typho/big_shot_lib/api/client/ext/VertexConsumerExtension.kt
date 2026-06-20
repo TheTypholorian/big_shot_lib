@@ -151,6 +151,8 @@ interface VertexConsumerExtension : VertexBufferWriter {
         return self()
     }
 
+    fun setLineWidth(width: Float): VertexConsumer
+
     fun cube(
         box: IRect3<*>,
     ): VertexConsumer {

@@ -1,8 +1,10 @@
 package net.typho.big_shot_lib.api.client.rendering.util.quad
 
 import com.mojang.blaze3d.vertex.VertexConsumer
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.caffeinemc.mods.sodium.api.util.ColorARGB
 import net.typho.big_shot_lib.api.client.rendering.util.PackedNormal
+import org.lwjgl.system.MemoryStack
 
 open class PrimitiveQuad(
     @JvmField
@@ -58,7 +60,7 @@ open class PrimitiveQuad(
         val offsetY: Float = 0f,
         @JvmField
         val offsetZ: Float = 0f,
-    ) : VertexConsumer {
+    ) : SimpleVertexConsumer {
         private var v0 = PrimitiveVertex()
         private var v1 = PrimitiveVertex()
         private var v2 = PrimitiveVertex()
