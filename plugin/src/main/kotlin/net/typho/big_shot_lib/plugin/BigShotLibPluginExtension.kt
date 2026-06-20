@@ -137,35 +137,42 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 renameClass("net/minecraft/client/resources/model/geometry/BakedQuad", "net/minecraft/client/renderer/block/model/BakedQuad")
             }
 
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex")
+
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "createUntrusted", "untrusted")
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "fromNamespaceAndPath", "of")
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "withDefaultNamespace", "minecraft")
 
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setColor", "(IIII)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setUv", "(FF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setUv1", "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setUv2", "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setNormal", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setColor", "(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setColor", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setWhiteAlpha", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setLight", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setOverlay", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", "(Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "addVertex", "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "setNormal", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
+
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Matrix4fc;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
+
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(IIII)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setColor", "color")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setColor", "color")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setColor", "color")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setWhiteAlpha", "colorRGB")
+
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setUv", "textureUV")
+
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setUv1", "overlayUV")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setOverlay", "overlayUV")
+
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setUv2", "lightUV")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setLight", "lightUV")
+
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setNormal", "normal")
+            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setNormal", "normal")
 
             injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType", "net/minecraft/client/renderer/RenderType")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoVertexConsumer", "com/mojang/blaze3d/vertex/VertexConsumer")
+            injectInterface("net/typho/big_shot_lib/api/client/ext/VertexConsumerExtension", "com/mojang/blaze3d/vertex/VertexConsumer")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlUniform", "com/mojang/blaze3d/shaders/AbstractUniform")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoVertexFormat", "com/mojang/blaze3d/vertex/VertexFormat")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoGuiGraphics", "net/minecraft/client/gui/GuiGraphics")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/NeoRenderTarget", "com/mojang/blaze3d/pipeline/RenderTarget")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlTexture2D", "net/minecraft/client/renderer/texture/AbstractTexture")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/quad/NeoBakedQuad", "net/minecraft/client/renderer/block/model/BakedQuad")
             injectInterface("net/typho/big_shot_lib/api/ext/DirectionExtension", "net/minecraft/core/Direction")
             injectInterface("net/typho/big_shot_lib/api/ext/Vec3iExtension", "net/minecraft/core/Vec3i")
             injectInterface("net/typho/big_shot_lib/api/ext/BlockPosExtension", "net/minecraft/core/BlockPos")
@@ -210,7 +217,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             }, to)
         }
 
-        fun markAsDeprecated(cls: String, name: String, desc: String) {
+        fun markAsDeprecated(cls: String, desc: String, name: String) {
             markAsDeprecated.add(objects.newInstance(MethodDesc::class.java).also {
                 it.cls.set(cls)
                 it.name.set(name)

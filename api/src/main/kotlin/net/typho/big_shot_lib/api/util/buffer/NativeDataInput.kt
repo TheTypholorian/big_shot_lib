@@ -71,6 +71,24 @@ interface NativeDataInput {
         }
     }
 
+    fun readTo(output: NativeDataOutput, bytes: Int) {
+        repeat(bytes ushr 3) {
+            output.writeLong(readLong())
+        }
+
+        if (bytes and 0b100 != 0) {
+            output.writeInt(readInt())
+        }
+
+        if (bytes and 0b10 != 0) {
+            output.writeShort(readUShort())
+        }
+
+        if (bytes and 0b1 != 0) {
+            output.writeByte(readUByte())
+        }
+    }
+
     open class Delegate(
         @JvmField
         protected val delegate: NativeDataInput

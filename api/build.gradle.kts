@@ -107,4 +107,5 @@ repositories {
 }
 
 dependencies {
+    modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
 }

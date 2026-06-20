@@ -12,8 +12,8 @@ interface DynamicGpuEncoder<P : GpuPacking, A> {
 
     fun encode(value: A, output: NativeDataOutput)
 
-    fun encode(value: A): NativeBuffer.Native {
-        val buffer = NativeBuffer.Native(sizeOf(value))
+    fun encode(value: A): NativeBuffer.Raw {
+        val buffer = NativeBuffer.Raw(sizeOf(value))
         encode(value, buffer.write())
         return buffer
     }

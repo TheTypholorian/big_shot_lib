@@ -213,6 +213,7 @@ repositories {
 dependencies {
     modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
     modstitchModImplementation("maven.modrinth:fabric-language-kotlin:1.13.12+kotlin.2.4.0")
+    modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
 }
 
 val additionalVersions: List<String> = (findProperty("publish.additionalVersions") as? String)

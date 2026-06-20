@@ -18,6 +18,9 @@ import org.joml.Vector3f
 import org.joml.Vector3fc
 import org.joml.Vector3i
 import org.joml.Vector3ic
+import org.joml.Vector4d
+import org.joml.Vector4f
+import org.joml.Vector4i
 
 interface IVec3<N : Number> {
     val opSet: OperatorSet<N>
@@ -290,6 +293,12 @@ interface IVec3<N : Number> {
     fun toJVec3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
     fun toJVec3d() = Vector3d(x.toDouble(), y.toDouble(), z.toDouble())
+
+    fun toJVec4i(w: Int) = Vector4i(x.toInt(), y.toInt(), z.toInt(), w)
+
+    fun toJVec4f(w: Float) = Vector4f(x.toFloat(), y.toFloat(), z.toFloat(), w)
+
+    fun toJVec4d(w: Double) = Vector4d(x.toDouble(), y.toDouble(), z.toDouble(), w)
 
     private class IntImpl(
         override val x: Int,

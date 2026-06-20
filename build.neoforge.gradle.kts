@@ -203,6 +203,7 @@ repositories {
 
 dependencies {
     modstitchModImplementation("thedarkcolour:kotlinforforge-neoforge:5.9.0")
+    modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
 }
 
 tasks {

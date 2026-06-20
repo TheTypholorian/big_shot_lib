@@ -304,7 +304,7 @@ abstract class NativeBuffer : Iterable<Byte> {
         override val size: Long = (nio.limit() - nio.position()).toLong()
     }
 
-    open class Native(
+    open class Raw(
         override val address: Long,
         override val size: Long
     ) : NativeBuffer(), AutoCloseable {
@@ -322,7 +322,7 @@ abstract class NativeBuffer : Iterable<Byte> {
         }
     }
 
-    open class GCNative : Native {
+    open class GCNative : Raw {
         companion object {
             @JvmStatic
             private val CLEANER = Cleaner.create()

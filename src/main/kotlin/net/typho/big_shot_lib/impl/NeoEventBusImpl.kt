@@ -16,7 +16,7 @@ import net.typho.big_shot_lib.api.event.RegistryBuilder
 import java.util.function.Consumer
 
 //? fabric {
-/*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
@@ -139,8 +139,8 @@ object NeoEventBusImpl : NeoEventBus {
         TODO("Not yet implemented")
     }
 }
-*///? } neoforge {
-import net.neoforged.bus.api.IEventBus
+//? } neoforge {
+/*import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.event.AddReloadListenerEvent
 import net.neoforged.neoforge.event.level.ChunkEvent
 
@@ -416,4 +416,4 @@ class NeoEventBusImpl(
     }
      */
 }
-//? }
+*///? }

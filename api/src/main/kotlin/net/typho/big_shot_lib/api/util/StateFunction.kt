@@ -1,0 +1,98 @@
+package net.typho.big_shot_lib.api.util
+
+import com.mojang.datafixers.util.Either
+import com.mojang.datafixers.util.Unit
+import com.mojang.serialization.*
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.StateDefinition
+import net.minecraft.world.level.block.state.properties.Property
+import java.util.function.Function
+import java.util.stream.Stream
+
+data class StateFunction<T>(
+    @JvmField
+    val entries: List<Entry<T>>,
+    @JvmField
+    val default: T
+) {
+    constructor(default: T, vararg entries: Entry<T>) : this(entries.toList(), default)
+
+    operator fun invoke(state: BlockState): T {
+        for (entry in entries) {
+            if (entry.test(state)) {
+                return entry.value
+            }
+        }
+
+        return default
+    }
+
+    data class Entry<T>(
+        @JvmField
+        val map: Map<Property<*>, Comparable<*>>,
+        @JvmField
+        val value: T
+    ) {
+        constructor(property: Property<*>, comparable: Comparable<*>, value: T) : this(mapOf(Pair(property, comparable)), value)
+
+        fun test(state: BlockState): Boolean {
+            for (entry in map.entries) {
+                if (state.getValue(entry.key) != entry.value) {
+                    return false
+                }
+            }
+
+            return true
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun <T> codec(inner: Codec<T>, stateDefinition: StateDefinition<*, *>): Codec<StateFunction<T>> {
+            val entryCodec: MapCodec<Entry<T>> = RecordCodecBuilder.mapCodec {
+                val keyCodec = Codec.STRING.flatXmap(
+                    { name -> DataResult.success(stateDefinition.getProperty(name) ?: return@flatXmap DataResult.error { "Couldn't find property $name in ${stateDefinition.owner}" }) },
+                    { property -> DataResult.success(property.name) }
+                )
+
+                it.group(
+                    Codec.dispatchedMap(keyCodec) { it.codec() }
+                        .fieldOf("matches")
+                        .forGetter { entry -> entry.map },
+                    inner.fieldOf("value")
+                        .forGetter { entry -> entry.value }
+                ).apply(it, ::Entry)
+            }
+
+            return Codec.either(
+                inner,
+                RecordCodecBuilder.mapCodec {
+                    it.group(
+                        entryCodec.codec()
+                            .listOf()
+                            .fieldOf("entries")
+                            .forGetter { function: StateFunction<T> -> function.entries },
+                        inner
+                            .fieldOf("default")
+                            .forGetter { function: StateFunction<T> -> function.default }
+                    ).apply(it, ::StateFunction)
+                }.codec()
+            ).xmap<StateFunction<T>>(
+                { either: Either<T, StateFunction<T>> ->
+                    either.map(
+                        { value -> StateFunction(value) },
+                        { function -> function }
+                    )
+                },
+                { function ->
+                    if (function.entries.isEmpty()) {
+                        return@xmap Either.left(function.default)
+                    } else {
+                        return@xmap Either.right(function)
+                    }
+                }
+            )
+        }
+    }
+}

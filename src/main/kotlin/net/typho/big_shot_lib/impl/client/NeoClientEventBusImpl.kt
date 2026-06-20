@@ -15,7 +15,7 @@ import net.typho.big_shot_lib.impl.NeoEventBusImpl
 import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
 
 //? fabric {
-/*import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
@@ -184,8 +184,8 @@ object NeoClientEventBusImpl : NeoClientEventBus {
         NeoEventBusImpl.register(event)
     }
 }
-*///? } neoforge {
-import net.neoforged.bus.api.IEventBus
+//? } neoforge {
+/*import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
@@ -318,4 +318,4 @@ class NeoClientEventBusImpl(
         }
     }
 }
-//? }
+*///? }

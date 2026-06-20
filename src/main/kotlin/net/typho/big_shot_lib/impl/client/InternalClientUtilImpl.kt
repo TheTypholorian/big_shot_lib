@@ -45,9 +45,9 @@ import sun.misc.Unsafe
 import java.lang.reflect.Modifier
 
 //? fabric {
-/*import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
-*///? } neoforge {
+//? } neoforge {
 //? }
 
 object InternalClientUtilImpl : InternalClientUtil {
