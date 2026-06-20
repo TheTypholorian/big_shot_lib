@@ -138,6 +138,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             }
 
             markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex")
+            markAsDeprecated($$"com/mojang/blaze3d/vertex/VertexFormat$Builder", "()Lcom/mojang/blaze3d/vertex/VertexFormat;", "build")
 
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "createUntrusted", "untrusted")
             renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "fromNamespaceAndPath", "of")
@@ -170,8 +171,9 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setNormal", "normal")
             renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setNormal", "normal")
 
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType", "net/minecraft/client/renderer/RenderType")
             injectInterface("net/typho/big_shot_lib/api/client/ext/VertexConsumerExtension", "com/mojang/blaze3d/vertex/VertexConsumer")
+            injectInterface("net/typho/big_shot_lib/api/client/ext/VertexFormatBuilderExtension", $$"com/mojang/blaze3d/vertex/VertexFormat$Builder")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType", "net/minecraft/client/renderer/RenderType")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlUniform", "com/mojang/blaze3d/shaders/AbstractUniform")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoVertexFormat", "com/mojang/blaze3d/vertex/VertexFormat")
             injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoGuiGraphics", "net/minecraft/client/gui/GuiGraphics")

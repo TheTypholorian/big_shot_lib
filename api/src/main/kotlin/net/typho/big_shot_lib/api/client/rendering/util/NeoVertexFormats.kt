@@ -39,9 +39,6 @@ object NeoVertexFormats {
     }
 
     @JvmStatic
-    fun builder(location: Identifier): VertexFormat.Builder = InternalClientUtil.INSTANCE.createRegisteredVertexFormatBuilder(location)
-
-    @JvmStatic
     fun element(index: Int, inType: GlDataType, outType: GlVertexElementReadType, count: Int): VertexFormatElement = InternalClientUtil.INSTANCE.createVertexFormatElement(index, inType, outType, count)
 
     init {
@@ -60,9 +57,9 @@ object NeoVertexFormats {
 
         register(Identifier.minecraft("position"), VertexFormatElement.POSITION)
         register(Identifier.minecraft("color"), VertexFormatElement.COLOR)
-        register(Identifier.minecraft("texture_uv"), VertexFormatElement.UV0)
-        register(Identifier.minecraft("overlay_uv"), VertexFormatElement.UV1)
-        register(Identifier.minecraft("light_uv"), VertexFormatElement.UV2)
+        register(Identifier.minecraft("texture_uv"), VertexFormatElement.TEXTURE_UV)
+        register(Identifier.minecraft("overlay_uv"), VertexFormatElement.OVERLAY_UV)
+        register(Identifier.minecraft("light_uv"), VertexFormatElement.LIGHT_UV)
         register(Identifier.minecraft("normal"), VertexFormatElement.NORMAL)
     }
 }

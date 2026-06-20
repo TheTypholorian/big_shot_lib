@@ -28,9 +28,9 @@ interface SimpleVertexConsumer : VertexConsumer {
 
                 when (element) {
                     VertexFormatElement.POSITION -> vertex(memGetFloat(ptr), memGetFloat(ptr + 4), memGetFloat(ptr + 8))
-                    VertexFormatElement.UV0 -> textureUV(memGetFloat(ptr), memGetFloat(ptr + 4))
-                    VertexFormatElement.UV1 -> overlayUV(memGetShort(ptr).toInt(), memGetShort(ptr + 2).toInt())
-                    VertexFormatElement.UV2 -> lightUV(memGetShort(ptr).toInt(), memGetShort(ptr + 2).toInt())
+                    VertexFormatElement.TEXTURE_UV -> textureUV(memGetFloat(ptr), memGetFloat(ptr + 4))
+                    VertexFormatElement.OVERLAY_UV -> overlayUV(memGetShort(ptr).toInt(), memGetShort(ptr + 2).toInt())
+                    VertexFormatElement.LIGHT_UV -> lightUV(memGetShort(ptr).toInt(), memGetShort(ptr + 2).toInt())
                     VertexFormatElement.NORMAL -> normal(memGetByte(ptr), memGetByte(ptr + 1), memGetByte(ptr + 2))
                     else -> custom(element) { output -> MemoryPointer.wrap(ptr, element.byteSize().toLong(), free = false).read().readTo(output, element.byteSize()) }
                 }

@@ -65,10 +65,6 @@ interface InternalClientUtil {
         target: GlBufferTarget
     ): GlBuffer
 
-    fun createRegisteredVertexFormatBuilder(
-        location: Identifier
-    ): VertexFormat.Builder
-
     fun createVertexFormatElement(
         index: Int,
         inType: GlDataType,
