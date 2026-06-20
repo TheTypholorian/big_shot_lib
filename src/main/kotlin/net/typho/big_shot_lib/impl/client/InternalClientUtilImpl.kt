@@ -11,18 +11,18 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.RenderStateShard
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.client.renderer.ShaderInstance
-import net.minecraft.client.renderer.block.model.BakedQuad
 import net.minecraft.client.renderer.texture.AbstractTexture
-import net.minecraft.client.renderer.texture.TextureAtlasSprite
-import net.minecraft.core.Direction
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.InternalClientUtil
+import net.typho.big_shot_lib.api.client.ext.VertexFormatElementExtension
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlVertexElementReadType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType
@@ -32,7 +32,7 @@ import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
 import net.typho.big_shot_lib.api.client.rendering.state.LayeringState
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
-import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData
+import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats.register
 import net.typho.big_shot_lib.api.math.IVec3
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
 import net.typho.big_shot_lib.impl.client.rendering.state.NeoTextureStateShard
@@ -45,8 +45,7 @@ import sun.misc.Unsafe
 import java.lang.reflect.Modifier
 
 //? fabric {
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute
+
 //? } neoforge {
 //? }
 
@@ -76,56 +75,6 @@ object InternalClientUtilImpl : InternalClientUtil {
 
         throw UnsupportedOperationException("Big Shot Lib requires sun.misc.Unsafe to be available.")
     }
-
-    override val positionVertexElement: VertexFormatElement
-        //? if >=1.21 {
-        get() = VertexFormatElement.POSITION.getExtensionValue()
-    //? } else {
-    /*get() = DefaultVertexFormat.ELEMENT_POSITION.getExtensionValue()
-    *///? }
-    override val colorVertexElement: VertexFormatElement
-        //? if >=1.21 {
-        get() = VertexFormatElement.COLOR.getExtensionValue()
-    //? } else {
-    /*get() = DefaultVertexFormat.ELEMENT_COLOR.getExtensionValue()
-    *///? }
-    override val textureUVVertexElement: VertexFormatElement
-        //? if >=1.21 {
-        get() = VertexFormatElement.UV0.getExtensionValue()
-    //? } else {
-    /*get() = DefaultVertexFormat.ELEMENT_UV0.getExtensionValue()
-    *///? }
-    override val overlayUVVertexElement: VertexFormatElement
-        //? if >=1.21 {
-        get() = VertexFormatElement.UV1.getExtensionValue()
-    //? } else {
-    /*get() = DefaultVertexFormat.ELEMENT_UV1.getExtensionValue()
-    *///? }
-    override val lightUVVertexElement: VertexFormatElement
-        //? if >=1.21 {
-        get() = VertexFormatElement.UV2.getExtensionValue()
-    //? } else {
-    /*get() = DefaultVertexFormat.ELEMENT_UV2.getExtensionValue()
-    *///? }
-    override val normalVertexElement: VertexFormatElement
-        //? if >=1.21 {
-        get() = VertexFormatElement.NORMAL.getExtensionValue()
-    //? } else {
-    /*get() = DefaultVertexFormat.ELEMENT_NORMAL.getExtensionValue()
-    *///? }
-
-    override val blockVertexFormat: VertexFormat = DefaultVertexFormat.BLOCK.getExtensionValue()
-    override val newEntityVertexFormat: VertexFormat = DefaultVertexFormat.NEW_ENTITY.getExtensionValue()
-    override val particleVertexFormat: VertexFormat = DefaultVertexFormat.PARTICLE.getExtensionValue()
-    override val positionVertexFormat: VertexFormat = DefaultVertexFormat.POSITION.getExtensionValue()
-    override val positionColorVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_COLOR.getExtensionValue()
-    override val positionColorNormalVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_COLOR_NORMAL.getExtensionValue()
-    override val positionColorLightVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_COLOR_LIGHTMAP.getExtensionValue()
-    override val positionTexVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX.getExtensionValue()
-    override val positionTexColorVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX_COLOR.getExtensionValue()
-    override val positionColorTexLightVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP.getExtensionValue()
-    override val positionTexLightColorVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR.getExtensionValue()
-    override val positionTexColorNormalVertexFormat: VertexFormat = DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL.getExtensionValue()
 
     override fun getTexture(location: Identifier): AbstractTexture? {
         return Minecraft.getInstance().textureManager.getTexture(location, null)
@@ -268,4 +217,38 @@ object InternalClientUtilImpl : InternalClientUtil {
         return GlBufferImpl(size, usage, target)
     }
 
+    override fun createRegisteredVertexFormatBuilder(location: Identifier): VertexFormat.Builder {
+        return object : VertexFormat.Builder() {
+            override fun build(): VertexFormat {
+                val format = super.build()
+                register(location, format)
+                return format
+            }
+        }
+    }
+
+    override fun createVertexFormatElement(
+        index: Int,
+        inType: GlDataType,
+        outType: GlVertexElementReadType,
+        count: Int
+    ): VertexFormatElement {
+        val element = VertexFormatElement.register(
+            VertexFormatElement.BY_ID.size,
+            index,
+            when (inType) {
+                GlDataType.UBYTE -> VertexFormatElement.Type.UBYTE
+                GlDataType.BYTE -> VertexFormatElement.Type.BYTE
+                GlDataType.USHORT -> VertexFormatElement.Type.USHORT
+                GlDataType.SHORT -> VertexFormatElement.Type.SHORT
+                GlDataType.UINT -> VertexFormatElement.Type.UINT
+                GlDataType.INT -> VertexFormatElement.Type.INT
+                GlDataType.FLOAT -> VertexFormatElement.Type.FLOAT
+            },
+            null,
+            count
+        )
+        (element as VertexFormatElementExtension).`big_shot_lib$outType` = outType
+        return element
+    }
 }

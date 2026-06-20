@@ -1,6 +1,5 @@
 package net.typho.big_shot_lib.impl.client
 
-import net.minecraft.client.Minecraft
 import net.typho.big_shot_lib.api.client.event.AddAssetReloadListenersEvent
 import net.typho.big_shot_lib.api.client.event.ClientEndTickEvent
 import net.typho.big_shot_lib.api.client.event.ClientLevelChangedEvent
@@ -10,9 +9,7 @@ import net.typho.big_shot_lib.api.client.event.RegisterDebugScreenEntriesEvent
 import net.typho.big_shot_lib.api.client.event.RegisterMainMenuModesEvent
 import net.typho.big_shot_lib.api.client.event.RenderLevelEvent
 import net.typho.big_shot_lib.api.client.rendering.util.RenderLevelStage
-import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.impl.NeoEventBusImpl
-import net.typho.big_shot_lib.mixin.impl.FrustumAccessor
 
 //? fabric {
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback

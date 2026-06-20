@@ -1,10 +1,8 @@
 package net.typho.big_shot_lib.api.client.rendering.util.quad
 
 import com.mojang.blaze3d.vertex.VertexConsumer
-import com.mojang.blaze3d.vertex.VertexFormat
 import net.caffeinemc.mods.sodium.api.util.ColorARGB
 import net.typho.big_shot_lib.api.client.rendering.util.PackedNormal
-import org.lwjgl.system.MemoryStack
 
 open class PrimitiveQuad(
     @JvmField
@@ -16,29 +14,29 @@ open class PrimitiveQuad(
     @JvmField
     val v3: PrimitiveVertex
 ) {
-    fun apply(out: (vertex: PrimitiveVertex, index: Int) -> Unit) {
+    open fun apply(out: (vertex: PrimitiveVertex, index: Int) -> Unit) {
         out(v0, 0)
         out(v1, 1)
         out(v2, 2)
         out(v3, 3)
     }
 
-    fun apply(out: (vertex: PrimitiveVertex) -> Unit) {
+    open fun apply(out: (vertex: PrimitiveVertex) -> Unit) {
         out(v0)
         out(v1)
         out(v2)
         out(v3)
     }
 
-    fun any(out: (vertex: PrimitiveVertex, index: Int) -> Boolean): Boolean {
+    open fun any(out: (vertex: PrimitiveVertex, index: Int) -> Boolean): Boolean {
         return out(v0, 0) || out(v1, 1) || out(v2, 2) || out(v3, 3)
     }
 
-    fun any(out: (vertex: PrimitiveVertex) -> Boolean): Boolean {
+    open fun any(out: (vertex: PrimitiveVertex) -> Boolean): Boolean {
         return out(v0) || out(v1) || out(v2) || out(v3)
     }
 
-    fun copyWithOffset(x: Float, y: Float, z: Float): PrimitiveQuad {
+    open fun copyWithOffset(x: Float, y: Float, z: Float): PrimitiveQuad {
         return PrimitiveQuad(
             PrimitiveVertex(v0, x, y, z),
             PrimitiveVertex(v1, x, y, z),
@@ -47,7 +45,7 @@ open class PrimitiveQuad(
         )
     }
 
-    fun copyWithOffset(x: Int, y: Int, z: Int): PrimitiveQuad {
+    open fun copyWithOffset(x: Int, y: Int, z: Int): PrimitiveQuad {
         return copyWithOffset(x.toFloat(), y.toFloat(), z.toFloat())
     }
 
@@ -61,12 +59,18 @@ open class PrimitiveQuad(
         @JvmField
         val offsetZ: Float = 0f,
     ) : SimpleVertexConsumer {
-        private var v0 = PrimitiveVertex()
-        private var v1 = PrimitiveVertex()
-        private var v2 = PrimitiveVertex()
-        private var v3 = PrimitiveVertex()
-        private var vertex = v0
-        private var index = 0
+        @JvmField
+        protected var v0 = PrimitiveVertex()
+        @JvmField
+        protected var v1 = PrimitiveVertex()
+        @JvmField
+        protected var v2 = PrimitiveVertex()
+        @JvmField
+        protected var v3 = PrimitiveVertex()
+        @JvmField
+        protected var vertex = v0
+        @JvmField
+        protected var index = 0
 
         protected open fun create() = PrimitiveQuad(v0, v1, v2, v3)
 

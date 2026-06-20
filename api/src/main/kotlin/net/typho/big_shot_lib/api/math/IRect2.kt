@@ -6,8 +6,6 @@ import net.minecraft.core.Direction
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.typho.big_shot_lib.api.error.IllegalDimensionException
-import net.typho.big_shot_lib.api.math.OperatorSet
-import net.typho.big_shot_lib.api.math.IVec2
 import kotlin.math.max
 import kotlin.math.min
 

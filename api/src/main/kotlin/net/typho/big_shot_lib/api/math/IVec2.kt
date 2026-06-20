@@ -6,19 +6,12 @@ import net.minecraft.core.Direction
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.typho.big_shot_lib.api.error.IllegalDimensionException
-import net.typho.big_shot_lib.api.math.DoubleOperatorSet
-import net.typho.big_shot_lib.api.math.FloatOperatorSet
-import net.typho.big_shot_lib.api.math.IntOperatorSet
-import net.typho.big_shot_lib.api.math.OperatorSet
 import org.joml.Vector2d
 import org.joml.Vector2f
 import org.joml.Vector2i
 import org.joml.Vector3dc
 import org.joml.Vector3fc
 import org.joml.Vector3ic
-import kotlin.div
-import kotlin.rem
-import kotlin.times
 
 interface IVec2<N : Number> {
     val opSet: OperatorSet<N>

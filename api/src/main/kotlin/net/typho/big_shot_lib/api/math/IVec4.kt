@@ -4,10 +4,6 @@ import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
-import net.typho.big_shot_lib.api.math.DoubleOperatorSet
-import net.typho.big_shot_lib.api.math.FloatOperatorSet
-import net.typho.big_shot_lib.api.math.IntOperatorSet
-import net.typho.big_shot_lib.api.math.OperatorSet
 import org.joml.Vector4d
 import org.joml.Vector4dc
 import org.joml.Vector4f

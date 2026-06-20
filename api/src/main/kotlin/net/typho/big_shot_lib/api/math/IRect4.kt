@@ -4,8 +4,6 @@ import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
-import net.typho.big_shot_lib.api.math.OperatorSet
-import net.typho.big_shot_lib.api.math.IVec4
 import kotlin.math.max
 import kotlin.math.min
 

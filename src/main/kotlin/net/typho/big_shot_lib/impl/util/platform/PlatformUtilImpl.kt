@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.impl.util.platform
 
 //? fabric {
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
 //? } neoforge {

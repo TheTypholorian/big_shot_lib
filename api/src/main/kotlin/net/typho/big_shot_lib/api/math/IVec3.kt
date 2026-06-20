@@ -8,10 +8,6 @@ import net.minecraft.core.Vec3i
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.world.phys.Vec3
-import net.typho.big_shot_lib.api.math.DoubleOperatorSet
-import net.typho.big_shot_lib.api.math.FloatOperatorSet
-import net.typho.big_shot_lib.api.math.IntOperatorSet
-import net.typho.big_shot_lib.api.math.OperatorSet
 import org.joml.Vector3d
 import org.joml.Vector3dc
 import org.joml.Vector3f
