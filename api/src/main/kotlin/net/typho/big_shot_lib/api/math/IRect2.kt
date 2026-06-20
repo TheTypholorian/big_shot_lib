@@ -261,7 +261,7 @@ interface IRect2<N : Number> {
         operator fun invoke(minX: Int, minY: Int, maxX: Int, maxY: Int): IRect2<Int> = IntImpl(IVec2(min(minX, maxX), min(minY, maxY)), IVec2(max(minX, maxX), max(minY, maxY)))
 
         @JvmStatic
-        @JvmName("of")
+        @JvmName("ofInt")
         operator fun invoke(min: IVec2<Int>, max: IVec2<Int>): IRect2<Int> = invoke(min.x, min.y, max.x, max.y)
 
         @JvmStatic
@@ -269,7 +269,7 @@ interface IRect2<N : Number> {
         fun size(x: Int, y: Int, w: Int, h: Int): IRect2<Int> = invoke(x, y, x + w, y + h)
 
         @JvmStatic
-        @JvmName("ofSize")
+        @JvmName("ofSizeInt")
         fun size(pos: IVec2<Int>, size: IVec2<Int>): IRect2<Int> = size(pos.x, pos.y, size.x, size.y)
 
         @JvmStatic
@@ -277,7 +277,7 @@ interface IRect2<N : Number> {
         fun unchecked(minX: Int, minY: Int, maxX: Int, maxY: Int): IRect2<Int> = IntImpl(IVec2(minX, minY), IVec2(maxX, maxY))
 
         @JvmStatic
-        @JvmName("ofUnchecked")
+        @JvmName("ofUncheckedInt")
         fun unchecked(min: IVec2<Int>, max: IVec2<Int>): IRect2<Int> = IntImpl(min, max)
 
         @JvmStatic
@@ -285,7 +285,7 @@ interface IRect2<N : Number> {
         operator fun invoke(minX: Float, minY: Float, maxX: Float, maxY: Float): IRect2<Float> = FloatImpl(IVec2(min(minX, maxX), min(minY, maxY)), IVec2(max(minX, maxX), max(minY, maxY)))
 
         @JvmStatic
-        @JvmName("of")
+        @JvmName("ofFloat")
         operator fun invoke(min: IVec2<Float>, max: IVec2<Float>): IRect2<Float> = invoke(min.x, min.y, max.x, max.y)
 
         @JvmStatic
@@ -293,7 +293,7 @@ interface IRect2<N : Number> {
         fun size(x: Float, y: Float, w: Float, h: Float): IRect2<Float> = invoke(x, y, x + w, y + h)
 
         @JvmStatic
-        @JvmName("ofSize")
+        @JvmName("ofSizeFloat")
         fun size(pos: IVec2<Float>, size: IVec2<Float>): IRect2<Float> = size(pos.x, pos.y, size.x, size.y)
 
         @JvmStatic
@@ -301,7 +301,7 @@ interface IRect2<N : Number> {
         fun unchecked(minX: Float, minY: Float, maxX: Float, maxY: Float): IRect2<Float> = FloatImpl(IVec2(minX, minY), IVec2(maxX, maxY))
 
         @JvmStatic
-        @JvmName("ofUnchecked")
+        @JvmName("ofUncheckedFloat")
         fun unchecked(min: IVec2<Float>, max: IVec2<Float>): IRect2<Float> = FloatImpl(min, max)
 
         @JvmStatic
@@ -309,7 +309,7 @@ interface IRect2<N : Number> {
         operator fun invoke(minX: Double, minY: Double, maxX: Double, maxY: Double): IRect2<Double> = DoubleImpl(IVec2(min(minX, maxX), min(minY, maxY)), IVec2(max(minX, maxX), max(minY, maxY)))
 
         @JvmStatic
-        @JvmName("of")
+        @JvmName("ofDouble")
         operator fun invoke(min: IVec2<Double>, max: IVec2<Double>): IRect2<Double> = invoke(min.x, min.y, max.x, max.y)
 
         @JvmStatic
@@ -317,7 +317,7 @@ interface IRect2<N : Number> {
         fun size(x: Double, y: Double, w: Double, h: Double): IRect2<Double> = invoke(x, y, x + w, y + h)
 
         @JvmStatic
-        @JvmName("ofSize")
+        @JvmName("ofSizeDouble")
         fun size(pos: IVec2<Double>, size: IVec2<Double>): IRect2<Double> = size(pos.x, pos.y, size.x, size.y)
 
         @JvmStatic
@@ -325,7 +325,7 @@ interface IRect2<N : Number> {
         fun unchecked(minX: Double, minY: Double, maxX: Double, maxY: Double): IRect2<Double> = DoubleImpl(IVec2(minX, minY), IVec2(maxX, maxY))
 
         @JvmStatic
-        @JvmName("ofUnchecked")
+        @JvmName("ofUncheckedDouble")
         fun unchecked(min: IVec2<Double>, max: IVec2<Double>): IRect2<Double> = DoubleImpl(min, max)
     }
 }

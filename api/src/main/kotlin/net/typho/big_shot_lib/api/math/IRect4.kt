@@ -191,7 +191,7 @@ interface IRect4<N : Number> {
         operator fun invoke(minX: Int, minY: Int, minZ: Int, minW: Int, maxX: Int, maxY: Int, maxZ: Int, maxW: Int): IRect4<Int> = IntImpl(IVec4(min(minX, maxX), min(minY, maxY), min(minZ, maxZ), min(minW, maxW)), IVec4(max(minX, maxX), max(minY, maxY), max(minZ, maxZ), max(minW, maxW)))
 
         @JvmStatic
-        @JvmName("of")
+        @JvmName("ofInt")
         operator fun invoke(min: IVec4<Int>, max: IVec4<Int>): IRect4<Int> = invoke(min.x, min.y, min.z, min.w, max.x, max.y, max.z, max.w)
 
         @JvmStatic
@@ -199,7 +199,7 @@ interface IRect4<N : Number> {
         fun size(x: Int, y: Int, z: Int, w: Int, width: Int, height: Int, depth: Int, time: Int): IRect4<Int> = invoke(x, y, z, w, x + width, y + height, z + depth, w + time)
 
         @JvmStatic
-        @JvmName("ofSize")
+        @JvmName("ofSizeInt")
         fun size(pos: IVec4<Int>, size: IVec4<Int>): IRect4<Int> = size(pos.x, pos.y, pos.z, pos.w, size.x, size.y, size.x, size.w)
 
         @JvmStatic
@@ -207,7 +207,7 @@ interface IRect4<N : Number> {
         fun unchecked(minX: Int, minY: Int, minZ: Int, minW: Int, maxX: Int, maxY: Int, maxZ: Int, maxW: Int): IRect4<Int> = IntImpl(IVec4(minX, minY, minZ, minW), IVec4(maxX, maxY, maxZ, maxW))
 
         @JvmStatic
-        @JvmName("ofUnchecked")
+        @JvmName("ofUncheckedInt")
         fun unchecked(min: IVec4<Int>, max: IVec4<Int>): IRect4<Int> = IntImpl(min, max)
 
         @JvmStatic
@@ -215,7 +215,7 @@ interface IRect4<N : Number> {
         operator fun invoke(minX: Float, minY: Float, minZ: Float, minW: Float, maxX: Float, maxY: Float, maxZ: Float, maxW: Float): IRect4<Float> = FloatImpl(IVec4(min(minX, maxX), min(minY, maxY), min(minZ, maxZ), min(minW, maxW)), IVec4(max(minX, maxX), max(minY, maxY), max(minZ, maxZ), max(minW, maxW)))
 
         @JvmStatic
-        @JvmName("of")
+        @JvmName("ofFloat")
         operator fun invoke(min: IVec4<Float>, max: IVec4<Float>): IRect4<Float> = invoke(min.x, min.y, min.z, min.w, max.x, max.y, max.z, max.w)
 
         @JvmStatic
@@ -223,7 +223,7 @@ interface IRect4<N : Number> {
         fun size(x: Float, y: Float, z: Float, w: Float, width: Float, height: Float, depth: Float, time: Float): IRect4<Float> = invoke(x, y, z, w, x + width, y + height, z + depth, w + time)
 
         @JvmStatic
-        @JvmName("ofSize")
+        @JvmName("ofSizeFloat")
         fun size(pos: IVec4<Float>, size: IVec4<Float>): IRect4<Float> = size(pos.x, pos.y, pos.z, pos.w, size.x, size.y, size.x, size.w)
 
         @JvmStatic
@@ -231,7 +231,7 @@ interface IRect4<N : Number> {
         fun unchecked(minX: Float, minY: Float, minZ: Float, minW: Float, maxX: Float, maxY: Float, maxZ: Float, maxW: Float): IRect4<Float> = FloatImpl(IVec4(minX, minY, minZ, minW), IVec4(maxX, maxY, maxZ, maxW))
 
         @JvmStatic
-        @JvmName("ofUnchecked")
+        @JvmName("ofUncheckedFloat")
         fun unchecked(min: IVec4<Float>, max: IVec4<Float>): IRect4<Float> = FloatImpl(min, max)
 
         @JvmStatic
@@ -239,7 +239,7 @@ interface IRect4<N : Number> {
         operator fun invoke(minX: Double, minY: Double, minZ: Double, minW: Double, maxX: Double, maxY: Double, maxZ: Double, maxW: Double): IRect4<Double> = DoubleImpl(IVec4(min(minX, maxX), min(minY, maxY), min(minZ, maxZ), min(minW, maxW)), IVec4(max(minX, maxX), max(minY, maxY), max(minZ, maxZ), max(minW, maxW)))
 
         @JvmStatic
-        @JvmName("of")
+        @JvmName("ofDouble")
         operator fun invoke(min: IVec4<Double>, max: IVec4<Double>): IRect4<Double> = invoke(min.x, min.y, min.z, min.w, max.x, max.y, max.z, max.w)
 
         @JvmStatic
@@ -247,7 +247,7 @@ interface IRect4<N : Number> {
         fun size(x: Double, y: Double, z: Double, w: Double, width: Double, height: Double, depth: Double, time: Double): IRect4<Double> = invoke(x, y, z, w, x + width, y + height, z + depth, w + time)
 
         @JvmStatic
-        @JvmName("ofSize")
+        @JvmName("ofSizeDouble")
         fun size(pos: IVec4<Double>, size: IVec4<Double>): IRect4<Double> = size(pos.x, pos.y, pos.z, pos.w, size.x, size.y, size.x, size.w)
 
         @JvmStatic
@@ -255,7 +255,7 @@ interface IRect4<N : Number> {
         fun unchecked(minX: Double, minY: Double, minZ: Double, minW: Double, maxX: Double, maxY: Double, maxZ: Double, maxW: Double): IRect4<Double> = DoubleImpl(IVec4(minX, minY, minZ, minW), IVec4(maxX, maxY, maxZ, maxW))
 
         @JvmStatic
-        @JvmName("ofUnchecked")
+        @JvmName("ofUncheckedDouble")
         fun unchecked(min: IVec4<Double>, max: IVec4<Double>): IRect4<Double> = DoubleImpl(min, max)
     }
 }

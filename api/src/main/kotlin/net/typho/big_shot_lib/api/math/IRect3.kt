@@ -210,7 +210,7 @@ interface IRect3<N : Number> {
         operator fun invoke(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int): IRect3<Int> = IntImpl(IVec3(min(minX, maxX), min(minY, maxY), min(minZ, maxZ)), IVec3(max(minX, maxX), max(minY, maxY), max(minZ, maxZ)))
 
         @JvmStatic
-        @JvmName("of")
+        @JvmName("ofInt")
         operator fun invoke(min: IVec3<Int>, max: IVec3<Int>): IRect3<Int> = invoke(min.x, min.y, min.z, max.x, max.y, max.z)
 
         @JvmStatic
@@ -218,7 +218,7 @@ interface IRect3<N : Number> {
         fun size(x: Int, y: Int, z: Int, w: Int, h: Int, d: Int): IRect3<Int> = invoke(x, y, z, x + w, y + h, z + d)
 
         @JvmStatic
-        @JvmName("ofSize")
+        @JvmName("ofSizeInt")
         fun size(pos: IVec3<Int>, size: IVec3<Int>): IRect3<Int> = size(pos.x, pos.y, pos.z, size.x, size.y, size.x)
 
         @JvmStatic
@@ -226,7 +226,7 @@ interface IRect3<N : Number> {
         fun unchecked(minX: Int, minY: Int, minZ: Int, maxX: Int, maxY: Int, maxZ: Int): IRect3<Int> = IntImpl(IVec3(minX, minY, minZ), IVec3(maxX, maxY, maxZ))
 
         @JvmStatic
-        @JvmName("ofUnchecked")
+        @JvmName("ofUncheckedInt")
         fun unchecked(min: IVec3<Int>, max: IVec3<Int>): IRect3<Int> = IntImpl(min, max)
 
         @JvmStatic
@@ -234,7 +234,7 @@ interface IRect3<N : Number> {
         operator fun invoke(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): IRect3<Float> = FloatImpl(IVec3(min(minX, maxX), min(minY, maxY), min(minZ, maxZ)), IVec3(max(minX, maxX), max(minY, maxY), max(minZ, maxZ)))
 
         @JvmStatic
-        @JvmName("of")
+        @JvmName("ofFloat")
         operator fun invoke(min: IVec3<Float>, max: IVec3<Float>): IRect3<Float> = invoke(min.x, min.y, min.z, max.x, max.y, max.z)
 
         @JvmStatic
@@ -242,7 +242,7 @@ interface IRect3<N : Number> {
         fun size(x: Float, y: Float, z: Float, w: Float, h: Float, d: Float): IRect3<Float> = invoke(x, y, z, x + w, y + h, z + d)
 
         @JvmStatic
-        @JvmName("ofSize")
+        @JvmName("ofSizeFloat")
         fun size(pos: IVec3<Float>, size: IVec3<Float>): IRect3<Float> = size(pos.x, pos.y, pos.z, size.x, size.y, size.x)
 
         @JvmStatic
@@ -250,7 +250,7 @@ interface IRect3<N : Number> {
         fun unchecked(minX: Float, minY: Float, minZ: Float, maxX: Float, maxY: Float, maxZ: Float): IRect3<Float> = FloatImpl(IVec3(minX, minY, minZ), IVec3(maxX, maxY, maxZ))
 
         @JvmStatic
-        @JvmName("ofUnchecked")
+        @JvmName("ofUncheckedFloat")
         fun unchecked(min: IVec3<Float>, max: IVec3<Float>): IRect3<Float> = FloatImpl(min, max)
 
         @JvmStatic
@@ -258,7 +258,7 @@ interface IRect3<N : Number> {
         operator fun invoke(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): IRect3<Double> = DoubleImpl(IVec3(min(minX, maxX), min(minY, maxY), min(minZ, maxZ)), IVec3(max(minX, maxX), max(minY, maxY), max(minZ, maxZ)))
 
         @JvmStatic
-        @JvmName("of")
+        @JvmName("ofDouble")
         operator fun invoke(min: IVec3<Double>, max: IVec3<Double>): IRect3<Double> = invoke(min.x, min.y, min.z, max.x, max.y, max.z)
 
         @JvmStatic
@@ -266,7 +266,7 @@ interface IRect3<N : Number> {
         fun size(x: Double, y: Double, z: Double, w: Double, h: Double, d: Double): IRect3<Double> = invoke(x, y, z, x + w, y + h, z + d)
 
         @JvmStatic
-        @JvmName("ofSize")
+        @JvmName("ofSizeDouble")
         fun size(pos: IVec3<Double>, size: IVec3<Double>): IRect3<Double> = size(pos.x, pos.y, pos.z, size.x, size.y, size.x)
 
         @JvmStatic
@@ -274,7 +274,7 @@ interface IRect3<N : Number> {
         fun unchecked(minX: Double, minY: Double, minZ: Double, maxX: Double, maxY: Double, maxZ: Double): IRect3<Double> = DoubleImpl(IVec3(minX, minY, minZ), IVec3(maxX, maxY, maxZ))
 
         @JvmStatic
-        @JvmName("ofUnchecked")
+        @JvmName("ofUncheckedDouble")
         fun unchecked(min: IVec3<Double>, max: IVec3<Double>): IRect3<Double> = DoubleImpl(min, max)
     }
 }
