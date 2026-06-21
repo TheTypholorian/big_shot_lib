@@ -137,6 +137,28 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 renameClass("net/minecraft/client/resources/model/geometry/BakedQuad", "net/minecraft/client/renderer/block/model/BakedQuad")
             }
 
+            if (version >= MCVersion.MC26_2) {
+                renameClass("com/mojang/blaze3d/vulkan/VulkanBackend", "com/mojang/blaze3d/vulkan/VkBackend")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanBindGroupLayout", "com/mojang/blaze3d/vulkan/VkBindGroupLayout")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanCommandEncoder", "com/mojang/blaze3d/vulkan/VkCommandEncoder")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanCommandPool", "com/mojang/blaze3d/vulkan/VkCommandPool")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanConst", "com/mojang/blaze3d/vulkan/VkConst")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanDebug", "com/mojang/blaze3d/vulkan/VkDebug")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanDevice", "com/mojang/blaze3d/vulkan/VkDevice")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuBuffer", "com/mojang/blaze3d/vulkan/VkBuffer")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuSampler", "com/mojang/blaze3d/vulkan/VkSampler")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuSurface", "com/mojang/blaze3d/vulkan/VkSurface")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuTexture", "com/mojang/blaze3d/vulkan/VkTexture")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuTextureView", "com/mojang/blaze3d/vulkan/VkTextureView")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanPhysicalDevice", "com/mojang/blaze3d/vulkan/VkPhysicalDevice")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanQueryPool", "com/mojang/blaze3d/vulkan/VkQueryPool")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanQueue", "com/mojang/blaze3d/vulkan/VkQueue")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanRenderPass", "com/mojang/blaze3d/vulkan/VkRenderPass")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanRenderPipeline", "com/mojang/blaze3d/vulkan/VkRenderPipeline")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanTransientMemory", "com/mojang/blaze3d/vulkan/VkTransientMemory")
+                renameClass("com/mojang/blaze3d/vulkan/VulkanUtils", "com/mojang/blaze3d/vulkan/VkUtil")
+            }
+
             markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex")
             markAsDeprecated($$"com/mojang/blaze3d/vertex/VertexFormat$Builder", "()Lcom/mojang/blaze3d/vertex/VertexFormat;", "build")
 
