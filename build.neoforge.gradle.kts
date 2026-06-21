@@ -8,8 +8,6 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "2.0.0-beta.1"
     id("io.github.klahap.dotenv") version "1.1.3"
 
-    id("com.google.devtools.ksp") version "2.3.9"
-
     id("dev.isxander.modstitch.base") version "0.8.5"
 
     id("net.typho.big_shot_lib.plugin") version "1.0.0"
@@ -57,10 +55,6 @@ val accessWidener = "big_shot_lib.accesswidener"
 fletchingTable {
     accessConverter.register(sourceSets.main) {
         add(accessWidener)
-    }
-
-    mixins.create("main") {
-        mixin("default", "${project.property("id")}.mixins.json")
     }
 }
 
@@ -204,6 +198,8 @@ repositories {
 dependencies {
     modstitchModImplementation("thedarkcolour:kotlinforforge-neoforge:5.9.0")
     modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
+
+    //implementation(project(":api"))
 }
 
 tasks {

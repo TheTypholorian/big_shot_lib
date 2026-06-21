@@ -8,8 +8,6 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "2.0.0-beta.1"
     id("io.github.klahap.dotenv") version "1.1.3"
 
-    id("com.google.devtools.ksp") version "2.3.9"
-
     id("dev.isxander.modstitch.base") version "0.8.5"
 
     id("net.typho.big_shot_lib.plugin") version "1.0.0"
@@ -49,14 +47,6 @@ sourceSets {
             if (sc.current.parsed >= "1.21.9") {
                 exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
             }
-        }
-    }
-}
-
-fletchingTable {
-    mixins.create("main") {
-        mixin("default", "${project.property("id")}.mixins.json") {
-            env("CLIENT", "net.typho.big_shot_lib.mixin.impl.client")
         }
     }
 }
@@ -214,6 +204,8 @@ dependencies {
     modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
     modstitchModImplementation("maven.modrinth:fabric-language-kotlin:1.13.12+kotlin.2.4.0")
     modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
+
+    //implementation(project(":api"))
 }
 
 val additionalVersions: List<String> = (findProperty("publish.additionalVersions") as? String)
