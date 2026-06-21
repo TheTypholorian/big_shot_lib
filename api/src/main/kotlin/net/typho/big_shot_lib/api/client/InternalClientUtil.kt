@@ -17,6 +17,7 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
 import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats.register
 import net.typho.big_shot_lib.api.math.IVec3
@@ -51,9 +52,24 @@ interface InternalClientUtil {
         name: () -> String
     ): RenderTarget
 
+    fun createRenderTarget(
+        color: GlTexture2D,
+        depth: GlTexture2D?,
+        name: () -> String
+    ): RenderTarget
+
     fun createTexture(
         width: Int,
         height: Int,
+        format: GlTextureFormat,
+        blur: Boolean,
+        mipmap: Boolean
+    ): AbstractTexture
+
+    fun createTexture(
+        width: Int,
+        height: Int,
+        glId: Int,
         format: GlTextureFormat,
         blur: Boolean,
         mipmap: Boolean
@@ -71,6 +87,20 @@ interface InternalClientUtil {
         outType: GlVertexElementReadType,
         count: Int
     ): VertexFormatElement
+
+    fun rawGetRenderTargetColor(target: RenderTarget): GlTexture2D?
+
+    fun rawGetRenderTargetDepth(target: RenderTarget): GlTexture2D?
+
+    fun rawResizeRenderTarget(target: RenderTarget, width: Int, height: Int)
+
+    fun rawCreateBuffersRenderTarget(target: RenderTarget, width: Int, height: Int)
+
+    fun rawIsRenderTargetFreed(target: RenderTarget): Boolean
+
+    fun rawGetRenderTargetId(target: RenderTarget): Int
+
+    fun rawFreeRenderTarget(target: RenderTarget)
 
     companion object {
         @JvmStatic

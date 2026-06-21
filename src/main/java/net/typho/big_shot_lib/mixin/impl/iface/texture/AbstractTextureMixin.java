@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.mixin.impl.iface.texture;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType;

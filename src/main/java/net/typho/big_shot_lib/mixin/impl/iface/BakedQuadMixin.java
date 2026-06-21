@@ -7,8 +7,8 @@ import net.typho.big_shot_lib.api.math.NeoVec3f;
 *///? }
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoBakedQuad;
-import net.typho.big_shot_lib.api.client.rendering.util.quad.NeoVertexData;
+import net.typho.big_shot_lib.api.client.rendering.util.mesh.NeoBakedQuad;
+import net.typho.big_shot_lib.api.client.rendering.util.mesh.NeoVertexData;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

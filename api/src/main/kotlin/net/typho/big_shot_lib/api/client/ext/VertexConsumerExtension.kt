@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer
 import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter
 import net.typho.big_shot_lib.api.client.rendering.util.PackedNormal
-import net.typho.big_shot_lib.api.client.rendering.util.quad.PrimitiveVertex
+import net.typho.big_shot_lib.api.client.rendering.util.mesh.PrimitiveVertex
 import net.typho.big_shot_lib.api.math.IRect3
 import net.typho.big_shot_lib.api.math.IVec2
 import net.typho.big_shot_lib.api.math.IVec3

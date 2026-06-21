@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.util.quad
+package net.typho.big_shot_lib.api.client.rendering.util.mesh
 
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.caffeinemc.mods.sodium.api.util.ColorARGB

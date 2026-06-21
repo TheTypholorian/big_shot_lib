@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.InternalClientUtil
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
+import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 
 interface GlTexture2D : GlResource {
     val width: Int
@@ -12,6 +13,10 @@ interface GlTexture2D : GlResource {
     var blur: Boolean
     var mipmap: Boolean
 
+    fun bind() {
+        NeoGlStateManager.INSTANCE.texture = glId
+    }
+
     companion object {
         @JvmStatic
         operator fun get(location: Identifier): AbstractTexture? = InternalClientUtil.INSTANCE.getTexture(location)
@@ -19,6 +24,20 @@ interface GlTexture2D : GlResource {
         @JvmStatic
         @JvmOverloads
         @JvmName("create")
-        operator fun invoke(width: Int, height: Int, format: GlTextureFormat = GlTextureFormat.RGBA8, blur: Boolean = false, mipmap: Boolean = false): GlTexture2D = InternalClientUtil.INSTANCE.createTexture(width, height, format, blur, mipmap)
+        operator fun invoke(width: Int, height: Int, format: GlTextureFormat = GlTextureFormat.RGBA8, blur: Boolean = false, mipmap: Boolean = false): GlTexture2D {
+            return InternalClientUtil.INSTANCE.createTexture(width, height, format, blur, mipmap)
+        }
+
+        @JvmStatic
+        @JvmOverloads
+        fun wrap(width: Int, height: Int, glId: Int, format: GlTextureFormat = GlTextureFormat.RGBA8, blur: Boolean = false, mipmap: Boolean = false): GlTexture2D {
+            return InternalClientUtil.INSTANCE.createTexture(width, height, glId, format, blur, mipmap)
+        }
+
+        @JvmStatic
+        @JvmOverloads
+        fun tryWrap(width: Int, height: Int, glId: Int, format: GlTextureFormat = GlTextureFormat.RGBA8, blur: Boolean = false, mipmap: Boolean = false): GlTexture2D? {
+            return if (glId == -1) null else wrap(width, height, glId, format, blur, mipmap)
+        }
     }
 }

@@ -2,8 +2,8 @@ package net.typho.big_shot_lib.impl.client
 
 import com.mojang.blaze3d.pipeline.RenderTarget
 import com.mojang.blaze3d.pipeline.TextureTarget
+import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.shaders.Program
-import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.blaze3d.vertex.VertexFormatElement
@@ -28,11 +28,11 @@ import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
+import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D
 import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
 import net.typho.big_shot_lib.api.client.rendering.state.LayeringState
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
-import net.typho.big_shot_lib.api.client.rendering.util.NeoVertexFormats.register
 import net.typho.big_shot_lib.api.math.IVec3
 import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
 import net.typho.big_shot_lib.impl.client.rendering.state.NeoTextureStateShard
@@ -40,9 +40,12 @@ import net.typho.big_shot_lib.api.util.getExtensionValue
 import net.typho.big_shot_lib.api.util.setExtensionValue
 import net.typho.big_shot_lib.impl.client.rendering.opengl.GlBufferImpl
 import net.typho.big_shot_lib.impl.client.rendering.opengl.NeoDynamicTexture
+import net.typho.big_shot_lib.impl.client.rendering.util.TextureWrapperRenderTarget
 import org.joml.Vector3f
+import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
 import sun.misc.Unsafe
 import java.lang.reflect.Modifier
+import java.nio.IntBuffer
 
 //? fabric {
 
@@ -203,6 +206,14 @@ object InternalClientUtilImpl : InternalClientUtil {
         return TextureTarget(width, height, useDepth, Minecraft.ON_OSX)
     }
 
+    override fun createRenderTarget(
+        color: GlTexture2D,
+        depth: GlTexture2D?,
+        name: () -> String
+    ): RenderTarget {
+        return TextureWrapperRenderTarget(color, depth)
+    }
+
     override fun createTexture(
         width: Int,
         height: Int,
@@ -210,21 +221,25 @@ object InternalClientUtilImpl : InternalClientUtil {
         blur: Boolean,
         mipmap: Boolean
     ): AbstractTexture {
-        return NeoDynamicTexture(width, height, format, blur, mipmap, GlResourceType.TEXTURE.create())
+        val texture = NeoDynamicTexture(width, height, format, blur, mipmap, GlResourceType.TEXTURE.create())
+        GlStateManager._bindTexture(texture.glId)
+        GlStateManager._texImage2D(GL_TEXTURE_2D, 0, format.internalId, width, height, 0, format.glId, format.type, null as IntBuffer?)
+        return texture
+    }
+
+    override fun createTexture(
+        width: Int,
+        height: Int,
+        glId: Int,
+        format: GlTextureFormat,
+        blur: Boolean,
+        mipmap: Boolean
+    ): AbstractTexture {
+        return NeoDynamicTexture(width, height, format, blur, mipmap, glId)
     }
 
     override fun createBuffer(size: Long, usage: GlBufferUsage, target: GlBufferTarget): GlBuffer {
         return GlBufferImpl(size, usage, target)
-    }
-
-    override fun createRegisteredVertexFormatBuilder(location: Identifier): VertexFormat.Builder {
-        return object : VertexFormat.Builder() {
-            override fun build(): VertexFormat {
-                val format = super.build()
-                register(location, format)
-                return format
-            }
-        }
     }
 
     override fun createVertexFormatElement(
@@ -254,5 +269,53 @@ object InternalClientUtilImpl : InternalClientUtil {
         )
         (element as VertexFormatElementExtension).`big_shot_lib$outType` = outType
         return element
+    }
+
+    override fun rawGetRenderTargetColor(target: RenderTarget): GlTexture2D? {
+        //? if <1.21.11 {
+        return GlTexture2D.tryWrap(target.width, target.height, target.colorTextureId)
+        //? }
+    }
+
+    override fun rawGetRenderTargetDepth(target: RenderTarget): GlTexture2D? {
+        //? if <1.21.11 {
+        return GlTexture2D.tryWrap(target.width, target.height, target.depthTextureId)
+        //? }
+    }
+
+    override fun rawResizeRenderTarget(
+        target: RenderTarget,
+        width: Int,
+        height: Int
+    ) {
+        //? if <1.21.11 {
+        target.resize(width, height, Minecraft.ON_OSX)
+        //? } else {
+        /*target.resize(width, height)
+        *///? }
+    }
+
+    override fun rawCreateBuffersRenderTarget(
+        target: RenderTarget,
+        width: Int,
+        height: Int
+    ) {
+        //? if <1.21.11 {
+        target.createBuffers(width, height, Minecraft.ON_OSX)
+        //? } else {
+        /*target.createBuffers(width, height)
+        *///? }
+    }
+
+    override fun rawIsRenderTargetFreed(target: RenderTarget): Boolean {
+        return target.frameBufferId == -1
+    }
+
+    override fun rawGetRenderTargetId(target: RenderTarget): Int {
+        return target.frameBufferId
+    }
+
+    override fun rawFreeRenderTarget(target: RenderTarget) {
+        target.destroyBuffers()
     }
 }
