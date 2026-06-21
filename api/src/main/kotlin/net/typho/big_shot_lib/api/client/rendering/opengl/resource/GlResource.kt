@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering.opengl.resource
 import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 
+@Deprecated
 interface GlResource : GlNamed, AutoCloseable {
     val type: GlResourceType
     val freed: Boolean

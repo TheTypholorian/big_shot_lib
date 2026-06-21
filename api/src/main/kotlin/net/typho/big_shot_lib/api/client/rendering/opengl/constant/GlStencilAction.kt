@@ -1,12 +1,13 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL14.GL_DECR_WRAP
 import org.lwjgl.opengl.GL14.GL_INCR_WRAP
 
 enum class GlStencilAction(
     override val glId: Int
-) : GlConstant {
+) : GlNamed {
     KEEP(GL_KEEP),
     REPLACE(GL_REPLACE),
     INCR(GL_INCR),

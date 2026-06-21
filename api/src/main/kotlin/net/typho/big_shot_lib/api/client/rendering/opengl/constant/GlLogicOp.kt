@@ -1,10 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import org.lwjgl.opengl.GL11.*
 
 enum class GlLogicOp(
     override val glId: Int
-) : GlConstant {
+) : GlNamed {
     CLEAR(GL_CLEAR),
     AND(GL_AND),
     AND_REVERSE(GL_AND_REVERSE),

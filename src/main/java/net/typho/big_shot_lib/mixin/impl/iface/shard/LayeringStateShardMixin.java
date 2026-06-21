@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 //? if >=1.21.5 {
-/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-*///? }
+//? }
 @Mixin(RenderStateShard.LayeringStateShard.class)
 public class LayeringStateShardMixin implements MutableExtension<LayeringState> {
     @Unique

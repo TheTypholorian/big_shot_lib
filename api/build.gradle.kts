@@ -18,7 +18,7 @@ plugins {
 }
 
 bigShotLib {
-    version("26.1.2")
+    version("26.2")
     loader("fabric")
 
     transformInfo {
@@ -41,7 +41,7 @@ publishing {
 
 modstitch {
     modLoaderVersion = property("deps.loader_version") as String
-    minecraftVersion = "26.1.2"
+    minecraftVersion = "26.2"
 
     parchment {
         findProperty("deps.parchment")?.let {

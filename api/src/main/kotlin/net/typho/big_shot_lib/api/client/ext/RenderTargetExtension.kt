@@ -1,11 +1,8 @@
 package net.typho.big_shot_lib.api.client.ext
 
 import com.mojang.blaze3d.pipeline.RenderTarget
-import com.mojang.blaze3d.vertex.VertexConsumer
 import net.typho.big_shot_lib.api.client.InternalClientUtil
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlClearBit
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResource
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D
 
 interface RenderTargetExtension : GlResource {

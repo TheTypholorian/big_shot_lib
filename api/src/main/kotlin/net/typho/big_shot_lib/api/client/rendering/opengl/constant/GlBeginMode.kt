@@ -1,12 +1,13 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import org.lwjgl.opengl.GL11.*
 
 enum class GlBeginMode(
     override val glId: Int,
     @JvmField
     val indexData: IndexData? = null
-) : GlConstant {
+) : GlNamed {
     POINTS(GL_POINTS),
     LINES(GL_LINES),
     LINE_LOOP(GL_LINE_LOOP),

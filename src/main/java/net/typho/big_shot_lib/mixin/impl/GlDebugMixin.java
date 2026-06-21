@@ -1,10 +1,10 @@
 package net.typho.big_shot_lib.mixin.impl;
 
 //? if <1.21.5 {
-import com.mojang.blaze3d.platform.GlDebug;
-//? } else {
-/*import com.mojang.blaze3d.opengl.GlDebug;
-*///? }
+/*import com.mojang.blaze3d.platform.GlDebug;
+*///? } else {
+import com.mojang.blaze3d.opengl.GlDebug;
+//? }
 
 import net.typho.big_shot_lib.api.error.GlException;
 import org.spongepowered.asm.mixin.Mixin;

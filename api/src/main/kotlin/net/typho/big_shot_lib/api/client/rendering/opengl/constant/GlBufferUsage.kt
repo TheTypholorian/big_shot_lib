@@ -1,10 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import org.lwjgl.opengl.GL15.*
 
 enum class GlBufferUsage(
     override val glId: Int
-) : GlConstant {
+) : GlNamed {
     STREAM_DRAW(GL_STREAM_DRAW),
     STREAM_READ(GL_STREAM_READ),
     STREAM_COPY(GL_STREAM_COPY),

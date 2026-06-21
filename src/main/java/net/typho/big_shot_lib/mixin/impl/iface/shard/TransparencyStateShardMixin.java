@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 //? if >=1.21.5 {
-/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-*///? }
+//? }
 @Mixin(RenderStateShard.TransparencyStateShard.class)
 public class TransparencyStateShardMixin implements MutableExtension<BlendFunction> {
     @Unique

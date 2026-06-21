@@ -14,20 +14,20 @@ import java.util.Objects;
 import static org.lwjgl.opengl.GL11.*;
 
 //? if >=1.21.5 {
-/*import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.opengl.GlTexture;
-*///? }
+//? }
 
 @Mixin(AbstractTexture.class)
 public abstract class AbstractTextureMixin implements GlTexture2D {
     //? if <1.21.5 {
-    @Shadow
-    protected int id;
-    //? } else {
     /*@Shadow
+    protected int id;
+    *///? } else {
+    @Shadow
     @Nullable
     protected GpuTexture texture;
-    *///? }
+    //? }
 
     @Shadow
     protected boolean blur;
@@ -40,10 +40,10 @@ public abstract class AbstractTextureMixin implements GlTexture2D {
     @Override
     public int getGlId() {
         //? if <1.21.5 {
-        return id;
-        //? } else {
-        /*return texture == null ? -1 : ((GlTexture) texture).glId();
-         *///? }
+        /*return id;
+        *///? } else {
+        return texture == null ? -1 : ((GlTexture) texture).glId();
+         //? }
     }
 
     @Override

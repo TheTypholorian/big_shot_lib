@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 //? if >=1.21.5 {
-/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-*///? }
+//? }
 @Mixin(RenderStateShard.OverlayStateShard.class)
 public class OverlayStateShardMixin implements MutableExtension<Boolean> {
     @Unique

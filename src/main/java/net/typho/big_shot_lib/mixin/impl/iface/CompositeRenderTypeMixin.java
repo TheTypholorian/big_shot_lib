@@ -24,17 +24,17 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 //? if >=1.21.11 {
-/*import dev.kikugie.fletching_table.annotation.MixinIgnore;
+import dev.kikugie.fletching_table.annotation.MixinIgnore;
 
 @MixinIgnore
-*///? }
+//? }
 @Mixin(RenderType.CompositeRenderType.class)
 public abstract class CompositeRenderTypeMixin extends RenderType implements NeoRenderType {
     //? if >=1.21.5 {
-    /*@Shadow
+    @Shadow
     @Final
     private RenderPipeline renderPipeline;
-    *///? }
+    //? }
 
     @Shadow
     @Final
@@ -117,9 +117,9 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Neo
     @Nullable
     public BlendFunction getBlend() {
         //? if <1.21.5 {
-        return ImmutableExtensionKt.getExtensionValueNullable(state.transparencyState, BlendFunction.class);
-        //? } else {
-        /*return renderPipeline.getBlendFunction().<GlBlendShard>map(
+        /*return ImmutableExtensionKt.getExtensionValueNullable(state.transparencyState, BlendFunction.class);
+        *///? } else {
+        return renderPipeline.getBlendFunction().<GlBlendShard>map(
                 function ->
                         new BlendFunction.Separate(
                                 WrapperUtilImplKt.getNeo(function.sourceColor()),
@@ -128,7 +128,7 @@ public abstract class CompositeRenderTypeMixin extends RenderType implements Neo
                                 WrapperUtilImplKt.getNeo(function.destAlpha())
                         )
         ).orElse(null);
-        *///? }
+        //? }
     }
 
     @Override

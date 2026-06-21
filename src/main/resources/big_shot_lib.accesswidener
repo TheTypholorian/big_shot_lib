@@ -36,90 +36,93 @@ extendable method com/mojang/blaze3d/pipeline/RenderTarget _resize (IIZ)V
 extendable method com/mojang/blaze3d/pipeline/RenderTarget setFilterMode (IZ)V
 extendable method com/mojang/blaze3d/pipeline/RenderTarget _blitToScreen (IIZ)V
 
+accessible class com/mojang/blaze3d/opengl/GlDevice
+accessible class com/mojang/blaze3d/vulkan/VkDevice
+
 #? if <1.21.11 {
-accessible class net/minecraft/client/renderer/RenderType$CompositeRenderType
-accessible class net/minecraft/client/renderer/RenderType$CompositeState
-accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType state ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
-
-accessible class net/minecraft/client/renderer/RenderStateShard$TransparencyStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$ShaderStateShard
-accessible field net/minecraft/client/renderer/RenderStateShard$ShaderStateShard shader Ljava/util/Optional;
-accessible class net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard
-accessible method net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard cutoutTexture ()Ljava/util/Optional;
-accessible class net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard
-accessible method net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard cutoutTexture ()Ljava/util/Optional;
-accessible class net/minecraft/client/renderer/RenderStateShard$TextureStateShard
-accessible method net/minecraft/client/renderer/RenderStateShard$TextureStateShard cutoutTexture ()Ljava/util/Optional;
-accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard blur Z
-accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard mipmap Z
-accessible class net/minecraft/client/renderer/RenderStateShard$TexturingStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$OffsetTexturingStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$BooleanStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$LightmapStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$OverlayStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$CullStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$DepthTestStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$LayeringStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$OutputStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
-accessible class net/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard
-
-accessible field net/minecraft/client/renderer/RenderType$CompositeState textureState Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState shaderState Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState transparencyState Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState depthTestState Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState cullState Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState lightmapState Lnet/minecraft/client/renderer/RenderStateShard$LightmapStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState overlayState Lnet/minecraft/client/renderer/RenderStateShard$OverlayStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState layeringState Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState outputState Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState texturingState Lnet/minecraft/client/renderer/RenderStateShard$TexturingStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState writeMaskState Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState lineState Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
-accessible field net/minecraft/client/renderer/RenderType$CompositeState colorLogicState Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;
+#accessible class net/minecraft/client/renderer/RenderType$CompositeRenderType
+#accessible class net/minecraft/client/renderer/RenderType$CompositeState
+#accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType state ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
+#
+#accessible class net/minecraft/client/renderer/RenderStateShard$TransparencyStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$ShaderStateShard
+#accessible field net/minecraft/client/renderer/RenderStateShard$ShaderStateShard shader Ljava/util/Optional;
+#accessible class net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard
+#accessible method net/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard cutoutTexture ()Ljava/util/Optional;
+#accessible class net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard
+#accessible method net/minecraft/client/renderer/RenderStateShard$MultiTextureStateShard cutoutTexture ()Ljava/util/Optional;
+#accessible class net/minecraft/client/renderer/RenderStateShard$TextureStateShard
+#accessible method net/minecraft/client/renderer/RenderStateShard$TextureStateShard cutoutTexture ()Ljava/util/Optional;
+#accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard blur Z
+#accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard mipmap Z
+#accessible class net/minecraft/client/renderer/RenderStateShard$TexturingStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$OffsetTexturingStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$BooleanStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$LightmapStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$OverlayStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$CullStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$DepthTestStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$LayeringStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$OutputStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$LineStateShard
+#accessible class net/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard
+#
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState textureState Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState shaderState Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState transparencyState Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState depthTestState Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState cullState Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState lightmapState Lnet/minecraft/client/renderer/RenderStateShard$LightmapStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState overlayState Lnet/minecraft/client/renderer/RenderStateShard$OverlayStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState layeringState Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState outputState Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState texturingState Lnet/minecraft/client/renderer/RenderStateShard$TexturingStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState writeMaskState Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState lineState Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
+#accessible field net/minecraft/client/renderer/RenderType$CompositeState colorLogicState Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;
 #? } else {
-#accessible class net/minecraft/client/renderer/rendertype/RenderType$CompositeRenderType
-#accessible class net/minecraft/client/renderer/rendertype/RenderType$CompositeState
-#accessible method net/minecraft/client/renderer/rendertype/RenderType$CompositeRenderType state ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
-#
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$TransparencyStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$ShaderStateShard
-#accessible field net/minecraft/client/renderer/rendertype/RenderStateShard$ShaderStateShard shader Ljava/util/Optional;
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$EmptyTextureStateShard
-#accessible method net/minecraft/client/renderer/rendertype/RenderStateShard$EmptyTextureStateShard cutoutTexture ()Ljava/util/Optional;
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$MultiTextureStateShard
-#accessible method net/minecraft/client/renderer/rendertype/RenderStateShard$MultiTextureStateShard cutoutTexture ()Ljava/util/Optional;
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard
-#accessible method net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard cutoutTexture ()Ljava/util/Optional;
-#accessible field net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard blur Z
-#accessible field net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard mipmap Z
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$TexturingStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$OffsetTexturingStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$BooleanStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$LightmapStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$OverlayStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$CullStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$DepthTestStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$WriteMaskStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$LayeringStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$OutputStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$LineStateShard
-#accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$ColorLogicStateShard
-#
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState textureState Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState shaderState Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState transparencyState Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState depthTestState Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState cullState Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState lightmapState Lnet/minecraft/client/renderer/RenderStateShard$LightmapStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState overlayState Lnet/minecraft/client/renderer/RenderStateShard$OverlayStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState layeringState Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState outputState Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState texturingState Lnet/minecraft/client/renderer/RenderStateShard$TexturingStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState writeMaskState Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState lineState Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
-#accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState colorLogicState Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;
+accessible class net/minecraft/client/renderer/rendertype/RenderType$CompositeRenderType
+accessible class net/minecraft/client/renderer/rendertype/RenderType$CompositeState
+accessible method net/minecraft/client/renderer/rendertype/RenderType$CompositeRenderType state ()Lnet/minecraft/client/renderer/RenderType$CompositeState;
+
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$TransparencyStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$ShaderStateShard
+accessible field net/minecraft/client/renderer/rendertype/RenderStateShard$ShaderStateShard shader Ljava/util/Optional;
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$EmptyTextureStateShard
+accessible method net/minecraft/client/renderer/rendertype/RenderStateShard$EmptyTextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$MultiTextureStateShard
+accessible method net/minecraft/client/renderer/rendertype/RenderStateShard$MultiTextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard
+accessible method net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard cutoutTexture ()Ljava/util/Optional;
+accessible field net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard blur Z
+accessible field net/minecraft/client/renderer/rendertype/RenderStateShard$TextureStateShard mipmap Z
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$TexturingStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$OffsetTexturingStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$BooleanStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$LightmapStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$OverlayStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$CullStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$DepthTestStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$WriteMaskStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$LayeringStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$OutputStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$LineStateShard
+accessible class net/minecraft/client/renderer/rendertype/RenderStateShard$ColorLogicStateShard
+
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState textureState Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState shaderState Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState transparencyState Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState depthTestState Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState cullState Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState lightmapState Lnet/minecraft/client/renderer/RenderStateShard$LightmapStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState overlayState Lnet/minecraft/client/renderer/RenderStateShard$OverlayStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState layeringState Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState outputState Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState texturingState Lnet/minecraft/client/renderer/RenderStateShard$TexturingStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState writeMaskState Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState lineState Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
+accessible field net/minecraft/client/renderer/rendertype/RenderType$CompositeState colorLogicState Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;
 #? }
 
 accessible method com/mojang/blaze3d/shaders/Program <init> (Lcom/mojang/blaze3d/shaders/Program$Type;ILjava/lang/String;)V
@@ -133,43 +136,43 @@ accessible method net/minecraft/data/recipes/RecipeProvider inventoryTrigger ([L
 accessible method net/minecraft/data/recipes/RecipeProvider inventoryTrigger ([Lnet/minecraft/advancements/critereon/ItemPredicate;)Lnet/minecraft/advancements/Criterion;
 
 #? if <1.21.11 {
-accessible method net/minecraft/data/models/BlockModelGenerators createMirroredCubeGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createNorthWestMirroredCubeGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createMirroredColumnGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createDoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createOrientableTrapdoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createTrapdoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createButton (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createCustomFence (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createFence (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createWall (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createFenceGate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createStairs (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createPillarBlockUVLocked (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createAxisAlignedPillarBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createRotatedPillarWithHorizontalVariant (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createPressurePlate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createSlab (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;
-#? } else {
-#accessible method net/minecraft/data/models/BlockModelGenerators createMirroredCubeGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createNorthWestMirroredCubeGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createMirroredColumnGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createDoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createOrientableTrapdoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createTrapdoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createButton (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createCustomFence (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createFence (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createWall (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createFenceGate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Z)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createStairs (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createMirroredCubeGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createNorthWestMirroredCubeGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createMirroredColumnGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createDoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createOrientableTrapdoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createTrapdoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createButton (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createCustomFence (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createFence (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createWall (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createFenceGate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Z)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createStairs (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
 #accessible method net/minecraft/data/models/BlockModelGenerators createPillarBlockUVLocked (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createAxisAlignedPillarBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createRotatedPillarWithHorizontalVariant (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createPressurePlate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createSlab (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
-#accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createAxisAlignedPillarBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createRotatedPillarWithHorizontalVariant (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createPressurePlate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createSlab (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+#accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;
+#? } else {
+accessible method net/minecraft/data/models/BlockModelGenerators createMirroredCubeGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createNorthWestMirroredCubeGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createMirroredColumnGenerator (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createDoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createOrientableTrapdoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createTrapdoor (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createButton (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createCustomFence (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createFence (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createWall (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createFenceGate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Z)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createStairs (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createPillarBlockUVLocked (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/data/models/model/TextureMapping;Ljava/util/function/BiConsumer;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createAxisAlignedPillarBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createRotatedPillarWithHorizontalVariant (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createPressurePlate (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createSlab (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/BlockStateGenerator;
+accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/Identifier;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;
 #? }
 
 accessible method net/minecraft/world/level/block/state/properties/BlockSetType register (Lnet/minecraft/world/level/block/state/properties/BlockSetType;)Lnet/minecraft/world/level/block/state/properties/BlockSetType;

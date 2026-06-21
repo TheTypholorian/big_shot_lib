@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import org.lwjgl.opengl.GL11.*
 import java.io.DataOutput
 
@@ -7,7 +8,7 @@ enum class GlIndexDataType(
     override val glId: Int,
     @JvmField
     val sizeBytes: Int
-) : GlConstant {
+) : GlNamed {
     BYTE(GL_UNSIGNED_BYTE, UByte.SIZE_BYTES) {
         override fun write(output: DataOutput, value: Int) {
             output.writeByte(value)

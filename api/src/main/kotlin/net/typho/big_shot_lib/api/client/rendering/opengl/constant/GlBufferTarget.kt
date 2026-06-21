@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.*
@@ -9,7 +10,7 @@ enum class GlBufferTarget(
     override val glId: Int,
     @JvmField
     val bindingId: Int
-) : GlConstant {
+) : GlNamed {
     ARRAY_BUFFER(GL_ARRAY_BUFFER, GL_ARRAY_BUFFER_BINDING),
     ELEMENT_ARRAY_BUFFER(GL_ELEMENT_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER_BINDING),
     /*

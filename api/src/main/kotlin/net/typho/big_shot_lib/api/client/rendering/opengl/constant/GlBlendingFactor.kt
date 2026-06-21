@@ -1,12 +1,13 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL14.*
 import org.lwjgl.opengl.GL33.*
 
 enum class GlBlendingFactor(
     override val glId: Int
-) : GlConstant {
+) : GlNamed {
     ZERO(GL_ZERO),
     ONE(GL_ONE),
     SRC_COLOR(GL_SRC_COLOR),

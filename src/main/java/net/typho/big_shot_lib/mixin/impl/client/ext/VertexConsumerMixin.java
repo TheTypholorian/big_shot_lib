@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(VertexConsumer.class)
 public interface VertexConsumerMixin extends VertexConsumerExtension {
     //? if <1.21.11 {
-    @Override
+    /*@Override
     default @NotNull VertexConsumer setLineWidth(float width) {
         throw new UnsupportedOperationException("setLineWidth is only available in 1.21.11 and above. When creating lines, you must have two separate setups.");
     }
-    //? }
+    *///? }
 }

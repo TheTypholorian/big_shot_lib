@@ -1,10 +1,11 @@
 package net.typho.big_shot_lib.api.client.rendering.opengl.constant
 
+import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed
 import org.lwjgl.opengl.GL11.*
 
 enum class GlTextureMagFilter(
     override val glId: Int
-) : GlConstant {
+) : GlNamed {
     NEAREST(GL_NEAREST),
     LINEAR(GL_LINEAR),
     NEAREST_MIPMAP_NEAREST(GL_NEAREST_MIPMAP_NEAREST),

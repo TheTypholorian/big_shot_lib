@@ -273,14 +273,14 @@ object InternalClientUtilImpl : InternalClientUtil {
 
     override fun rawGetRenderTargetColor(target: RenderTarget): GlTexture2D? {
         //? if <1.21.11 {
-        return GlTexture2D.tryWrap(target.width, target.height, target.colorTextureId)
-        //? }
+        /*return GlTexture2D.tryWrap(target.width, target.height, target.colorTextureId)
+        *///? }
     }
 
     override fun rawGetRenderTargetDepth(target: RenderTarget): GlTexture2D? {
         //? if <1.21.11 {
-        return GlTexture2D.tryWrap(target.width, target.height, target.depthTextureId)
-        //? }
+        /*return GlTexture2D.tryWrap(target.width, target.height, target.depthTextureId)
+        *///? }
     }
 
     override fun rawResizeRenderTarget(
@@ -289,10 +289,10 @@ object InternalClientUtilImpl : InternalClientUtil {
         height: Int
     ) {
         //? if <1.21.11 {
-        target.resize(width, height, Minecraft.ON_OSX)
-        //? } else {
-        /*target.resize(width, height)
-        *///? }
+        /*target.resize(width, height, Minecraft.ON_OSX)
+        *///? } else {
+        target.resize(width, height)
+        //? }
     }
 
     override fun rawCreateBuffersRenderTarget(
@@ -301,10 +301,10 @@ object InternalClientUtilImpl : InternalClientUtil {
         height: Int
     ) {
         //? if <1.21.11 {
-        target.createBuffers(width, height, Minecraft.ON_OSX)
-        //? } else {
-        /*target.createBuffers(width, height)
-        *///? }
+        /*target.createBuffers(width, height, Minecraft.ON_OSX)
+        *///? } else {
+        target.createBuffers(width, height)
+        //? }
     }
 
     override fun rawIsRenderTargetFreed(target: RenderTarget): Boolean {
