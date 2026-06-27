@@ -6,7 +6,6 @@ import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBufferUsage
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureUsage
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureFormat
-import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawSettings
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 
 private val INSTANCE by lazy { IGpuObjects::class.loadService() }
@@ -18,7 +17,7 @@ object GpuObjects : IGpuObjects by INSTANCE {
         height: Int,
         usage: GpuTextureUsage
     ): GpuTexture {
-        return texture(name, width, height, usage, GpuTextureFormat.RGBA8)
+        return texture(name, width, height, usage, GpuTextureFormat.rgba)
     }
 
     fun texture(

@@ -62,7 +62,7 @@ abstract class ResourceRegistry<T>(
                         BigShotLib.LOGGER.error(message)
 
                         if (Minecraft.getInstance().level != null) {
-                            Minecraft.getInstance().chatListener.handleSystemMessage(Component.literal(message).withStyle(ChatFormatting.RED), false)
+                            Minecraft.getInstance().showDebugChat(Component.literal(message).withStyle(ChatFormatting.RED))
                         }
 
                         oldMap.remove(id)?.let { map[id] = it }

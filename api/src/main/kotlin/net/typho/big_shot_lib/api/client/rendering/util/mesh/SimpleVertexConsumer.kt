@@ -24,6 +24,8 @@ interface SimpleVertexConsumer : VertexConsumer {
 
         repeat(count) {
             for (element in format.elements) {
+                TODO()
+                /*
                 val ptr = ptr + offset + format.getOffset(element)
 
                 when (element) {
@@ -34,6 +36,7 @@ interface SimpleVertexConsumer : VertexConsumer {
                     VertexFormatElement.NORMAL -> normal(memGetByte(ptr), memGetByte(ptr + 1), memGetByte(ptr + 2))
                     else -> custom(element) { output -> MemoryPointer.wrap(ptr, element.byteSize().toLong(), free = false).read().readTo(output, element.byteSize()) }
                 }
+                 */
             }
 
             offset += format.vertexSize

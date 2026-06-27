@@ -1,12 +1,13 @@
 package net.typho.big_shot_lib.api.client.ext
 
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.common.GpuDrawSettings
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
 
 interface RenderTypeExtension : GpuDrawSettings, MaybeNamedResource {
-    val format: NeoVertexFormat
+    val format: VertexFormat
     val defaultBufferSize: Int
     /**
      * If objects with these render settings should be included in the block breaking overlay (ex. if the material is a physical, solid substance)

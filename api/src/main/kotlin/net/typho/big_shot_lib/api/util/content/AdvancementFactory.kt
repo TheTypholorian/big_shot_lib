@@ -5,7 +5,6 @@ import net.minecraft.advancements.AdvancementHolder
 import net.minecraft.advancements.AdvancementRequirements
 import net.minecraft.advancements.AdvancementRewards
 import net.minecraft.advancements.AdvancementType
-import net.minecraft.advancements.Criterion
 import net.minecraft.advancements.DisplayInfo
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.Registries
@@ -132,6 +131,7 @@ open class AdvancementFactory(
             return this as B
         }
 
+        /*
         fun addCriterion(
             key: String,
             criterion: () -> Criterion<*>
@@ -139,6 +139,7 @@ open class AdvancementFactory(
             mutators.add { it.addCriterion(key, criterion()) }
             return this as B
         }
+         */
 
         override fun end(): RegisteredObject<Advancement> {
             if (parent.registered) {

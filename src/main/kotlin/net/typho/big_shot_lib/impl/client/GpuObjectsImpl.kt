@@ -22,9 +22,7 @@ import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunct
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBufferUsage
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureFormat
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureUsage
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
 import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
 import net.typho.big_shot_lib.api.util.Extension.Companion.cast
 

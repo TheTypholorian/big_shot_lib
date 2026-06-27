@@ -1,6 +1,8 @@
 package net.typho.big_shot_lib.api.client.rendering.common
 
+import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.util.resource.MaybeNamedResource
+import java.io.FileNotFoundException
 
 @Deprecated("")
 sealed interface TextureBinding : MaybeNamedResource {

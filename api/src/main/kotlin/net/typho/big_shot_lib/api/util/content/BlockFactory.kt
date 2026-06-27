@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.block.state.properties.WoodType
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.client.rendering.util.RenderTypeExtension
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.RegisteredResource
@@ -481,8 +480,8 @@ open class BlockFactory @JvmOverloads constructor(
         @JvmField
         protected val parent: BlockFactory
     ) {
-        @JvmField
-        protected var renderType: RenderTypeExtension = NeoRenderType.BUILTINS.solid
+        //@JvmField
+        //protected var renderType: RenderTypeExtension = NeoRenderType.BUILTINS.solid
         //@JvmField
         //protected var model: Function<Supplier<T>, ModelLoadingEvent>? = null
         @JvmField
@@ -490,10 +489,12 @@ open class BlockFactory @JvmOverloads constructor(
         //@JvmField
         //protected var textureMapping: Function<Supplier<out Block>, TextureMapping> = Function { TextureMapping.cube(it.get()) }
 
+        /*
         fun renderType(renderType: RenderTypeExtension): B {
             this.renderType = renderType
             return this as B
         }
+         */
 
         /*
         fun model(model: BiFunction<Supplier<out Block>, Supplier<TextureMapping>, ModelLoadingEvent>): B {

@@ -17,11 +17,5 @@ interface Extension<T> {
         fun <T, V : T> Extension<T>.castTo(): V {
             return cast() as V
         }
-
-        @JvmStatic
-        @Suppress("UNCHECKED_CAST")
-        fun <V> Extension<*>.castTo(): V {
-            return cast() as V
-        }
     }
 }

@@ -4,11 +4,8 @@ import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import com.mojang.blaze3d.vertex.DefaultVertexFormat
 import com.mojang.blaze3d.vertex.VertexFormat
-import com.mojang.blaze3d.vertex.VertexFormatElement
 import com.mojang.serialization.Codec
 import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.client.InternalClientUtil
-import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuDataType
 
 object NeoVertexFormats {
     @JvmField
@@ -23,10 +20,6 @@ object NeoVertexFormats {
     fun register(location: Identifier, format: VertexFormat) {
         REGISTRY[location] = format
     }
-
-    // TODO
-    @JvmStatic
-    fun element(index: Int, inType: GpuDataType, outType: GpuVertexElementReadType, count: Int): VertexFormatElement = InternalClientUtil.createVertexFormatElement(index, inType, outType, count)
 
     init {
         register(Identifier.minecraft("block"), DefaultVertexFormat.BLOCK)

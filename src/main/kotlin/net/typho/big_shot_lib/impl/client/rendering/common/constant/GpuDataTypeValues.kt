@@ -1,11 +1,7 @@
 package net.typho.big_shot_lib.impl.client.rendering.common.constant
 
 import com.mojang.blaze3d.GpuFormat
-import com.mojang.blaze3d.platform.BlendFactor
-import com.mojang.blaze3d.platform.CompareOp
 import com.mojang.serialization.Codec
-import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunction
-import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBlendFactor
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuDataType
 import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
