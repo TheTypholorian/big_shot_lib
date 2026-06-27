@@ -8,7 +8,7 @@ interface MemoryWriter {
         @JvmStatic
         @get:JvmName("areChecksEnabled")
         @set:JvmName("setChecksEnabled")
-        var CHECKS = PlatformUtil.INSTANCE.isDevEnv()
+        var CHECKS = PlatformUtil.isDevEnv()
 
         @JvmStatic
         fun checkIsByte(v: Int) {

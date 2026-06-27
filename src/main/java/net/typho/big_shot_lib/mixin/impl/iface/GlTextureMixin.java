@@ -1,13 +1,13 @@
 package net.typho.big_shot_lib.mixin.impl.iface;
 
 import com.mojang.blaze3d.opengl.GlTexture;
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTextureImpl;
 import com.mojang.blaze3d.textures.TextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.bound.GlBoundTexture2D;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D;
+import net.typho.big_shot_lib.api.client.rendering.common.GpuTexture;
 import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager;
 import net.typho.big_shot_lib.api.client.rendering.util.RenderingContext;
 import net.typho.big_shot_lib.impl.client.rendering.internal.BoundMinecraftTexture;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.Shadow;
 *///? }
 
 @Mixin(GlTexture.class)
-public abstract class GlTextureMixin extends GpuTexture implements ImmutableExtension<GlTexture2D> {
+public abstract class GlTextureMixin extends GpuTextureImpl implements ImmutableExtension<GpuTexture> {
     //? if <1.21.6 {
     /*public GlTextureMixin(String string, TextureFormat textureFormat, int i, int j, int k) {
         super(string, textureFormat, i, j, k);
@@ -39,8 +39,8 @@ public abstract class GlTextureMixin extends GpuTexture implements ImmutableExte
     public abstract int glId();
 
     @Override
-    public GlTexture2D getExtensionValue() {
-        return new GlTexture2D() {
+    public GpuTexture getExtensionValue() {
+        return new GpuTexture() {
             @Override
             public RenderingContext getContext() {
                 return RenderingContext.MAIN;

@@ -1,0 +1,213 @@
+package net.typho.big_shot_lib.impl.client
+
+import com.mojang.blaze3d.GpuFormat
+import com.mojang.blaze3d.pipeline.BindGroupLayout
+import com.mojang.blaze3d.pipeline.ColorTargetState
+import com.mojang.blaze3d.pipeline.DepthStencilState
+import com.mojang.blaze3d.pipeline.RenderPipeline
+import com.mojang.blaze3d.platform.BlendFactor
+import com.mojang.blaze3d.platform.CompareOp
+import com.mojang.blaze3d.shaders.UniformType
+import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.vertex.VertexFormat
+import net.minecraft.client.renderer.LayeringTransform
+import net.minecraft.client.renderer.RenderSetup
+import net.minecraft.client.renderer.RenderType
+import net.minecraft.resources.Identifier
+import net.typho.big_shot_lib.api.client.rendering.common.GpuBuffer
+import net.typho.big_shot_lib.api.client.rendering.common.GpuObjectName
+import net.typho.big_shot_lib.api.client.rendering.common.GpuTexture
+import net.typho.big_shot_lib.api.client.rendering.common.IGpuObjects
+import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunction
+import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBufferUsage
+import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureFormat
+import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureUsage
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
+import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor
+import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
+import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
+import net.typho.big_shot_lib.api.util.Extension.Companion.cast
+
+object GpuObjectsImpl : IGpuObjects {
+    override fun renderType(
+        location: Identifier,
+        format: VertexFormat,
+        drawState: GpuDrawState.Builder,
+        defaultBufferSize: Int,
+        affectsCrumbling: Boolean,
+        sortOnUpload: Boolean,
+        isOutline: Boolean
+    ): RenderType {
+        //? if <1.21.11 {
+        /*
+        val blend = drawState.blend?.let { function ->
+            RenderStateShard.TransparencyStateShard(
+                "$function",
+                {
+                    NeoGlStateManager.INSTANCE.blendEnabled = true
+                    NeoGlStateManager.INSTANCE.blendFunction = function
+                },
+                {
+                    NeoGlStateManager.INSTANCE.blendEnabled = false
+                    NeoGlStateManager.INSTANCE.blendFunction = BlendFunction.DEFAULT
+                }
+            ).also { it.setExtensionValue(drawState.blend) }
+        } ?: RenderStateShard.NO_TRANSPARENCY
+        val mask = RenderStateShard.WriteMaskStateShard(
+            drawState.writeColor,
+            drawState.writeDepth
+        )
+        val cull = if (drawState.cull) RenderStateShard.CULL else RenderStateShard.NO_CULL
+        val depthTest = drawState.depth?.let { function ->
+            when (function) {
+                GlAlphaFunction.EQUAL -> RenderStateShard.EQUAL_DEPTH_TEST
+                GlAlphaFunction.LEQUAL -> RenderStateShard.LEQUAL_DEPTH_TEST
+                GlAlphaFunction.GREATER -> RenderStateShard.GREATER_DEPTH_TEST
+                GlAlphaFunction.ALWAYS -> RenderStateShard.NO_DEPTH_TEST
+                else -> RenderStateShard.DepthTestStateShard(
+                    function.toString(),
+                    function.glId
+                )
+            }
+        } ?: RenderStateShard.NO_DEPTH_TEST
+        val layering = when (drawState.layering) {
+            LayeringState.DISABLED -> RenderStateShard.NO_LAYERING
+            LayeringState.POLYGON_OFFSET -> RenderStateShard.POLYGON_OFFSET_LAYERING
+            LayeringState.VIEW_OFFSET -> RenderStateShard.VIEW_OFFSET_Z_LAYERING
+        }
+        val lightmap = if (drawState.lightmap) RenderStateShard.LIGHTMAP else RenderStateShard.NO_LIGHTMAP
+        val overlay = if (drawState.overlay) RenderStateShard.OVERLAY else RenderStateShard.NO_OVERLAY
+        val texture = drawState.texture?.let { texture ->
+            NeoTextureStateShard(texture)
+        } ?: RenderStateShard.NO_TEXTURE
+        val shader = drawState.shader?.let { shader ->
+            RenderStateShard.ShaderStateShard { shader.get().getExtensionValue() }
+        } ?: RenderStateShard.NO_SHADER
+
+        return RenderType.create(
+            location.toShortString(),
+            format.getExtensionValue<VertexFormat>(),
+            VertexFormat.Mode.QUADS,
+            defaultBufferSize,
+            affectsCrumbling,
+            sortOnUpload,
+            RenderType.CompositeState.builder()
+                .setTransparencyState(blend)
+                .setWriteMaskState(mask)
+                .setCullState(cull)
+                .setDepthTestState(depthTest)
+                .setLayeringState(layering)
+                .setLightmapState(lightmap)
+                .setOverlayState(overlay)
+                .setTextureState(texture)
+                .setShaderState(shader)
+                .createCompositeState(isOutline)
+        )
+        *///? } else {
+        val pipeline = RenderPipeline.builder()
+
+        pipeline.withLocation(location)
+
+        pipeline.withVertexShader(drawState.vertexShader ?: throw NullPointerException("Must specify vertex shader in render type $location"))
+        pipeline.withFragmentShader(drawState.fragmentShader ?: throw NullPointerException("Must specify fragment shader in render type $location"))
+
+        pipeline.withDepthStencilState(DepthStencilState(
+            when (drawState.depth) {
+                GpuAlphaFunction.NEVER -> CompareOp.NEVER_PASS
+                GpuAlphaFunction.LESS -> CompareOp.LESS_THAN
+                GpuAlphaFunction.EQUAL -> CompareOp.EQUAL
+                GpuAlphaFunction.LEQUAL -> CompareOp.LESS_THAN_OR_EQUAL
+                GpuAlphaFunction.GREATER -> CompareOp.GREATER_THAN
+                GpuAlphaFunction.NOTEQUAL -> CompareOp.NOT_EQUAL
+                GpuAlphaFunction.GEQUAL -> CompareOp.GREATER_THAN_OR_EQUAL
+                GpuAlphaFunction.ALWAYS, null -> CompareOp.ALWAYS_PASS
+            },
+            drawState.writeDepth
+        ))
+        drawState.blend?.let { blend ->
+            fun GlBlendingFactor.toMoj(): BlendFactor {
+                return when (this) {
+                    GlBlendingFactor.ZERO -> BlendFactor.ZERO
+                    GlBlendingFactor.ONE -> BlendFactor.ONE
+                    GlBlendingFactor.SRC_COLOR -> BlendFactor.SRC_COLOR
+                    GlBlendingFactor.ONE_MINUS_SRC_COLOR -> BlendFactor.ONE_MINUS_SRC_COLOR
+                    GlBlendingFactor.DST_COLOR -> BlendFactor.DST_COLOR
+                    GlBlendingFactor.ONE_MINUS_DST_COLOR -> BlendFactor.ONE_MINUS_DST_COLOR
+                    GlBlendingFactor.SRC_ALPHA -> BlendFactor.SRC_ALPHA
+                    GlBlendingFactor.ONE_MINUS_SRC_ALPHA -> BlendFactor.ONE_MINUS_SRC_ALPHA
+                    GlBlendingFactor.DST_ALPHA -> BlendFactor.DST_ALPHA
+                    GlBlendingFactor.ONE_MINUS_DST_ALPHA -> BlendFactor.ONE_MINUS_DST_ALPHA
+                    GlBlendingFactor.CONSTANT_COLOR -> BlendFactor.CONSTANT_COLOR
+                    GlBlendingFactor.ONE_MINUS_CONSTANT_COLOR -> BlendFactor.ONE_MINUS_CONSTANT_COLOR
+                    GlBlendingFactor.CONSTANT_ALPHA -> BlendFactor.CONSTANT_ALPHA
+                    GlBlendingFactor.ONE_MINUS_CONSTANT_ALPHA -> BlendFactor.ONE_MINUS_CONSTANT_ALPHA
+                    GlBlendingFactor.SRC_ALPHA_SATURATE -> BlendFactor.SRC_ALPHA_SATURATE
+                }
+            }
+
+            pipeline.withColorTargetState(ColorTargetState(
+                when (blend) {
+                    is GpuBlendFunction.Basic -> com.mojang.blaze3d.pipeline.BlendFunction(blend.src.toMoj(), blend.dest.toMoj(), blend.src.toMoj(), blend.dest.toMoj())
+                    is GpuBlendFunction.Separate -> com.mojang.blaze3d.pipeline.BlendFunction(blend.src.toMoj(), blend.dest.toMoj(), blend.srcA.toMoj(), blend.destA.toMoj())
+                }
+            ))
+        } ?: pipeline.withColorTargetState(ColorTargetState.DEFAULT)
+        pipeline.withCull(drawState.cull)
+
+        val layout = BindGroupLayout.builder()
+
+        drawState.samplers.forEach { layout.withSampler(it) }
+        drawState.uniforms.forEach { layout.withUniform(it, UniformType.UNIFORM_BUFFER) }
+
+        pipeline.withBindGroupLayout(layout.build())
+
+        val setup = RenderSetup.builder(pipeline.build())
+
+        if (affectsCrumbling) {
+            setup.affectsCrumbling()
+        }
+
+        if (sortOnUpload) {
+            setup.sortOnUpload()
+        }
+
+        // TODO
+        setup.setOutline(if (isOutline) RenderSetup.OutlineProperty.IS_OUTLINE else RenderSetup.OutlineProperty.AFFECTS_OUTLINE)
+
+        if (drawState.lightmap) {
+            setup.useLightmap()
+        }
+
+        if (drawState.overlay) {
+            setup.useOverlay()
+        }
+
+        setup.setLayeringTransform(if (drawState.zOffset) LayeringTransform.VIEW_OFFSET_Z_LAYERING else LayeringTransform.NO_LAYERING)
+
+        return RenderType.create(
+            location.toShortString(),
+            setup.createRenderSetup()
+        )
+        //? }
+    }
+
+    override fun texture(
+        name: GpuObjectName?,
+        width: Int,
+        height: Int,
+        usage: GpuTextureUsage,
+        format: GpuTextureFormat,
+        blur: Boolean,
+        mipmap: Boolean
+    ): GpuTexture {
+        return RenderSystem.getDevice().createTexture(name, usage.flags, format.cast<GpuFormat>(), width, height, 1, 0)
+    }
+
+    override fun buffer(
+        name: GpuObjectName?,
+        size: Long,
+        usage: GpuBufferUsage
+    ): GpuBuffer {
+        return RenderSystem.getDevice().createBuffer(name, usage.flags, size)
+    }
+}

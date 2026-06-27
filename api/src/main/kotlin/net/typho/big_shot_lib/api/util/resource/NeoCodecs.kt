@@ -7,6 +7,8 @@ import com.mojang.serialization.DynamicOps
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.MapLike
 import com.mojang.serialization.RecordBuilder
+import net.typho.big_shot_lib.api.util.Extension
+import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 import java.util.Optional
 import java.util.stream.Stream
 

@@ -5,8 +5,10 @@ import net.typho.big_shot_lib.api.math.IntOperatorSet
 import net.typho.big_shot_lib.api.math.OperatorSet
 import net.typho.big_shot_lib.api.math.IVec2
 import net.typho.big_shot_lib.api.math.IVec3
+import net.typho.big_shot_lib.api.util.Extension
+import net.typho.big_shot_lib.api.util.Extension.Companion.cast
 
-interface Vec3iExtension : IVec3<Int> {
+interface Vec3iExtension : Extension<Vec3i>, IVec3<Int> {
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet
     override val xy: IVec2<Int>
@@ -187,6 +189,6 @@ interface Vec3iExtension : IVec3<Int> {
     }
 
     override fun toVec3i(): Vec3i {
-        return this as Vec3i
+        return cast()
     }
 }

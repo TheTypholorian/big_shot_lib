@@ -368,7 +368,7 @@ public abstract class ShaderInstanceMixin implements GlProgram, ShaderInstanceEx
             method = "apply",
             at = @At(
                     value = "CONSTANT",
-                    args = "classValue=com/mojang/blaze3d/pipeline/RenderTarget"
+                    args = "classValue=com/mojang/blaze3d/pipeline/GpuFramebufferImpl"
             )
     )
     private void apply(CallbackInfo ci, @Local Object value, @Local(ordinal = 3) LocalIntRef textureId) {

@@ -14,7 +14,11 @@ import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.typho.big_shot_lib.api.event.RegistryBuilder
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 
-interface InternalUtil {
+private val INSTANCE by lazy { IInternalUtil::class.loadService() }
+
+object InternalUtil : IInternalUtil by INSTANCE
+
+interface IInternalUtil {
     fun <T : Any> createRegistryBuilder(
         key: ResourceKey<Registry<T>>
     ): RegistryBuilder<T>
@@ -30,10 +34,4 @@ interface InternalUtil {
     fun createPressurePlateBlock(blockSet: BlockSetType, properties: BlockBehaviour.Properties): PressurePlateBlock
 
     fun createButtonBlock(blockSet: BlockSetType, pressDuration: Int, properties: BlockBehaviour.Properties): ButtonBlock
-
-    companion object {
-        @JvmStatic
-        @get:JvmName("getInstance")
-        val INSTANCE by lazy { InternalUtil::class.loadService() }
-    }
 }

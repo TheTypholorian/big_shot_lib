@@ -5,8 +5,9 @@ import net.typho.big_shot_lib.api.math.DoubleOperatorSet
 import net.typho.big_shot_lib.api.math.OperatorSet
 import net.typho.big_shot_lib.api.math.IVec2
 import net.typho.big_shot_lib.api.math.IVec3
+import net.typho.big_shot_lib.api.util.Extension
 
-interface Vec3Extension : IVec3<Double> {
+interface Vec3Extension : Extension<Vec3>, IVec3<Double> {
     override val opSet: OperatorSet<Double>
         get() = DoubleOperatorSet
     override val xy: IVec2<Double>

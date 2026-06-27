@@ -1,63 +1,20 @@
 package net.typho.big_shot_lib.impl.client
 
-import com.mojang.blaze3d.pipeline.RenderTarget
-import com.mojang.blaze3d.pipeline.TextureTarget
-import com.mojang.blaze3d.platform.GlStateManager
-import com.mojang.blaze3d.shaders.Program
-import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.GpuFormat
 import com.mojang.blaze3d.vertex.VertexFormat
-import com.mojang.blaze3d.vertex.VertexFormatElement
-import net.minecraft.client.Minecraft
-import net.minecraft.client.renderer.RenderStateShard
-import net.minecraft.client.renderer.RenderType
-import net.minecraft.client.renderer.ShaderInstance
-import net.minecraft.client.renderer.texture.AbstractTexture
-import net.minecraft.resources.Identifier
-import net.typho.big_shot_lib.api.client.InternalClientUtil
-import net.typho.big_shot_lib.api.client.ext.VertexFormatElementExtension
-import net.typho.big_shot_lib.api.client.rendering.NeoShaderLoader
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlAlphaFunction
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBeginMode
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlVertexElementReadType
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlProgram
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShader
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlShaderType
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D
-import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
-import net.typho.big_shot_lib.api.client.rendering.state.LayeringState
-import net.typho.big_shot_lib.api.client.rendering.opengl.state.NeoGlStateManager
-import net.typho.big_shot_lib.api.client.rendering.opengl.util.BlendFunction
-import net.typho.big_shot_lib.api.math.IVec3
-import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderInstanceExtension
-import net.typho.big_shot_lib.impl.client.rendering.state.NeoTextureStateShard
-import net.typho.big_shot_lib.api.util.getExtensionValue
-import net.typho.big_shot_lib.api.util.setExtensionValue
-import net.typho.big_shot_lib.impl.client.rendering.opengl.GlBufferImpl
-import net.typho.big_shot_lib.impl.client.rendering.opengl.NeoDynamicTexture
-import net.typho.big_shot_lib.impl.client.rendering.util.TextureWrapperRenderTarget
-import org.joml.Vector3f
-import org.lwjgl.opengl.GL11.GL_TEXTURE_2D
+import net.typho.big_shot_lib.api.client.IInternalClientUtil
+import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuDataType
+import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 import sun.misc.Unsafe
 import java.lang.reflect.Modifier
-import java.nio.IntBuffer
+import kotlin.jvm.java
 
-//? fabric {
-
-//? } neoforge {
-//? }
-
-object InternalClientUtilImpl : InternalClientUtil {
+object InternalClientUtilImpl : IInternalClientUtil {
     @JvmField
     val UNSAFE = getUnsafe()
 
     private fun getUnsafe(): Unsafe {
-        val fields = Unsafe::class.java.getDeclaredFields()
+        val fields = Unsafe::class.java.declaredFields
 
         for (field in fields) {
             if (field.type != Unsafe::class.java) {
@@ -79,45 +36,55 @@ object InternalClientUtilImpl : InternalClientUtil {
         throw UnsupportedOperationException("Big Shot Lib requires sun.misc.Unsafe to be available.")
     }
 
-    override fun getTexture(location: Identifier): AbstractTexture? {
-        return Minecraft.getInstance().textureManager.getTexture(location, null)
+    override fun addPositionElement(builder: VertexFormat.Builder): VertexFormat.Builder {
+        return builder.addAttribute("Position", GpuFormat.RGB32_FLOAT)
     }
 
-    override fun getProgram(location: Identifier): GlProgram? {
-        return Minecraft.getInstance().gameRenderer.getShader(location.toShortString())?.getExtensionValue() ?: NeoShaderLoader[location]
+    override fun addTextureUvElement(builder: VertexFormat.Builder): VertexFormat.Builder {
+        return builder.addAttribute("UV0", GpuFormat.RG32_FLOAT)
     }
 
-    override fun transformNormal(
-        pose: PoseStack.Pose,
-        x: Float,
-        y: Float,
-        z: Float
-    ): IVec3<Float> {
-        //? if >=1.20.5 {
-        return IVec3(pose.transformNormal(x, y, z, Vector3f()))
-        //? } else {
-        /*return IVec3(pose.normal().transform(Vector3f(x, y, z)))
-        *///? }
+    override fun addOverlayUvElement(builder: VertexFormat.Builder): VertexFormat.Builder {
+        return builder.addAttribute("UV1", GpuFormat.RG16_SINT)
     }
 
-    override fun createShader(location: Identifier, type: GlShaderType, glId: Int): GlShader {
-        return when (type) {
-            GlShaderType.VERTEX -> Program(Program.Type.VERTEX, glId, location.toShortString()).getExtensionValue()
-            GlShaderType.FRAGMENT -> Program(Program.Type.VERTEX, glId, location.toShortString()).getExtensionValue()
-            else -> GlShader.Impl(location, type, glId)
+    override fun addLightUvElement(builder: VertexFormat.Builder): VertexFormat.Builder {
+        return builder.addAttribute("UV2", GpuFormat.RG16_SINT)
+    }
+
+    override fun addColorElement(builder: VertexFormat.Builder): VertexFormat.Builder {
+        return builder.addAttribute("Color", GpuFormat.RGBA8_UNORM)
+    }
+
+    override fun addNormalElement(builder: VertexFormat.Builder): VertexFormat.Builder {
+        return builder.addAttribute("Normal", GpuFormat.RGBA8_SNORM)
+    }
+
+    override fun addCustomElement(
+        builder: VertexFormat.Builder,
+        name: String,
+        type: GpuDataType,
+        components: Int,
+        stride: Int?
+    ): VertexFormat.Builder {
+        val mojType = type.castTo<GpuFormat.ComponentType>()
+        val format = GpuFormat.entries.firstOrNull { it.componentCount() == components && it.componentType() == mojType } ?: throw IllegalArgumentException("Invalid component count $components and type $type")
+
+        return if (stride == null) {
+            builder.addAttribute(
+                name,
+                format
+            )
+        } else {
+            builder.addAttribute(
+                name,
+                stride,
+                format
+            )
         }
     }
 
-    override fun createProgram(
-        location: Identifier,
-        format: VertexFormat,
-        glId: Int
-    ): GlProgram {
-        val shader = UNSAFE.allocateInstance(ShaderInstance::class.java) as ShaderInstance
-        (shader as ShaderInstanceExtension).`big_shot_lib$init`(location, format, glId)
-        return shader.getExtensionValue<GlProgram>()
-    }
-
+    /*
     override fun createRenderType(
         location: Identifier,
         format: VertexFormat,
@@ -201,17 +168,19 @@ object InternalClientUtilImpl : InternalClientUtil {
                 .createCompositeState(isOutline)
         )
     }
+     */
 
-    override fun createRenderTarget(width: Int, height: Int, useDepth: Boolean, name: () -> String): RenderTarget {
+    /*
+    override fun createGpuFramebufferImpl(width: Int, height: Int, useDepth: Boolean, name: () -> String): GpuFramebufferImpl {
         return TextureTarget(width, height, useDepth, Minecraft.ON_OSX)
     }
 
-    override fun createRenderTarget(
-        color: GlTexture2D,
-        depth: GlTexture2D?,
+    override fun createGpuFramebufferImpl(
+        color: GpuTexture,
+        depth: GpuTexture?,
         name: () -> String
-    ): RenderTarget {
-        return TextureWrapperRenderTarget(color, depth)
+    ): GpuFramebufferImpl {
+        return TextureWrapperGpuFramebufferImpl(color, depth)
     }
 
     override fun createTexture(
@@ -271,20 +240,20 @@ object InternalClientUtilImpl : InternalClientUtil {
         return element
     }
 
-    override fun rawGetRenderTargetColor(target: RenderTarget): GlTexture2D? {
+    override fun rawGetGpuFramebufferImplColor(target: GpuFramebufferImpl): GpuTexture? {
         //? if <1.21.11 {
-        /*return GlTexture2D.tryWrap(target.width, target.height, target.colorTextureId)
+        /*return ITexture.tryWrap(target.width, target.height, target.colorTextureId)
         *///? }
     }
 
-    override fun rawGetRenderTargetDepth(target: RenderTarget): GlTexture2D? {
+    override fun rawGetGpuFramebufferImplDepth(target: GpuFramebufferImpl): GpuTexture? {
         //? if <1.21.11 {
-        /*return GlTexture2D.tryWrap(target.width, target.height, target.depthTextureId)
+        /*return ITexture.tryWrap(target.width, target.height, target.depthTextureId)
         *///? }
     }
 
-    override fun rawResizeRenderTarget(
-        target: RenderTarget,
+    override fun rawResizeGpuFramebufferImpl(
+        target: GpuFramebufferImpl,
         width: Int,
         height: Int
     ) {
@@ -295,8 +264,8 @@ object InternalClientUtilImpl : InternalClientUtil {
         //? }
     }
 
-    override fun rawCreateBuffersRenderTarget(
-        target: RenderTarget,
+    override fun rawCreateBuffersGpuFramebufferImpl(
+        target: GpuFramebufferImpl,
         width: Int,
         height: Int
     ) {
@@ -307,15 +276,16 @@ object InternalClientUtilImpl : InternalClientUtil {
         //? }
     }
 
-    override fun rawIsRenderTargetFreed(target: RenderTarget): Boolean {
+    override fun rawIsGpuFramebufferImplFreed(target: GpuFramebufferImpl): Boolean {
         return target.frameBufferId == -1
     }
 
-    override fun rawGetRenderTargetId(target: RenderTarget): Int {
+    override fun rawGetGpuFramebufferImplId(target: GpuFramebufferImpl): Int {
         return target.frameBufferId
     }
 
-    override fun rawFreeRenderTarget(target: RenderTarget) {
+    override fun rawFreeGpuFramebufferImpl(target: GpuFramebufferImpl) {
         target.destroyBuffers()
     }
+     */
 }

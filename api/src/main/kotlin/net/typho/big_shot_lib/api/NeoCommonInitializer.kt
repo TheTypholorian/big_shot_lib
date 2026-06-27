@@ -19,7 +19,7 @@ interface NeoCommonInitializer {
     }
 
     fun addClientListener(listener: Consumer<NeoClientEventBus>) {
-        if (PlatformUtil.INSTANCE.isClient()) {
+        if (PlatformUtil.isClient()) {
             if (NeoClientInitializer.isClientInitDone) {
                 throw IllegalStateException("Cannot register a client mod listener for $modId after init")
             }

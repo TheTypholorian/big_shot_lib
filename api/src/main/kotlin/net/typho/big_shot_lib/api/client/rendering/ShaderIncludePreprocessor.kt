@@ -1,14 +1,23 @@
 package net.typho.big_shot_lib.api.client.rendering
 
+import net.minecraft.resources.FileToIdConverter
 import net.minecraft.resources.Identifier
-import net.minecraft.server.packs.resources.ResourceManager
-import java.io.FileNotFoundException
+import net.minecraft.server.packs.resources.Resource
+import net.typho.big_shot_lib.api.BigShotLib
+import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuShaderType
 
-object ShaderIncludePreprocessor : ShaderPreprocessor {
+object ShaderIncludePreprocessor : NeoShaderPreprocessor {
+    @JvmField
+    val directories = mutableSetOf(
+        FileToIdConverter("neo/shaders/include", ".glsl"),
+        FileToIdConverter("shaders/include", ".glsl")
+    )
+
     override fun apply(
         location: Identifier,
+        type: GpuShaderType,
         code: String,
-        manager: ResourceManager
+        resources: Map<Identifier, Resource>
     ): String {
         var code = code
         var index: Int = -1
@@ -41,7 +50,8 @@ object ShaderIncludePreprocessor : ShaderPreprocessor {
                 .mapNotNull { it.trim().ifEmpty { null } }
 
             if (line.size != 2) {
-                throw IllegalStateException("Malformed #include '$line'")
+                BigShotLib.LOGGER.error("Malformed #include '$line' in shader $location")
+                break
             }
 
             var contents = line[1]
@@ -54,10 +64,28 @@ object ShaderIncludePreprocessor : ShaderPreprocessor {
             }
 
             val includePath = Identifier.parse(contents)
+            var found = false
 
-            code = code.substring(0, index) +
-                    (shaderIncludes[includePath] ?: throw FileNotFoundException("Could not find include file '$includePath' requested by $location")) +
-                    code.substring(endIndex)
+            for (dir in directories) {
+                resources[dir.idToFile(includePath)]?.let { resource ->
+                    resource.openAsReader().use { reader ->
+                        var text = reader.readText().trim()
+
+                        if (text.startsWith("#version")) {
+                            text = text.substring(text.indexOf('\n') + 1)
+                        }
+
+                        code = code.substring(0, index) + text + code.substring(endIndex)
+                    }
+
+                    found = true
+                    break
+                }
+            }
+
+            if (!found) {
+                BigShotLib.LOGGER.error("Could not find include file '$includePath' requested by shader $location")
+            }
         }
 
         return code

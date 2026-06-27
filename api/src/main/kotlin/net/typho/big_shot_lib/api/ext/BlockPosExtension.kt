@@ -2,8 +2,10 @@ package net.typho.big_shot_lib.api.ext
 
 import net.minecraft.core.BlockPos
 import net.typho.big_shot_lib.api.math.IVec3
+import net.typho.big_shot_lib.api.util.Extension
+import net.typho.big_shot_lib.api.util.Extension.Companion.cast
 
-interface BlockPosExtension : IVec3<Int> {
+interface BlockPosExtension : Extension<BlockPos>, IVec3<Int> {
     override fun copyWith(
         x: Int,
         y: Int,
@@ -179,6 +181,6 @@ interface BlockPosExtension : IVec3<Int> {
     }
 
     override fun toBlockPos(): BlockPos {
-        return (this as BlockPos).immutable()
+        return cast().immutable()
     }
 }

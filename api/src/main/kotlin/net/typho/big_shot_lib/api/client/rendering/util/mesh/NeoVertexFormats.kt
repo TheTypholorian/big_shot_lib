@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.util
+package net.typho.big_shot_lib.api.client.rendering.util.mesh
 
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
@@ -8,24 +8,15 @@ import com.mojang.blaze3d.vertex.VertexFormatElement
 import com.mojang.serialization.Codec
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.InternalClientUtil
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlDataType
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlVertexElementReadType
+import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuDataType
 
 object NeoVertexFormats {
     @JvmField
     val REGISTRY: BiMap<Identifier, VertexFormat> = HashBiMap.create()
     @JvmField
-    val CODEC: Codec<VertexFormat> = Identifier.CODEC.xmap(
+    val LOOKUP_CODEC: Codec<VertexFormat> = Identifier.CODEC.xmap(
         { REGISTRY[it] },
         { REGISTRY.inverse()[it] }
-    )
-
-    @JvmField
-    val ELEMENT_REGISTRY: BiMap<Identifier, VertexFormatElement> = HashBiMap.create()
-    @JvmField
-    val ELEMENT_CODEC: Codec<VertexFormatElement> = Identifier.CODEC.xmap(
-        { ELEMENT_REGISTRY[it] },
-        { ELEMENT_REGISTRY.inverse()[it] }
     )
 
     @JvmStatic
@@ -33,13 +24,9 @@ object NeoVertexFormats {
         REGISTRY[location] = format
     }
 
+    // TODO
     @JvmStatic
-    fun register(location: Identifier, format: VertexFormatElement) {
-        ELEMENT_REGISTRY[location] = format
-    }
-
-    @JvmStatic
-    fun element(index: Int, inType: GlDataType, outType: GlVertexElementReadType, count: Int): VertexFormatElement = InternalClientUtil.INSTANCE.createVertexFormatElement(index, inType, outType, count)
+    fun element(index: Int, inType: GpuDataType, outType: GpuVertexElementReadType, count: Int): VertexFormatElement = InternalClientUtil.createVertexFormatElement(index, inType, outType, count)
 
     init {
         register(Identifier.minecraft("block"), DefaultVertexFormat.BLOCK)
@@ -54,12 +41,5 @@ object NeoVertexFormats {
         register(Identifier.minecraft("position_color_tex_lightmap"), DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP)
         register(Identifier.minecraft("position_tex_lightmap_color"), DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR)
         register(Identifier.minecraft("position_tex_color_normal"), DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL)
-
-        register(Identifier.minecraft("position"), VertexFormatElement.POSITION)
-        register(Identifier.minecraft("color"), VertexFormatElement.COLOR)
-        register(Identifier.minecraft("texture_uv"), VertexFormatElement.TEXTURE_UV)
-        register(Identifier.minecraft("overlay_uv"), VertexFormatElement.OVERLAY_UV)
-        register(Identifier.minecraft("light_uv"), VertexFormatElement.LIGHT_UV)
-        register(Identifier.minecraft("normal"), VertexFormatElement.NORMAL)
     }
 }

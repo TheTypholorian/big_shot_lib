@@ -48,7 +48,7 @@ open class CreativeTabFactory(
         protected val parent: CreativeTabFactory
     ) : ObjectBuilder<RegisteredObject<CreativeModeTab>> {
         @JvmField
-        protected val builder = InternalUtil.INSTANCE.createCreativeTabBuilder()
+        protected val builder = InternalUtil.createCreativeTabBuilder()
 
         init {
             builder.title(Component.translatable(key.identifier().toLanguageKey("itemGroup")))

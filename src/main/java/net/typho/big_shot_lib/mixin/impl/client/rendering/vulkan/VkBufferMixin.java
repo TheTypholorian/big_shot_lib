@@ -15,11 +15,6 @@ public abstract class VkBufferMixin implements VkResource, GpuResource, VkNamed 
     public abstract long vkBuffer();
 
     @Override
-    public @NotNull GpuResourceType getType() {
-        return GpuResourceType.BUFFER;
-    }
-
-    @Override
     public long getVkId() {
         return vkBuffer();
     }

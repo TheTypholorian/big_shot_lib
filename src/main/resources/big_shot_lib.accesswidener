@@ -37,7 +37,9 @@ extendable method com/mojang/blaze3d/pipeline/RenderTarget setFilterMode (IZ)V
 extendable method com/mojang/blaze3d/pipeline/RenderTarget _blitToScreen (IIZ)V
 
 accessible class com/mojang/blaze3d/opengl/GlDevice
+accessible class com/mojang/blaze3d/opengl/GlRenderPass
 accessible class com/mojang/blaze3d/vulkan/VkDevice
+accessible class com/mojang/blaze3d/vulkan/VkRenderPass
 
 #? if <1.21.11 {
 #accessible class net/minecraft/client/renderer/RenderType$CompositeRenderType

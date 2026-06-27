@@ -7,7 +7,7 @@ import com.mojang.blaze3d.buffers.BufferUsage;
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlNamed;
 //? }
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.GpuBufferImpl;
 import com.mojang.blaze3d.opengl.GlBuffer;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferTarget;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBufferUsage;
@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @MixinIgnore
 *///? }
 @Mixin(GlBuffer.class)
-public abstract class GlBufferMixin extends GpuBuffer implements ImmutableExtension<net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer> {
+public abstract class GlBufferMixin extends GpuBufferImpl implements ImmutableExtension<net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlBuffer> {
     //? if <1.21.6 {
     /*public GlBufferMixin(BufferType bufferType, BufferUsage bufferUsage, int i) {
         super(bufferType, bufferUsage, i);

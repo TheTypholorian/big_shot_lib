@@ -1,10 +1,10 @@
-package net.typho.big_shot_lib.api.client.rendering.util
+package net.typho.big_shot_lib.api.client.rendering.util.mesh
 
 import com.mojang.blaze3d.vertex.VertexConsumer
 import com.mojang.blaze3d.vertex.VertexFormat
 import org.lwjgl.system.MemoryStack
 
-object EmptyVertexConsumer : VertexConsumer {
+object EmptyVertexConsumer : SimpleVertexConsumer {
     override fun vertex(x: Float, y: Float, z: Float): VertexConsumer {
         return this
     }
@@ -35,10 +35,6 @@ object EmptyVertexConsumer : VertexConsumer {
     }
 
     override fun normal(x: Float, y: Float, z: Float): VertexConsumer {
-        return this
-    }
-
-    override fun setLineWidth(width: Float): VertexConsumer {
         return this
     }
 

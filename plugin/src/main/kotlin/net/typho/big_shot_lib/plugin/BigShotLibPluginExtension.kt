@@ -159,6 +159,18 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 renameClass("com/mojang/blaze3d/vulkan/VulkanUtils", "com/mojang/blaze3d/vulkan/VkUtil")
             }
 
+            if (version >= MCVersion.MC1_21_5) {
+                renameClass("com/mojang/blaze3d/buffers/GpuBuffer", "com/mojang/blaze3d/buffers/GpuBufferImpl")
+                renameClass("com/mojang/blaze3d/textures/GpuSampler", "com/mojang/blaze3d/textures/GpuSamplerImpl")
+                renameClass("com/mojang/blaze3d/textures/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")
+
+                injectInterface("net/typho/big_shot_lib/api/client/rendering/common/GpuBuffer", "com/mojang/blaze3d/buffers/GpuBufferImpl")
+                injectInterface("net/typho/big_shot_lib/api/client/rendering/common/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")
+
+                injectInterface("net/typho/big_shot_lib/api/client/ext/RenderPassExtension", "com/mojang/blaze3d/systems/RenderPassBackend")
+                injectInterface("net/typho/big_shot_lib/api/client/ext/RenderPassExtension", "com/mojang/blaze3d/systems/RenderPass")
+            }
+
             markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex")
             markAsDeprecated($$"com/mojang/blaze3d/vertex/VertexFormat$Builder", "()Lcom/mojang/blaze3d/vertex/VertexFormat;", "build")
 
@@ -195,12 +207,15 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
 
             injectInterface("net/typho/big_shot_lib/api/client/ext/VertexConsumerExtension", "com/mojang/blaze3d/vertex/VertexConsumer")
             injectInterface("net/typho/big_shot_lib/api/client/ext/VertexFormatBuilderExtension", $$"com/mojang/blaze3d/vertex/VertexFormat$Builder")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoRenderType", "net/minecraft/client/renderer/RenderType")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlUniform", "com/mojang/blaze3d/shaders/AbstractUniform")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoVertexFormat", "com/mojang/blaze3d/vertex/VertexFormat")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/util/NeoGuiGraphics", "net/minecraft/client/gui/GuiGraphics")
-            injectInterface("net/typho/big_shot_lib/api/client/ext/RenderTargetExtension", "com/mojang/blaze3d/pipeline/RenderTarget")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/opengl/resource/GlTexture2D", "net/minecraft/client/renderer/texture/AbstractTexture")
+            injectInterface("net/typho/big_shot_lib/api/client/ext/RenderTypeExtension", "net/minecraft/client/renderer/RenderType")
+
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuAlphaFunction", "com/mojang/blaze3d/platform/CompareOp")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuBlendFactor", "com/mojang/blaze3d/platform/BlendFactor")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuDataType", $$"com/mojang/blaze3d/GpuFormat$ComponentType")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuIndexType", "com/mojang/blaze3d/IndexType")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuShaderType", "com/mojang/blaze3d/shaders/ShaderType")
+            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuTextureFormat", "com/mojang/blaze3d/GpuFormat")
+
             injectInterface("net/typho/big_shot_lib/api/ext/DirectionExtension", "net/minecraft/core/Direction")
             injectInterface("net/typho/big_shot_lib/api/ext/Vec3iExtension", "net/minecraft/core/Vec3i")
             injectInterface("net/typho/big_shot_lib/api/ext/BlockPosExtension", "net/minecraft/core/BlockPos")

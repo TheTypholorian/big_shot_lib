@@ -38,7 +38,7 @@ abstract class AntiLeakResource(
         @JvmStatic
         @get:JvmName("isCheckingEnabled")
         @set:JvmName("setCheckingEnabled")
-        var CHECKING = PlatformUtil.INSTANCE.isDevEnv()
+        var CHECKING = PlatformUtil.isDevEnv()
 
         @JvmStatic
         private val CLEANER = Cleaner.create()

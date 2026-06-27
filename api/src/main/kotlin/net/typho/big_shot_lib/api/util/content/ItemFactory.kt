@@ -12,7 +12,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
+import net.typho.big_shot_lib.api.client.rendering.util.RenderTypeExtension
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.RegisteredResource
@@ -123,11 +123,11 @@ open class ItemFactory(
         protected val parent: ItemFactory
     ) {
         @JvmField
-        protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
+        protected var renderType: RenderTypeExtension = NeoRenderType.BUILTINS.solid
         //@JvmField
         //protected var model: Function<Supplier<T>, ModelLoadingEvent>? = null
 
-        fun renderType(renderType: NeoRenderType): B {
+        fun renderType(renderType: RenderTypeExtension): B {
             this.renderType = renderType
             return this as B
         }
@@ -179,7 +179,7 @@ open class ItemFactory(
         }
 
         fun client(info: UnaryOperator<ClientInfo<T, *>>): B {
-            if (PlatformUtil.INSTANCE.isClient()) {
+            if (PlatformUtil.isClient()) {
                 clientInfo = info.apply(clientInfo ?: ClientInfoImpl(parent))
             }
 

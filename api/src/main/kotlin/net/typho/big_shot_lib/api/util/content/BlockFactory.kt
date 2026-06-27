@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.minecraft.world.level.block.state.properties.WoodType
 import net.typho.big_shot_lib.api.InternalUtil
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.client.rendering.util.NeoRenderType
+import net.typho.big_shot_lib.api.client.rendering.util.RenderTypeExtension
 import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.RegisteredResource
@@ -102,7 +102,7 @@ open class BlockFactory @JvmOverloads constructor(
 
     @JvmOverloads
     open fun beginStairs(key: Identifier, copyState: Supplier<out Block>, copyTextures: Supplier<out Block> = copyState): Builder<StairBlock, *> {
-        return beginComplex(key) { InternalUtil.INSTANCE.createStairBlock(copyState.get().defaultBlockState(), it) }
+        return beginComplex(key) { InternalUtil.createStairBlock(copyState.get().defaultBlockState(), it) }
             /*
             .client {
                 it.textureParent(copyTextures)
@@ -178,7 +178,7 @@ open class BlockFactory @JvmOverloads constructor(
     }
 
     open fun beginDoor(key: Identifier, blockSet: Supplier<BlockSetType>): Builder<DoorBlock, *> {
-        return beginComplex(key) { InternalUtil.INSTANCE.createDoorBlock(blockSet.get(), it) }
+        return beginComplex(key) { InternalUtil.createDoorBlock(blockSet.get(), it) }
             /*
             .client {
                 it.textureMapping { TextureMapping.door(it.get()) }
@@ -227,7 +227,7 @@ open class BlockFactory @JvmOverloads constructor(
     }
 
     open fun beginTrapdoor(key: Identifier, blockSet: Supplier<BlockSetType>, rotatable: Boolean): Builder<TrapDoorBlock, *> {
-        return beginComplex(key) { InternalUtil.INSTANCE.createTrapDoorBlock(blockSet.get(), it) }
+        return beginComplex(key) { InternalUtil.createTrapDoorBlock(blockSet.get(), it) }
             /*
             .client {
                 it.textureMapping { TextureMapping.defaultTexture(it.get()) }
@@ -283,7 +283,7 @@ open class BlockFactory @JvmOverloads constructor(
 
     @JvmOverloads
     open fun beginPressurePlate(key: Identifier, blockSet: Supplier<BlockSetType>, copyTextures: Supplier<out Block>? = null): Builder<PressurePlateBlock, *> {
-        return beginComplex(key) { InternalUtil.INSTANCE.createPressurePlateBlock(blockSet.get(), it) }
+        return beginComplex(key) { InternalUtil.createPressurePlateBlock(blockSet.get(), it) }
             /*
             .client {
                 it.textureParent(copyTextures)
@@ -431,7 +431,7 @@ open class BlockFactory @JvmOverloads constructor(
 
     @JvmOverloads
     open fun beginButton(key: Identifier, pressDuration: Int, setType: Supplier<BlockSetType>, copyTextures: Supplier<out Block>? = null): Builder<ButtonBlock, *> {
-        return beginComplex(key) { InternalUtil.INSTANCE.createButtonBlock(setType.get(), pressDuration, it) }
+        return beginComplex(key) { InternalUtil.createButtonBlock(setType.get(), pressDuration, it) }
             /*
             .client {
                 it.textureParent(copyTextures)
@@ -482,7 +482,7 @@ open class BlockFactory @JvmOverloads constructor(
         protected val parent: BlockFactory
     ) {
         @JvmField
-        protected var renderType: NeoRenderType = NeoRenderType.BUILTINS.solid
+        protected var renderType: RenderTypeExtension = NeoRenderType.BUILTINS.solid
         //@JvmField
         //protected var model: Function<Supplier<T>, ModelLoadingEvent>? = null
         @JvmField
@@ -490,7 +490,7 @@ open class BlockFactory @JvmOverloads constructor(
         //@JvmField
         //protected var textureMapping: Function<Supplier<out Block>, TextureMapping> = Function { TextureMapping.cube(it.get()) }
 
-        fun renderType(renderType: NeoRenderType): B {
+        fun renderType(renderType: RenderTypeExtension): B {
             this.renderType = renderType
             return this as B
         }
@@ -569,7 +569,7 @@ open class BlockFactory @JvmOverloads constructor(
         }
 
         fun client(info: UnaryOperator<ClientInfo<T, *>>): B {
-            if (PlatformUtil.INSTANCE.isClient()) {
+            if (PlatformUtil.isClient()) {
                 clientInfo = info.apply(clientInfo ?: ClientInfoImpl(parent))
             }
 

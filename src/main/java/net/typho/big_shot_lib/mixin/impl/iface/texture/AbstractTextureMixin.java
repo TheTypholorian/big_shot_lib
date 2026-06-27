@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlTextureFormat;
 import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlResourceType;
-import net.typho.big_shot_lib.api.client.rendering.opengl.resource.GlTexture2D;
+import net.typho.big_shot_lib.api.client.rendering.common.GpuTexture;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,19 +14,19 @@ import java.util.Objects;
 import static org.lwjgl.opengl.GL11.*;
 
 //? if >=1.21.5 {
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTextureImpl;
 import com.mojang.blaze3d.opengl.GlTexture;
 //? }
 
 @Mixin(AbstractTexture.class)
-public abstract class AbstractTextureMixin implements GlTexture2D {
+public abstract class AbstractTextureMixin implements GpuTexture {
     //? if <1.21.5 {
     /*@Shadow
     protected int id;
     *///? } else {
     @Shadow
     @Nullable
-    protected GpuTexture texture;
+    protected GpuTextureImpl texture;
     //? }
 
     @Shadow

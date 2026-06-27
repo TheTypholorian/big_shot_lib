@@ -11,7 +11,7 @@ object NeoServiceLoader {
         .map { url ->
             val file = url.openStream().use { String(it.readBytes()) }
             val json = JsonParser.parseString(file).asJsonObject
-            return@map json.asMap().mapValues { (key, value) -> value.asJsonArray.map { it.asString }.toSet() }
+            return@map json.asMap().mapValues { (key, value) -> if (value.isJsonArray) value.asJsonArray.map { it.asString }.toSet() else setOf(value.asString) }
         }
         .fold(HashMap<String, MutableSet<String>>()) { acc, map ->
             map.forEach { (key, value) ->
