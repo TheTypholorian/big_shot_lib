@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.impl.client.rendering.common
 
+import com.mojang.blaze3d.GpuFormat
 import com.mojang.blaze3d.PrimitiveTopology
 import com.mojang.blaze3d.pipeline.BindGroupLayout
 import com.mojang.blaze3d.pipeline.BlendFunction
@@ -14,6 +15,7 @@ import net.minecraft.client.renderer.LayeringTransform
 import net.minecraft.client.renderer.RenderSetup
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.Identifier
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData.type
 import net.typho.big_shot_lib.api.client.rendering.common.GpuBuffer
 import net.typho.big_shot_lib.api.client.rendering.common.GpuDrawSettings
 import net.typho.big_shot_lib.api.client.rendering.common.GpuObjectName
@@ -141,9 +143,22 @@ object GpuObjectsImpl : IGpuObjects {
 
         drawState.samplers.forEach { layout.withSampler(it) }
         drawState.uniforms.forEach { layout.withUniform(it, UniformType.UNIFORM_BUFFER) }
+        drawState.texelBuffers.forEach { buffer ->
+            layout.withUniform(
+                buffer.name,
+                UniformType.TEXEL_BUFFER,
+                GpuFormat.entries.firstOrNull { it.componentCount() == buffer.components && it.componentType() == buffer.type } ?: throw IllegalArgumentException("Invalid component count ${buffer.components} and type ${buffer.type}")
+            )
+        }
 
         pipeline.withBindGroupLayout(layout.build())
         pipeline.withPrimitiveTopology(PrimitiveTopology.QUADS)
+
+        pipeline.withShaderDefine("USE_VERTEX_COMPRESSION")
+        pipeline.withShaderDefine("USE_FOG")
+        pipeline.withShaderDefine("ALPHA_CUTOUT", 0.5f)
+
+        pipeline.withVertexBinding(0, format)
 
         val setup = RenderSetup.builder(pipeline.build())
 

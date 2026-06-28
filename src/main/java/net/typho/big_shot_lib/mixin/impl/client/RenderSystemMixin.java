@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.mixin.impl.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.typho.big_shot_lib.impl.client.rendering.opengl.GpuQueueImpl;
+import net.typho.big_shot_lib.impl.client.rendering.common.GpuQueueImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

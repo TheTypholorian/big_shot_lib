@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.impl.client.rendering.opengl
+package net.typho.big_shot_lib.impl.client.rendering.common
 
 import com.mojang.blaze3d.systems.RenderSystem
 import net.typho.big_shot_lib.api.client.rendering.common.IGpuQueue

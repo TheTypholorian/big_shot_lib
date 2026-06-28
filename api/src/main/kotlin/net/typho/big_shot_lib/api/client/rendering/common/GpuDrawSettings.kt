@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.api.client.rendering.common
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBlendFunction
+import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuDataType
 
 interface GpuDrawSettings {
     val blend: GpuBlendFunction?
@@ -16,10 +17,20 @@ interface GpuDrawSettings {
     val zOffset: Boolean
     val samplers: List<String>
     val uniforms: List<String>
+    val texelBuffers: List<TexelBuffer>
 
     fun bind()
 
     fun unbind()
+
+    data class TexelBuffer(
+        @JvmField
+        val name: String,
+        @JvmField
+        val type: GpuDataType,
+        @JvmField
+        val components: Int
+    )
 
     open class Builder {
         @JvmField
@@ -44,6 +55,8 @@ interface GpuDrawSettings {
         var samplers = mutableListOf<String>()
         @JvmField
         var uniforms = mutableListOf<String>()
+        @JvmField
+        var texelBuffers = mutableListOf<TexelBuffer>()
 
         constructor()
 
@@ -59,6 +72,7 @@ interface GpuDrawSettings {
             zOffset = state.zOffset
             samplers = state.samplers.toMutableList()
             uniforms = state.uniforms.toMutableList()
+            texelBuffers = state.texelBuffers.toMutableList()
         }
 
         @JvmOverloads
@@ -117,6 +131,11 @@ interface GpuDrawSettings {
 
         fun uniform(name: String): Builder {
             uniforms.add(name)
+            return this
+        }
+
+        fun texelBuffer(name: String, type: GpuDataType, components: Int): Builder {
+            texelBuffers.add(TexelBuffer(name, type, components))
             return this
         }
     }

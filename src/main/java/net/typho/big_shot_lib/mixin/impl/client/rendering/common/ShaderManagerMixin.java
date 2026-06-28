@@ -84,11 +84,11 @@ public class ShaderManagerMixin {
             @Local(argsOnly = true) ShaderType type,
             @Local(argsOnly = true) Map<Identifier, Resource> files
     ) {
-        if (location.getPath().startsWith("neo/shaders")) {
+        //if (location.getPath().startsWith("neo/shaders")) {
             for (NeoShaderPreprocessor preprocessor : NeoShaderPreprocessor.REGISTRY) {
                 code = preprocessor.apply(id, Extension.castTo(type), code, files);
             }
-        }
+        //}
 
         return code;
     }
