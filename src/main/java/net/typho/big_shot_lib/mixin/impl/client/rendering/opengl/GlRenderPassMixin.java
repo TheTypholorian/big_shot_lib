@@ -35,7 +35,7 @@ public abstract class GlRenderPassMixin implements ShaderStorageBufferStorage, R
 
     @Override
     public void setUniform(@NotNull String name, @NotNull GpuBuffer buffer) {
-        setUniform(name, Extension.<GpuBufferImpl>castTo(buffer));
+        setUniform(name, Extension.castTo(buffer));
     }
 
     @Override
@@ -50,7 +50,7 @@ public abstract class GlRenderPassMixin implements ShaderStorageBufferStorage, R
 
     @Override
     public void setIndexBuffer(@NotNull GpuBuffer buffer, @NotNull GpuIndexType type) {
-        setIndexBuffer(Extension.<GpuBufferImpl>castTo(buffer), Extension.<IndexType>castTo(type));
+        setIndexBuffer(Extension.castTo(buffer), Extension.castTo(type));
     }
 
     @Override

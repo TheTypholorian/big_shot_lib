@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 
 object GpuIndexTypeValues : GpuIndexType.Values {
-    override val codec: Codec<GpuIndexType> = NeoCodecs.enumCodec<IndexType>().xmap({ it }, { it.castTo<IndexType>() })
+    override val codec: Codec<GpuIndexType> = NeoCodecs.enumCodec<IndexType>().xmap({ it }, { it.castTo() })
     override val short: GpuIndexType = IndexType.SHORT
     override val int: GpuIndexType = IndexType.INT
 }

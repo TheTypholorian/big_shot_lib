@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.mixin.impl.client;
 
 //? if <1.21.5 {
 /*import com.mojang.blaze3d.platform.GlDebug;

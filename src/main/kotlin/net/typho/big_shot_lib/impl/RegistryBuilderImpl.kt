@@ -9,7 +9,7 @@ import net.typho.big_shot_lib.api.event.RegistryBuilder
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 
-class RegistryBuilderImpl<T>(
+class RegistryBuilderImpl<T : Any>(
     @JvmField
     val key: ResourceKey<Registry<T>>
 ) : RegistryBuilder<T> {
@@ -17,7 +17,7 @@ class RegistryBuilderImpl<T>(
     override var defaultKey: Identifier? = null
 
     fun buildAndRegister(): Registry<T> {
-        val builder = if (defaultKey == null) FabricRegistryBuilder.createDefaulted(key, defaultKey) else FabricRegistryBuilder.createSimple(key)
+        val builder = defaultKey?.let { FabricRegistryBuilder.createDefaulted(key, it) } ?: FabricRegistryBuilder.create(key)
 
         if (sync) {
             builder.attribute(RegistryAttribute.SYNCED)

@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 
 object GpuDataTypeValues : GpuDataType.Values {
-    override val codec: Codec<GpuDataType> = NeoCodecs.enumCodec<GpuFormat.ComponentType>().xmap({ it }, { it.castTo<GpuFormat.ComponentType>() })
+    override val codec: Codec<GpuDataType> = NeoCodecs.enumCodec<GpuFormat.ComponentType>().xmap({ it }, { it.castTo() })
     override val unorm8: GpuDataType = GpuFormat.ComponentType.UNORM_8
     override val snorm8: GpuDataType = GpuFormat.ComponentType.SNORM_8
     override val uint8: GpuDataType = GpuFormat.ComponentType.UINT_8

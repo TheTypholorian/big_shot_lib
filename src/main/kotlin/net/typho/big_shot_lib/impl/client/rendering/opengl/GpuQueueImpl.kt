@@ -1,9 +1,9 @@
 package net.typho.big_shot_lib.impl.client.rendering.opengl
 
 import com.mojang.blaze3d.systems.RenderSystem
-import net.typho.big_shot_lib.api.client.rendering.opengl.GlQueue
+import net.typho.big_shot_lib.api.client.rendering.common.IGpuQueue
 
-object GlQueueImpl : GlQueue {
+object GpuQueueImpl : IGpuQueue {
     @JvmField
     val queue = arrayListOf<Runnable>()
 

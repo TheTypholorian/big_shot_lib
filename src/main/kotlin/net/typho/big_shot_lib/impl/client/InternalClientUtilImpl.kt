@@ -67,7 +67,7 @@ object InternalClientUtilImpl : IInternalClientUtil {
         components: Int,
         stride: Int?
     ): VertexFormat.Builder {
-        val mojType = type.castTo<GpuFormat.ComponentType>()
+        val mojType: GpuFormat.ComponentType = type.castTo()
         val format = GpuFormat.entries.firstOrNull { it.componentCount() == components && it.componentType() == mojType } ?: throw IllegalArgumentException("Invalid component count $components and type $type")
 
         return if (stride == null) {

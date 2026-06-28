@@ -5,12 +5,12 @@ package net.typho.big_shot_lib.impl.client.util
 *///? } else if <1.20.5 {
 /*import net.minecraft.client.gui.components.FocusableTextWidget
 *///? } else {
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.FocusableTextWidget
 import net.minecraft.client.gui.layouts.LinearLayout
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout
 //? }
 
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.LogoRenderer
 import net.minecraft.client.gui.screens.Screen
@@ -82,8 +82,8 @@ open class InitialScreen(
         onClose.invoke()
     }
 
-    override fun render(guiGraphics: GuiGraphics, i: Int, j: Int, f: Float) {
-        super.render(guiGraphics, i, j, f)
-        logo.renderLogo(guiGraphics, width, 1f)
+    override fun extractRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
+        super.extractRenderState(graphics, mouseX, mouseY, a)
+        logo.extractRenderState(graphics, width, 1f)
     }
 }

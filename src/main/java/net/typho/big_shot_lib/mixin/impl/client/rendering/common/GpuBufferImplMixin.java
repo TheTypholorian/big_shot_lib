@@ -38,7 +38,7 @@ public abstract class GpuBufferImplMixin implements GpuBuffer, GpuResource, Recy
 
     @Override
     public void copyTo(@NotNull GpuBuffer buffer) {
-        RenderSystem.getDevice().createCommandEncoder().copyToBuffer(slice(), Extension.cast(buffer, GpuBufferImpl.class).slice());
+        RenderSystem.getDevice().createCommandEncoder().copyToBuffer(slice(), buffer.slice());
     }
 
     @Override

@@ -13,6 +13,8 @@ interface MemoryPointer : Iterable<Byte> {
     val address: Long
     val size: Long
 
+    fun asByteBuffer() = memByteBuffer(address, size.toInt())
+
     override fun iterator() = object : Iterator<Byte> {
         var index = 0L
 

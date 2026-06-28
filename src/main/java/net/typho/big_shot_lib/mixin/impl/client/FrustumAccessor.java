@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.mixin.impl.client;
 
 import net.minecraft.client.renderer.culling.Frustum;
 import org.joml.FrustumIntersection;

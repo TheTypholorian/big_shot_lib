@@ -2,12 +2,12 @@ package net.typho.big_shot_lib.impl.client
 
 //? fabric {
 import net.fabricmc.api.ClientModInitializer
-import net.typho.big_shot_lib.api.client.util.NeoClientInitializer
+import net.typho.big_shot_lib.api.client.NeoClientInitializer
 
 class BigShotClientInit : ClientModInitializer {
-    override fun onInitialize() {
-        for (entrypoint in NeoClientInitializer.entrypoints) {
-            entrypoint.onInitialize(NeoClientEventBusImpl)
+    override fun onInitializeClient() {
+        for (entrypoint in NeoClientInitializer.mods) {
+            entrypoint.onInitializeClient(NeoClientEventBusImpl)
         }
     }
 }

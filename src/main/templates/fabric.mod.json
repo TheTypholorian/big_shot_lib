@@ -13,14 +13,6 @@
     "sources": "https://github.com/TheTypholorian/big_shot_lib/"
   },
   "icon": "icon.png",
-  "entrypoints": {
-    "modmenu": [
-      {
-        "adapter": "kotlin",
-        "value": "net.typho.big_shot_lib.ModMenuCompat"
-      }
-    ]
-  },
   "depends": {
     "fabric-api": "*",
     "minecraft": "${minecraft_version_range}",

@@ -15,22 +15,23 @@ import net.minecraft.client.renderer.RenderSetup
 import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.Identifier
 import net.typho.big_shot_lib.api.client.rendering.common.GpuBuffer
+import net.typho.big_shot_lib.api.client.rendering.common.GpuDrawSettings
 import net.typho.big_shot_lib.api.client.rendering.common.GpuObjectName
 import net.typho.big_shot_lib.api.client.rendering.common.GpuTexture
 import net.typho.big_shot_lib.api.client.rendering.common.IGpuObjects
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunction
+import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBlendFunction
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBufferUsage
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureFormat
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureUsage
-import net.typho.big_shot_lib.api.client.rendering.opengl.constant.GlBlendingFactor
-import net.typho.big_shot_lib.api.client.rendering.state.GpuDrawState
 import net.typho.big_shot_lib.api.util.Extension.Companion.cast
+import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 
 object GpuObjectsImpl : IGpuObjects {
     override fun renderType(
         location: Identifier,
         format: VertexFormat,
-        drawState: GpuDrawState.Builder,
+        drawState: GpuDrawSettings.Builder,
         defaultBufferSize: Int,
         affectsCrumbling: Boolean,
         sortOnUpload: Boolean,
@@ -110,43 +111,14 @@ object GpuObjectsImpl : IGpuObjects {
         pipeline.withFragmentShader(drawState.fragmentShader ?: throw NullPointerException("Must specify fragment shader in render type $location"))
 
         pipeline.withDepthStencilState(DepthStencilState(
-            when (drawState.depth) {
-                GpuAlphaFunction.NEVER -> CompareOp.NEVER_PASS
-                GpuAlphaFunction.LESS -> CompareOp.LESS_THAN
-                GpuAlphaFunction.EQUAL -> CompareOp.EQUAL
-                GpuAlphaFunction.LEQUAL -> CompareOp.LESS_THAN_OR_EQUAL
-                GpuAlphaFunction.GREATER -> CompareOp.GREATER_THAN
-                GpuAlphaFunction.NOTEQUAL -> CompareOp.NOT_EQUAL
-                GpuAlphaFunction.GEQUAL -> CompareOp.GREATER_THAN_OR_EQUAL
-                GpuAlphaFunction.ALWAYS, null -> CompareOp.ALWAYS_PASS
-            },
+            drawState.depth?.castTo() ?: CompareOp.ALWAYS_PASS,
             drawState.writeDepth
         ))
         drawState.blend?.let { blend ->
-            fun GlBlendingFactor.toMoj(): BlendFactor {
-                return when (this) {
-                    GlBlendingFactor.ZERO -> BlendFactor.ZERO
-                    GlBlendingFactor.ONE -> BlendFactor.ONE
-                    GlBlendingFactor.SRC_COLOR -> BlendFactor.SRC_COLOR
-                    GlBlendingFactor.ONE_MINUS_SRC_COLOR -> BlendFactor.ONE_MINUS_SRC_COLOR
-                    GlBlendingFactor.DST_COLOR -> BlendFactor.DST_COLOR
-                    GlBlendingFactor.ONE_MINUS_DST_COLOR -> BlendFactor.ONE_MINUS_DST_COLOR
-                    GlBlendingFactor.SRC_ALPHA -> BlendFactor.SRC_ALPHA
-                    GlBlendingFactor.ONE_MINUS_SRC_ALPHA -> BlendFactor.ONE_MINUS_SRC_ALPHA
-                    GlBlendingFactor.DST_ALPHA -> BlendFactor.DST_ALPHA
-                    GlBlendingFactor.ONE_MINUS_DST_ALPHA -> BlendFactor.ONE_MINUS_DST_ALPHA
-                    GlBlendingFactor.CONSTANT_COLOR -> BlendFactor.CONSTANT_COLOR
-                    GlBlendingFactor.ONE_MINUS_CONSTANT_COLOR -> BlendFactor.ONE_MINUS_CONSTANT_COLOR
-                    GlBlendingFactor.CONSTANT_ALPHA -> BlendFactor.CONSTANT_ALPHA
-                    GlBlendingFactor.ONE_MINUS_CONSTANT_ALPHA -> BlendFactor.ONE_MINUS_CONSTANT_ALPHA
-                    GlBlendingFactor.SRC_ALPHA_SATURATE -> BlendFactor.SRC_ALPHA_SATURATE
-                }
-            }
-
             pipeline.withColorTargetState(ColorTargetState(
                 when (blend) {
-                    is GpuBlendFunction.Basic -> com.mojang.blaze3d.pipeline.BlendFunction(blend.src.toMoj(), blend.dest.toMoj(), blend.src.toMoj(), blend.dest.toMoj())
-                    is GpuBlendFunction.Separate -> com.mojang.blaze3d.pipeline.BlendFunction(blend.src.toMoj(), blend.dest.toMoj(), blend.srcA.toMoj(), blend.destA.toMoj())
+                    is GpuBlendFunction.Basic -> com.mojang.blaze3d.pipeline.BlendFunction(blend.src.castTo(), blend.dest.castTo(), blend.src.castTo(), blend.dest.castTo())
+                    is GpuBlendFunction.Separate -> com.mojang.blaze3d.pipeline.BlendFunction(blend.src.castTo(), blend.dest.castTo(), blend.srcA.castTo(), blend.destA.castTo())
                 }
             ))
         } ?: pipeline.withColorTargetState(ColorTargetState.DEFAULT)
@@ -198,7 +170,7 @@ object GpuObjectsImpl : IGpuObjects {
         blur: Boolean,
         mipmap: Boolean
     ): GpuTexture {
-        return RenderSystem.getDevice().createTexture(name, usage.flags, format.cast<GpuFormat>(), width, height, 1, 0)
+        return RenderSystem.getDevice().createTexture(name, usage.flags, format.castTo(), width, height, 1, 0)
     }
 
     override fun buffer(

@@ -14,6 +14,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.typho.big_shot_lib.api.client.rendering.NeoShaderPreprocessor;
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuShaderType;
+import net.typho.big_shot_lib.api.util.Extension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -85,10 +86,7 @@ public class ShaderManagerMixin {
     ) {
         if (location.getPath().startsWith("neo/shaders")) {
             for (NeoShaderPreprocessor preprocessor : NeoShaderPreprocessor.REGISTRY) {
-                code = preprocessor.apply(id, switch (type) {
-                    case VERTEX -> GpuShaderType.VERTEX;
-                    case FRAGMENT -> GpuShaderType.FRAGMENT;
-                }, code, files);
+                code = preprocessor.apply(id, Extension.castTo(type), code, files);
             }
         }
 

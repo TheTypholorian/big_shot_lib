@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 import net.minecraft.server.packs.PackType
 import net.minecraft.server.packs.resources.PreparableReloadListener
 import net.minecraft.server.packs.resources.ResourceManager
@@ -31,6 +32,7 @@ import java.util.concurrent.Executor
 
 object NeoEventBusImpl : NeoEventBus {
     override fun register(event: AddDataReloadListenersEvent) {
+        /*
         val helper = ResourceManagerHelper.get(PackType.SERVER_DATA)
         event.registerReloadListeners { listener ->
             helper.registerReloadListener(object : IdentifiableResourceReloadListener {
@@ -55,17 +57,13 @@ object NeoEventBusImpl : NeoEventBus {
                 }
             })
         }
+         */
+        event.registerReloadListeners { listener ->
+            ResourceLoader.get(PackType.SERVER_DATA).registerReloadListener(listener.location, listener)
+        }
     }
 
     override fun register(event: BlockChangedEvent) {
-        TODO("Not yet implemented")
-    }
-
-    override fun register(event: BonemealEvent) {
-        TODO("Not yet implemented")
-    }
-
-    override fun register(event: ChatMessageEvent) {
         TODO("Not yet implemented")
     }
 
@@ -77,13 +75,9 @@ object NeoEventBusImpl : NeoEventBus {
         ClientChunkEvents.CHUNK_UNLOAD.register { level, chunk -> event.onChunkUnloaded(level, chunk) }
     }
 
-    override fun register(event: CommandsEvent) {
-        CommandRegistrationCallback.EVENT.register { dispatcher, context, selection -> event.registerCommonCommands(dispatcher, selection, context) }
-    }
-
     override fun register(event: NewRegistryEvent) {
         event.registerRegistries(object : NewRegistryEvent.Output {
-            override fun <T> register(builder: RegistryBuilder<T>): Registry<T> {
+            override fun <T : Any> register(builder: RegistryBuilder<T>): Registry<T> {
                 if (builder !is RegistryBuilderImpl) {
                     throw ClassCastException("Cannot create a custom RegistryBuilder type ($builder), you must use RegistryBuilder.create()")
                 }
@@ -91,7 +85,7 @@ object NeoEventBusImpl : NeoEventBus {
                 return builder.buildAndRegister()
             }
 
-            override fun <T> register(registry: WritableRegistry<T>): WritableRegistry<T> {
+            override fun <T : Any> register(registry: WritableRegistry<T>): WritableRegistry<T> {
                 return FabricRegistryBuilder.from(registry).buildAndRegister()
             }
         })
@@ -103,40 +97,29 @@ object NeoEventBusImpl : NeoEventBus {
                 Registry.register(registry, key, value)
             }
 
-            override fun register(key: ResourceKey<T>, value: T) {
-                Registry.register(registry, key, value)
+            @Suppress("UNCHECKED_CAST")
+            override fun register(key: ResourceKey<out T>, value: T) {
+                Registry.register(registry, key as ResourceKey<T>, value)
             }
         }
 
         event.register(object : RegisterEvent.Output {
             @Suppress("UNCHECKED_CAST")
             override fun <T : Any> begin(key: Identifier, out: Consumer<RegisterEvent.RegistrationConsumer<T>>) {
-                begin(BuiltInRegistries.REGISTRY.get(key) as Registry<T>, out)
+                begin(BuiltInRegistries.REGISTRY.get(key).orElseThrow().value() as Registry<T>, out)
             }
 
             override fun <T : Any> begin(
-                key: ResourceKey<Registry<T>>,
+                key: ResourceKey<out Registry<T>>,
                 out: Consumer<RegisterEvent.RegistrationConsumer<T>>
             ) {
-                return begin(key.location(), out)
+                return begin(key.identifier(), out)
             }
 
             override fun <T : Any> begin(registry: Registry<T>, out: Consumer<RegisterEvent.RegistrationConsumer<T>>) {
                out.accept(createConsumer(registry))
             }
         })
-    }
-
-    override fun register(event: ServerStartTickEvent) {
-        ServerTickEvents.START_SERVER_TICK.register { event.serverStartTick(it) }
-    }
-
-    override fun register(event: ServerEndTickEvent) {
-        ServerTickEvents.END_SERVER_TICK.register { event.serverEndTick(it) }
-    }
-
-    override fun register(event: UseItemOnBlockEvent) {
-        TODO("Not yet implemented")
     }
 }
 //? } neoforge {

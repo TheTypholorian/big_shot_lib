@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.mixin.impl.client;
 
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;

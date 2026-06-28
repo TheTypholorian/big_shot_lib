@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.NeoCommonInitializer
 
 class BigShotCommonInit : ModInitializer {
     override fun onInitialize() {
-        for (entrypoint in NeoCommonInitializer.entrypoints) {
+        for (entrypoint in NeoCommonInitializer.mods) {
             entrypoint.onInitialize(NeoEventBusImpl)
         }
     }

@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 
 object GpuAlphaFunctionValues : GpuAlphaFunction.Values {
-    override val codec: Codec<GpuAlphaFunction> = NeoCodecs.enumCodec<CompareOp>().xmap({ it }, { it.castTo<CompareOp>() })
+    override val codec: Codec<GpuAlphaFunction> = NeoCodecs.enumCodec<CompareOp>().xmap({ it }, { it.castTo() })
     override val never: GpuAlphaFunction = CompareOp.NEVER_PASS
     override val less: GpuAlphaFunction = CompareOp.LESS_THAN
     override val equal: GpuAlphaFunction = CompareOp.EQUAL

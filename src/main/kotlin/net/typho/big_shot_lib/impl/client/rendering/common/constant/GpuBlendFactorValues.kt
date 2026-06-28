@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 
 object GpuBlendFactorValues : GpuBlendFactor.Values {
-    override val codec: Codec<GpuBlendFactor> = NeoCodecs.enumCodec<BlendFactor>().xmap({ it }, { it.castTo<BlendFactor>() })
+    override val codec: Codec<GpuBlendFactor> = NeoCodecs.enumCodec<BlendFactor>().xmap({ it }, { it.castTo() })
     override val zero: GpuBlendFactor = BlendFactor.ZERO
     override val one: GpuBlendFactor = BlendFactor.ONE
     override val srcColor: GpuBlendFactor = BlendFactor.SRC_COLOR

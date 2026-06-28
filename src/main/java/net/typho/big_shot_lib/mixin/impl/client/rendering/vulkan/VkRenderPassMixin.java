@@ -14,11 +14,11 @@ public class VkRenderPassMixin implements RenderPassExtension {
     }
 
     @Override
-    public void setStorageBuffer(@NotNull String name, @NotNull GpuBuffer buffer) {
+    public void setStorageBuffer(int index, @NotNull GpuBuffer buffer) {
     }
 
     @Override
-    public void setStorageBuffer(@NotNull String name, @NotNull GpuBufferSlice buffer) {
+    public void setStorageBuffer(int index, @NotNull GpuBufferSlice buffer) {
     }
 
     @Override

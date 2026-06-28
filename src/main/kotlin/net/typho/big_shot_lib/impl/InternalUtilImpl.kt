@@ -11,16 +11,17 @@ import net.minecraft.world.level.block.TrapDoorBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockSetType
-import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.IInternalUtil
 import net.typho.big_shot_lib.api.event.RegistryBuilder
 
-object InternalUtilImpl : InternalUtil {
+object InternalUtilImpl : IInternalUtil {
     override fun <T : Any> createRegistryBuilder(key: ResourceKey<Registry<T>>): RegistryBuilder<T> {
         return RegistryBuilderImpl(key)
     }
 
     override fun createCreativeTabBuilder(): CreativeModeTab.Builder {
-        return CreativeModeTab.builder()
+        TODO("")
+        //return CreativeModeTab.builder()
     }
 
     override fun createStairBlock(

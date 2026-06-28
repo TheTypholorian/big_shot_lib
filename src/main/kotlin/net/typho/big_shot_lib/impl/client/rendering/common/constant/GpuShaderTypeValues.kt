@@ -7,7 +7,7 @@ import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 import net.typho.big_shot_lib.api.util.resource.NeoCodecs
 
 object GpuShaderTypeValues : GpuShaderType.Values {
-    override val codec: Codec<GpuShaderType> = NeoCodecs.enumCodec<ShaderType>().xmap({ it }, { it.castTo<ShaderType>() })
+    override val codec: Codec<GpuShaderType> = NeoCodecs.enumCodec<ShaderType>().xmap({ it }, { it.castTo() })
     override val vertex: GpuShaderType = ShaderType.VERTEX
     override val fragment: GpuShaderType = ShaderType.FRAGMENT
 }

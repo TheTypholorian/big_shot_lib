@@ -1,11 +1,11 @@
 {
   "net.typho.big_shot_lib.api.NeoCommonInitializer": "net.typho.big_shot_lib.api.BigShotLib",
-  "net.typho.big_shot_lib.api.InternalUtil": "net.typho.big_shot_lib.impl.InternalUtilImpl",
-  "net.typho.big_shot_lib.api.util.platform.PlatformUtil": "net.typho.big_shot_lib.impl.util.platform.PlatformUtilImpl",
+  "net.typho.big_shot_lib.api.IInternalUtil": "net.typho.big_shot_lib.impl.InternalUtilImpl",
+  "net.typho.big_shot_lib.api.util.platform.IPlatformUtil": "net.typho.big_shot_lib.impl.util.platform.PlatformUtilImpl",
 
   "net.typho.big_shot_lib.api.client.NeoClientInitializer": "net.typho.big_shot_lib.api.client.BigShotLibClient",
-  "net.typho.big_shot_lib.api.client.InternalClientUtil": "net.typho.big_shot_lib.impl.client.InternalClientUtilImpl",
-  "net.typho.big_shot_lib.api.client.rendering.common.GpuQueue": "net.typho.big_shot_lib.impl.client.rendering.common.GpuQueueImpl",
+  "net.typho.big_shot_lib.api.client.IInternalClientUtil": "net.typho.big_shot_lib.impl.client.InternalClientUtilImpl",
+  "net.typho.big_shot_lib.api.client.rendering.common.IGpuQueue": "net.typho.big_shot_lib.impl.client.rendering.common.GpuQueueImpl",
 
   "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunction$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuAlphaFunctionValues",
   "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBlendFactor$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuBlendFactorValues",

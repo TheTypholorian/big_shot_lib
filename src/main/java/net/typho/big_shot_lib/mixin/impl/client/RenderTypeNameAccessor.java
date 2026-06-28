@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.mixin.impl;
+package net.typho.big_shot_lib.mixin.impl.client;
 
 //? if <1.21.10 {
 /*import net.minecraft.client.renderer.RenderStateShard;

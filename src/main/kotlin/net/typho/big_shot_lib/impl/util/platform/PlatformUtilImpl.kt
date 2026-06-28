@@ -1,8 +1,10 @@
 package net.typho.big_shot_lib.impl.util.platform
 
 //? fabric {
+import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
+import net.typho.big_shot_lib.api.util.platform.IPlatformUtil
 //? } neoforge {
 /*import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModList
@@ -13,10 +15,9 @@ import net.neoforged.fml.loading.FMLPaths
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
 import net.typho.big_shot_lib.api.util.platform.ModLoader
-import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import java.nio.file.Path
 
-object PlatformUtilImpl : PlatformUtil {
+object PlatformUtilImpl : IPlatformUtil {
     //? fabric {
     override val loader = ModLoader.FABRIC
     override val mods: Collection<ModContainer>
@@ -26,6 +27,10 @@ object PlatformUtilImpl : PlatformUtil {
 
     override fun isDevEnv(): Boolean {
         return FabricLoader.getInstance().isDevelopmentEnvironment
+    }
+
+    override fun isClient(): Boolean {
+        return FabricLoader.getInstance().environmentType == EnvType.CLIENT
     }
 
     @JvmRecord
