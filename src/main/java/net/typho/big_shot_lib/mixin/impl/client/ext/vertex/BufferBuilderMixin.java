@@ -14,8 +14,10 @@ import java.util.function.Consumer;
 
 @Mixin(BufferBuilder.class)
 public abstract class BufferBuilderMixin implements VertexConsumer, VertexConsumerExtension {
+    /*
     @Shadow
     protected abstract long beginElement(VertexFormatElement element);
+     */
 
     @Override
     public boolean customElementsSupported() {
@@ -25,6 +27,8 @@ public abstract class BufferBuilderMixin implements VertexConsumer, VertexConsum
     @Override
     @NotNull
     public VertexConsumer custom(@NotNull VertexFormatElement element, @NotNull Consumer<MemoryWriter> out) {
+        throw new UnsupportedOperationException();
+        /*
         long ptr = beginElement(element);
 
         if (ptr != -1) {
@@ -32,5 +36,6 @@ public abstract class BufferBuilderMixin implements VertexConsumer, VertexConsum
         }
 
         return this;
+         */
     }
 }

@@ -1,11 +1,10 @@
-package net.typho.big_shot_lib.impl.client
+package net.typho.big_shot_lib.impl.client.rendering.common
 
-import com.mojang.blaze3d.GpuFormat
 import com.mojang.blaze3d.pipeline.BindGroupLayout
+import com.mojang.blaze3d.pipeline.BlendFunction
 import com.mojang.blaze3d.pipeline.ColorTargetState
 import com.mojang.blaze3d.pipeline.DepthStencilState
 import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.blaze3d.platform.BlendFactor
 import com.mojang.blaze3d.platform.CompareOp
 import com.mojang.blaze3d.shaders.UniformType
 import com.mojang.blaze3d.systems.RenderSystem
@@ -19,12 +18,10 @@ import net.typho.big_shot_lib.api.client.rendering.common.GpuDrawSettings
 import net.typho.big_shot_lib.api.client.rendering.common.GpuObjectName
 import net.typho.big_shot_lib.api.client.rendering.common.GpuTexture
 import net.typho.big_shot_lib.api.client.rendering.common.IGpuObjects
-import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunction
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBlendFunction
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBufferUsage
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureFormat
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureUsage
-import net.typho.big_shot_lib.api.util.Extension.Companion.cast
 import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 
 object GpuObjectsImpl : IGpuObjects {
@@ -110,17 +107,32 @@ object GpuObjectsImpl : IGpuObjects {
         pipeline.withVertexShader(drawState.vertexShader ?: throw NullPointerException("Must specify vertex shader in render type $location"))
         pipeline.withFragmentShader(drawState.fragmentShader ?: throw NullPointerException("Must specify fragment shader in render type $location"))
 
-        pipeline.withDepthStencilState(DepthStencilState(
-            drawState.depth?.castTo() ?: CompareOp.ALWAYS_PASS,
-            drawState.writeDepth
-        ))
+        pipeline.withDepthStencilState(
+            DepthStencilState(
+                drawState.depth?.castTo() ?: CompareOp.ALWAYS_PASS,
+                drawState.writeDepth
+            )
+        )
         drawState.blend?.let { blend ->
-            pipeline.withColorTargetState(ColorTargetState(
-                when (blend) {
-                    is GpuBlendFunction.Basic -> com.mojang.blaze3d.pipeline.BlendFunction(blend.src.castTo(), blend.dest.castTo(), blend.src.castTo(), blend.dest.castTo())
-                    is GpuBlendFunction.Separate -> com.mojang.blaze3d.pipeline.BlendFunction(blend.src.castTo(), blend.dest.castTo(), blend.srcA.castTo(), blend.destA.castTo())
-                }
-            ))
+            pipeline.withColorTargetState(
+                ColorTargetState(
+                    when (blend) {
+                        is GpuBlendFunction.Basic -> BlendFunction(
+                            blend.src.castTo(),
+                            blend.dest.castTo(),
+                            blend.src.castTo(),
+                            blend.dest.castTo()
+                        )
+
+                        is GpuBlendFunction.Separate -> BlendFunction(
+                            blend.src.castTo(),
+                            blend.dest.castTo(),
+                            blend.srcA.castTo(),
+                            blend.destA.castTo()
+                        )
+                    }
+                )
+            )
         } ?: pipeline.withColorTargetState(ColorTargetState.DEFAULT)
         pipeline.withCull(drawState.cull)
 

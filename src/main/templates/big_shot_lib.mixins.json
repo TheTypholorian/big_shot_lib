@@ -26,6 +26,7 @@
     "impl.client.rendering.common.ShaderManagerMixin",
     "impl.client.rendering.opengl.GlBufferMixin",
     "impl.client.rendering.opengl.GlCommandEncoderMixin",
+    "impl.client.rendering.opengl.GlRenderPassMixin",
     "impl.client.rendering.opengl.GlTextureMixin",
     "impl.client.rendering.vulkan.VkBufferMixin",
     "impl.client.rendering.vulkan.VkRenderPassMixin",

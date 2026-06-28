@@ -6,6 +6,7 @@
   "net.typho.big_shot_lib.api.client.NeoClientInitializer": "net.typho.big_shot_lib.api.client.BigShotLibClient",
   "net.typho.big_shot_lib.api.client.IInternalClientUtil": "net.typho.big_shot_lib.impl.client.InternalClientUtilImpl",
   "net.typho.big_shot_lib.api.client.rendering.common.IGpuQueue": "net.typho.big_shot_lib.impl.client.rendering.common.GpuQueueImpl",
+  "net.typho.big_shot_lib.api.client.rendering.common.IGpuObjects": "net.typho.big_shot_lib.impl.client.rendering.common.GpuObjectsImpl",
 
   "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunction$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuAlphaFunctionValues",
   "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBlendFactor$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuBlendFactorValues",
