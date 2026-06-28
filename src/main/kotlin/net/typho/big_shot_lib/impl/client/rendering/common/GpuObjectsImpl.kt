@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.impl.client.rendering.common
 
+import com.mojang.blaze3d.PrimitiveTopology
 import com.mojang.blaze3d.pipeline.BindGroupLayout
 import com.mojang.blaze3d.pipeline.BlendFunction
 import com.mojang.blaze3d.pipeline.ColorTargetState
@@ -142,6 +143,7 @@ object GpuObjectsImpl : IGpuObjects {
         drawState.uniforms.forEach { layout.withUniform(it, UniformType.UNIFORM_BUFFER) }
 
         pipeline.withBindGroupLayout(layout.build())
+        pipeline.withPrimitiveTopology(PrimitiveTopology.QUADS)
 
         val setup = RenderSetup.builder(pipeline.build())
 
