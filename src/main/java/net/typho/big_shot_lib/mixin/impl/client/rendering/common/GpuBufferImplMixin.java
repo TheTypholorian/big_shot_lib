@@ -26,6 +26,14 @@ public abstract class GpuBufferImplMixin implements GpuBuffer, GpuResource, Recy
     @Shadow
     public abstract @NonNull GpuBufferSlice slice(long offset, long length);
 
+    @Shadow
+    public abstract long size();
+
+    @Override
+    public long getSize() {
+        return size();
+    }
+
     @Override
     public @NotNull GpuResourceType getType() {
         return GpuResourceType.BUFFER;

@@ -1,18 +1,6 @@
 package net.typho.big_shot_lib.api.util.buffer
 
-import java.nio.ByteOrder
-
 interface MemoryReader {
-    var byteOrder: ByteOrder
-        get() = ByteOrder.nativeOrder()
-        set(value) {
-            throw UnsupportedOperationException("Set byte order of NativeDataInput $this")
-        }
-
-    fun withByteOrder(order: ByteOrder): MemoryReader = object : Delegate(this) {
-        override var byteOrder: ByteOrder = order
-    }
-
     fun skip(bytes: Long)
 
     fun bytesLeft(): Long
@@ -36,39 +24,27 @@ interface MemoryReader {
     fun readBoolean(): Boolean
 
     fun readPacked2x1(): Int {
-        val v = readUShort()
-        return if (byteOrder == ByteOrder.LITTLE_ENDIAN) v else java.lang.Short.reverseBytes(v.toShort()).toInt()
+        return readUShort()
     }
 
     fun readPacked4x1(): Int {
-        val v = readInt()
-        return if (byteOrder == ByteOrder.LITTLE_ENDIAN) v else Integer.reverseBytes(v)
+        return readInt()
     }
 
     fun readPacked2x2(): Int {
-        val v = readInt()
-        return if (byteOrder == ByteOrder.LITTLE_ENDIAN) v else {
-            (v shl 16) or (v ushr 16)
-        }
+        return readInt()
     }
 
     fun readPacked8x1(): Long {
-        val v = readLong()
-        return if (byteOrder == ByteOrder.LITTLE_ENDIAN) v else java.lang.Long.reverseBytes(v)
+        return readLong()
     }
 
     fun readPacked4x2(): Long {
-        val v = readLong()
-        return if (byteOrder == ByteOrder.LITTLE_ENDIAN) v else {
-            ((v and 0xFFFF) shl 48) or ((v and 0xFFFF_0000) shl 16) or ((v and 0xFFFF_0000_0000) ushr 16) or (v ushr 48)
-        }
+        return readLong()
     }
 
     fun readPacked2x4(): Long {
-        val v = readLong()
-        return if (byteOrder == ByteOrder.LITTLE_ENDIAN) v else {
-            (v shl 32) or (v ushr 32)
-        }
+        return readLong()
     }
 
     fun readTo(output: MemoryWriter, bytes: Int) {
@@ -92,49 +68,5 @@ interface MemoryReader {
     open class Delegate(
         @JvmField
         protected val delegate: MemoryReader
-    ) : MemoryReader {
-        override fun skip(bytes: Long) {
-            delegate.skip(bytes)
-        }
-
-        override fun bytesLeft(): Long {
-            return delegate.bytesLeft()
-        }
-
-        override fun readByte(): Byte {
-            return delegate.readByte()
-        }
-
-        override fun readUByte(): Int {
-            return delegate.readUByte()
-        }
-
-        override fun readShort(): Short {
-            return delegate.readShort()
-        }
-
-        override fun readUShort(): Int {
-            return delegate.readUShort()
-        }
-
-        override fun readInt(): Int {
-            return delegate.readInt()
-        }
-
-        override fun readLong(): Long {
-            return delegate.readLong()
-        }
-
-        override fun readFloat(): Float {
-            return delegate.readFloat()
-        }
-
-        override fun readDouble(): Double {
-            return delegate.readDouble()
-        }
-
-        override fun readBoolean(): Boolean {
-            return delegate.readBoolean()
-        }
-    }
+    ) : MemoryReader by delegate
 }

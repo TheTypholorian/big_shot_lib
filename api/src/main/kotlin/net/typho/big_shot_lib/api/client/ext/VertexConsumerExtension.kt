@@ -19,7 +19,7 @@ interface VertexConsumerExtension : VertexBufferWriter {
     @Suppress("NOTHING_TO_INLINE")
     private inline fun self() = this as VertexConsumer
 
-    fun vertex(
+    fun addVertex(
         pos: IVec3<Float>,
         color: NeoColor? = null,
         textureUV: IVec2<Float>? = null,
@@ -27,122 +27,126 @@ interface VertexConsumerExtension : VertexBufferWriter {
         lightUV: IVec2<Int>? = null,
         normal: IVec3<Float>? = null
     ): VertexConsumer {
-        vertex(pos)
-        color?.let { color(it) }
-        textureUV?.let { textureUV(it) }
-        overlayUV?.let { overlayUV(it) }
-        lightUV?.let { lightUV(it) }
-        normal?.let { normal(it) }
+        addVertex(pos)
+        color?.let { setColor(it) }
+        textureUV?.let { setUv(it) }
+        overlayUV?.let { setUv1(it) }
+        lightUV?.let { setUv2(it) }
+        normal?.let { setNormal(it) }
         return self()
     }
 
-    fun vertex(vertex: PrimitiveVertex): VertexConsumer {
-        return self().vertex(vertex.x, vertex.y, vertex.z)
-            .color(vertex.color)
-            .textureUV(vertex.u, vertex.v)
-            .lightUV(vertex.light)
-            .normal(vertex.normal)
+    fun addVertex(vertex: PrimitiveVertex): VertexConsumer {
+        return self().addVertex(vertex.x, vertex.y, vertex.z)
+            .setColor(vertex.color)
+            .setUv(vertex.u, vertex.v)
+            .setLight(vertex.light)
+            .setNormal(vertex.normal)
     }
 
-    fun vertex(pose: PoseStack.Pose, vertex: PrimitiveVertex): VertexConsumer {
-        return self().vertex(pose, vertex.x, vertex.y, vertex.z)
-            .color(vertex.color)
-            .textureUV(vertex.u, vertex.v)
-            .lightUV(vertex.light)
-            .normal(pose, vertex.normal)
+    fun addVertex(pose: PoseStack.Pose, vertex: PrimitiveVertex): VertexConsumer {
+        return self().addVertex(pose, vertex.x, vertex.y, vertex.z)
+            .setColor(vertex.color)
+            .setUv(vertex.u, vertex.v)
+            .setLight(vertex.light)
+            .setNormal(pose, vertex.normal)
     }
 
-    fun vertex(packed: IntArray, offset: Int): VertexConsumer {
-        return self().vertex(
+    fun addVertex(packed: IntArray, offset: Int): VertexConsumer {
+        return self().addVertex(
             Float.fromBits(packed[offset]),
             Float.fromBits(packed[offset + 1]),
             Float.fromBits(packed[offset + 2])
         )
     }
 
-    fun vertex(vertex: IVec3<*>): VertexConsumer {
-        return self().vertex(vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
+    fun addVertex(vertex: IVec3<*>): VertexConsumer {
+        return self().addVertex(vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
     }
 
-    fun vertex(mat: Matrix4fc, vertex: IVec3<*>): VertexConsumer {
-        return vertex(mat, vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
+    fun addVertex(mat: Matrix4fc, vertex: IVec3<*>): VertexConsumer {
+        return addVertex(mat, vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
     }
 
     /**
      * Mutates the vertex param
      */
-    fun vertex(mat: Matrix4fc, vertex: Vector3f): VertexConsumer {
+    fun addVertex(mat: Matrix4fc, vertex: Vector3f): VertexConsumer {
         mat.transformPosition(vertex, Vector3f())
-        return self().vertex(vertex.x, vertex.y, vertex.z)
+        return self().addVertex(vertex.x, vertex.y, vertex.z)
     }
 
-    fun vertex(mat: Matrix4fc, x: Float, y: Float, z: Float): VertexConsumer {
+    fun addVertex(mat: Matrix4fc, x: Float, y: Float, z: Float): VertexConsumer {
         val vertex = mat.transformPosition(Vector3f(x, y, z))
-        return self().vertex(vertex.x, vertex.y, vertex.z)
+        return self().addVertex(vertex.x, vertex.y, vertex.z)
     }
 
-    fun vertex(pose: PoseStack.Pose, vertex: IVec3<*>): VertexConsumer {
-        return self().vertex(pose, vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
+    fun addVertex(pose: PoseStack.Pose, vertex: IVec3<*>): VertexConsumer {
+        return self().addVertex(pose, vertex.x.toFloat(), vertex.y.toFloat(), vertex.z.toFloat())
     }
 
-    fun color(packed: IntArray, offset: Int): VertexConsumer {
-        return self().color(packed[offset])
+    fun setColor(argb: Int): VertexConsumer {
+        return self().setColor(argb)
     }
 
-    fun color(color: NeoColor): VertexConsumer {
-        return self().color(color.red.toInt(), color.green.toInt(), color.blue.toInt(), color.alpha?.toInt() ?: 255)
+    fun setColor(packed: IntArray, offset: Int): VertexConsumer {
+        return self().setColor(packed[offset])
     }
 
-    fun textureUV(packed: IntArray, offset: Int): VertexConsumer {
-        return self().textureUV(
+    fun setColor(color: NeoColor): VertexConsumer {
+        return self().setColor(color.red.toInt(), color.green.toInt(), color.blue.toInt(), color.alpha?.toInt() ?: 255)
+    }
+
+    fun setUv(packed: IntArray, offset: Int): VertexConsumer {
+        return self().setUv(
             Float.fromBits(packed[offset]),
             Float.fromBits(packed[offset + 1])
         )
     }
 
-    fun textureUV(uv: IVec2<Float>): VertexConsumer {
-        return self().textureUV(uv.x, uv.y)
+    fun setUv(uv: IVec2<Float>): VertexConsumer {
+        return self().setUv(uv.x, uv.y)
     }
 
-    fun overlayUV(packed: IntArray, offset: Int): VertexConsumer {
-        return self().overlayUV(packed[offset])
+    fun setUv1(packed: IntArray, offset: Int): VertexConsumer {
+        return self().setOverlay(packed[offset])
     }
 
-    fun overlayUV(uv: IVec2<Int>): VertexConsumer {
-        return self().overlayUV(uv.x, uv.y)
+    fun setUv1(uv: IVec2<Int>): VertexConsumer {
+        return self().setUv1(uv.x, uv.y)
     }
 
-    fun lightUV(packed: IntArray, offset: Int): VertexConsumer {
-        return self().lightUV(packed[offset])
+    fun setUv2(packed: IntArray, offset: Int): VertexConsumer {
+        return self().setLight(packed[offset])
     }
 
-    fun lightUV(uv: IVec2<Int>): VertexConsumer {
-        return self().lightUV(uv.x, uv.y)
+    fun setUv2(uv: IVec2<Int>): VertexConsumer {
+        return self().setUv2(uv.x, uv.y)
     }
 
-    fun normal(packed: IntArray, offset: Int): VertexConsumer {
-        normal(packed[offset])
+    fun setNormal(packed: IntArray, offset: Int): VertexConsumer {
+        setNormal(packed[offset])
         return self()
     }
 
-    fun normal(normal: IVec3<*>): VertexConsumer {
-        return self().normal(normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
+    fun setNormal(normal: IVec3<*>): VertexConsumer {
+        return self().setNormal(normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
     }
 
-    fun normal(x: Byte, y: Byte, z: Byte): VertexConsumer {
-        return self().normal(x / 127f, y / 127f, z / 127f)
+    fun setNormal(x: Byte, y: Byte, z: Byte): VertexConsumer {
+        return self().setNormal(x / 127f, y / 127f, z / 127f)
     }
 
-    fun normal(packed: Int): VertexConsumer {
-        return self().normal(PackedNormal.unpackByteX(packed), PackedNormal.unpackByteY(packed), PackedNormal.unpackByteZ(packed))
+    fun setNormal(packed: Int): VertexConsumer {
+        return self().setNormal(PackedNormal.unpackByteX(packed), PackedNormal.unpackByteY(packed), PackedNormal.unpackByteZ(packed))
     }
 
-    fun normal(pose: PoseStack.Pose, normal: IVec3<*>): VertexConsumer {
-        return self().normal(pose, normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
+    fun setNormal(pose: PoseStack.Pose, normal: IVec3<*>): VertexConsumer {
+        return self().setNormal(pose, normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
     }
 
-    fun normal(pose: PoseStack.Pose, packed: Int): VertexConsumer {
-        return self().normal(pose, PackedNormal.unpackX(packed), PackedNormal.unpackY(packed), PackedNormal.unpackZ(packed))
+    fun setNormal(pose: PoseStack.Pose, packed: Int): VertexConsumer {
+        return self().setNormal(pose, PackedNormal.unpackX(packed), PackedNormal.unpackY(packed), PackedNormal.unpackZ(packed))
     }
 
     fun customElementsSupported() = false
@@ -184,10 +188,10 @@ interface VertexConsumerExtension : VertexBufferWriter {
         v3: IVec3<*>,
         normal: IVec3<*>
     ): VertexConsumer {
-        vertex(v0).textureUV(0f, 1f).normal(normal)
-        vertex(v1).textureUV(1f, 1f).normal(normal)
-        vertex(v2).textureUV(1f, 0f).normal(normal)
-        vertex(v3).textureUV(0f, 0f).normal(normal)
+        addVertex(v0).setUv(0f, 1f).setNormal(normal)
+        addVertex(v1).setUv(1f, 1f).setNormal(normal)
+        addVertex(v2).setUv(1f, 0f).setNormal(normal)
+        addVertex(v3).setUv(0f, 0f).setNormal(normal)
 
         return self()
     }

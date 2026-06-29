@@ -85,6 +85,7 @@ object ShaderIncludePreprocessor : NeoShaderPreprocessor {
 
             if (!found) {
                 BigShotLib.LOGGER.error("Could not find include file '$includePath' requested by shader $location")
+                break
             }
         }
 

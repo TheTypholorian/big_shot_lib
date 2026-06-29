@@ -1,11 +1,26 @@
 package net.typho.big_shot_lib.api.ext
 
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Vec3i
 import net.typho.big_shot_lib.api.math.IVec2
+import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 
 interface MutableBlockPosExtension : BlockPosExtension {
     override var x: Int
+        get() = castTo<Vec3i, BlockPos.MutableBlockPos>().x
+        set(value) {
+            castTo<Vec3i, BlockPos.MutableBlockPos>().setX(value)
+        }
     override var y: Int
+        get() = castTo<Vec3i, BlockPos.MutableBlockPos>().y
+        set(value) {
+            castTo<Vec3i, BlockPos.MutableBlockPos>().setY(value)
+        }
     override var z: Int
+        get() = castTo<Vec3i, BlockPos.MutableBlockPos>().z
+        set(value) {
+            castTo<Vec3i, BlockPos.MutableBlockPos>().setZ(value)
+        }
     override var xy: IVec2<Int>
     override var yz: IVec2<Int>
     override var xz: IVec2<Int>

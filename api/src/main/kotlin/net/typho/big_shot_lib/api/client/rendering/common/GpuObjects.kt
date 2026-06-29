@@ -29,6 +29,45 @@ object GpuObjects : IGpuObjects by INSTANCE {
     ): GpuTexture {
         return texture(name, width, height, usage, format, false, false)
     }
+
+    fun texture(
+        name: GpuObjectName?,
+        width: Int,
+        height: Int,
+        usage: Int,
+        format: GpuTextureFormat,
+        blur: Boolean,
+        mipmap: Boolean
+    ): GpuTexture {
+        return texture(name, width, height, GpuTextureUsage(usage), format, blur, mipmap)
+    }
+
+    fun texture(
+        name: GpuObjectName?,
+        width: Int,
+        height: Int,
+        usage: Int
+    ): GpuTexture {
+        return texture(name, width, height, usage, GpuTextureFormat.rgba)
+    }
+
+    fun texture(
+        name: GpuObjectName?,
+        width: Int,
+        height: Int,
+        usage: Int,
+        format: GpuTextureFormat
+    ): GpuTexture {
+        return texture(name, width, height, usage, format, false, false)
+    }
+
+    fun buffer(
+        name: GpuObjectName?,
+        size: Long,
+        usage: Int
+    ): GpuBuffer {
+        return buffer(name, size, GpuBufferUsage(usage))
+    }
 }
 
 interface IGpuObjects {

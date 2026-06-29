@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.typho.big_shot_lib.impl.NeoEventBusImpl;
+import net.typho.big_shot_lib.impl.client.NeoClientEventBusImpl;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,7 +33,6 @@ public class LevelChunkMixin {
             @Local(argsOnly = true) BlockPos pos,
             @Local(ordinal = 1) BlockState oldState
     ) {
-        // TODO
-        //BigShotCommonEvents.INSTANCE.getBlockChanged().forEach(event -> event.invoke(level, new NeoVec3i(pos), oldState, state));
+        NeoEventBusImpl.BLOCK_CHANGED_EVENTS.forEach(event -> event.onBlockChanged(level, pos, oldState, state));
     }
 }

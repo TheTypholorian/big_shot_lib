@@ -85,7 +85,7 @@ open class PrimitiveQuad(
             }
         }
 
-        override fun vertex(
+        override fun addVertex(
             x: Float,
             y: Float,
             z: Float
@@ -105,7 +105,7 @@ open class PrimitiveQuad(
             return this
         }
 
-        override fun color(
+        override fun setColor(
             r: Int,
             g: Int,
             b: Int,
@@ -115,12 +115,12 @@ open class PrimitiveQuad(
             return this
         }
 
-        override fun color(argb: Int): VertexConsumer {
+        override fun setColor(argb: Int): VertexConsumer {
             vertex.color = argb
             return this
         }
 
-        override fun lightUV(
+        override fun setUv2(
             u: Int,
             v: Int
         ): VertexConsumer {
@@ -128,12 +128,12 @@ open class PrimitiveQuad(
             return this
         }
 
-        override fun lightUV(packed: Int): VertexConsumer {
+        override fun setLight(packed: Int): VertexConsumer {
             vertex.light = packed
             return this
         }
 
-        override fun normal(
+        override fun setNormal(
             x: Float,
             y: Float,
             z: Float
@@ -142,24 +142,24 @@ open class PrimitiveQuad(
             return this
         }
 
-        override fun normal(x: Byte, y: Byte, z: Byte): VertexConsumer {
+        override fun setNormal(x: Byte, y: Byte, z: Byte): VertexConsumer {
             vertex.normal = PackedNormal.pack(x.toInt(), y.toInt(), z.toInt())
             return this
         }
 
-        override fun normal(packed: Int): VertexConsumer {
+        override fun setNormal(packed: Int): VertexConsumer {
             vertex.normal = packed
             return this
         }
 
-        override fun overlayUV(
+        override fun setUv1(
             u: Int,
             v: Int
         ): VertexConsumer {
             return this
         }
 
-        override fun textureUV(
+        override fun setUv(
             u: Float,
             v: Float
         ): VertexConsumer {

@@ -10,15 +10,26 @@ import net.typho.big_shot_lib.api.client.event.RegisterMainMenuModesEvent
 
 //? fabric {
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader
+import net.minecraft.client.Minecraft
 import net.minecraft.server.packs.PackType
+import net.typho.big_shot_lib.api.client.event.ClientEndFrameEvent
+import net.typho.big_shot_lib.api.client.event.ClientStartFrameEvent
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
 
 object NeoClientEventBusImpl : NeoClientEventBus {
+    @JvmField
+    val CLIENT_LEVEL_CHANGED = mutableListOf<ClientLevelChangedEvent>()
+
     override fun register(event: AddAssetReloadListenersEvent) {
         event.registerReloadListeners { listener ->
             ResourceLoader.get(PackType.CLIENT_RESOURCES).registerReloadListener(listener.location, listener)
         }
+    }
+
+    override fun register(event: ClientEndFrameEvent) {
+        LevelRenderEvents.END_MAIN.register { event.onClientEndFrame(Minecraft.getInstance()) }
     }
 
     override fun register(event: ClientEndTickEvent) {
@@ -26,7 +37,11 @@ object NeoClientEventBusImpl : NeoClientEventBus {
     }
 
     override fun register(event: ClientLevelChangedEvent) {
-        TODO("Not yet implemented")
+        CLIENT_LEVEL_CHANGED.add(event)
+    }
+
+    override fun register(event: ClientStartFrameEvent) {
+        LevelRenderEvents.START_MAIN.register { event.onClientStartFrame(Minecraft.getInstance()) }
     }
 
     override fun register(event: ClientStartTickEvent) {

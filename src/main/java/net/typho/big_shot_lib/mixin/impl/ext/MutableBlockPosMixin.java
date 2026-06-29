@@ -6,7 +6,7 @@ import net.typho.big_shot_lib.api.math.IVec2;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(BlockPos.class)
+@Mixin(BlockPos.MutableBlockPos.class)
 public abstract class MutableBlockPosMixin implements MutableBlockPosExtension {
     @Override
     public void setXy(@NotNull IVec2<@NotNull Integer> xy) {

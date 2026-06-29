@@ -182,29 +182,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
             renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV1", "OVERLAY_UV")
             renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV2", "LIGHT_UV")
 
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lorg/joml/Vector3f;)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
-
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Matrix4fc;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex", "vertex")
-
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(IIII)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setColor", "color")
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FFFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setColor", "color")
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setColor", "color")
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setWhiteAlpha", "colorRGB")
-
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setUv", "textureUV")
-
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setUv1", "overlayUV")
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setOverlay", "overlayUV")
-
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(II)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setUv2", "lightUV")
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setLight", "lightUV")
-
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", "(FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setNormal", "normal")
-            renameMethod("com/mojang/blaze3d/vertex/VertexConsumer", $$"(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "setNormal", "normal")
-
             injectInterface("net/typho/big_shot_lib/api/client/ext/VertexConsumerExtension", "com/mojang/blaze3d/vertex/VertexConsumer")
             injectInterface("net/typho/big_shot_lib/api/client/ext/VertexFormatBuilderExtension", $$"com/mojang/blaze3d/vertex/VertexFormat$Builder")
             injectInterface("net/typho/big_shot_lib/api/client/ext/RenderTypeExtension", "net/minecraft/client/renderer/RenderType")

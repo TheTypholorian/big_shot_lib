@@ -31,6 +31,9 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
 object NeoEventBusImpl : NeoEventBus {
+    @JvmField
+    val BLOCK_CHANGED_EVENTS = mutableListOf<BlockChangedEvent>()
+
     override fun register(event: AddDataReloadListenersEvent) {
         /*
         val helper = ResourceManagerHelper.get(PackType.SERVER_DATA)
@@ -64,7 +67,7 @@ object NeoEventBusImpl : NeoEventBus {
     }
 
     override fun register(event: BlockChangedEvent) {
-        TODO("Not yet implemented")
+        BLOCK_CHANGED_EVENTS.add(event)
     }
 
     override fun register(event: ChunkLoadedEvent) {

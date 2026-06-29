@@ -11,6 +11,12 @@ import net.typho.big_shot_lib.api.util.Extension.Companion.cast
 interface Vec3iExtension : Extension<Vec3i>, IVec3<Int> {
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet
+    override val x: Int
+        get() = cast().x
+    override val y: Int
+        get() = cast().y
+    override val z: Int
+        get() = cast().z
     override val xy: IVec2<Int>
         get() = IVec2(x, y)
     override val yz: IVec2<Int>

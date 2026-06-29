@@ -40,6 +40,7 @@
     "impl.client.DebugScreenEntriesAccessor",
     "impl.client.FrustumAccessor",
     "impl.client.GlDebugMixin",
+    "impl.client.MinecraftMixin",
     "impl.client.RenderSystemMixin",
     "impl.client.RenderTypeNameAccessor"
   ],

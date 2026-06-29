@@ -89,7 +89,6 @@ modstitch {
         replacementProperties.put("license", project.property("license") as String)
         replacementProperties.put("group", project.group as String)
         replacementProperties.put("minecraft_version_range", project.property("deps.minecraft_range") as String)
-        replacementProperties.put("big_shot_version", project.property("deps.big_shot") as String)
         replacementProperties.put("yacl_version", project.property("deps.yacl") as String)
         replacementProperties.put("sodium_version", project.property("deps.sodium") as String)
         replacementProperties.put("java_version", "21")

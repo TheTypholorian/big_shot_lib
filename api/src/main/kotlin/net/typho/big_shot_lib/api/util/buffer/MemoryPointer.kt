@@ -99,7 +99,6 @@ interface MemoryPointer : Iterable<Byte> {
     fun read(offset: Long): MemoryReader {
         return object : MemoryReader {
             var index = offset
-            override var byteOrder: ByteOrder = ByteOrder.nativeOrder()
 
             fun index(increment: Long): Long {
                 val i = index
@@ -158,7 +157,6 @@ interface MemoryPointer : Iterable<Byte> {
     fun write(offset: Long): MemoryWriter {
         return object : MemoryWriter {
             var index = offset
-            override var byteOrder: ByteOrder = ByteOrder.nativeOrder()
 
             fun index(increment: Long): Long {
                 val i = index

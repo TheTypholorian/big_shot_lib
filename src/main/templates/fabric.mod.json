@@ -12,6 +12,20 @@
     "issues": "https://github.com/TheTypholorian/big_shot_lib/issues/",
     "sources": "https://github.com/TheTypholorian/big_shot_lib/"
   },
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "net.typho.big_shot_lib.impl.BigShotCommonInit"
+      }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "net.typho.big_shot_lib.impl.client.BigShotClientInit"
+      }
+    ]
+  },
   "icon": "icon.png",
   "depends": {
     "fabric-api": "*",
