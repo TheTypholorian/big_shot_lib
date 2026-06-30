@@ -27,6 +27,7 @@ abstract class AntiLeakResource(
     }
 
     override fun free() {
+        cleanup.run()
     }
 
     /**
