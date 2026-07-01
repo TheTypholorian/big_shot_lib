@@ -7,6 +7,9 @@ import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBufferUsag
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureUsage
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureFormat
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
+import net.typho.big_shot_lib.api.util.buffer.MemoryPointer
+import net.typho.big_shot_lib.api.util.buffer.MemoryWriter
+import java.util.function.Consumer
 
 private val INSTANCE by lazy { IGpuObjects::class.loadService() }
 
@@ -68,6 +71,35 @@ object GpuObjects : IGpuObjects by INSTANCE {
     ): GpuBuffer {
         return buffer(name, size, GpuBufferUsage(usage))
     }
+
+    fun buffer(
+        name: GpuObjectName?,
+        usage: Int,
+        data: MemoryPointer
+    ): GpuBuffer {
+        return buffer(name, GpuBufferUsage(usage), data)
+    }
+
+    fun buffer(
+        name: GpuObjectName?,
+        size: Long,
+        usage: GpuBufferUsage,
+        data: Consumer<MemoryWriter>
+    ): GpuBuffer {
+        MemoryPointer.alloc(size).use {
+            data.accept(it.write())
+            return buffer(name, usage, it)
+        }
+    }
+
+    fun buffer(
+        name: GpuObjectName?,
+        size: Long,
+        usage: Int,
+        data: Consumer<MemoryWriter>
+    ): GpuBuffer {
+        return buffer(name, size, GpuBufferUsage(usage), data)
+    }
 }
 
 interface IGpuObjects {
@@ -110,5 +142,11 @@ interface IGpuObjects {
         name: GpuObjectName?,
         size: Long,
         usage: GpuBufferUsage
+    ): GpuBuffer
+
+    fun buffer(
+        name: GpuObjectName?,
+        usage: GpuBufferUsage,
+        data: MemoryPointer
     ): GpuBuffer
 }

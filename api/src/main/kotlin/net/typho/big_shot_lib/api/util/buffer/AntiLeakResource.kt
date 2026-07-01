@@ -4,6 +4,7 @@ import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import org.lwjgl.system.NativeResource
 import org.slf4j.LoggerFactory
 import java.lang.ref.Cleaner
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Supplier
 
 abstract class AntiLeakResource(
@@ -11,15 +12,21 @@ abstract class AntiLeakResource(
     cleanup: Boolean = true
 ) : NativeResource {
     @JvmField
-    protected val cleaned = booleanArrayOf(false)
-    @JvmField
     protected val cleanup: Runnable = if (cleanup && CHECKING) {
-        val cleanup = CLEANER.register(this, createCleanup())
+        val cleanup = createCleanup()
         val id = id
-        Runnable {
-            if (!cleaned[0]) {
+        val cleaned = AtomicBoolean(false)
+
+        val cleanable = CLEANER.register(this) {
+            if (cleaned.compareAndSet(false, true)) {
                 LOGGER.warn("Resource '${id.get()}' was not cleaned up on time and got garbage collected")
-                cleanup.clean()
+                cleanup.run()
+            }
+        }
+        Runnable {
+            if (cleaned.compareAndSet(false, true)) {
+                cleanup.run()
+                cleanable.clean() // deregister the cleanable
             }
         }
     } else {

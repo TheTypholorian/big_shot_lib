@@ -26,6 +26,7 @@ import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBufferUsag
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureFormat
 import net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureUsage
 import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
+import net.typho.big_shot_lib.api.util.buffer.MemoryPointer
 
 object GpuObjectsImpl : IGpuObjects {
     override fun renderType(
@@ -208,5 +209,9 @@ object GpuObjectsImpl : IGpuObjects {
         usage: GpuBufferUsage
     ): GpuBuffer {
         return RenderSystem.getDevice().createBuffer(name, usage.flags, size)
+    }
+
+    override fun buffer(name: GpuObjectName?, usage: GpuBufferUsage, data: MemoryPointer): GpuBuffer {
+        return RenderSystem.getDevice().createBuffer(name, usage.flags, data.asByteBuffer())
     }
 }
