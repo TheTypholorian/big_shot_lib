@@ -10,11 +10,11 @@ interface RenderPassExtension : Extension<Any> {
         throw UnsupportedOperationException("Implemented via mixin")
     }
 
-    fun setStorageBuffer(index: Int, buffer: GpuBuffer) {
+    fun setStorageBuffer(name: String, buffer: GpuBuffer) {
         throw UnsupportedOperationException("Implemented via mixin")
     }
 
-    fun setStorageBuffer(index: Int, buffer: GpuBufferSlice) {
+    fun setStorageBuffer(name: String, buffer: GpuBufferSlice) {
         throw UnsupportedOperationException("Implemented via mixin")
     }
 
