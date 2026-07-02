@@ -23,13 +23,13 @@ public class RenderPassMixin implements RenderPassExtension {
     }
 
     @Override
-    public void setStorageBuffer(int index, @NotNull GpuBuffer buffer) {
-        backend.setStorageBuffer(index, buffer);
+    public void setStorageBuffer(@NotNull String name, @NotNull GpuBuffer buffer) {
+        backend.setStorageBuffer(name, buffer);
     }
 
     @Override
-    public void setStorageBuffer(int index, @NotNull GpuBufferSlice buffer) {
-        backend.setStorageBuffer(index, buffer);
+    public void setStorageBuffer(@NotNull String name, @NotNull GpuBufferSlice buffer) {
+        backend.setStorageBuffer(name, buffer);
     }
 
     @Override

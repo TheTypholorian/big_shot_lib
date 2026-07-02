@@ -35,5 +35,8 @@ value class GpuBufferUsage(val flags: Int) {
         @JvmStatic
         @get:JvmName("indirectParameters")
         val INDIRECT_PARAMETERS = GpuBufferUsage(512)
+        @JvmStatic
+        @get:JvmName("shaderStorage")
+        val SHADER_STORAGE = GpuBufferUsage(1024) // and we hope this doesn't cause problems
     }
 }

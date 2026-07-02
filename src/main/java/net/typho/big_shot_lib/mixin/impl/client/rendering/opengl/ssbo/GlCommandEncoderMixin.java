@@ -1,9 +1,9 @@
-package net.typho.big_shot_lib.mixin.impl.client.rendering.opengl;
+package net.typho.big_shot_lib.mixin.impl.client.rendering.opengl.ssbo;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.opengl.GlRenderPass;
 import net.typho.big_shot_lib.api.client.rendering.opengl.GlResource;
-import net.typho.big_shot_lib.impl.client.rendering.opengl.ShaderStorageBufferStorage;
+import net.typho.big_shot_lib.impl.client.rendering.opengl.GlShaderStorageBufferStorage;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,8 +31,10 @@ public class GlCommandEncoderMixin {
             Collection<String> uniforms,
             CallbackInfoReturnable<Boolean> cir
     ) {
-        for (Map.Entry<@NotNull Integer, @NotNull GpuBufferSlice> ssbo : ((ShaderStorageBufferStorage) renderPass).getBig_shot_lib$shaderStorageBuffers().entrySet()) {
-            glBindBufferRange(GL_SHADER_STORAGE_BUFFER, ssbo.getKey(), ((GlResource) ssbo.getValue().buffer()).getGlId(), ssbo.getValue().offset(), ssbo.getValue().length());
+        var storage = (GlShaderStorageBufferStorage) renderPass;
+
+        for (Map.Entry<@NotNull String, @NotNull GpuBufferSlice> ssbo : storage.getBig_shot_lib$shaderStorageBuffers().entrySet()) {
+            glBindBufferRange(GL_SHADER_STORAGE_BUFFER, storage.big_shot_lib$getShaderStorageBufferBinding(ssbo.getKey()), ((GlResource) ssbo.getValue().buffer()).getGlId(), ssbo.getValue().offset(), ssbo.getValue().length());
         }
     }
 }
