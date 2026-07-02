@@ -200,7 +200,7 @@ object GpuObjectsImpl : IGpuObjects {
         blur: Boolean,
         mipmap: Boolean
     ): GpuTexture {
-        return RenderSystem.getDevice().createTexture(name, usage.flags, format.castTo(), width, height, 1, 0)
+        return RenderSystem.getDevice().createTexture(name, usage.flags, format.castTo(), width, height, 1, 1)
     }
 
     override fun buffer(
