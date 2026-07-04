@@ -24,6 +24,8 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.util.spvc.Spv.SpvDecorationBinding;
+
 @Mixin(IntermediaryShaderModule.class)
 public class IntermediaryShaderModuleMixin implements IntermediaryShaderModuleExtension {
     @Shadow
@@ -89,7 +91,7 @@ public class IntermediaryShaderModuleMixin implements IntermediaryShaderModuleEx
         for (int i = 0; i < spvcCount; ++i) {
             SpvcReflectedResource resource = resources.get(i);
             String name = resource.nameString();
-            int bindingOffset = getDecorationOffset(compiler, resource, 33, intReturnBuffer);
+            int bindingOffset = getDecorationOffset(compiler, resource, SpvDecorationBinding, intReturnBuffer);
             storageBuffers.get().add(new SpvStorageBuffer(name, bindingOffset));
         }
     }
