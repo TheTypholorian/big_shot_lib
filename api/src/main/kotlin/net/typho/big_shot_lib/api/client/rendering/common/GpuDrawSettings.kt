@@ -17,6 +17,7 @@ interface GpuDrawSettings {
     val zOffset: Boolean
     val samplers: List<String>
     val uniforms: List<String>
+    val storageBuffers: List<String>
     val texelBuffers: List<TexelBuffer>
 
     fun bind()
@@ -56,6 +57,8 @@ interface GpuDrawSettings {
         @JvmField
         var uniforms = mutableListOf<String>()
         @JvmField
+        var storageBuffers = mutableListOf<String>()
+        @JvmField
         var texelBuffers = mutableListOf<TexelBuffer>()
 
         constructor()
@@ -72,6 +75,7 @@ interface GpuDrawSettings {
             zOffset = state.zOffset
             samplers = state.samplers.toMutableList()
             uniforms = state.uniforms.toMutableList()
+            storageBuffers = state.storageBuffers.toMutableList()
             texelBuffers = state.texelBuffers.toMutableList()
         }
 
@@ -131,6 +135,11 @@ interface GpuDrawSettings {
 
         fun uniform(name: String): Builder {
             uniforms.add(name)
+            return this
+        }
+
+        fun storageBuffer(name: String): Builder {
+            storageBuffers.add(name)
             return this
         }
 

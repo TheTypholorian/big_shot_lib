@@ -16,11 +16,7 @@ interface GpuTexture : Extension<GpuTexture>, GpuResource {
     fun clear(color: Vector4fc)
 
     fun upload(
-        data: NativeImage,
-        mipLevel: Int,
-        depthOrLayer: Int,
-        destX: Int,
-        destY: Int
+        data: NativeImage
     )
 
     fun upload(
@@ -28,9 +24,7 @@ interface GpuTexture : Extension<GpuTexture>, GpuResource {
         mipLevel: Int,
         depthOrLayer: Int,
         destX: Int,
-        destY: Int,
-        width: Int,
-        height: Int
+        destY: Int
     )
 
     fun upload(

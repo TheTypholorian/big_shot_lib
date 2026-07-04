@@ -144,6 +144,7 @@ object GpuObjectsImpl : IGpuObjects {
 
         drawState.samplers.forEach { layout.withSampler(it) }
         drawState.uniforms.forEach { layout.withUniform(it, UniformType.UNIFORM_BUFFER) }
+        drawState.storageBuffers.forEach { layout.withUniform(it, StorageBufferUniformType.INSTANCE) }
         drawState.texelBuffers.forEach { buffer ->
             layout.withUniform(
                 buffer.name,
