@@ -1,21 +1,21 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 plugins {
-    kotlin("jvm") version "2.2.0"
-    `java-gradle-plugin`
-    id("org.jetbrains.intellij.platform") version "2.17.0"
-    `maven-publish`
+    id("org.jetbrains.kotlin.jvm")
+    id("org.jetbrains.changelog")
+    id("org.jetbrains.intellij.platform")
 }
 
-group = "net.typho.big_shot_lib"
-version = "1.0.0"
-
-repositories {
-    mavenCentral()
-    gradlePluginPortal()
-}
-
+// Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
 dependencies {
-}
+    testImplementation(libs.junit)
 
-kotlin {
-    jvmToolchain(21)
+    // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
+    intellijPlatform {
+        intellijIdea("2025.3.5")
+        testFramework(TestFrameworkType.Platform)
+
+        // Add plugin dependencies for compilation here, for example:
+        // bundledPlugin("com.intellij.java")
+    }
 }

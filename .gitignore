@@ -25,3 +25,5 @@ runs
 
 .kotlin/*
 .env
+
+**/.run
