@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.util.buffer
+package net.typho.big_shot_lib.api.client.rendering.codec
 
 import net.typho.big_shot_lib.api.util.buffer.MemoryReader
 import net.typho.big_shot_lib.api.util.buffer.MemoryWriter

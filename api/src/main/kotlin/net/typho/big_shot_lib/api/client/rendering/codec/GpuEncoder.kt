@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.client.rendering.util.buffer
+package net.typho.big_shot_lib.api.client.rendering.codec
 
 interface GpuEncoder<P : GpuPacking, A> : DynamicGpuEncoder<P, A> {
     val alignment: Long

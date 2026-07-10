@@ -19,6 +19,7 @@
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.json</depends>
     <depends>com.intellij.java</depends>
     <depends optional="true" config-file="kotlin.xml">org.jetbrains.kotlin</depends>
 
@@ -32,9 +33,17 @@
                          key="inspection.messages.expected_immutable.references.display.name"
                          enabledByDefault="true"
                          groupBundle="messages.BigShotLibBundle"
-                         groupKey="group.names.probable.bugs"
                          level="WARNING"
-                         implementationClass="net.typho.big_shot_lib.ExpectedImmutableInspection"></localInspection>
+                         implementationClass="net.typho.big_shot_lib.intellij.ExpectedImmutableInspection"></localInspection>
+        <localInspection language="JSON"
+                         bundle="messages.BigShotLibBundle"
+                         key="inspection.messages.invalid_service.references.display.name"
+                         enabledByDefault="true"
+                         groupBundle="messages.BigShotLibBundle"
+                         level="ERROR"
+                         implementationClass="net.typho.big_shot_lib.intellij.services.InvalidNeoServiceInspection"></localInspection>
+
+        <psi.referenceContributor implementation="net.typho.big_shot_lib.intellij.services.NeoServicesReferenceContributor"></psi.referenceContributor>
     </extensions>
 
 </idea-plugin>

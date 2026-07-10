@@ -14,6 +14,7 @@ dependencies {
     intellijPlatform {
         intellijIdea("2025.3.5")
         testFramework(TestFrameworkType.Platform)
+        bundledPlugin("com.intellij.modules.json")
         bundledPlugin("com.intellij.java")
         bundledPlugin("org.jetbrains.kotlin")
 

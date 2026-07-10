@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib
+package net.typho.big_shot_lib.intellij
 
 import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiType
