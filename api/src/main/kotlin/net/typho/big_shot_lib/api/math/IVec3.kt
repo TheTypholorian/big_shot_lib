@@ -8,6 +8,8 @@ import net.minecraft.core.Vec3i
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.world.phys.Vec3
+import net.typho.big_shot_lib.api.plugin.Immutable
+import net.typho.big_shot_lib.api.plugin.MaybeMutable
 import org.joml.Vector3d
 import org.joml.Vector3dc
 import org.joml.Vector3f
@@ -18,6 +20,7 @@ import org.joml.Vector4d
 import org.joml.Vector4f
 import org.joml.Vector4i
 
+@MaybeMutable
 interface IVec3<N : Number> {
     val opSet: OperatorSet<N>
 
@@ -51,39 +54,39 @@ interface IVec3<N : Number> {
     val rb: IVec2<N>
         get() = xz
 
-    fun copyWith(x: N, y: N, z: N): IVec3<N>
+    fun copyWith(x: N, y: N, z: N): @Immutable IVec3<N>
 
-    fun toInt(): IVec3<Int> = IntImpl(x.toInt(), y.toInt(), z.toInt())
+    fun toInt(): @Immutable IVec3<Int> = IntImpl(x.toInt(), y.toInt(), z.toInt())
 
-    fun toFloat(): IVec3<Float> = IVec3(x.toFloat(), y.toFloat(), z.toFloat())
+    fun toFloat(): @Immutable IVec3<Float> = IVec3(x.toFloat(), y.toFloat(), z.toFloat())
 
-    fun toDouble(): IVec3<Double> = IVec3(x.toDouble(), y.toDouble(), z.toDouble())
+    fun toDouble(): @Immutable IVec3<Double> = IVec3(x.toDouble(), y.toDouble(), z.toDouble())
 
-    fun lerp(x: N, y: N, z: N, d: Float): IVec3<N> {
+    fun lerp(x: N, y: N, z: N, d: Float): @Immutable IVec3<N> {
         return copyWith(opSet.lerp(this.x, x, d), opSet.lerp(this.y, y, d), opSet.lerp(this.z, z, d))
     }
 
-    fun plus(x: N, y: N, z: N): IVec3<N> {
+    fun plus(x: N, y: N, z: N): @Immutable IVec3<N> {
         return copyWith(opSet.plus(this.x, x), opSet.plus(this.y, y), opSet.plus(this.z, z))
     }
 
-    fun minus(x: N, y: N, z: N): IVec3<N> {
+    fun minus(x: N, y: N, z: N): @Immutable IVec3<N> {
         return copyWith(opSet.minus(this.x, x), opSet.minus(this.y, y), opSet.minus(this.z, z))
     }
 
-    fun times(x: N, y: N, z: N): IVec3<N> {
+    fun times(x: N, y: N, z: N): @Immutable IVec3<N> {
         return copyWith(opSet.times(this.x, x), opSet.times(this.y, y), opSet.times(this.z, z))
     }
 
-    fun div(x: N, y: N, z: N): IVec3<N> {
+    fun div(x: N, y: N, z: N): @Immutable IVec3<N> {
         return copyWith(opSet.div(this.x, x), opSet.div(this.y, y), opSet.div(this.z, z))
     }
 
-    fun rem(x: N, y: N, z: N): IVec3<N> {
+    fun rem(x: N, y: N, z: N): @Immutable IVec3<N> {
         return copyWith(opSet.rem(this.x, x), opSet.rem(this.y, y), opSet.rem(this.z, z))
     }
 
-    fun cross(x: N, y: N, z: N): IVec3<N> {
+    fun cross(x: N, y: N, z: N): @Immutable IVec3<N> {
         return copyWith(
             opSet.plus(opSet.times(this.y, z), opSet.times(opSet.negate(this.z), y)),
             opSet.plus(opSet.times(this.z, x), opSet.times(opSet.negate(this.x), z)),
@@ -91,11 +94,11 @@ interface IVec3<N : Number> {
         )
     }
 
-    fun min(x: N, y: N, z: N): IVec3<N> {
+    fun min(x: N, y: N, z: N): @Immutable IVec3<N> {
         return copyWith(opSet.min(this.x, x), opSet.min(this.y, y), opSet.min(this.z, z))
     }
 
-    fun max(x: N, y: N, z: N): IVec3<N> {
+    fun max(x: N, y: N, z: N): @Immutable IVec3<N> {
         return copyWith(opSet.max(this.x, x), opSet.max(this.y, y), opSet.max(this.z, z))
     }
 
@@ -276,11 +279,11 @@ interface IVec3<N : Number> {
         return equals(other.x, other.y, other.z)
     }
 
-    fun immutable() = this
+    fun immutable(): @Immutable IVec3<N> = this
 
-    fun toBlockPos() = BlockPos(x.toInt(), y.toInt(), z.toInt())
+    fun toBlockPos(): @Immutable BlockPos = BlockPos(x.toInt(), y.toInt(), z.toInt())
 
-    fun toVec3i(): Vec3i = toBlockPos()
+    fun toVec3i(): @Immutable Vec3i = Vec3i(x.toInt(), y.toInt(), z.toInt())
 
     fun toVec3() = Vec3(x.toDouble(), y.toDouble(), z.toDouble())
 
@@ -454,39 +457,39 @@ interface IVec3<N : Number> {
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Int, y: Int, z: Int): IVec3<Int> = IntImpl(x, y, z)
+        operator fun invoke(x: Int, y: Int, z: Int): @Immutable IVec3<Int> = IntImpl(x, y, z)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(other: Vector3ic): IVec3<Int> = IntImpl(other.x(), other.y(), other.z())
+        operator fun invoke(other: Vector3ic): @Immutable IVec3<Int> = IntImpl(other.x(), other.y(), other.z())
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Int): IVec3<Int> = IntImpl(x, x, x)
+        operator fun invoke(x: Int): @Immutable IVec3<Int> = IntImpl(x, x, x)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Float, y: Float, z: Float): IVec3<Float> = FloatImpl(x, y, z)
+        operator fun invoke(x: Float, y: Float, z: Float): @Immutable IVec3<Float> = FloatImpl(x, y, z)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(other: Vector3fc): IVec3<Float> = FloatImpl(other.x(), other.y(), other.z())
+        operator fun invoke(other: Vector3fc): @Immutable IVec3<Float> = FloatImpl(other.x(), other.y(), other.z())
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Float): IVec3<Float> = FloatImpl(x, x, x)
+        operator fun invoke(x: Float): @Immutable IVec3<Float> = FloatImpl(x, x, x)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Double, y: Double, z: Double): IVec3<Double> = DoubleImpl(x, y, z)
+        operator fun invoke(x: Double, y: Double, z: Double): @Immutable IVec3<Double> = DoubleImpl(x, y, z)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(other: Vector3dc): IVec3<Double> = DoubleImpl(other.x(), other.y(), other.z())
+        operator fun invoke(other: Vector3dc): @Immutable IVec3<Double> = DoubleImpl(other.x(), other.y(), other.z())
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Double): IVec3<Double> = DoubleImpl(x, x, x)
+        operator fun invoke(x: Double): @Immutable IVec3<Double> = DoubleImpl(x, x, x)
 
         @JvmStatic
         @Deprecated("")

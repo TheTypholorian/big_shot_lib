@@ -6,9 +6,12 @@ import net.minecraft.core.Direction
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.typho.big_shot_lib.api.error.IllegalDimensionException
+import net.typho.big_shot_lib.api.plugin.Immutable
+import net.typho.big_shot_lib.api.plugin.MaybeMutable
 import kotlin.math.max
 import kotlin.math.min
 
+@MaybeMutable
 interface IRect2<N : Number> {
     val opSet: OperatorSet<N>
 
@@ -30,15 +33,15 @@ interface IRect2<N : Number> {
             return opSet.times(size.x, size.y)
         }
 
-    fun copyWith(min: IVec2<N>, max: IVec2<N>): IRect2<N>
+    fun copyWith(min: IVec2<N>, max: IVec2<N>): @Immutable IRect2<N>
 
-    fun copyWithUnchecked(min: IVec2<N>, max: IVec2<N>): IRect2<N>
+    fun copyWithUnchecked(min: IVec2<N>, max: IVec2<N>): @Immutable IRect2<N>
 
-    fun include(other: IRect2<N>): IRect2<N> {
+    fun including(other: IRect2<N>): @Immutable IRect2<N> {
         return copyWithUnchecked(min.min(other.min), max.max(other.max))
     }
 
-    fun include(other: IVec2<N>): IRect2<N> {
+    fun including(other: IVec2<N>): @Immutable IRect2<N> {
         return copyWithUnchecked(min.min(other), max.max(other))
     }
 
@@ -54,7 +57,7 @@ interface IRect2<N : Number> {
         return min.allLessThan(other.max) && max.allGreaterThan(other.min)
     }
 
-    fun move(direction: Direction, amount: N): IRect2<N> {
+    fun move(direction: Direction, amount: N): @Immutable IRect2<N> {
         if (direction.axis == Direction.Axis.Z) {
             throw IllegalDimensionException(direction.toString())
         }
@@ -68,11 +71,11 @@ interface IRect2<N : Number> {
         }
     }
 
-    fun move(amount: IVec2<N>): IRect2<N> {
+    fun offset(amount: IVec2<N>): @Immutable IRect2<N> {
         return copyWithUnchecked(min + amount, max + amount)
     }
 
-    fun extend(direction: Direction, amount: N): IRect2<N> {
+    fun extend(direction: Direction, amount: N): @Immutable IRect2<N> {
         return when (direction) {
             Direction.DOWN -> copyWith(min.minus(opSet.zero, amount), max)
             Direction.UP -> copyWith(min, max.plus(opSet.zero, amount))
@@ -82,7 +85,7 @@ interface IRect2<N : Number> {
         }
     }
 
-    fun expand(axis: Direction.Axis, amount: N): IRect2<N> {
+    fun expand(axis: Direction.Axis, amount: N): @Immutable IRect2<N> {
         return when (axis) {
             Direction.Axis.X -> copyWith(min.minus(opSet.zero, amount), max.plus(opSet.zero, amount))
             Direction.Axis.Y -> copyWith(min.minus(amount, opSet.zero), max.plus(amount, opSet.zero))
@@ -256,74 +259,74 @@ interface IRect2<N : Number> {
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(minX: Int, minY: Int, maxX: Int, maxY: Int): IRect2<Int> = IntImpl(IVec2(min(minX, maxX), min(minY, maxY)), IVec2(max(minX, maxX), max(minY, maxY)))
+        operator fun invoke(minX: Int, minY: Int, maxX: Int, maxY: Int): @Immutable IRect2<Int> = IntImpl(IVec2(min(minX, maxX), min(minY, maxY)), IVec2(max(minX, maxX), max(minY, maxY)))
 
         @JvmStatic
         @JvmName("ofInt")
-        operator fun invoke(min: IVec2<Int>, max: IVec2<Int>): IRect2<Int> = invoke(min.x, min.y, max.x, max.y)
+        operator fun invoke(min: IVec2<Int>, max: IVec2<Int>): @Immutable IRect2<Int> = invoke(min.x, min.y, max.x, max.y)
 
         @JvmStatic
         @JvmName("ofSize")
-        fun size(x: Int, y: Int, w: Int, h: Int): IRect2<Int> = invoke(x, y, x + w, y + h)
+        fun size(x: Int, y: Int, w: Int, h: Int): @Immutable IRect2<Int> = invoke(x, y, x + w, y + h)
 
         @JvmStatic
         @JvmName("ofSizeInt")
-        fun size(pos: IVec2<Int>, size: IVec2<Int>): IRect2<Int> = size(pos.x, pos.y, size.x, size.y)
+        fun size(pos: IVec2<Int>, size: IVec2<Int>): @Immutable IRect2<Int> = size(pos.x, pos.y, size.x, size.y)
 
         @JvmStatic
         @JvmName("ofUnchecked")
-        fun unchecked(minX: Int, minY: Int, maxX: Int, maxY: Int): IRect2<Int> = IntImpl(IVec2(minX, minY), IVec2(maxX, maxY))
+        fun unchecked(minX: Int, minY: Int, maxX: Int, maxY: Int): @Immutable IRect2<Int> = IntImpl(IVec2(minX, minY), IVec2(maxX, maxY))
 
         @JvmStatic
         @JvmName("ofUncheckedInt")
-        fun unchecked(min: IVec2<Int>, max: IVec2<Int>): IRect2<Int> = IntImpl(min, max)
+        fun unchecked(min: IVec2<Int>, max: IVec2<Int>): @Immutable IRect2<Int> = IntImpl(min, max)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(minX: Float, minY: Float, maxX: Float, maxY: Float): IRect2<Float> = FloatImpl(IVec2(min(minX, maxX), min(minY, maxY)), IVec2(max(minX, maxX), max(minY, maxY)))
+        operator fun invoke(minX: Float, minY: Float, maxX: Float, maxY: Float): @Immutable IRect2<Float> = FloatImpl(IVec2(min(minX, maxX), min(minY, maxY)), IVec2(max(minX, maxX), max(minY, maxY)))
 
         @JvmStatic
         @JvmName("ofFloat")
-        operator fun invoke(min: IVec2<Float>, max: IVec2<Float>): IRect2<Float> = invoke(min.x, min.y, max.x, max.y)
+        operator fun invoke(min: IVec2<Float>, max: IVec2<Float>): @Immutable IRect2<Float> = invoke(min.x, min.y, max.x, max.y)
 
         @JvmStatic
         @JvmName("ofSize")
-        fun size(x: Float, y: Float, w: Float, h: Float): IRect2<Float> = invoke(x, y, x + w, y + h)
+        fun size(x: Float, y: Float, w: Float, h: Float): @Immutable IRect2<Float> = invoke(x, y, x + w, y + h)
 
         @JvmStatic
         @JvmName("ofSizeFloat")
-        fun size(pos: IVec2<Float>, size: IVec2<Float>): IRect2<Float> = size(pos.x, pos.y, size.x, size.y)
+        fun size(pos: IVec2<Float>, size: IVec2<Float>): @Immutable IRect2<Float> = size(pos.x, pos.y, size.x, size.y)
 
         @JvmStatic
         @JvmName("ofUnchecked")
-        fun unchecked(minX: Float, minY: Float, maxX: Float, maxY: Float): IRect2<Float> = FloatImpl(IVec2(minX, minY), IVec2(maxX, maxY))
+        fun unchecked(minX: Float, minY: Float, maxX: Float, maxY: Float): @Immutable IRect2<Float> = FloatImpl(IVec2(minX, minY), IVec2(maxX, maxY))
 
         @JvmStatic
         @JvmName("ofUncheckedFloat")
-        fun unchecked(min: IVec2<Float>, max: IVec2<Float>): IRect2<Float> = FloatImpl(min, max)
+        fun unchecked(min: IVec2<Float>, max: IVec2<Float>): @Immutable IRect2<Float> = FloatImpl(min, max)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(minX: Double, minY: Double, maxX: Double, maxY: Double): IRect2<Double> = DoubleImpl(IVec2(min(minX, maxX), min(minY, maxY)), IVec2(max(minX, maxX), max(minY, maxY)))
+        operator fun invoke(minX: Double, minY: Double, maxX: Double, maxY: Double): @Immutable IRect2<Double> = DoubleImpl(IVec2(min(minX, maxX), min(minY, maxY)), IVec2(max(minX, maxX), max(minY, maxY)))
 
         @JvmStatic
         @JvmName("ofDouble")
-        operator fun invoke(min: IVec2<Double>, max: IVec2<Double>): IRect2<Double> = invoke(min.x, min.y, max.x, max.y)
+        operator fun invoke(min: IVec2<Double>, max: IVec2<Double>): @Immutable IRect2<Double> = invoke(min.x, min.y, max.x, max.y)
 
         @JvmStatic
         @JvmName("ofSize")
-        fun size(x: Double, y: Double, w: Double, h: Double): IRect2<Double> = invoke(x, y, x + w, y + h)
+        fun size(x: Double, y: Double, w: Double, h: Double): @Immutable IRect2<Double> = invoke(x, y, x + w, y + h)
 
         @JvmStatic
         @JvmName("ofSizeDouble")
-        fun size(pos: IVec2<Double>, size: IVec2<Double>): IRect2<Double> = size(pos.x, pos.y, size.x, size.y)
+        fun size(pos: IVec2<Double>, size: IVec2<Double>): @Immutable IRect2<Double> = size(pos.x, pos.y, size.x, size.y)
 
         @JvmStatic
         @JvmName("ofUnchecked")
-        fun unchecked(minX: Double, minY: Double, maxX: Double, maxY: Double): IRect2<Double> = DoubleImpl(IVec2(minX, minY), IVec2(maxX, maxY))
+        fun unchecked(minX: Double, minY: Double, maxX: Double, maxY: Double): @Immutable IRect2<Double> = DoubleImpl(IVec2(minX, minY), IVec2(maxX, maxY))
 
         @JvmStatic
         @JvmName("ofUncheckedDouble")
-        fun unchecked(min: IVec2<Double>, max: IVec2<Double>): IRect2<Double> = DoubleImpl(min, max)
+        fun unchecked(min: IVec2<Double>, max: IVec2<Double>): @Immutable IRect2<Double> = DoubleImpl(min, max)
     }
 }
