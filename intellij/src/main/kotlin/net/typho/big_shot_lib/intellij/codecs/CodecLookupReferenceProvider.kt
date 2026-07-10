@@ -1,13 +1,16 @@
 package net.typho.big_shot_lib.intellij.codecs
 
+import com.intellij.json.psi.JsonObject
 import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.model.psi.PsiSymbolDeclaration
 import com.intellij.model.psi.PsiSymbolReference
 import com.intellij.navigation.ItemPresentation
 import com.intellij.navigation.NavigationItem
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -20,7 +23,6 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.PsiShortNamesCache
 import com.intellij.psi.search.searches.MethodReferencesSearch
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
@@ -31,125 +33,136 @@ import com.intellij.util.ProcessingContext
 import org.jetbrains.annotations.Unmodifiable
 
 object CodecLookupReferenceProvider : PsiReferenceProvider() {
+    const val IDENTIFIER_REGEX = "[a-z0-9_.-]"
+
+    @JvmField
+    val CACHE_KEY = Key.create<CachedValue<List<PsiMethodCallExpression>>>("big_shot_lib:codec_fields")
+    @JvmField
+    val CODEC_CLASSES = mutableSetOf(
+        "com.mojang.serialization.Encoder",
+        "com.mojang.serialization.Decoder",
+        "com.mojang.serialization.MapCodec"
+    )
+
+    @JvmField
+    val KNOWN_CODECS = mutableMapOf<Regex, (element: JsonStringLiteral, json: JsonObject?, candidate: PsiMethodCallExpression) -> Boolean>()
+
+    init {
+        defineResourceType("data", "tags", ".json", hashSetOf("net.minecraft.tags.TagFile"))
+        defineResourceType("data", "recipe", ".json") { element, json ->
+            val typeProperty = (json ?: return@defineResourceType emptySet()).findProperty("type") ?: return@defineResourceType emptySet()
+            val type = ((typeProperty.value ?: return@defineResourceType emptySet()) as? JsonStringLiteral) ?: return@defineResourceType emptySet()
+            val classes = mutableSetOf(
+                "net.minecraft.world.item.crafting.Recipe"
+            )
+
+            when (type.value) {
+                "minecraft:crafting_shaped" -> {
+                    classes.add("net.minecraft.world.item.crafting.CraftingRecipe")
+                    classes.add("net.minecraft.world.item.crafting.ShapedRecipePattern")
+                    classes.add("net.minecraft.world.item.crafting.ShapedRecipe")
+                }
+                "minecraft:crafting_shapeless" -> {
+                    classes.add("net.minecraft.world.item.crafting.CraftingRecipe")
+                    classes.add("net.minecraft.world.item.crafting.ShapelessRecipe")
+                }
+                "minecraft:crafting_special_armordye" -> classes.add("net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer")
+            }
+
+            classes
+        }
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun defineResourceType(rootFolder: String, path: String, extension: String = "", codecClasses: Set<String>) {
+        return defineResourceType(rootFolder, path, extension) { element, json -> codecClasses }
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    fun defineResourceType(rootFolder: String, path: String, extension: String = "", codecClasses: (element: JsonStringLiteral, json: JsonObject?) -> Set<String>) {
+        KNOWN_CODECS[Regex("""$rootFolder\\$IDENTIFIER_REGEX+\\$path\\.+$extension""")] = { element, json, candidate ->
+            val cls = PsiTreeUtil.getTopmostParentOfType(candidate, PsiClass::class.java)?.qualifiedName
+            cls in codecClasses(element, json)
+        }
+    }
+
     override fun getReferencesByElement(
         element: PsiElement,
         context: ProcessingContext
     ): Array<out PsiReference?> {
-        return if (element is JsonStringLiteral) arrayOf(Reference(element)) else arrayOf()
+        return if (element is JsonStringLiteral) arrayOf(
+            element.containingFile.virtualFile?.let { file ->
+                ProjectRootManager.getInstance(element.project).fileIndex.getSourceRootForFile(file)?.let { root ->
+                    VfsUtilCore.getRelativePath(element.containingFile.virtualFile, root, '/')?.replace('/', '\\')?.let { path ->
+                        KNOWN_CODECS.filter {
+                            it.key.matches(path)
+                        }.values.firstOrNull()?.let { predicate ->
+                            val json = PsiTreeUtil.getTopmostParentOfType(element, JsonObject::class.java)
+                            Reference(element) { candidate -> predicate(element, json, candidate) }
+                        }
+                    }
+                }
+            } ?: Reference(element)) else arrayOf()
     }
 
-    class Reference(
-        element: JsonStringLiteral
-    ) : PsiReferenceBase<JsonStringLiteral>(element), PsiPolyVariantReference {
-        companion object {
-            @JvmField
-            val CACHE_KEY = Key.create<CachedValue<List<PsiMethodCallExpression>>>("neo_codec_field_references")
-        }
+    fun getCodecFieldReferences(project: Project): List<PsiMethodCallExpression> = CachedValuesManager.getManager(project).getCachedValue(
+        project,
+        CACHE_KEY,
+        {
+            val facade = JavaPsiFacade.getInstance(project)
+            val scope = GlobalSearchScope.allScope(project)
+            val classes = CODEC_CLASSES.mapNotNull { facade.findClass(it, scope) }
+            val methods = classes.flatMap { it.allMethods.filter { method -> method.name == "fieldOf" || method.name == "optionalFieldOf" } }.distinct()
 
+            val calls = mutableListOf<PsiMethodCallExpression>()
+
+            for (method in methods) {
+                MethodReferencesSearch.search(
+                    method,
+                    scope,
+                    false
+                ).forEach { reference ->
+                    PsiTreeUtil.getParentOfType(
+                        reference.element,
+                        PsiMethodCallExpression::class.java
+                    )?.let(calls::add)
+                }
+            }
+
+            CachedValueProvider.Result.create(
+                calls,
+                PsiModificationTracker.MODIFICATION_COUNT
+            )
+        },
+        false
+    )
+
+    class Reference @JvmOverloads constructor(
+        element: JsonStringLiteral,
+        @JvmField
+        val predicate: (candidate: PsiMethodCallExpression) -> Boolean = { true }
+    ) : PsiReferenceBase<JsonStringLiteral>(element), PsiPolyVariantReference {
         override fun resolve(): PsiElement? {
             val multi = multiResolve(false)
             return if (multi.size == 1) multi[0].element else null
         }
 
-        private fun getCodecReferences(
-            project: Project,
-            scope: GlobalSearchScope
-        ): List<PsiMethodCallExpression> {
-            return CachedValuesManager.getManager(project)
-                .getCachedValue(
-                    project,
-                    CACHE_KEY,
-                    {
-                        val facade = JavaPsiFacade.getInstance(project)
-
-                        val classes = listOfNotNull(
-                            facade.findClass(
-                                "com.mojang.serialization.Encoder",
-                                scope
-                            ),
-                            facade.findClass(
-                                "com.mojang.serialization.Decoder",
-                                scope
-                            ),
-                            facade.findClass(
-                                "com.mojang.serialization.MapCodec",
-                                scope
-                            )
-                        )
-
-                        val methods = classes.flatMap {
-                            it.allMethods.filter { method ->
-                                method.name == "fieldOf" ||
-                                        method.name == "optionalFieldOf"
-                            }
-                        }.distinct()
-
-                        val calls = mutableListOf<PsiMethodCallExpression>()
-
-                        for (method in methods) {
-                            MethodReferencesSearch.search(
-                                method,
-                                scope,
-                                false
-                            ).forEach { reference ->
-                                PsiTreeUtil.getParentOfType(
-                                    reference.element,
-                                    PsiMethodCallExpression::class.java
-                                )?.let(calls::add)
-                            }
-                        }
-
-                        CachedValueProvider.Result.create(
-                            calls,
-                            PsiModificationTracker.MODIFICATION_COUNT
-                        )
-                    },
-                    false
-                )
-        }
-
         override fun multiResolve(incompleteCode: Boolean): Array<out ResolveResult> {
-            val start = System.currentTimeMillis()
+            return getCodecFieldReferences(element.project).mapNotNull { call ->
+                val literal = call.argumentList.expressions.firstOrNull() as? PsiLiteralExpression ?: return@mapNotNull null
 
-            val key = element.value
-            val project = element.project
-            val scope = GlobalSearchScope.allScope(project)
-
-            val results = mutableListOf<ResolveResult>()
-
-            val calls = getCodecReferences(
-                project,
-                scope
-            )
-
-            println("search ${System.currentTimeMillis() - start}")
-
-            for (call in calls) {
-                val literal = call.argumentList
-                    .expressions
-                    .firstOrNull() as? PsiLiteralExpression
-                    ?: continue
-
-                if (literal.value != key) {
-                    continue
+                if (literal.value != element.value) {
+                    return@mapNotNull null
                 }
 
-                val cls = PsiTreeUtil.getParentOfType(
-                    call,
-                    PsiClass::class.java
-                )
+                if (!predicate(call)) {
+                    return@mapNotNull null
+                }
 
-                results += PsiElementResolveResult(
-                    ResolveTarget(
-                        literal,
-                        "${cls?.name ?: "Unknown"} ${call.text}"
-                    )
-                )
-            }
-
-            println("done ${System.currentTimeMillis() - start}")
-
-            return results.toTypedArray()
+                PsiElementResolveResult(ResolveTarget(literal, "${PsiTreeUtil.getParentOfType(call, PsiClass::class.java)?.qualifiedName ?: "Unknown"} ${call.text.split('\n').fold("") { left, right -> left + right.trim() }}"))
+            }.toTypedArray()
         }
     }
 
