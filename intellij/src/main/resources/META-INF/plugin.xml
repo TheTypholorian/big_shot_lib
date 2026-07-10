@@ -44,6 +44,7 @@
                          implementationClass="net.typho.big_shot_lib.intellij.services.InvalidNeoServiceInspection"></localInspection>
 
         <psi.referenceContributor implementation="net.typho.big_shot_lib.intellij.services.NeoServicesReferenceContributor"></psi.referenceContributor>
+        <psi.referenceContributor implementation="net.typho.big_shot_lib.intellij.codecs.CodecLookupReferenceContributor"></psi.referenceContributor>
     </extensions>
 
 </idea-plugin>
