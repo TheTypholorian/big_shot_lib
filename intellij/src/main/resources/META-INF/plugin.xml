@@ -27,13 +27,21 @@
     <resource-bundle>messages.BigShotLibBundle</resource-bundle>
 
     <actions>
-        <action id="NewMixinAction"
-                class="net.typho.big_shot_lib.intellij.mixin.NewMixinAction"
-                text="Mixin"
-                icon="net.typho.big_shot_lib.intellij.BigShotLibIcons.mixin">
-            <add-to-group group-id="NewGroup"
+        <action id="CreateAccessorAction"
+                class="net.typho.big_shot_lib.intellij.mixin.CreateAccessorAction"
+                text="Create Accessor"
+                icon="net.typho.big_shot_lib.intellij.BigShotLibIcons.accessor">
+            <add-to-group group-id="EditorPopupMenu"
                           anchor="after"
-                          relative-to-action="Kotlin.NewFile"></add-to-group>
+                          relative-to-action="EditorToggleColumnMode"/>
+        </action>
+        <action id="CreateInvokerAction"
+                class="net.typho.big_shot_lib.intellij.mixin.CreateInvokerAction"
+                text="Create Invoker"
+                icon="net.typho.big_shot_lib.intellij.BigShotLibIcons.invoker">
+            <add-to-group group-id="EditorPopupMenu"
+                          anchor="after"
+                          relative-to-action="EditorToggleColumnMode"/>
         </action>
     </actions>
 
