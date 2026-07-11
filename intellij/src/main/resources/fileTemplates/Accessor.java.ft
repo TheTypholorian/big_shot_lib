@@ -1,0 +1,11 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};
+
+#end
+#parse("File Header.java")
+
+import org.spongepowered.asm.mixin.Mixin;
+import ${MIXIN_TARGET};
+
+@Mixin(${MIXIN_TARGET_SHORT}.class)
+public interface ${NAME} {
+}

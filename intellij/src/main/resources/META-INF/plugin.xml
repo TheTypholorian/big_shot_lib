@@ -21,9 +21,21 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.json</depends>
     <depends>com.intellij.java</depends>
+    <depends>com.demonwav.minecraft-dev</depends>
     <depends optional="true" config-file="kotlin.xml">org.jetbrains.kotlin</depends>
 
     <resource-bundle>messages.BigShotLibBundle</resource-bundle>
+
+    <actions>
+        <action id="NewMixinAction"
+                class="net.typho.big_shot_lib.intellij.mixin.NewMixinAction"
+                text="Mixin"
+                icon="net.typho.big_shot_lib.intellij.BigShotLibIcons.mixin">
+            <add-to-group group-id="NewGroup"
+                          anchor="after"
+                          relative-to-action="Kotlin.NewFile"></add-to-group>
+        </action>
+    </actions>
 
     <!-- Extensions defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
@@ -42,6 +54,9 @@
                          groupBundle="messages.BigShotLibBundle"
                          level="ERROR"
                          implementationClass="net.typho.big_shot_lib.intellij.services.InvalidNeoServiceInspection"></localInspection>
+
+        <internalFileTemplate name="Mixin" id="mixin"></internalFileTemplate>
+        <internalFileTemplate name="Accessor" id="accessor"></internalFileTemplate>
 
         <psi.referenceContributor implementation="net.typho.big_shot_lib.intellij.services.NeoServicesReferenceContributor"></psi.referenceContributor>
         <psi.referenceContributor implementation="net.typho.big_shot_lib.intellij.codecs.CodecLookupReferenceContributor"></psi.referenceContributor>
