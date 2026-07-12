@@ -10,4 +10,6 @@ object BigShotLibIcons {
     val accessor = MixinAssets.MIXIN_ACCESSOR_ICON
     @JvmField
     val invoker = MixinAssets.MIXIN_ACCESSOR_ICON
+    @JvmField
+    val injection = MixinAssets.MIXIN_INJECTOR_ICON
 }

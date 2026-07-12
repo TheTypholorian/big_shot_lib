@@ -29,16 +29,23 @@
     <actions>
         <action id="CreateAccessorAction"
                 class="net.typho.big_shot_lib.intellij.mixin.CreateAccessorAction"
-                text="Create Accessor"
                 icon="net.typho.big_shot_lib.intellij.BigShotLibIcons.accessor">
             <add-to-group group-id="EditorPopupMenu"
                           anchor="after"
                           relative-to-action="EditorToggleColumnMode"/>
         </action>
+
         <action id="CreateInvokerAction"
                 class="net.typho.big_shot_lib.intellij.mixin.CreateInvokerAction"
-                text="Create Invoker"
                 icon="net.typho.big_shot_lib.intellij.BigShotLibIcons.invoker">
+            <add-to-group group-id="EditorPopupMenu"
+                          anchor="after"
+                          relative-to-action="EditorToggleColumnMode"/>
+        </action>
+
+        <action id="CreateInjectionAction"
+                class="net.typho.big_shot_lib.intellij.mixin.CreateInjectionAction"
+                icon="net.typho.big_shot_lib.intellij.BigShotLibIcons.injection">
             <add-to-group group-id="EditorPopupMenu"
                           anchor="after"
                           relative-to-action="EditorToggleColumnMode"/>

@@ -1,21 +1,16 @@
 package net.typho.big_shot_lib.intellij.mixin
 
 import com.demonwav.mcdev.util.addAnnotation
-import com.demonwav.mcdev.util.constantStringValue
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiField
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiModifier
 import com.intellij.psi.codeStyle.JavaCodeStyleManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
-import org.jetbrains.uast.UField
-import org.jetbrains.uast.UMethod
-import org.jetbrains.uast.toUElement
+import net.typho.big_shot_lib.intellij.mixin.MixinUtil.getSelectedPsiElement
 
 class CreateInvokerAction : AnAction() {
     companion object {
@@ -23,7 +18,7 @@ class CreateInvokerAction : AnAction() {
     }
 
     override fun actionPerformed(e: AnActionEvent) {
-        val element = e.getData(CommonDataKeys.PSI_ELEMENT) as? PsiMethod ?: return
+        val element = e.getSelectedPsiElement(PsiMethod::class.java) ?: return
         val project = e.project ?: return
 
         val mixin = MixinUtil.findOrCreateAccessor(
@@ -54,7 +49,7 @@ class CreateInvokerAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
-        e.presentation.isVisible = e.getData(CommonDataKeys.PSI_ELEMENT)?.let { it is PsiMethod && !it.modifierList.hasExplicitModifier(PsiModifier.PUBLIC) } ?: false
+        e.presentation.isVisible = e.getSelectedPsiElement(PsiMethod::class.java)?.let { !it.modifierList.hasExplicitModifier(PsiModifier.PUBLIC) } ?: false
     }
 
     override fun getActionUpdateThread(): ActionUpdateThread {
