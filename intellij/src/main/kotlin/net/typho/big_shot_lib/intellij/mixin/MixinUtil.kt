@@ -111,6 +111,45 @@ object MixinUtil {
     }
 
     @JvmStatic
+    fun addMixinMethod(project: Project, mixin: PsiClass, methodName: String, methodType: PsiType, methodInit: BiConsumer<PsiElementFactory, PsiMethod>): PsiMethod {
+        val factory = PsiElementFactory.getInstance(project)
+
+        var method = factory.createMethod(methodName, methodType)
+        methodInit.accept(factory, method)
+
+        WriteCommandAction.runWriteCommandAction(project) {
+            method = mixin.add(method) as PsiMethod
+        }
+
+        FileEditorManager.getInstance(project)
+            .openTextEditor(OpenFileDescriptor(project, mixin.containingFile.virtualFile), true)
+            ?.caretModel
+            ?.moveToOffset(method.textRange.startOffset)
+
+        return method
+    }
+
+    @JvmStatic
+    fun addMixinMethod(project: Project, mixin: PsiClass, methodName: String, methodType: PsiTypeElement, methodInit: BiConsumer<PsiElementFactory, PsiMethod>): PsiMethod {
+        val factory = PsiElementFactory.getInstance(project)
+
+        var method = factory.createMethod(methodName, methodType.type)
+        method.returnTypeElement?.replace(methodType)
+        methodInit.accept(factory, method)
+
+        WriteCommandAction.runWriteCommandAction(project) {
+            method = mixin.add(method) as PsiMethod
+        }
+
+        FileEditorManager.getInstance(project)
+            .openTextEditor(OpenFileDescriptor(project, mixin.containingFile.virtualFile), true)
+            ?.caretModel
+            ?.moveToOffset(method.textRange.startOffset)
+
+        return method
+    }
+
+    @JvmStatic
     fun findOrAddMixinMethod(project: Project, mixin: PsiClass, methodName: String, methodType: PsiType, methodInit: BiConsumer<PsiElementFactory, PsiMethod>): PsiMethod {
         val factory = PsiElementFactory.getInstance(project)
 

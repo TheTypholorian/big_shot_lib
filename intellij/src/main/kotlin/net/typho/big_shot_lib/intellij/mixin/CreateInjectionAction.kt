@@ -68,7 +68,7 @@ class CreateInjectionAction : AnAction() {
 
         val styleManager = JavaCodeStyleManager.getInstance(project)
 
-        MixinUtil.findOrAddMixinMethod(
+        MixinUtil.addMixinMethod(
             project,
             mixin,
             injectMethodName,
