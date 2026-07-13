@@ -60,6 +60,10 @@ interface GpuDrawSettings {
         var storageBuffers = mutableListOf<String>()
         @JvmField
         var texelBuffers = mutableListOf<TexelBuffer>()
+        @JvmField
+        val shaderDefines = mutableMapOf<String, Any>()
+        @JvmField
+        val shaderFlags = mutableSetOf<String>()
 
         constructor()
 
@@ -145,6 +149,21 @@ interface GpuDrawSettings {
 
         fun texelBuffer(name: String, type: GpuDataType, components: Int): Builder {
             texelBuffers.add(TexelBuffer(name, type, components))
+            return this
+        }
+
+        fun define(key: String, value: Float): Builder {
+            shaderDefines[key] = value
+            return this
+        }
+
+        fun define(key: String, value: Int): Builder {
+            shaderDefines[key] = value
+            return this
+        }
+
+        fun define(key: String): Builder {
+            shaderFlags.add(key)
             return this
         }
     }

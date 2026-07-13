@@ -156,9 +156,17 @@ object GpuObjectsImpl : IGpuObjects {
         pipeline.withBindGroupLayout(layout.build())
         pipeline.withPrimitiveTopology(PrimitiveTopology.QUADS)
 
-        pipeline.withShaderDefine("USE_VERTEX_COMPRESSION")
-        pipeline.withShaderDefine("USE_FOG")
-        pipeline.withShaderDefine("ALPHA_CUTOUT", 0.5f)
+        for ((key, value) in drawState.shaderDefines) {
+            when (value) {
+                is Int -> pipeline.withShaderDefine(key, value)
+                is Float -> pipeline.withShaderDefine(key, value)
+                else -> throw IllegalArgumentException("Unsupported shader define value $value for key $key")
+            }
+        }
+
+        for (flag in drawState.shaderFlags) {
+            pipeline.withShaderDefine(flag)
+        }
 
         pipeline.withVertexBinding(0, format)
 
