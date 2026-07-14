@@ -3,6 +3,7 @@ package net.typho.big_shot_lib.plugin.dependencies
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension
+import net.typho.big_shot_lib.plugin.MCVersion
 import net.typho.big_shot_lib.plugin.ModLoader
 import org.gradle.api.Project
 import java.net.URI
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.util.Properties
 import java.util.function.Function
+import javax.xml.parsers.DocumentBuilderFactory
 
 val Project.dependencyPropertyFile
     get() = project.file("dependency_versions.properties")
@@ -73,9 +75,7 @@ fun Project.getFabricLoaderVersion(update: Boolean = false): String {
 @JvmOverloads
 fun Project.getNeoForgeLoaderVersion(update: Boolean = false): String {
     val ext = project.extensions.getByType(BigShotLibPluginExtension::class.java)
-    val mc = ext.version.get()
-
-    mc.neoforgePrefix ?: throw IllegalStateException("NeoForge is not available for Minecraft version $mc")
+    val mc = MCVersion[ext.version.get()]
 
     val client = HttpClient.newHttpClient()
     val request = HttpRequest.newBuilder()
@@ -86,7 +86,7 @@ fun Project.getNeoForgeLoaderVersion(update: Boolean = false): String {
     val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
     if (response.statusCode() == 404) {
-        throw RuntimeException("[Big Shot Lib] Unable to find fabric loader version")
+        throw RuntimeException("[Big Shot Lib] Unable to find neoforge loader version")
     }
 
     val body = response.body()
@@ -95,14 +95,47 @@ fun Project.getNeoForgeLoaderVersion(update: Boolean = false): String {
     for (version in versions) {
         var versionId = version.asString
 
-        if (versionId.startsWith(mc.neoforgePrefix)) {
+        if (versionId.startsWith(mc.forgeVersionPrefix)) {
             versionId = cacheDependencyVersion("neoforge-loader", { it }, versionId, update)
             println("[Big Shot Lib] Using $versionId for neoforge loader")
             return versionId
         }
     }
 
-    throw RuntimeException("[Big Shot Lib] No version of neoforge loader matches $mc (looking for prefix ${mc.neoforgePrefix})")
+    throw RuntimeException("[Big Shot Lib] No version of neoforge loader matches ${mc.primaryVersion} (looking for prefix ${mc.forgeVersionPrefix})")
+}
+
+@JvmOverloads
+fun Project.getForgeLoaderVersion(update: Boolean = false): String {
+    val ext = project.extensions.getByType(BigShotLibPluginExtension::class.java)
+    val mc = MCVersion[ext.version.get()]
+
+    val client = HttpClient.newHttpClient()
+    val request = HttpRequest.newBuilder()
+        .uri(URI.create("https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml"))
+        .header("Accept", "text/xml")
+        .GET()
+        .build()
+    val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+    if (response.statusCode() == 404) {
+        throw RuntimeException("[Big Shot Lib] Unable to find forge loader version")
+    }
+
+    val body = response.body()
+    val versions = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(body).getElementsByTagName("version")
+
+    repeat(versions.length) { i ->
+        var versionId = versions.item(i).textContent
+
+        if (versionId.startsWith(mc.forgeVersionPrefix)) {
+            versionId = cacheDependencyVersion("forge-loader", { it }, versionId, update)
+            println("[Big Shot Lib] Using $versionId for forge loader")
+            return versionId
+        }
+    }
+
+    throw RuntimeException("[Big Shot Lib] No version of forge loader matches ${mc.primaryVersion} (looking for prefix ${mc.forgeVersionPrefix})")
 }
 
 @JvmOverloads
@@ -112,13 +145,14 @@ fun Project.getLoaderVersion(update: Boolean = false): String {
     return when (val loader = ext.loader.get()) {
         ModLoader.FABRIC -> getFabricLoaderVersion(update)
         ModLoader.NEOFORGE -> getNeoForgeLoaderVersion(update)
+        ModLoader.FORGE -> getForgeLoaderVersion(update)
         else -> throw IllegalArgumentException("No loader version for $loader")
     }
 }
 
-fun Project.getParchmentVersion(): String? {
+fun Project.getParchmentVersion(): Pair<MCVersion, String>? {
     val ext = project.extensions.getByType(BigShotLibPluginExtension::class.java)
-    val mc = ext.version.get()
+    val mc = MCVersion[ext.version.get()]
 
     return mc.parchmentVersion
 }
@@ -126,7 +160,7 @@ fun Project.getParchmentVersion(): String? {
 @JvmOverloads
 fun Project.getModrinthProjectVersion(projectId: String, update: Boolean = false): String {
     val ext = project.extensions.getByType(BigShotLibPluginExtension::class.java)
-    val mc = ext.version.get()
+    val mc = MCVersion[ext.version.get()]
     val loader = ext.loader.get()
 
     val gson = Gson()
@@ -171,8 +205,8 @@ fun Project.getModrinthProjectVersion(projectId: String, update: Boolean = false
         }
     }
 
-    versionId ?: throw RuntimeException("[Big Shot Lib] No version of modrinth project $projectId matches $mc $loader")
+    versionId ?: throw RuntimeException("[Big Shot Lib] No version of modrinth project $projectId matches ${mc.primaryVersion} $loader")
     versionId = cacheDependencyVersion(projectId, { versionIdToName[it] ?: it }, versionId, update)
-    println("[Big Shot Lib] Using ${versionIdToName.getOrDefault(versionId, versionId)} for modrinth project $projectId on $mc $loader")
+    println("[Big Shot Lib] Using ${versionIdToName.getOrDefault(versionId, versionId)} for modrinth project $projectId on ${mc.primaryVersion} $loader")
     return versionId
 }

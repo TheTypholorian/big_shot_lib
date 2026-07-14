@@ -9,10 +9,11 @@ import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import javax.inject.Inject
 
-abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFactory) {
-    abstract val version: Property<MCVersion>
+abstract class BigShotLibPluginExtension @Inject constructor(
+    objects: ObjectFactory
+) {
+    abstract val version: Property<String>
     abstract val loader: Property<ModLoader>
-    abstract val mcVersions: MapProperty<String, >
     val transformInfo: TransformInfo = objects.newInstance(TransformInfo::class.java, version)
 
     fun transformInfo(action: Action<in TransformInfo>) {
@@ -20,10 +21,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
     }
 
     fun version(value: String) {
-        version.set(MCVersion[value])
-    }
-
-    fun version(value: MCVersion) {
         version.set(value)
     }
 
@@ -36,10 +33,8 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
     }
 
     abstract class TransformInfo @Inject constructor(
-        @JvmField
-        val objects: ObjectFactory,
-        @JvmField
-        val version: Property<MCVersion>
+        private val objects: ObjectFactory,
+        private val version: Property<String>
     ) {
         interface ClassRename {
             val from: Property<String>
@@ -103,7 +98,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         fun setupDefaults() {
             val version = version.get()
 
-            if (version < MCVersion.MC1_21_1) {
+            if (version < "1.21.1") {
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "fromNamespaceAndPath", "fromNamespaceAndPath", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "createUntrusted", "createUntrusted", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "parse", "parse", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
@@ -112,7 +107,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "tryBySeparator", "tryBySeparator", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
             }
 
-            if (version < MCVersion.MC1_21_11) {
+            if (version < "1.21.11") {
                 renameClass("net/minecraft/resources/ResourceLocation", "net/minecraft/resources/Identifier")
                 renameClass("net/minecraft/util/ResourceLocationPattern", "net/minecraft/util/IdentifierPattern")
                 renameClass("net/minecraft/ResourceLocationException", "net/minecraft/IdentifierException")
@@ -135,11 +130,11 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 renameClass("net/minecraft/client/renderer/rendertype/TextureTransform", "net/minecraft/client/renderer/TextureTransform")
             }
 
-            if (version >= MCVersion.MC26_1) {
+            if (version >= "26.1") {
                 renameClass("net/minecraft/client/resources/model/geometry/BakedQuad", "net/minecraft/client/renderer/block/model/BakedQuad")
             }
 
-            if (version >= MCVersion.MC26_2) {
+            if (version >= "26.2") {
                 renameClass("com/mojang/blaze3d/vulkan/VulkanBackend", "com/mojang/blaze3d/vulkan/VkBackend")
                 renameClass("com/mojang/blaze3d/vulkan/VulkanBindGroupLayout", "com/mojang/blaze3d/vulkan/VkBindGroupLayout")
                 renameClass("com/mojang/blaze3d/vulkan/VulkanCommandEncoder", "com/mojang/blaze3d/vulkan/VkCommandEncoder")
@@ -161,7 +156,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
                 renameClass("com/mojang/blaze3d/vulkan/VulkanUtils", "com/mojang/blaze3d/vulkan/VkUtil")
             }
 
-            if (version >= MCVersion.MC1_21_5) {
+            if (version >= "1.21.5") {
                 renameClass("com/mojang/blaze3d/buffers/GpuBuffer", "com/mojang/blaze3d/buffers/GpuBufferImpl")
                 renameClass("com/mojang/blaze3d/textures/GpuSampler", "com/mojang/blaze3d/textures/GpuSamplerImpl")
                 renameClass("com/mojang/blaze3d/textures/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")

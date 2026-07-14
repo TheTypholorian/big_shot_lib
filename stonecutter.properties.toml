@@ -1,0 +1,8 @@
+[fabric]
+modstitch.platform="fabric-loom-remap"
+
+[fabric.deobfuscated]
+modstitch.platform="fabric-loom"
+
+[neoforge]
+modstitch.platform="moddevgradle"

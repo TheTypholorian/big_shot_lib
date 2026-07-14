@@ -1,4 +1,4 @@
-classTweaker v2 official
+classTweaker v2 named
 
 accessible field com/mojang/blaze3d/opengl/GlRenderPass dirtyUniforms Ljava/util/Set;
 accessible field com/mojang/blaze3d/opengl/GlRenderPass uniforms Ljava/util/HashMap;

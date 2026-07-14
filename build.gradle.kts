@@ -1,10 +1,9 @@
 import io.github.klahap.dotenv.DotEnvBuilder
-import net.typho.big_shot_lib.plugin.modrinth.getModrinthProjectVersion
+import net.typho.big_shot_lib.plugin.ModLoader
+import net.typho.big_shot_lib.plugin.dependencies.getModrinthProjectVersion
 
 plugins {
     kotlin("jvm")
-
-    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
 
     id("me.modmuss50.mod-publish-plugin") version "2.0.0-beta.1"
     id("io.github.klahap.dotenv") version "1.1.3"
@@ -16,7 +15,12 @@ plugins {
 
 bigShotLib {
     version(sc.current.version)
-    loader("neoforge")
+    loader(when (true) {
+        sc.constants["neoforge"] -> ModLoader.NEOFORGE
+        sc.constants["forge"] -> ModLoader.FORGE
+        sc.constants["fabric"] -> ModLoader.FABRIC
+        else -> throw UnsupportedOperationException()
+    })
 
     transformInfo {
         setupDefaults()
@@ -51,17 +55,6 @@ sourceSets {
         }
     }
 }
-
-/*
-val accessTransformer = project.file("build/resources/main/META-INF/accesstransformer.cfg")
-val accessWidener = "big_shot_lib.accesswidener"
-
-fletchingTable {
-    accessConverter.register(sourceSets.main) {
-        add(accessWidener)
-    }
-}
- */
 
 modstitch {
     modLoaderVersion = property("deps.loader_version") as String
@@ -105,12 +98,17 @@ modstitch {
     }
 
     finalJarTask.configure {
-        archiveVersion.set("${rootProject.version}+${project.property("deps.minecraft")}-neoforge")
+        archiveVersion.set("${rootProject.version}+${project.property("deps.minecraft")}-${bigShotLib.loader.get().name.lowercase()}")
     }
 
     namedJarTask.configure {
-        archiveVersion.set("${rootProject.version}+${project.property("deps.minecraft")}-neoforge")
+        archiveVersion.set("${rootProject.version}+${project.property("deps.minecraft")}-${bigShotLib.loader.get().name.lowercase()}")
     }
+
+    classTweaker.set(sc.process(
+        rootProject.file("src/main/resources/classTweaker.ct"),
+        "build/classTweaker.ct"
+    ))
 
     moddevgradle {
         findProperty("deps.forge")?.let { forgeVersion = it as String }
@@ -167,10 +165,24 @@ kotlin {
 }
 
 tasks.processResources {
-    exclude("fabric.mod.json")
+    when (bigShotLib.loader.get()) {
+        ModLoader.NEOFORGE -> {
+            exclude("**/forge.mods.toml")
+            exclude("fabric.mod.json")
+        }
+        ModLoader.FORGE -> {
+            exclude("**/neoforge.mods.toml")
+            exclude("fabric.mod.json")
+        }
+        ModLoader.FABRIC -> {
+            exclude("**/neoforge.mods.toml")
+            exclude("**/forge.mods.toml")
+        }
+        else -> {}
+    }
 }
 
-version = "${property("version")}+${property("deps.minecraft")}-neoforge"
+version = "${property("version")}+${property("deps.minecraft")}-${bigShotLib.loader.get().name.lowercase()}"
 base.archivesName = property("id") as String
 
 repositories {
@@ -181,67 +193,21 @@ repositories {
     maven("https://maven.ryanhcode.dev/releases")
     maven("https://maven.fabricmc.net")
     maven("https://maven.parchmentmc.org")
-
-    ivy {
-        url = uri("https://github.com/TheTypholorian/big_shot_lib/releases/download")
-        patternLayout {
-            artifact("[revision]/[artifact]-[revision](-[classifier]).[ext]")
-        }
-        metadataSources {
-            artifact()
-        }
-    }
 }
 
 dependencies {
-    modstitchModImplementation("maven.modrinth:kotlin-for-forge:${project.getModrinthProjectVersion("kotlin-for-forge")}")
+    when (bigShotLib.loader.get()) {
+        ModLoader.NEOFORGE, ModLoader.FORGE -> {
+            modstitchModImplementation("maven.modrinth:kotlin-for-forge:${project.getModrinthProjectVersion("kotlin-for-forge")}")
+        }
+        ModLoader.FABRIC -> {
+            modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+            modstitchModImplementation("maven.modrinth:fabric-language-kotlin:${project.getModrinthProjectVersion("fabric-language-kotlin")}")
+        }
+        else -> {}
+    }
+
     modstitchModImplementation("maven.modrinth:sodium:${project.getModrinthProjectVersion("sodium")}")
-
-    //implementation(project(":api"))
-}
-
-tasks {
-    jar {
-        exclude("**/*.accesswidener")
-    }
-}
-
-val additionalVersions: List<String> = (findProperty("publish.additionalVersions") as? String)
-    ?.split(",")
-    ?.map { it.trim() }
-    ?.filter { it.isNotEmpty() }
-    ?: emptyList()
-
-publishMods {
-    file = modstitch.finalJarTask.map { it.archiveFile.get() }
-    additionalFiles.from(tasks.kotlinSourcesJar)
-
-    type = STABLE
-    displayName = "${property("name")} ${property("version")} for ${property("deps.minecraft") as String} Fabric"
-    version = "${property("version")}+${property("deps.minecraft") as String}-fabric"
-    changelog = ""
-    //changelog = provider { rootProject.file("CHANGELOG.md").readText() }
-    modLoaders.add("fabric")
-
-    findProperty("publish.modrinth")?.let {
-        modrinth {
-            projectId = it as String
-            accessToken = env["MODRINTH_TOKEN"]
-            minecraftVersions.add(property("deps.minecraft") as String)
-            minecraftVersions.addAll(additionalVersions)
-            requires("fabric-api", "kotlin-for-forge", "big-shot-lib", "yacl")
-        }
-    }
-
-    findProperty("publish.curseforge")?.let {
-        curseforge {
-            projectId = it as String
-            accessToken = env["CURSEFORGE_TOKEN"]
-            minecraftVersions.add(property("deps.minecraft") as String)
-            minecraftVersions.addAll(additionalVersions)
-            requires("fabric-api", "kotlin-for-forge", "big-shot-lib", "yacl")
-        }
-    }
 }
 
 sourceSets.named("main") {

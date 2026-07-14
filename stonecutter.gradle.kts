@@ -1,3 +1,6 @@
+import com.github.javaparser.printer.concretesyntaxmodel.CsmElement.string
+import org.gradle.util.internal.CollectionUtils.replace
+
 plugins {
     kotlin("jvm") version "2.4.0" apply false
     id("dev.kikugie.stonecutter")
@@ -13,16 +16,13 @@ stonecutter handlers {
 }
 stonecutter parameters {
     constants.match(node.metadata.project.substringAfterLast('_'), "fabric", "neoforge")
+    constants.put("deobfuscated", node.metadata.version >= "26.1")
     constants.put("sable", findProperty("deps.sable_companion") != null)
     filters.include("**/*.fsh", "**/*.vsh")
-}
 
-stonecutter tasks {
-    order("publishModrinth")
-    //order("publishCurseforge")
-}
-
-for (version in stonecutter.versions.map { it.version }.distinct()) tasks.register("publish$version") {
-    group = "publishing"
-    dependsOn(stonecutter.tasks.named("publishMods") { metadata.version == version })
+    replacements {
+        string(current.parsed >= "26.1") {
+            replace("classTweaker v2 named", "classTweaker v2 official")
+        }
+    }
 }

@@ -22,7 +22,7 @@ plugins {
 stonecutter {
     create(rootProject) {
         fun match(loader: String, vararg versions: String) = versions
-            .forEach { version("mc${it.replace('.', '_')}_$loader", it).buildscript = "build.$loader.gradle.kts" }
+            .forEach { version("mc${it.replace('.', '_')}_$loader", it).buildscript = "build.gradle.kts" }
 
         match("fabric", "1.21.1", "1.21.11", "26.1.2", "26.2")
         match("neoforge", "1.21.1", "1.21.11", "26.1.2", "26.2")

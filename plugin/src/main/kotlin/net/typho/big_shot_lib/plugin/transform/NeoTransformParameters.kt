@@ -32,7 +32,7 @@ interface NeoTransformParameters : TransformParameters {
     @get:Input
     val argumentOverloadConverters: ListProperty<ArgumentOverloadConverter>
     @get:Input
-    val version: Property<MCVersion>
+    val version: Property<String>
     @get:Input
     val loader: Property<ModLoader>
     @get:Input
