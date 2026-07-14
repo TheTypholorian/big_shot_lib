@@ -1,4 +1,5 @@
 import io.github.klahap.dotenv.DotEnvBuilder
+import net.typho.big_shot_lib.plugin.modrinth.getModrinthProjectVersion
 
 plugins {
     kotlin("jvm")
@@ -20,8 +21,10 @@ bigShotLib {
     transformInfo {
         setupDefaults()
 
-        clientOnlyPackages.add("net/typho/big_shot_lib/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/api/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/impl/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/api/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/impl/client")
     }
 }
 
@@ -49,6 +52,7 @@ sourceSets {
     }
 }
 
+/*
 val accessTransformer = project.file("build/resources/main/META-INF/accesstransformer.cfg")
 val accessWidener = "big_shot_lib.accesswidener"
 
@@ -57,6 +61,7 @@ fletchingTable {
         add(accessWidener)
     }
 }
+ */
 
 modstitch {
     modLoaderVersion = property("deps.loader_version") as String
@@ -82,7 +87,7 @@ modstitch {
         findProperty("credits")?.let { modCredits = it as String }
 
         replacementProperties.put("id", project.property("id") as String)
-        replacementProperties.put("version", project.version as String)
+        replacementProperties.put("version", project.property("version") as String)
         replacementProperties.put("name", project.property("displayName") as String)
         replacementProperties.put("description", project.property("description") as String)
         replacementProperties.put("authors", project.property("authors") as String)
@@ -114,12 +119,6 @@ modstitch {
         findProperty("deps.mcp")?.let { mcpVersion = it as String }
 
         defaultRuns()
-
-        configureNeoForge {
-            if (accessTransformer.exists()) {
-                accessTransformers.from(accessTransformer)
-            }
-        }
     }
 }
 
@@ -195,8 +194,8 @@ repositories {
 }
 
 dependencies {
-    modstitchModImplementation("thedarkcolour:kotlinforforge-neoforge:5.9.0")
-    modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
+    modstitchModImplementation("maven.modrinth:kotlin-for-forge:${project.getModrinthProjectVersion("kotlin-for-forge")}")
+    modstitchModImplementation("maven.modrinth:sodium:${project.getModrinthProjectVersion("sodium")}")
 
     //implementation(project(":api"))
 }

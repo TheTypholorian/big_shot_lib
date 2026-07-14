@@ -1,4 +1,5 @@
 import io.github.klahap.dotenv.DotEnvBuilder
+import net.typho.big_shot_lib.plugin.modrinth.getModrinthProjectVersion
 
 plugins {
     kotlin("jvm")
@@ -51,6 +52,7 @@ sourceSets {
     }
 }
 
+/*
 val accessWidener = if (stonecutter.current.version > "1.21.11") project.file("build/resources/main/big_shot_lib.accesswidener") else rootProject.file("src/main/resources/big_shot_lib.accesswidener")
 
 if (!accessWidener.exists()) {
@@ -72,6 +74,7 @@ if (stonecutter.current.version > "1.21.11") {
         finalizedBy(genAW)
     }
 }
+ */
 
 modstitch {
     modLoaderVersion = property("deps.loader_version") as String
@@ -97,7 +100,7 @@ modstitch {
         findProperty("credits")?.let { modCredits = it as String }
 
         replacementProperties.put("id", project.property("id") as String)
-        replacementProperties.put("version", project.version as String)
+        replacementProperties.put("version", project.property("version") as String)
         replacementProperties.put("name", project.property("displayName") as String)
         replacementProperties.put("description", project.property("description") as String)
         replacementProperties.put("authors", project.property("authors") as String)
@@ -121,12 +124,6 @@ modstitch {
 
     namedJarTask.configure {
         archiveVersion.set("${rootProject.version}+${project.property("deps.minecraft")}-fabric")
-    }
-
-    loom {
-        configureLoom {
-            accessWidenerPath = accessWidener
-        }
     }
 
     moddevgradle {
@@ -201,8 +198,8 @@ repositories {
 
 dependencies {
     modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
-    modstitchModImplementation("maven.modrinth:fabric-language-kotlin:1.13.12+kotlin.2.4.0")
-    modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
+    modstitchModImplementation("maven.modrinth:fabric-language-kotlin:${project.getModrinthProjectVersion("fabric-language-kotlin")}")
+    modstitchModImplementation("maven.modrinth:sodium:${project.getModrinthProjectVersion("sodium")}")
 
     //implementation(project(":api"))
 }

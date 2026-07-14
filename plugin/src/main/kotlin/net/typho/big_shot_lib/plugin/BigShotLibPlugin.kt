@@ -1,5 +1,9 @@
 package net.typho.big_shot_lib.plugin
 
+import net.typho.big_shot_lib.plugin.dependencies.dependencyPropertyFile
+import net.typho.big_shot_lib.plugin.dependencies.getFabricLoaderVersion
+import net.typho.big_shot_lib.plugin.dependencies.getModrinthProjectVersion
+import net.typho.big_shot_lib.plugin.dependencies.getNeoForgeLoaderVersion
 import net.typho.big_shot_lib.plugin.transform.ToCompileRemapper
 import net.typho.big_shot_lib.plugin.transform.ToCompileTransformer
 import net.typho.big_shot_lib.plugin.transform.NeoTransformParameters
@@ -17,6 +21,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompileTool
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import java.io.File
+import java.util.Properties
 import kotlin.jvm.java
 
 class BigShotLibPlugin : Plugin<Project> {
@@ -40,6 +45,32 @@ class BigShotLibPlugin : Plugin<Project> {
             ext.transformInfo.interfaceInjections.get().forEach { println("\t${it.iface.get()} to ${it.target.get()}") }
             println("[Big Shot Lib] Static Method Injections:")
             ext.transformInfo.staticMethodInjections.get().forEach { println("\t${it.targetClass.get()}.${it.targetMethodName.get()} ${it.redirectTo.get().cls.get()}.${it.redirectTo.get().name.get()} ${it.redirectTo.get().desc.get()}") }
+        }
+
+        project.tasks.register("updateDependencyVersions") { task ->
+            task.group = "big_shot_lib"
+            task.description = "Update cached versions for all modrinth dependencies"
+
+            task.doLast {
+                val properties = Properties()
+                val propertiesFile = project.dependencyPropertyFile
+
+                if (propertiesFile.exists()) {
+                    propertiesFile.inputStream().use(properties::load)
+                }
+
+                for ((dependency, version) in properties) {
+                    val newVersion = when (dependency) {
+                        "fabric-loader" -> project.getFabricLoaderVersion(true)
+                        "neoforge-loader" -> project.getNeoForgeLoaderVersion(true)
+                        else -> project.getModrinthProjectVersion(dependency as String, true)
+                    }
+
+                    if (newVersion == version) {
+                        println("[Big Shot Lib] Dependency $dependency is up to date.")
+                    }
+                }
+            }
         }
 
         project.pluginManager.withPlugin("java") {

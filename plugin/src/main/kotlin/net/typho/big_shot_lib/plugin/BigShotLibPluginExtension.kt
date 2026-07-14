@@ -5,12 +5,14 @@ import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
 import org.gradle.api.Action
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import javax.inject.Inject
 
 abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFactory) {
     abstract val version: Property<MCVersion>
     abstract val loader: Property<ModLoader>
+    abstract val mcVersions: MapProperty<String, >
     val transformInfo: TransformInfo = objects.newInstance(TransformInfo::class.java, version)
 
     fun transformInfo(action: Action<in TransformInfo>) {
@@ -101,7 +103,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(objects: ObjectFact
         fun setupDefaults() {
             val version = version.get()
 
-            if (version < MCVersion.MC1_21) {
+            if (version < MCVersion.MC1_21_1) {
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "fromNamespaceAndPath", "fromNamespaceAndPath", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "createUntrusted", "createUntrusted", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "parse", "parse", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
