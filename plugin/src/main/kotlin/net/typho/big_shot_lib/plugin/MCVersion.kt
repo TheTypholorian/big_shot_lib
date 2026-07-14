@@ -11,7 +11,9 @@ import kotlin.sequences.sortedWith
 
 data class MCVersion(
     @JvmField
-    val versions: List<String>
+    val versions: List<String>,
+    @JvmField
+    val javaVersion: Int
 ) : Serializable {
     /**
      * The Minecraft version range for fabric/quilt
@@ -105,15 +107,15 @@ data class MCVersion(
                 .asSequence()
                 .map { it.asJsonObject }
                 .filter { it.get("type").asString == "release" }
-                .map { it.get("id").asString to Instant.parse(it.get("releaseTime").asString) }
+                .map { Triple(it.get("id").asString, Instant.parse(it.get("releaseTime").asString), it.get("url")?.asString) }
                 .sortedWith { a, b -> a.second.compareTo(b.second) }
-                .map { it.first }
+                .map { it.first to it.third }
                 .toList()
 
-            val multiVersions = linkedMapOf<String, MutableList<String>>()
-            val gameDropIndex = versions.indexOf("26.1")
+            val multiVersions = linkedMapOf<String, Pair<MutableList<String>, Int>>()
+            val gameDropIndex = versions.indexOfFirst { it.first == "26.1" }
 
-            versions.forEachIndexed { index, version ->
+            versions.forEachIndexed { index, (version, url) ->
                 val groupVersion = if (index > gameDropIndex) {
                     val versionComponents = version.split('.')
                     "${versionComponents[0]}.${versionComponents[1]}"
@@ -126,11 +128,35 @@ data class MCVersion(
                     }
                 }
 
-                multiVersions.computeIfAbsent(groupVersion) { mutableListOf() }.add(version)
+                multiVersions.computeIfAbsent(groupVersion) {
+                    val java = if (url == null) {
+                        8
+                    } else {
+                        val request = HttpRequest.newBuilder()
+                            .uri(URI.create(url))
+                            .header("Accept", "application/json")
+                            .GET()
+                            .build()
+                        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+                        if (response.statusCode() == 404) {
+                            throw RuntimeException("[Big Shot Lib] Unable to get Minecraft version data for $version")
+                        }
+
+                        val body = response.body()
+                        JsonParser.parseString(body)?.asJsonObject
+                            ?.getAsJsonObject("javaVersion")
+                            ?.getAsJsonPrimitive("majorVersion")
+                            ?.asInt
+                            ?: 8
+                    }
+
+                    mutableListOf<String>() to java
+                }.first.add(version)
             }
 
-            for (version in multiVersions.values) {
-                VERSIONS.add(MCVersion(version))
+            for ((version, java) in multiVersions.values) {
+                VERSIONS.add(MCVersion(version, java))
             }
 
             VERSIONS.reverse()
@@ -163,6 +189,11 @@ data class MCVersion(
             val version = if (version.endsWith(".0")) version.substringBefore(".0") else version
             return VERSIONS.firstOrNull { it.versions.contains(version) }
                 ?: throw NullPointerException("Nonexistent Minecraft version '$version' (it should be in the format '1.21', '1.21.1', '26.1.2', etc.)")
+        }
+
+        @JvmStatic
+        fun getMinJavaVersion(versions: Iterable<String>): Int {
+            return versions.minOfOrNull { get(it).javaVersion } ?: 8
         }
     }
 }

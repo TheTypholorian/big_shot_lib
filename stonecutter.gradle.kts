@@ -16,13 +16,13 @@ stonecutter handlers {
 }
 stonecutter parameters {
     constants.match(node.metadata.project.substringAfterLast('_'), "fabric", "neoforge")
-    constants.put("deobfuscated", node.metadata.version >= "26.1")
+    constants.put("deobfuscated", current.parsed >= "26.1")
     constants.put("sable", findProperty("deps.sable_companion") != null)
     filters.include("**/*.fsh", "**/*.vsh")
 
     replacements {
         string(current.parsed >= "26.1") {
-            replace("classTweaker v2 named", "classTweaker v2 official")
+            replace("classTweaker v1 named", "classTweaker v1 official")
         }
     }
 }

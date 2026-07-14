@@ -22,6 +22,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-metadata-jvm:2.2.0")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))

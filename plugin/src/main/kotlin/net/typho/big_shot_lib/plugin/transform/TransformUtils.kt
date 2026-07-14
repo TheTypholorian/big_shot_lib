@@ -1,5 +1,8 @@
 package net.typho.big_shot_lib.plugin.transform
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
@@ -134,29 +137,33 @@ object TransformUtils {
         predicate: (name: String, api: Int, reader: ClassReader) -> Boolean,
         transformer: (api: Int, writer: ClassWriter) -> ClassVisitor,
     ) {
-        inDir.walkTopDown().forEach { file ->
-            val rel = file.relativeTo(inDir)
+        runBlocking {
+            inDir.walkTopDown().map { file ->
+                async {
+                    val rel = file.relativeTo(inDir)
 
-            if (rel.extension == "class") {
-                transformSingleFile(
-                    rel.name,
-                    remapper,
-                    { api, reader -> predicate(rel.name, api, reader) },
-                    transformer,
-                    ByteArrayInputStream(file.readBytes())
-                ) { name, consumer ->
-                    if (name == rel.name) {
-                        outDir.resolve(rel).outputStream().use {
-                            consumer(it)
-                        }
-                    } else {
-                        file.delete()
+                    if (rel.extension == "class") {
+                        transformSingleFile(
+                            rel.name,
+                            remapper,
+                            { api, reader -> predicate(rel.name, api, reader) },
+                            transformer,
+                            ByteArrayInputStream(file.readBytes())
+                        ) { name, consumer ->
+                            if (name == rel.name) {
+                                outDir.resolve(rel).outputStream().use {
+                                    consumer(it)
+                                }
+                            } else {
+                                file.delete()
 
-                        val newFile = outDir.resolve(name)
-                        newFile.parentFile.mkdirs()
+                                val newFile = outDir.resolve(name)
+                                newFile.parentFile.mkdirs()
 
-                        newFile.outputStream().use {
-                            consumer(it)
+                                newFile.outputStream().use {
+                                    consumer(it)
+                                }
+                            }
                         }
                     }
                 }
