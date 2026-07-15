@@ -21,11 +21,22 @@ plugins {
 
 stonecutter {
     create(rootProject) {
-        fun match(loader: String, vararg versions: String) = versions
-            .forEach { version("mc${it.replace('.', '_')}_$loader", it).buildscript = "build.gradle.kts" }
+        fun match(loader: String, platform: String, vararg versions: String) = versions
+            .forEach {
+                val versionId = "mc${it.replace('.', '_')}_$loader"
+                val propsFile = file("versions/$versionId/gradle.properties")
 
-        match("fabric", "1.21.1", "1.21.11", "26.1.2", "26.2")
-        match("neoforge", "1.21.1", "1.21.11", "26.1.2", "26.2")
+                if (!propsFile.exists()) {
+                    propsFile.parentFile.mkdirs()
+                    propsFile.writeText("modstitch.platform=$platform")
+                }
+
+                version(versionId, it).buildscript = "build.gradle.kts"
+            }
+
+        match("fabric", "fabric-loom-remap", "1.16.1", "1.16.5", "1.17.1", "1.18.2", "1.19.2", "1.19.3", "1.19.4", "1.20.1", "1.20.2", "1.20.3", "1.20.4", "1.20.5", "1.20.6", "1.21.1", "1.21.2", "1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11")
+        match("fabric", "fabric-loom", "26.1.2", "26.2")
+        match("neoforge", "moddevgradle", "1.21.1", "1.21.2", "1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11", "26.1.2", "26.2")
 
         vcsVersion = "mc1_21_1_fabric"
     }

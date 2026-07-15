@@ -124,10 +124,6 @@ class ToCompileTransformer(
 
         interfaceInjections.mapTo(interfaces) { remapper.map(it.iface.get()) }
 
-        if (interfaceInjections.isNotEmpty()) {
-            println("[Big Shot Lib] Injected interfaces ${interfaceInjections.map { it.iface.get() }} to $name, old signature: $oldSignature, new signature: $signature")
-        }
-
         for (injection in info.staticMethodInjections.get()) {
             val targetCls = injection.targetClass.get()
 

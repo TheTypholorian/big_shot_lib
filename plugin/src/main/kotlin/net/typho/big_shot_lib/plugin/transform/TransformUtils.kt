@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.plugin.transform
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
 import org.objectweb.asm.ClassReader
@@ -114,16 +114,20 @@ object TransformUtils {
             }
 
             JarOutputStream(FileOutputStream(outFile), manifest).use { out ->
-                jar.entries().asIterator().forEach { entry ->
-                    if (entry.name != "META-INF/MANIFEST.MF") {
-                        jar.getInputStream(entry).use { stream ->
-                            transformSingleFile(entry.name, remapper, { api, reader -> predicate(entry.name, api, reader) }, transformer, stream) { name, consumer ->
-                                out.putNextEntry(JarEntry(name))
-                                consumer(out)
-                                out.closeEntry()
+                runBlocking {
+                    jar.entries().toList().map { entry ->
+                        async {
+                            if (entry.name != "META-INF/MANIFEST.MF") {
+                                jar.getInputStream(entry).use { stream ->
+                                    transformSingleFile(entry.name, remapper, { api, reader -> predicate(entry.name, api, reader) }, transformer, stream) { name, consumer ->
+                                        out.putNextEntry(JarEntry(name))
+                                        consumer(out)
+                                        out.closeEntry()
+                                    }
+                                }
                             }
                         }
-                    }
+                    }.awaitAll()
                 }
             }
         }
@@ -167,7 +171,7 @@ object TransformUtils {
                         }
                     }
                 }
-            }
+            }.toList().awaitAll()
         }
     }
 }

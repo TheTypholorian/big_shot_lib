@@ -1,27 +1,51 @@
 package net.typho.big_shot_lib.plugin
 
+import com.google.gson.Gson
+import com.google.gson.JsonParser
 import net.typho.big_shot_lib.plugin.transform.util.FieldDesc
 import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
 import org.gradle.api.Action
+import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
+import java.io.File
+import java.net.URI
+import java.net.URLEncoder
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.nio.charset.StandardCharsets
+import java.time.Instant
+import java.util.Properties
+import java.util.function.Function
 import javax.inject.Inject
+import javax.xml.parsers.DocumentBuilderFactory
 
 abstract class BigShotLibPluginExtension @Inject constructor(
-    objects: ObjectFactory
+    objects: ObjectFactory,
+    private val project: Project
 ) {
-    abstract val version: Property<String>
+    abstract val mcVersionProperty: Property<String>
     abstract val loader: Property<ModLoader>
-    val transformInfo: TransformInfo = objects.newInstance(TransformInfo::class.java, version)
+    abstract val autoUpdateDependencies: Property<Boolean>
+    val transformInfo: TransformInfo = objects.newInstance(TransformInfo::class.java, mcVersionProperty)
+    val dependencyVersionsFile: File
+        get() = project.file("dependency_versions.properties")
+
+    val mcVersion: MCVersion
+        get() = MCVersion[mcVersionProperty.get()]
 
     fun transformInfo(action: Action<in TransformInfo>) {
         action.execute(transformInfo)
     }
 
     fun version(value: String) {
-        version.set(value)
+        mcVersionProperty.set(value)
+    }
+
+    fun version(value: MCVersion) {
+        mcVersionProperty.set(value.primaryVersion)
     }
 
     fun loader(value: String) {
@@ -30,6 +54,234 @@ abstract class BigShotLibPluginExtension @Inject constructor(
 
     fun loader(value: ModLoader) {
         loader.set(value)
+    }
+
+    @JvmOverloads
+    fun autoUpdateDependencies(value: Boolean = true) {
+        autoUpdateDependencies.set(value)
+    }
+
+    fun cacheDependencyVersion(dependency: String, versionIdToName: Function<String, String>, latest: String?, update: Boolean = false): String? {
+        var versionId = latest
+        val properties = Properties()
+        val propertiesFile = dependencyVersionsFile
+
+        if (propertiesFile.exists()) {
+            propertiesFile.inputStream().use(properties::load)
+        }
+
+        val cachedVersion = properties.getProperty(dependency)
+
+        if (versionId != cachedVersion) {
+            if (cachedVersion == null || update) {
+                if (update) {
+                    println("[Big Shot Lib] Updating dependency $dependency from ${versionIdToName.apply(cachedVersion)} to ${versionId?.let(versionIdToName::apply) ?: "Unknown"}.")
+                }
+
+                properties.setProperty(dependency, versionId)
+                propertiesFile.outputStream().use { properties.store(it, "[Big Shot Lib] Cached dependency versions. Run the updateDependencyVersions task to update them all to latest.") }
+            } else {
+                println("[Big Shot Lib] Update available for dependency $dependency (${versionIdToName.apply(cachedVersion)} to ${versionId?.let(versionIdToName::apply) ?: "Unknown"}). Run the updateDependencyVersions task to update.")
+
+                versionId = cachedVersion
+            }
+        }
+
+        return versionId
+    }
+
+    @JvmOverloads
+    fun getFabricLoaderVersion(update: Boolean = false): String {
+        val client = HttpClient.newHttpClient()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("https://meta.fabricmc.net/v2/versions/loader?limit=1"))
+            .header("Accept", "application/json")
+            .GET()
+            .build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+        if (response.statusCode() == 404) {
+            throw RuntimeException("[Big Shot Lib] Unable to get fabric loader versions")
+        }
+
+        val body = response.body()
+        val json = JsonParser.parseString(body).asJsonArray[0].asJsonObject
+        var versionId = json.get("version").asString
+
+        versionId = cacheDependencyVersion("fabric-loader", { it }, versionId, update)
+        println("[Big Shot Lib] Using $versionId for fabric loader")
+        return versionId
+    }
+
+    fun getMcVersionFromNeoForge(version: String): String {
+        val tokens = version.split('.')
+
+        if (tokens[0].toInt() >= 26) {
+            var mcVersion = "${tokens[0]}.${tokens[1]}"
+
+            if (tokens[2] != "0") {
+                mcVersion += ".${tokens[2]}"
+            }
+
+            val snapshot = version.split('+')
+
+            if (snapshot.size == 2) {
+                mcVersion += "-${snapshot[1]}"
+            }
+
+            return mcVersion
+        }
+
+        return "1.${tokens[0]}.${tokens[1]}"
+    }
+
+    fun getMcVersionFromForge(version: String): String {
+        return version.substringBefore('-')
+    }
+
+    @JvmOverloads
+    fun getNeoForgeLoaderVersion(update: Boolean = false): String? {
+        val mc = MCVersion[mcVersionProperty.get()]
+
+        val client = HttpClient.newHttpClient()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("https://maven.neoforged.net/api/maven/versions/releases/net/neoforged/neoforge"))
+            .header("Accept", "application/json")
+            .GET()
+            .build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+        if (response.statusCode() == 404) {
+            throw RuntimeException("[Big Shot Lib] Unable to get neoforge loader versions")
+        }
+
+        val body = response.body()
+        val versions = JsonParser.parseString(body).asJsonObject.getAsJsonArray("versions").reversed()
+
+        for (version in versions) {
+            var versionId = version.asString
+
+            if (getMcVersionFromNeoForge(versionId) == mc.primaryVersion) {
+                versionId = cacheDependencyVersion("neoforge-loader", { it }, versionId, update)
+                println("[Big Shot Lib] Using $versionId for neoforge loader")
+                return versionId
+            }
+        }
+
+        return null
+    }
+
+    @JvmOverloads
+    fun getForgeLoaderVersion(update: Boolean = false): String? {
+        val mc = MCVersion[mcVersionProperty.get()]
+
+        val client = HttpClient.newHttpClient()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("https://maven.minecraftforge.net/api/maven/versions/releases/net/minecraftforge/forge"))
+            .header("Accept", "application/json")
+            .GET()
+            .build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+        if (response.statusCode() == 404) {
+            throw RuntimeException("[Big Shot Lib] Unable to get forge loader versions")
+        }
+
+        val body = response.body()
+        val versions = JsonParser.parseString(body).asJsonObject.getAsJsonArray("versions").reversed()
+
+        for (version in versions) {
+            var versionId = version.asString
+
+            if (getMcVersionFromForge(versionId) == mc.primaryVersion) {
+                versionId = cacheDependencyVersion("forge-loader", { it }, versionId, update)
+                println("[Big Shot Lib] Using $versionId for forge loader")
+                return versionId
+            }
+        }
+
+        return null
+    }
+
+    @JvmOverloads
+    fun getLoaderVersion(update: Boolean = false): String? {
+        return when (val loader = loader.get()) {
+            ModLoader.FABRIC -> getFabricLoaderVersion(update)
+            ModLoader.NEOFORGE -> getNeoForgeLoaderVersion(update)
+            ModLoader.FORGE -> getForgeLoaderVersion(update)
+            else -> throw IllegalArgumentException("No loader version for $loader")
+        }
+    }
+
+    fun getParchmentVersion(): Pair<String, String>? {
+        val mc = MCVersion[mcVersionProperty.get()]
+
+        return mc.parchmentVersion
+    }
+
+    @JvmOverloads
+    fun getModrinthProjectVersion(projectId: String, update: Boolean = false): String? {
+        val mc = MCVersion[mcVersionProperty.get()]
+        val loader = loader.get()
+
+        val gson = Gson()
+
+        val client = HttpClient.newHttpClient()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(buildString {
+                append("https://api.modrinth.com/v2/project/$projectId/version?")
+
+                if (loader != ModLoader.NONE) {
+                    append("loaders=${URLEncoder.encode(gson.toJson(listOf(loader.name.lowercase())), StandardCharsets.UTF_8)}&")
+                }
+
+                append("game_versions=${URLEncoder.encode(gson.toJson(mc.versions), StandardCharsets.UTF_8)}")
+            }))
+            .header("Accept", "application/json")
+            .GET()
+            .build()
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+        if (response.statusCode() == 404) {
+            throw RuntimeException("[Big Shot Lib] Unable to get modrinth project $projectId")
+        }
+
+        val body = response.body()
+        val json = JsonParser.parseString(body).asJsonArray
+
+        val versionIdToName = mutableMapOf<String, String?>()
+
+        var versionId: String? = null
+        var mostRecentTime: Instant? = null
+
+        for (versionElement in json) {
+            val version = versionElement.asJsonObject
+            val time = Instant.parse(version.get("date_published").asString)
+
+            versionIdToName[version.get("id").asString] = version.get("name")?.asString
+
+            if (mostRecentTime == null || time.isAfter(mostRecentTime)) {
+                versionId = version.get("id").asString
+                mostRecentTime = time
+            }
+        }
+
+        versionId = cacheDependencyVersion(projectId, { versionIdToName[it] ?: it }, versionId, update)
+        println("[Big Shot Lib] Using ${versionIdToName.getOrDefault(versionId, versionId)} for modrinth project $projectId on ${mc.primaryVersion} $loader")
+        return versionId
+    }
+
+    fun getDependencyVersion(dependency: String, update: Boolean = false): String? {
+        return when (dependency) {
+            "fabric-loader" -> getFabricLoaderVersion(update)
+            "neoforge-loader" -> getNeoForgeLoaderVersion(update)
+            "forge-loader" -> getForgeLoaderVersion(update)
+            else -> getModrinthProjectVersion(dependency, update)
+        }
+    }
+
+    fun modrinthDep(projectId: String, update: Boolean = false): String? {
+        return getModrinthProjectVersion(projectId, update)?.let { "maven.modrinth:$projectId:$it" }
     }
 
     abstract class TransformInfo @Inject constructor(

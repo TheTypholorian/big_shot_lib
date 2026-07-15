@@ -1,6 +1,6 @@
 import io.github.klahap.dotenv.DotEnvBuilder
 import net.typho.big_shot_lib.plugin.ModLoader
-import net.typho.big_shot_lib.plugin.dependencies.getModrinthProjectVersion
+import org.gradle.kotlin.dsl.kotlin
 
 plugins {
     kotlin("jvm")
@@ -57,14 +57,13 @@ sourceSets {
 }
 
 modstitch {
-    modLoaderVersion = property("deps.loader_version") as String
-    minecraftVersion = property("deps.minecraft") as String
+    modLoaderVersion = bigShotLib.getLoaderVersion()
+    minecraftVersion = bigShotLib.mcVersion.primaryVersion
 
     parchment {
-        findProperty("deps.parchment")?.let {
-            val (mc, mappings) = (it as String).split(':')
-            minecraftVersion = mc
-            mappingsVersion = mappings
+        bigShotLib.getParchmentVersion()?.let {
+            minecraftVersion = it.first
+            mappingsVersion = it.second
         }
     }
 
@@ -86,9 +85,6 @@ modstitch {
         replacementProperties.put("authors", project.property("authors") as String)
         replacementProperties.put("license", project.property("license") as String)
         replacementProperties.put("group", project.group as String)
-        replacementProperties.put("minecraft_version_range", project.property("deps.minecraft_range") as String)
-        replacementProperties.put("yacl_version", project.property("deps.yacl") as String)
-        replacementProperties.put("sodium_version", project.property("deps.sodium") as String)
         replacementProperties.put("java_version", "21")
     }
 
@@ -98,11 +94,11 @@ modstitch {
     }
 
     finalJarTask.configure {
-        archiveVersion.set("${rootProject.version}+${project.property("deps.minecraft")}-${bigShotLib.loader.get().name.lowercase()}")
+        archiveVersion.set("${rootProject.version}+${bigShotLib.mcVersion.primaryVersion}-${bigShotLib.loader.get().name.lowercase()}")
     }
 
     namedJarTask.configure {
-        archiveVersion.set("${rootProject.version}+${project.property("deps.minecraft")}-${bigShotLib.loader.get().name.lowercase()}")
+        archiveVersion.set("${rootProject.version}+${bigShotLib.mcVersion.primaryVersion}-${bigShotLib.loader.get().name.lowercase()}")
     }
 
     classTweaker.set(sc.process(
@@ -111,10 +107,15 @@ modstitch {
     ))
 
     moddevgradle {
-        findProperty("deps.forge")?.let { forgeVersion = it as String }
-        findProperty("deps.neoform")?.let { neoFormVersion = it as String }
-        findProperty("deps.neoforge")?.let { neoForgeVersion = it as String }
-        findProperty("deps.mcp")?.let { mcpVersion = it as String }
+        when (bigShotLib.loader.get()) {
+            ModLoader.FORGE -> {
+                forgeVersion = bigShotLib.getForgeLoaderVersion()
+            }
+            ModLoader.NEOFORGE -> {
+                neoForgeVersion = bigShotLib.getNeoForgeLoaderVersion()
+            }
+            else -> {}
+        }
 
         defaultRuns()
     }
@@ -182,7 +183,7 @@ tasks.processResources {
     }
 }
 
-version = "${property("version")}+${property("deps.minecraft")}-${bigShotLib.loader.get().name.lowercase()}"
+version = "${property("version")}+${bigShotLib.mcVersion.primaryVersion}-${bigShotLib.loader.get().name.lowercase()}"
 base.archivesName = property("id") as String
 
 repositories {
@@ -198,16 +199,16 @@ repositories {
 dependencies {
     when (bigShotLib.loader.get()) {
         ModLoader.NEOFORGE, ModLoader.FORGE -> {
-            modstitchModImplementation("maven.modrinth:kotlin-for-forge:${project.getModrinthProjectVersion("kotlin-for-forge")}")
+            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("kotlin-for-forge")!!)!!)
         }
         ModLoader.FABRIC -> {
-            modstitchModImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
-            modstitchModImplementation("maven.modrinth:fabric-language-kotlin:${project.getModrinthProjectVersion("fabric-language-kotlin")}")
+            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("fabric-api")!!)!!)
+            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("fabric-language-kotlin")!!)!!)
         }
         else -> {}
     }
 
-    modstitchModImplementation("maven.modrinth:sodium:${project.getModrinthProjectVersion("sodium")}")
+    bigShotLib.modrinthDep("sodium")?.let { modstitchModImplementation(modDependency(it)!!) }
 }
 
 sourceSets.named("main") {

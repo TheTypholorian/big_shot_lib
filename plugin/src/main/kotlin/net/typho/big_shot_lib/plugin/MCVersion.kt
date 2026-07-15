@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.plugin
 
 import com.google.gson.JsonParser
+import net.typho.big_shot_lib.plugin.MCVersion.Companion.PARCHMENT_VERSIONS
 import java.io.Serializable
 import java.net.URI
 import java.net.http.HttpClient
@@ -36,16 +37,6 @@ data class MCVersion(
     @Transient
     val additionalVersions: List<String> = versions.toMutableList().apply { removeLast() }
     /**
-     * The prefix for the forge version for this Minecraft version
-     */
-    @Transient
-    val forgeVersionPrefix: String = primaryVersion.substringAfter("1.")
-    /**
-     * The prefix for the neoforge version for this Minecraft version
-     */
-    @Transient
-    val neoForgeVersionPrefix: String = if (forgeVersionPrefix.indexOf('.') == -1) "$forgeVersionPrefix.0" else forgeVersionPrefix
-    /**
      * The version of Parchment to use for this Minecraft version, in the format `("1.21.1", "2024.11.17")`.
      * Might be null if Parchment doesn't support this version.
      * For Minecraft versions without an explicit parchment version (ex. 1.19, 1.19.1, 1.20, 1.21.2), it uses the next parchment version.
@@ -53,7 +44,7 @@ data class MCVersion(
      *
      * **Note**: This value is not cached, so you can register extra parchment versions by putting `MCVersion.registerParchment(mc, parchment)` at the start of your build script.
      */
-    val parchmentVersion: Pair<MCVersion, String>?
+    val parchmentVersion: Pair<String, String>?
         get() = PARCHMENT_VERSIONS.sortedWith { a, b -> b.first.compareTo(a.first) }.firstOrNull { (mc, parchment) -> this >= mc }
 
     operator fun compareTo(other: MCVersion) = VERSIONS.indexOf(this).compareTo(VERSIONS.indexOf(other))
@@ -67,7 +58,7 @@ data class MCVersion(
     }
 
     override fun toString(): String {
-        return "MCVersion(primaryVersion='$primaryVersion', additionalVersions=$additionalVersions, parchmentVersion=${parchmentVersion?.let { "${it.first.primaryVersion}:${it.second}" }}, fabricVersionRange='$fabricVersionRange', forgeVersionRange='$forgeVersionRange', neoForgeVersionPrefix='$neoForgeVersionPrefix', forgeVersionPrefix='$forgeVersionPrefix')"
+        return "MCVersion(primaryVersion='$primaryVersion', additionalVersions=$additionalVersions, parchmentVersion=${parchmentVersion?.let { "${it.first}:${it.second}" }}, fabricVersionRange='$fabricVersionRange', forgeVersionRange='$forgeVersionRange')"
     }
 
     companion object {
@@ -76,17 +67,24 @@ data class MCVersion(
          */
         @JvmField
         val VERSIONS = mutableListOf<MCVersion>()
+        /**
+         * Most recent versions are at the start of the list
+         */
         @JvmField
-        val PARCHMENT_VERSIONS = mutableListOf<Pair<MCVersion, String>>()
-
-        @JvmStatic
-        fun registerParchment(mc: MCVersion, parchment: String) {
-            PARCHMENT_VERSIONS.add(mc to parchment)
-        }
+        val VERSION_SORT_ORDER = mutableListOf<String>()
+        @JvmField
+        val PARCHMENT_VERSIONS = mutableListOf<Pair<String, String>>()
 
         @JvmStatic
         fun registerParchment(mc: String, parchment: String) {
-            registerParchment(MCVersion[mc], parchment)
+            PARCHMENT_VERSIONS.add(mc to parchment)
+            PARCHMENT_VERSIONS.sortWith(Comparator.comparingInt { VERSION_SORT_ORDER.indexOf(it.first) })
+        }
+
+        @JvmStatic
+        fun registerParchment(vararg entries: Pair<String, String>) {
+            PARCHMENT_VERSIONS.addAll(entries)
+            PARCHMENT_VERSIONS.sortWith(Comparator.comparingInt { VERSION_SORT_ORDER.indexOf(it.first) })
         }
 
         init {
@@ -111,6 +109,7 @@ data class MCVersion(
                 .sortedWith { a, b -> a.second.compareTo(b.second) }
                 .map { it.first to it.third }
                 .toList()
+            versions.mapTo(VERSION_SORT_ORDER) { it.first }
 
             val multiVersions = linkedMapOf<String, Pair<MutableList<String>, Int>>()
             val gameDropIndex = versions.indexOfFirst { it.first == "26.1" }
@@ -161,27 +160,29 @@ data class MCVersion(
 
             VERSIONS.reverse()
 
-            registerParchment("1.16.5", "2022.03.06")
-            registerParchment("1.17.1", "2021.12.12")
-            registerParchment("1.18.2", "2022.11.06")
-            registerParchment("1.19.2", "2022.11.27")
-            registerParchment("1.19.3", "2023.06.25")
-            registerParchment("1.19.4", "2023.06.26")
-            registerParchment("1.20.1", "2023.09.03")
-            registerParchment("1.20.2", "2023.12.10")
-            registerParchment("1.20.3", "2023.12.31")
-            registerParchment("1.20.4", "2024.04.14")
-            registerParchment("1.20.6", "2024.06.16")
-            registerParchment("1.21.1", "2024.11.17")
-            registerParchment("1.21.3", "2024.12.07")
-            registerParchment("1.21.4", "2025.03.23")
-            registerParchment("1.21.5", "2025.06.15")
-            registerParchment("1.21.6", "2025.06.29")
-            registerParchment("1.21.7", "2025.07.18")
-            registerParchment("1.21.8", "2025.09.14")
-            registerParchment("1.21.9", "2025.10.05")
-            registerParchment("1.21.10", "2025.10.12")
-            registerParchment("1.21.11", "2025.12.20")
+            registerParchment(
+                "1.16.5" to "2022.03.06",
+                "1.17.1" to "2021.12.12",
+                "1.18.2" to "2022.11.06",
+                "1.19.2" to "2022.11.27",
+                "1.19.3" to "2023.06.25",
+                "1.19.4" to "2023.06.26",
+                "1.20.1" to "2023.09.03",
+                "1.20.2" to "2023.12.10",
+                "1.20.3" to "2023.12.31",
+                "1.20.4" to "2024.04.14",
+                "1.20.6" to "2024.06.16",
+                "1.21.1" to "2024.11.17",
+                "1.21.3" to "2024.12.07",
+                "1.21.4" to "2025.03.23",
+                "1.21.5" to "2025.06.15",
+                "1.21.6" to "2025.06.29",
+                "1.21.7" to "2025.07.18",
+                "1.21.8" to "2025.09.14",
+                "1.21.9" to "2025.10.05",
+                "1.21.10" to "2025.10.12",
+                "1.21.11" to "2025.12.20"
+            )
         }
 
         @JvmStatic

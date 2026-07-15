@@ -7,7 +7,6 @@ import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.Fie
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.InterfaceInjection
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.MethodRename
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.StaticMethodInjection
-import net.typho.big_shot_lib.plugin.MCVersion
 import net.typho.big_shot_lib.plugin.ModLoader
 import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
 import org.gradle.api.artifacts.transform.TransformParameters
@@ -54,7 +53,7 @@ interface NeoTransformParameters : TransformParameters {
         clientOnlyPackages.set(ext.transformInfo.clientOnlyPackages)
         serverOnlyPackages.set(ext.transformInfo.serverOnlyPackages)
 
-        version.set(ext.version)
+        version.set(ext.mcVersionProperty)
         loader.set(ext.loader)
     }
 }

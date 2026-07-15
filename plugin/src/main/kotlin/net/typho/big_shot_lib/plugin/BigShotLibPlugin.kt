@@ -1,9 +1,6 @@
 package net.typho.big_shot_lib.plugin
 
-import net.typho.big_shot_lib.plugin.dependencies.dependencyPropertyFile
-import net.typho.big_shot_lib.plugin.dependencies.getFabricLoaderVersion
-import net.typho.big_shot_lib.plugin.dependencies.getModrinthProjectVersion
-import net.typho.big_shot_lib.plugin.dependencies.getNeoForgeLoaderVersion
+import net.typho.big_shot_lib.plugin.deps.RegisterModDependenciesTask
 import net.typho.big_shot_lib.plugin.transform.ToCompileRemapper
 import net.typho.big_shot_lib.plugin.transform.ToCompileTransformer
 import net.typho.big_shot_lib.plugin.transform.NeoTransformParameters
@@ -16,6 +13,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.attributes.Attribute
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.compile.AbstractCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompileTool
 import org.objectweb.asm.ClassReader
@@ -32,41 +30,45 @@ class BigShotLibPlugin : Plugin<Project> {
     )
 
     override fun apply(project: Project) {
-        val ext = project.extensions.create("bigShotLib", BigShotLibPluginExtension::class.java)
+        val ext = project.extensions.create("bigShotLib", BigShotLibPluginExtension::class.java, project)
 
-        project.afterEvaluate {
-            println("[Big Shot Lib] Class Renames:")
-            ext.transformInfo.classRenames.get().forEach { println("\t${it.from.get()} to ${it.to.get()}") }
-            println("[Big Shot Lib] Method Renames:")
-            ext.transformInfo.methodRenames.get().forEach { println("\t${it.from.get().cls.get()}.${it.from.get().name.get()} ${it.from.get().desc.get()} to '${it.to.get()}'") }
-            println("[Big Shot Lib] Field Renames:")
-            ext.transformInfo.fieldRenames.get().forEach { println("\t${it.from.get().cls.get()}.${it.from.get().name.get()} ${it.from.get().desc.get()} to '${it.to.get()}'") }
-            println("[Big Shot Lib] Interface Injections:")
-            ext.transformInfo.interfaceInjections.get().forEach { println("\t${it.iface.get()} to ${it.target.get()}") }
-            println("[Big Shot Lib] Static Method Injections:")
-            ext.transformInfo.staticMethodInjections.get().forEach { println("\t${it.targetClass.get()}.${it.targetMethodName.get()} ${it.redirectTo.get().cls.get()}.${it.redirectTo.get().name.get()} ${it.redirectTo.get().desc.get()}") }
+        val modDependency = project.configurations.create("modDependency") {
+            it.isCanBeResolved = true
+            it.isCanBeConsumed = false
+            it.description = "Adds dependencies to the mod manifest"
         }
+
+        project.tasks.register("registerModDependencies", RegisterModDependenciesTask::class.java) { task ->
+            task.group = "big_shot_lib"
+            task.dependsOn("processResources")
+
+            task.source(ext.loader.map { loader ->
+                loader.manifestFile?.let { manifest ->
+                    (project.extensions.findByName("sourceSets") as SourceSetContainer).map {
+                        it.output.resourcesDir!!.resolve(manifest)
+                    }
+                } ?: listOf()
+            })
+            task.loader.set(ext.loader)
+            task.artifacts.from(modDependency)
+            task.minecraftVersion.set(ext.mcVersionProperty)
+            task.loaderVersion.set(project.provider { ext.getLoaderVersion() })
+        }.also { project.tasks.getByName("processResources").finalizedBy(it) }
 
         project.tasks.register("updateDependencyVersions") { task ->
             task.group = "big_shot_lib"
-            task.description = "Update cached versions for all modrinth dependencies"
+            task.description = "Update cached versions for all dependencies"
 
             task.doLast {
                 val properties = Properties()
-                val propertiesFile = project.dependencyPropertyFile
+                val propertiesFile = ext.dependencyVersionsFile
 
                 if (propertiesFile.exists()) {
                     propertiesFile.inputStream().use(properties::load)
                 }
 
                 for ((dependency, version) in properties) {
-                    val newVersion = when (dependency) {
-                        "fabric-loader" -> project.getFabricLoaderVersion(true)
-                        "neoforge-loader" -> project.getNeoForgeLoaderVersion(true)
-                        else -> project.getModrinthProjectVersion(dependency as String, true)
-                    }
-
-                    if (newVersion == version) {
+                    if (ext.getDependencyVersion(dependency as String, true) == version) {
                         println("[Big Shot Lib] Dependency $dependency is up to date.")
                     }
                 }

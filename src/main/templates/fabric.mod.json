@@ -26,11 +26,5 @@
       }
     ]
   },
-  "icon": "icon.png",
-  "depends": {
-    "fabric-api": "*",
-    "minecraft": "${minecraft_version_range}",
-    "fabric-language-kotlin": "*",
-    "fabricloader": ">=0.19.0"
-  }
+  "icon": "icon.png"
 }

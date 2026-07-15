@@ -11,24 +11,3 @@ displayName = "${name}"
 logoFile = "icon.png"
 authors = "${authors}"
 description = '''${description}'''
-
-[[dependencies."${id}"]]
-modId = "neoforge"
-type="required"
-versionRange = "*"
-ordering = "BEFORE"
-side = "BOTH"
-
-[[dependencies."${id}"]]
-modId = "minecraft"
-type="required"
-versionRange = "${minecraft_version_range}"
-ordering = "BEFORE"
-side = "BOTH"
-
-[[dependencies."${id}"]]
-modId = "kotlinforforge"
-type="required"
-versionRange = "*"
-ordering = "BEFORE"
-side = "BOTH"
