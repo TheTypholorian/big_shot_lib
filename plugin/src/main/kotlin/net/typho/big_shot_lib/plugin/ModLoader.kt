@@ -73,15 +73,27 @@ enum class ModLoader {
         }
     },
     FORGE {
-        override val mappedOnlyInAnnotationName = null
+        override val mappedOnlyInAnnotationName = "net/minecraftforge/api/distmarker/OnlyIn"
         override val manifestFile: File = File("META-INF/mods.toml")
 
         override fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean) {
-            TODO("Not yet implemented")
+            annotation("L$mappedOnlyInAnnotationName;", true)?.let { anno ->
+                anno.visitEnum("value", "Lnet/minecraftforge/api/distmarker/Dist;", if (client) "CLIENT" else "DEDICATED_SERVER")
+                anno.visitEnd()
+            }
         }
 
         override fun getModIdAndVersion(manifest: String): Pair<String, String> {
-            TODO("Not yet implemented")
+            @Serializable
+            data class Manifest(
+                @JvmField
+                val modId: String,
+                @JvmField
+                val version: String
+            )
+
+            val manifest = Toml.partiallyDecodeFromString<Manifest>(serializer(), manifest, "mods")
+            return manifest.modId to manifest.version
         }
 
         override fun appendModDependencies(
@@ -90,7 +102,33 @@ enum class ModLoader {
             loaderVersion: String,
             dependencies: Map<String, String>
         ): String {
-            TODO("Not yet implemented")
+            val modId = getModIdAndVersion(manifest).first
+
+            @Serializable
+            data class Dependency(
+                @JvmField
+                val modId: String,
+                @JvmField
+                val mandatory: Boolean,
+                @JvmField
+                val versionRange: String
+            )
+
+            var manifest = manifest
+
+            fun dependency(id: String, range: String) {
+                manifest += "\n[[dependencies.$modId]]\n"
+                manifest += Toml.encodeToString(serializer(), Dependency(id, true, range))
+            }
+
+            dependency("minecraft", minecraftVersion.forgeVersionRange)
+            dependency("neoforge", "[$loaderVersion,)")
+
+            for ((mod, version) in dependencies) {
+                dependency(mod, "[$version,)")
+            }
+
+            return manifest
         }
     },
     NEOFORGE {

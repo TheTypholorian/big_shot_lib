@@ -93,6 +93,7 @@ modstitch {
         addMixinsToModManifest = true
     }
 
+    /*
     finalJarTask.configure {
         archiveVersion.set("${rootProject.version}+${bigShotLib.mcVersion.primaryVersion}-${bigShotLib.loader.get().name.lowercase()}")
     }
@@ -100,6 +101,7 @@ modstitch {
     namedJarTask.configure {
         archiveVersion.set("${rootProject.version}+${bigShotLib.mcVersion.primaryVersion}-${bigShotLib.loader.get().name.lowercase()}")
     }
+     */
 
     classTweaker.set(sc.process(
         rootProject.file("src/main/resources/classTweaker.ct"),
@@ -199,11 +201,11 @@ repositories {
 dependencies {
     when (bigShotLib.loader.get()) {
         ModLoader.NEOFORGE, ModLoader.FORGE -> {
-            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("kotlin-for-forge")!!)!!)
+            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("kotlin-for-forge") ?: error("No KFF version"))!!)
         }
         ModLoader.FABRIC -> {
-            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("fabric-api")!!)!!)
-            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("fabric-language-kotlin")!!)!!)
+            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("fabric-api") ?: error("No fapi version"))!!)
+            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("fabric-language-kotlin") ?: error("No FLK version"))!!)
         }
         else -> {}
     }

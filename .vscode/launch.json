@@ -1,0 +1,245 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Client (:mc1_18_2_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_18_2_forge",
+        "order": 0
+      },
+      "projectName": "mc1_18_2_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_18_2_forge\\build\\moddev\\clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_18_2_forge\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_18_2_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_18_2_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_18_2_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Server (:mc1_18_2_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_18_2_forge",
+        "order": 1
+      },
+      "projectName": "mc1_18_2_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_18_2_forge\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_18_2_forge\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_18_2_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_18_2_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_18_2_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Client (:mc1_19_2_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_19_2_forge",
+        "order": 0
+      },
+      "projectName": "mc1_19_2_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_2_forge\\build\\moddev\\clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_2_forge\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_2_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_19_2_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_2_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Server (:mc1_19_2_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_19_2_forge",
+        "order": 1
+      },
+      "projectName": "mc1_19_2_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_2_forge\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_2_forge\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_2_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_19_2_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_2_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Client (:mc1_19_3_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_19_3_forge",
+        "order": 0
+      },
+      "projectName": "mc1_19_3_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_3_forge\\build\\moddev\\clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_3_forge\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_3_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_19_3_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_3_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Server (:mc1_19_3_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_19_3_forge",
+        "order": 1
+      },
+      "projectName": "mc1_19_3_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_3_forge\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_3_forge\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_3_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_19_3_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_3_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Client (:mc1_19_4_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_19_4_forge",
+        "order": 0
+      },
+      "projectName": "mc1_19_4_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_4_forge\\build\\moddev\\clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_4_forge\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_4_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_19_4_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_4_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Server (:mc1_19_4_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_19_4_forge",
+        "order": 1
+      },
+      "projectName": "mc1_19_4_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_4_forge\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_4_forge\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_4_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_19_4_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_19_4_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Client (:mc1_20_1_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_20_1_forge",
+        "order": 0
+      },
+      "projectName": "mc1_20_1_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_20_1_forge\\build\\moddev\\clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_20_1_forge\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_20_1_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_20_1_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_20_1_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Forge Server (:mc1_20_1_forge)",
+      "presentation": {
+        "group": "Mod Development - mc1_20_1_forge",
+        "order": 1
+      },
+      "projectName": "mc1_20_1_forge",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_20_1_forge\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_20_1_forge\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_20_1_forge\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\versions\\mc1_20_1_forge\\run",
+      "env": {
+        "MOD_CLASSES": "mod%%C:\\Users\\evan\\IdeaProjects\\big_shot_lib\\versions\\mc1_20_1_forge\\bin\\main"
+      },
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}

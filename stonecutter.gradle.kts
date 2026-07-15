@@ -12,7 +12,7 @@ stonecutter handlers {
     inherit("vsh", "glsl")
 }
 stonecutter parameters {
-    constants.match(node.metadata.project.substringAfterLast('_'), "fabric", "neoforge")
+    constants.match(node.metadata.project.substringAfterLast('_'), "fabric", "forge", "neoforge")
     constants.put("deobfuscated", current.parsed >= "26.1")
     constants.put("sable", findProperty("deps.sable_companion") != null)
     filters.include("**/*.fsh", "**/*.vsh")
