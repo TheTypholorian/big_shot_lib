@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.TrapDoorBlock
 import net.minecraft.world.level.block.state.BlockBehaviour
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockSetType
+import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegistryBuilder
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadService
 
@@ -34,4 +35,6 @@ interface IInternalUtil {
     fun createPressurePlateBlock(blockSet: BlockSetType, properties: BlockBehaviour.Properties): PressurePlateBlock
 
     fun createButtonBlock(blockSet: BlockSetType, pressDuration: Int, properties: BlockBehaviour.Properties): ButtonBlock
+
+    fun getEventBus(modId: String): NeoEventBus
 }

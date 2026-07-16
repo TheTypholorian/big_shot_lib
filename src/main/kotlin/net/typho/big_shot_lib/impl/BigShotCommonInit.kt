@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.impl
 
 //? fabric {
-import net.fabricmc.api.ModInitializer
+/*import net.fabricmc.api.ModInitializer
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 
 class BigShotCommonInit : ModInitializer {
@@ -11,8 +11,8 @@ class BigShotCommonInit : ModInitializer {
         }
     }
 }
-//? } neoforge {
-/*import net.neoforged.fml.common.Mod
+*///? } neoforge {
+import net.neoforged.fml.common.Mod
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
@@ -49,4 +49,4 @@ class BigShotCommonInit(eventBus: IEventBus, modContainer: ModContainer) {
         NeoCommonInitializer.isInitDone = true
     }
 }
-*///? }
+//? }

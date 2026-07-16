@@ -1,6 +1,6 @@
 package net.typho.big_shot_lib.api
 
-import net.typho.big_shot_lib.api.client.NeoClientInitializer
+import net.typho.big_shot_lib.client.api.NeoClientInitializer
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices

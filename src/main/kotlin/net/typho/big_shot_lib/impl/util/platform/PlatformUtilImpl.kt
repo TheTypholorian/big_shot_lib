@@ -1,17 +1,17 @@
 package net.typho.big_shot_lib.impl.util.platform
 
 //? fabric {
-import net.fabricmc.api.EnvType
+/*import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
 import net.typho.big_shot_lib.api.util.platform.IPlatformUtil
-//? } neoforge {
-/*import net.neoforged.api.distmarker.Dist
+*///? } neoforge {
+import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLEnvironment
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
-*///? }
+//? }
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
 import net.typho.big_shot_lib.api.util.platform.ModLoader
@@ -19,7 +19,7 @@ import java.nio.file.Path
 
 object PlatformUtilImpl : IPlatformUtil {
     //? fabric {
-    override val loader = ModLoader.FABRIC
+    /*override val loader = ModLoader.FABRIC
     override val mods: Collection<ModContainer>
         get() = FabricLoader.getInstance().allMods.map { ModContainerImpl(it) }
     override val configPath: Path
@@ -66,8 +66,8 @@ object PlatformUtilImpl : IPlatformUtil {
             }
         }
     }
-    //? } neoforge {
-    /*override val loader = ModLoader.NEOFORGE
+    *///? } neoforge {
+    override val loader = ModLoader.NEOFORGE
     override val mods: Collection<ModContainer>
         get() = ModList.get().sortedMods.map { ModContainerImpl(it) }
     override val configPath: Path
@@ -75,10 +75,10 @@ object PlatformUtilImpl : IPlatformUtil {
 
     override fun isDevEnv(): Boolean {
         //? if <1.21.9 {
-        return !FMLLoader.isProduction()
-        //? } else {
-        /*return !FMLLoader.getCurrent().isProduction
-        *///? }
+        /*return !FMLLoader.isProduction()
+        *///? } else {
+        return !FMLLoader.getCurrent().isProduction
+        //? }
     }
 
     override fun isClient(): Boolean {
@@ -99,5 +99,5 @@ object PlatformUtilImpl : IPlatformUtil {
         override val version: String
             get() = inner.modInfo.version.toString()
     }
-    *///? }
+    //? }
 }

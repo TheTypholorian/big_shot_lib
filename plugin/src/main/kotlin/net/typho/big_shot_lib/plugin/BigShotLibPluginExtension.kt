@@ -384,11 +384,11 @@ abstract class BigShotLibPluginExtension @Inject constructor(
                 renameClass("com/mojang/blaze3d/textures/GpuSampler", "com/mojang/blaze3d/textures/GpuSamplerImpl")
                 renameClass("com/mojang/blaze3d/textures/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")
 
-                injectInterface("net/typho/big_shot_lib/api/client/rendering/common/GpuBuffer", "com/mojang/blaze3d/buffers/GpuBufferImpl")
-                injectInterface("net/typho/big_shot_lib/api/client/rendering/common/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")
+                injectInterface("net/typho/big_shot_lib/client/api/rendering/common/GpuBuffer", "com/mojang/blaze3d/buffers/GpuBufferImpl")
+                injectInterface("net/typho/big_shot_lib/client/api/rendering/common/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")
 
-                injectInterface("net/typho/big_shot_lib/api/client/ext/RenderPassExtension", "com/mojang/blaze3d/systems/RenderPassBackend")
-                injectInterface("net/typho/big_shot_lib/api/client/ext/RenderPassExtension", "com/mojang/blaze3d/systems/RenderPass")
+                injectInterface("net/typho/big_shot_lib/client/api/ext/RenderPassExtension", "com/mojang/blaze3d/systems/RenderPassBackend")
+                injectInterface("net/typho/big_shot_lib/client/api/ext/RenderPassExtension", "com/mojang/blaze3d/systems/RenderPass")
             }
 
             markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex")
@@ -402,16 +402,16 @@ abstract class BigShotLibPluginExtension @Inject constructor(
             renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV1", "OVERLAY_UV")
             renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV2", "LIGHT_UV")
 
-            injectInterface("net/typho/big_shot_lib/api/client/ext/VertexConsumerExtension", "com/mojang/blaze3d/vertex/VertexConsumer")
-            injectInterface("net/typho/big_shot_lib/api/client/ext/VertexFormatBuilderExtension", $$"com/mojang/blaze3d/vertex/VertexFormat$Builder")
-            injectInterface("net/typho/big_shot_lib/api/client/ext/RenderTypeExtension", "net/minecraft/client/renderer/RenderType")
+            injectInterface("net/typho/big_shot_lib/client/api/ext/VertexConsumerExtension", "com/mojang/blaze3d/vertex/VertexConsumer")
+            injectInterface("net/typho/big_shot_lib/client/api/ext/VertexFormatBuilderExtension", $$"com/mojang/blaze3d/vertex/VertexFormat$Builder")
+            injectInterface("net/typho/big_shot_lib/client/api/ext/RenderTypeExtension", "net/minecraft/client/renderer/RenderType")
 
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuAlphaFunction", "com/mojang/blaze3d/platform/CompareOp")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuBlendFactor", "com/mojang/blaze3d/platform/BlendFactor")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuDataType", $$"com/mojang/blaze3d/GpuFormat$ComponentType")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuIndexType", "com/mojang/blaze3d/IndexType")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuShaderType", "com/mojang/blaze3d/shaders/ShaderType")
-            injectInterface("net/typho/big_shot_lib/api/client/rendering/common/constant/GpuTextureFormat", "com/mojang/blaze3d/GpuFormat")
+            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuAlphaFunction", "com/mojang/blaze3d/platform/CompareOp")
+            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuBlendFactor", "com/mojang/blaze3d/platform/BlendFactor")
+            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuDataType", $$"com/mojang/blaze3d/GpuFormat$ComponentType")
+            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuIndexType", "com/mojang/blaze3d/IndexType")
+            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuShaderType", "com/mojang/blaze3d/shaders/ShaderType")
+            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuTextureFormat", "com/mojang/blaze3d/GpuFormat")
 
             injectInterface("net/typho/big_shot_lib/api/ext/DirectionExtension", "net/minecraft/core/Direction")
             injectInterface("net/typho/big_shot_lib/api/ext/Vec3iExtension", "net/minecraft/core/Vec3i")

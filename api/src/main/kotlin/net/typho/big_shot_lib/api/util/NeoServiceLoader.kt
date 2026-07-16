@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility
 
 object NeoServiceLoader {
-    private val services: Map<String, Set<String>> = NeoServiceLoader::class.java.classLoader.getResources("neo_services.json")
+    private val services: Map<String, Set<String>> = NeoServiceLoader::class.java.classLoader.getResources("templates/neo_services.json")
         .toList()
         .map { url ->
             val file = url.openStream().use { String(it.readBytes()) }

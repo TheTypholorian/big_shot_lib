@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": [
+    "${authors}"
+  ],
+  "license": "${license}",
+  "contact": {
+    "issues": "https://github.com/TheTypholorian/big_shot_lib/issues/",
+    "sources": "https://github.com/TheTypholorian/big_shot_lib/"
+  },
+  "languageAdapters": {
+    "big_shot_lib": "net.typho.big_shot_lib.impl.fabric.BigShotLibLanguageAdapter"
+  },
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "net.typho.big_shot_lib.impl.BigShotCommonInit"
+      }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "net.typho.big_shot_lib.impl.client.BigShotClientInit"
+      }
+    ]
+  },
+  "icon": "icon.png"
+}

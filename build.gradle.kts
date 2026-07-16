@@ -1,4 +1,5 @@
 import io.github.klahap.dotenv.DotEnvBuilder
+import net.typho.big_shot_lib.plugin.MCVersion
 import net.typho.big_shot_lib.plugin.ModLoader
 import org.gradle.kotlin.dsl.kotlin
 
@@ -15,46 +16,18 @@ plugins {
 
 bigShotLib {
     version(sc.current.version)
-    loader(when (true) {
-        sc.constants["neoforge"] -> ModLoader.NEOFORGE
-        sc.constants["forge"] -> ModLoader.FORGE
-        sc.constants["fabric"] -> ModLoader.FABRIC
-        else -> throw UnsupportedOperationException()
-    })
+    loader(ModLoader[sc.current.project.substringAfterLast('_')])
 
     transformInfo {
         setupDefaults()
 
-        clientOnlyPackages.add("net/typho/big_shot_lib/api/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/impl/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/api/client")
-        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/impl/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/client")
     }
 }
 
-sourceSets {
-    main {
-        java {
-            if (sc.current.parsed < "1.21.5") {
-                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlBufferMixin.java")
-                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlTextureMixin.java")
-            }
-
-            if (sc.current.parsed >= "1.21") {
-                exclude("net/typho/big_shot_lib/mixin/impl/VertexFormatAccessor.java")
-                exclude("net/typho/big_shot_lib/mixin/impl/RenderTypeAccessor.java")
-            }
-
-            if (sc.current.parsed < "1.21.9") {
-                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenEntriesAccessor.java")
-            }
-
-            if (sc.current.parsed >= "1.21.9") {
-                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
-            }
-        }
-    }
-}
+val sourceJavaVersion = MCVersion.getMinJavaVersion(sc.versions.map { it.version })
+val targetJavaVersion = bigShotLib.mcVersion.javaVersion
 
 modstitch {
     modLoaderVersion = bigShotLib.getLoaderVersion()
@@ -85,15 +58,17 @@ modstitch {
         replacementProperties.put("authors", project.property("authors") as String)
         replacementProperties.put("license", project.property("license") as String)
         replacementProperties.put("group", project.group as String)
+        replacementProperties.put("loader", bigShotLib.loader.get().name.lowercase())
         replacementProperties.put("java_version", "21")
     }
 
     mixin {
-        configs.register(project.property("id") as String)
+        val modId = metadata.modId.get()
+        configs.register(modId)
+        configs.register("$modId.${bigShotLib.loader.get().name.lowercase()}")
         addMixinsToModManifest = true
     }
 
-    /*
     finalJarTask.configure {
         archiveVersion.set("${rootProject.version}+${bigShotLib.mcVersion.primaryVersion}-${bigShotLib.loader.get().name.lowercase()}")
     }
@@ -101,7 +76,6 @@ modstitch {
     namedJarTask.configure {
         archiveVersion.set("${rootProject.version}+${bigShotLib.mcVersion.primaryVersion}-${bigShotLib.loader.get().name.lowercase()}")
     }
-     */
 
     classTweaker.set(sc.process(
         rootProject.file("src/main/resources/classTweaker.ct"),
@@ -167,24 +141,6 @@ kotlin {
     }
 }
 
-tasks.processResources {
-    when (bigShotLib.loader.get()) {
-        ModLoader.NEOFORGE -> {
-            exclude("**/forge.mods.toml")
-            exclude("fabric.mod.json")
-        }
-        ModLoader.FORGE -> {
-            exclude("**/neoforge.mods.toml")
-            exclude("fabric.mod.json")
-        }
-        ModLoader.FABRIC -> {
-            exclude("**/neoforge.mods.toml")
-            exclude("**/forge.mods.toml")
-        }
-        else -> {}
-    }
-}
-
 version = "${property("version")}+${bigShotLib.mcVersion.primaryVersion}-${bigShotLib.loader.get().name.lowercase()}"
 base.archivesName = property("id") as String
 
@@ -213,8 +169,47 @@ dependencies {
     bigShotLib.modrinthDep("sodium")?.let { modstitchModImplementation(modDependency(it)!!) }
 }
 
+val fabricSet = sourceSets.create("fabric")
+val neoForgeSet = sourceSets.create("neoforge")
+val forgeSet = sourceSets.create("forge")
+
 sourceSets.named("main") {
     java.srcDirs(project(":api").sourceSets["main"].java.srcDirs)
     kotlin.srcDirs(project(":api").sourceSets["main"].kotlin.srcDirs)
     resources.srcDirs(project(":api").sourceSets["main"].resources.srcDirs)
+
+    when (bigShotLib.loader.get()) {
+        ModLoader.FABRIC -> fabricSet
+        ModLoader.FORGE -> forgeSet
+        ModLoader.NEOFORGE -> neoForgeSet
+        else -> null
+    }?.let {
+        java.srcDirs(it.java.srcDirs)
+        kotlin.srcDirs(it.kotlin.srcDirs)
+        resources.srcDirs(it.resources.srcDirs)
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            if (sc.current.parsed < "1.21.5") {
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlBufferMixin.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlTextureMixin.java")
+            }
+
+            if (sc.current.parsed >= "1.21") {
+                exclude("net/typho/big_shot_lib/mixin/impl/VertexFormatAccessor.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/RenderTypeAccessor.java")
+            }
+
+            if (sc.current.parsed < "1.21.9") {
+                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenEntriesAccessor.java")
+            }
+
+            if (sc.current.parsed >= "1.21.9") {
+                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
+            }
+        }
+    }
 }

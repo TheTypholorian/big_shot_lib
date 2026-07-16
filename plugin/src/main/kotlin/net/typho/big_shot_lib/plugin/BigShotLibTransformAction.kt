@@ -21,6 +21,7 @@ abstract class BigShotLibTransformAction : TransformAction<NeoTransformParameter
 
     override fun transform(outputs: TransformOutputs) {
         val inFile = input.get().asFile
+        println("[Big Shot Lib] Transforming $inFile")
 
         if (inFile.isDirectory) {
             val outFile = outputs.file("${inFile.name}-neo-tweaked")

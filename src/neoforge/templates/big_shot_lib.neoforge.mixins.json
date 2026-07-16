@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "mixinextras": {
+    "minVersion": "0.5.4"
+  },
+  "package": "net.typho.big_shot_lib.mixin.neoforge",
+  "refmap": "big_shot_lib.refmap.json",
+  "compatibilityLevel": "JAVA_${java_version}",
+  "mixins": [],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
