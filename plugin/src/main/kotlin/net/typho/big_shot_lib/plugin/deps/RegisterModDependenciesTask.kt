@@ -3,16 +3,16 @@ package net.typho.big_shot_lib.plugin.deps
 import net.typho.big_shot_lib.plugin.MCVersion
 import net.typho.big_shot_lib.plugin.ModLoader
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.util.zip.ZipFile
 
 abstract class RegisterModDependenciesTask : SourceTask() {
-    @get:Input
+    @get:InputFiles
     abstract val artifacts: ConfigurableFileCollection
     @get:Input
     abstract val loader: Property<ModLoader>

@@ -8,10 +8,10 @@
   "net.typho.big_shot_lib.api.client.rendering.common.IGpuQueue": "net.typho.big_shot_lib.impl.client.rendering.common.GpuQueueImpl",
   "net.typho.big_shot_lib.api.client.rendering.common.IGpuObjects": "net.typho.big_shot_lib.impl.client.rendering.common.GpuObjectsImpl",
 
-  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunction$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuAlphaFunctionValues",
-  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBlendFactor$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuBlendFactorValues",
-  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuDataType$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuDataTypeValues",
-  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuIndexType$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuIndexTypeValues",
-  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuShaderType$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuShaderTypeValues",
-  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureFormat$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuTextureFormatValues"
+  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuAlphaFunction\$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuAlphaFunctionValues",
+  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuBlendFactor\$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuBlendFactorValues",
+  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuDataType\$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuDataTypeValues",
+  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuIndexType\$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuIndexTypeValues",
+  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuShaderType\$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuShaderTypeValues",
+  "net.typho.big_shot_lib.api.client.rendering.common.constant.GpuTextureFormat\$Values": "net.typho.big_shot_lib.impl.client.rendering.common.constant.GpuTextureFormatValues"
 }
