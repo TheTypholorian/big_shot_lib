@@ -5,7 +5,7 @@ import net.typho.big_shot_lib.api.math.IVec3
 import net.typho.big_shot_lib.api.math.IVec4
 import net.typho.big_shot_lib.api.util.buffer.packUInt
 import net.typho.big_shot_lib.api.util.buffer.ubyteAt
-import net.typho.big_shot_lib.api.util.resource.NeoCodecs
+import net.typho.big_shot_lib.api.util.resource.CodecUtil
 import org.joml.Vector3f
 import org.joml.Vector3i
 import org.joml.Vector4f
@@ -72,7 +72,7 @@ interface NeoColor {
             { color -> color.toVec4F() }
         )
         @JvmField
-        val CODEC_ANY: Codec<out NeoColor> = NeoCodecs.any(
+        val CODEC_ANY: Codec<out NeoColor> = CodecUtil.any(
             CODEC_4I,
             CODEC_3I,
             CODEC_PACKED
@@ -89,13 +89,13 @@ interface NeoColor {
         get() = alpha?.toInt()?.div(255f)
 
     val red: UByte
-        get() = (redF * 255).toInt().ubyteAt(3)
+        get() = (redF * 255).toInt().toUByte()
     val green: UByte
-        get() = (greenF * 255).toInt().ubyteAt(3)
+        get() = (greenF * 255).toInt().toUByte()
     val blue: UByte
-        get() = (blueF * 255).toInt().ubyteAt(3)
+        get() = (blueF * 255).toInt().toUByte()
     val alpha: UByte?
-        get() = alphaF?.times(255)?.toInt()?.ubyteAt(3)
+        get() = alphaF?.times(255)?.toInt()?.toUByte()
 
     fun toVec3F(): IVec3<Float> = IVec3(redF, greenF, blueF)
 

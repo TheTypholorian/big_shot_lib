@@ -7,8 +7,15 @@
   "package": "net.typho.big_shot_lib.mixin.neoforge",
   "refmap": "big_shot_lib.refmap.json",
   "compatibilityLevel": "JAVA_${java_version}",
-  "mixins": [],
-  "client": [],
+  "mixins": [
+    "entrypoint.FMLModContainerMixin",
+    "entrypoint.KotlinModContainerMixin",
+    "event.LevelChunkMixin"
+  ],
+  "client": [
+    "client.entrypoint.FMLClientModContainerMixin",
+    "client.entrypoint.KotlinClientModContainerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

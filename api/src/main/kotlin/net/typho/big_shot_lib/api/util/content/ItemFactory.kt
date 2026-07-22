@@ -12,7 +12,6 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.event.RegisterEvent
 import net.typho.big_shot_lib.api.util.platform.PlatformUtil
 import net.typho.big_shot_lib.api.util.resource.RegisteredResource
 import java.util.function.Supplier

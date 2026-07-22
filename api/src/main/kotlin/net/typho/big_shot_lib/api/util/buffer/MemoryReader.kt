@@ -47,7 +47,7 @@ interface MemoryReader {
         return readLong()
     }
 
-    fun readTo(output: MemoryWriter, bytes: Int) {
+    fun forwardTo(output: MemoryWriter, bytes: Int) {
         repeat(bytes ushr 3) {
             output.writeLong(readLong())
         }

@@ -82,8 +82,10 @@ open class InitialScreen(
         onClose.invoke()
     }
 
+    //? if >=1.21.9 {
     override fun extractRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
         super.extractRenderState(graphics, mouseX, mouseY, a)
         logo.extractRenderState(graphics, width, 1f)
     }
+    //? }
 }

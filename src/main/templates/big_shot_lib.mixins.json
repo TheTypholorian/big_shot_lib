@@ -13,8 +13,7 @@
     "ext.IdentifierMixin",
     "ext.MutableBlockPosMixin",
     "ext.Vec3iMixin",
-    "ext.Vec3Mixin",
-    "LevelChunkMixin"
+    "ext.Vec3Mixin"
   ],
   "client": [
     "client.ext.vertex.BufferBuilderMixin",

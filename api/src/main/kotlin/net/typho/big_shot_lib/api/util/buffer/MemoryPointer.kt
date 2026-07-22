@@ -6,8 +6,8 @@ import net.typho.big_shot_lib.api.math.IVec3
 import org.lwjgl.system.MemoryUtil.*
 import org.lwjgl.system.NativeResource
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.util.function.Supplier
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 interface MemoryPointer : Iterable<Byte> {
     val address: Long
@@ -217,11 +217,10 @@ interface MemoryPointer : Iterable<Byte> {
         fun wrap(buffer: ByteBuffer): MemoryPointer = Nio(buffer)
 
         @JvmStatic
-        @JvmOverloads
-        fun wrap(address: Long, size: Long, id: Supplier<String> = { "Wrapped MemoryPointer with size $size" }, free: Boolean = false): Native = Raw(address, size, id, free)
+        fun wrap(address: Long, size: Long): Native = Raw(address, size)
 
         @JvmStatic
-        fun alloc(size: Long, id: Supplier<String> = { "MemoryPointer with size $size" }): Native = Raw(nmemAllocChecked(size), size, id, true)
+        fun alloc(size: Long): Native = Raw(nmemAllocChecked(size), size)
     }
 
     private class Nio(
@@ -231,15 +230,17 @@ interface MemoryPointer : Iterable<Byte> {
         override val size: Long = (nio.limit() - nio.position()).toLong()
     }
 
+    @OptIn(ExperimentalAtomicApi::class)
     private class Raw(
         override val address: Long,
-        override val size: Long,
-        id: Supplier<String>,
-        free: Boolean
-    ) : AntiLeakResource(id, free), Native {
-        override fun createCleanup(): Runnable {
-            val address = address
-            return { nmemFree(address) }
+        override val size: Long
+    ) : Native {
+        private val freed = AtomicBoolean(false)
+
+        override fun free() {
+            if (freed.compareAndSet(false, true)) {
+                nmemFree(address)
+            }
         }
     }
 }

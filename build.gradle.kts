@@ -1,7 +1,6 @@
 import io.github.klahap.dotenv.DotEnvBuilder
 import net.typho.big_shot_lib.plugin.MCVersion
 import net.typho.big_shot_lib.plugin.ModLoader
-import org.gradle.kotlin.dsl.kotlin
 
 plugins {
     kotlin("jvm")
@@ -23,6 +22,9 @@ bigShotLib {
 
         clientOnlyPackages.add("net/typho/big_shot_lib/client")
         clientOnlyPackages.add("net/typho/big_shot_lib/mixin/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/fabric/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/forge/client")
+        clientOnlyPackages.add("net/typho/big_shot_lib/mixin/neoforge/client")
     }
 }
 
@@ -59,7 +61,7 @@ modstitch {
         replacementProperties.put("license", project.property("license") as String)
         replacementProperties.put("group", project.group as String)
         replacementProperties.put("loader", bigShotLib.loader.get().name.lowercase())
-        replacementProperties.put("java_version", "21")
+        replacementProperties.put("java_version", sourceJavaVersion.toString())
     }
 
     mixin {
@@ -174,10 +176,6 @@ val neoForgeSet = sourceSets.create("neoforge")
 val forgeSet = sourceSets.create("forge")
 
 sourceSets.named("main") {
-    java.srcDirs(project(":api").sourceSets["main"].java.srcDirs)
-    kotlin.srcDirs(project(":api").sourceSets["main"].kotlin.srcDirs)
-    resources.srcDirs(project(":api").sourceSets["main"].resources.srcDirs)
-
     when (bigShotLib.loader.get()) {
         ModLoader.FABRIC -> fabricSet
         ModLoader.FORGE -> forgeSet
@@ -188,28 +186,34 @@ sourceSets.named("main") {
         kotlin.srcDirs(it.kotlin.srcDirs)
         resources.srcDirs(it.resources.srcDirs)
     }
+
+    java {
+        if (sc.current.parsed < "1.21.5") {
+            exclude("net/typho/big_shot_lib/mixin/impl/iface/GlBufferMixin.java")
+            exclude("net/typho/big_shot_lib/mixin/impl/iface/GlTextureMixin.java")
+        }
+
+        if (sc.current.parsed >= "1.21") {
+            exclude("net/typho/big_shot_lib/mixin/impl/VertexFormatAccessor.java")
+            exclude("net/typho/big_shot_lib/mixin/impl/RenderTypeAccessor.java")
+        }
+
+        if (sc.current.parsed < "1.21.9") {
+            exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenEntriesAccessor.java")
+        }
+
+        if (sc.current.parsed >= "1.21.9") {
+            exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
+        }
+    }
 }
 
-sourceSets {
-    main {
-        java {
-            if (sc.current.parsed < "1.21.5") {
-                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlBufferMixin.java")
-                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlTextureMixin.java")
-            }
+project(":api").pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+    val api = project(":api").extensions.getByType<SourceSetContainer>().named("main").get()
 
-            if (sc.current.parsed >= "1.21") {
-                exclude("net/typho/big_shot_lib/mixin/impl/VertexFormatAccessor.java")
-                exclude("net/typho/big_shot_lib/mixin/impl/RenderTypeAccessor.java")
-            }
-
-            if (sc.current.parsed < "1.21.9") {
-                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenEntriesAccessor.java")
-            }
-
-            if (sc.current.parsed >= "1.21.9") {
-                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
-            }
-        }
+    sourceSets.named("main") {
+        java.srcDirs(api.java.srcDirs)
+        kotlin.srcDirs(api.kotlin.srcDirs)
+        resources.srcDirs(api.resources.srcDirs)
     }
 }

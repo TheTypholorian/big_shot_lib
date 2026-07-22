@@ -60,6 +60,8 @@ class BigShotLibPlugin : Plugin<Project> {
             task.description = "Update cached versions for all dependencies"
 
             task.doLast {
+                val ext = task.project.extensions.getByType(BigShotLibPluginExtension::class.java)
+
                 val properties = Properties()
                 val propertiesFile = ext.dependencyVersionsFile
 

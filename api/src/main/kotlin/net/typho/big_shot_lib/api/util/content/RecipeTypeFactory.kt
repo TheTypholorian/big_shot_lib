@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.item.crafting.RecipeSerializer
 import net.typho.big_shot_lib.api.NeoCommonInitializer
-import net.typho.big_shot_lib.api.event.RegisterEvent
 
 @Suppress("UNCHECKED_CAST")
 open class RecipeTypeFactory(

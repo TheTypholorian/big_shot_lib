@@ -8,9 +8,25 @@ interface NeoEventBus {
      */
     val loaderBusInstance: Any?
 
-    fun register(event: AddDataReloadListenersEvent)
+    fun register(event: PlayedBrewedPotionEvent)
 
-    fun register(event: BlockChangedEvent)
+    fun register(event: PotionPreBrewEvent)
+
+    fun register(event: PotionPostBrewEvent)
+
+    fun register(event: RegisterBrewingRecipesEvent)
+
+    fun register(event: EnchantedBlockLootEvent)
+
+    fun register(event: EnchantedEntityLootEvent)
+
+    fun register(event: GetEnchantmentLevelEvent)
+
+    fun register(event: ItemEntityDespawnEvent)
+
+    fun register(event: DropItemEvent)
+
+    fun register(event: RegisterServerReloadListenersEvent)
 
     fun register(event: ChunkLoadedEvent)
 
@@ -19,6 +35,8 @@ interface NeoEventBus {
     fun register(event: NewRegistryEvent)
 
     fun register(event: RegisterEvent)
+
+    fun register(event: BlockStateChangedEvent)
 
     companion object {
         @JvmStatic
