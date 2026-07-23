@@ -3,7 +3,6 @@ package net.typho.big_shot_lib.client.impl
 import com.mojang.blaze3d.GpuFormat
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.typho.big_shot_lib.client.api.IInternalClientUtil
-import net.typho.big_shot_lib.client.api.rendering.common.constant.GpuDataType
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
 import sun.misc.Unsafe
@@ -37,56 +36,9 @@ object InternalClientUtilImpl : IInternalClientUtil {
         throw UnsupportedOperationException("Big Shot Lib requires sun.misc.Unsafe to be available.")
     }
 
-    override fun addPositionElement(builder: VertexFormat.Builder): VertexFormat.Builder {
-        return builder.addAttribute("Position", GpuFormat.RGB32_FLOAT)
-    }
-
-    override fun addTextureUvElement(builder: VertexFormat.Builder): VertexFormat.Builder {
-        return builder.addAttribute("UV0", GpuFormat.RG32_FLOAT)
-    }
-
-    override fun addOverlayUvElement(builder: VertexFormat.Builder): VertexFormat.Builder {
-        return builder.addAttribute("UV1", GpuFormat.RG16_SINT)
-    }
-
-    override fun addLightUvElement(builder: VertexFormat.Builder): VertexFormat.Builder {
-        return builder.addAttribute("UV2", GpuFormat.RG16_SINT)
-    }
-
-    override fun addColorElement(builder: VertexFormat.Builder): VertexFormat.Builder {
-        return builder.addAttribute("Color", GpuFormat.RGBA8_UNORM)
-    }
-
-    override fun addNormalElement(builder: VertexFormat.Builder): VertexFormat.Builder {
-        return builder.addAttribute("Normal", GpuFormat.RGBA8_SNORM)
-    }
-
-    override fun addCustomElement(
-        builder: VertexFormat.Builder,
-        name: String,
-        type: GpuDataType,
-        components: Int,
-        stride: Int?
-    ): VertexFormat.Builder {
-        val mojType: GpuFormat.ComponentType = type.castTo()
-        val format = GpuFormat.entries.firstOrNull { it.componentCount() == components && it.componentType() == mojType } ?: throw IllegalArgumentException("Invalid component count $components and type $type")
-
-        return if (stride == null) {
-            builder.addAttribute(
-                name,
-                format
-            )
-        } else {
-            builder.addAttribute(
-                name,
-                stride,
-                format
-            )
-        }
-    }
-
     override fun getEventBus(modId: String): NeoClientEventBus {
-        return NeoClientEventBusImpl
+        TODO("")
+        //return NeoClientEventBusImpl
     }
 
     /*

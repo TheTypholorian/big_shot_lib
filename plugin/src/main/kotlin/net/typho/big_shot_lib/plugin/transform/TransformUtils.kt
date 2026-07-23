@@ -1,14 +1,12 @@
 package net.typho.big_shot_lib.plugin.transform
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
 import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.Remapper
+import org.objectweb.asm.tree.ClassNode
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -36,44 +34,50 @@ object TransformUtils {
     @JvmStatic
     fun transformSingleFile(
         name: String,
-        remapper: Remapper,
+        remapper: (markChanged: Runnable) -> Remapper,
         predicate: (api: Int, reader: ClassReader) -> Boolean,
-        transformer: (api: Int, writer: ClassWriter) -> ClassVisitor,
+        transformer: (api: Int, visitor: ClassVisitor, remapper: Remapper, markChanged: Runnable) -> ClassVisitor,
         stream: InputStream,
         out: (name: String, stream: OutputStream.() -> Unit) -> Unit
     ) {
         if (!(name.startsWith("META-INF/") && (name.endsWith(".SF") || name.endsWith(".RSA") || name.endsWith(".DSA")))) {
             if (name.endsWith(".class") && !name.endsWith("-info.class")) {
                 val className = name.removeSuffix(".class")
-                stream.mark(-1)
 
-                val reader = ClassReader(stream)
-                val writer = ClassWriter(reader, 0)
+                val bytes = stream.readAllBytes()
+                val reader = ClassReader(bytes)
 
                 if (predicate(Opcodes.ASM9, reader)) {
+                    val node = ClassNode()
+                    var dirty = false
+                    val remapper = remapper { dirty = true }
                     val transformer = KotlinAndMixinSupportingClassRemapper(
                         Opcodes.ASM9,
-                        transformer(Opcodes.ASM9, writer),
+                        transformer(Opcodes.ASM9, node, remapper) { dirty = true },
                         remapper
                     )
                     reader.accept(transformer, 0)
 
-                    val newName = remapper.map(className)
+                    if (dirty) {
+                        val newName = remapper.map(className)
+                        val writer = ClassWriter(Opcodes.ASM9)
 
-                    if (className == newName) {
-                        out(name) { write(writer.toByteArray()) }
+                        node.accept(writer)
+
+                        if (className == newName) {
+                            out(name) { write(writer.toByteArray()) }
+                        } else {
+                            out("$newName.class") { write(writer.toByteArray()) }
+                        }
                     } else {
-                        out("$newName.class") { write(writer.toByteArray()) }
+                        out(name) { write(bytes) }
                     }
                 } else {
-                    out(name) {
-                        stream.reset()
-                        stream.transferTo(this)
-                    }
+                    out(name) { write(bytes) }
                 }
             } else if (name.endsWith(".java")) {
                 val className = name.removeSuffix(".java")
-                val newName = remapper.map(className)
+                val newName = remapper { }.map(className)
 
                 if (className == newName) {
                     out(name) { stream.transferTo(this) }
@@ -82,7 +86,7 @@ object TransformUtils {
                 }
             } else if (name.endsWith(".kt")) {
                 val className = name.removeSuffix(".kt")
-                val newName = remapper.map(className)
+                val newName = remapper { }.map(className)
 
                 if (className == newName) {
                     out(name) { stream.transferTo(this) }
@@ -99,9 +103,9 @@ object TransformUtils {
     fun transformJar(
         inFile: File,
         outFile: File,
-        remapper: Remapper,
+        remapper: (markChanged: Runnable) -> Remapper,
         predicate: (name: String, api: Int, reader: ClassReader) -> Boolean,
-        transformer: (api: Int, writer: ClassWriter) -> ClassVisitor,
+        transformer: (api: Int, visitor: ClassVisitor, remapper: Remapper, markChanged: Runnable) -> ClassVisitor,
     ) {
         JarFile(inFile, false).use { jar ->
             val manifest = jar.manifest ?: Manifest()
@@ -114,20 +118,16 @@ object TransformUtils {
             }
 
             JarOutputStream(FileOutputStream(outFile), manifest).use { out ->
-                runBlocking {
-                    jar.entries().toList().map { entry ->
-                        async {
-                            if (entry.name != "META-INF/MANIFEST.MF") {
-                                jar.getInputStream(entry).use { stream ->
-                                    transformSingleFile(entry.name, remapper, { api, reader -> predicate(entry.name, api, reader) }, transformer, stream) { name, consumer ->
-                                        out.putNextEntry(JarEntry(name))
-                                        consumer(out)
-                                        out.closeEntry()
-                                    }
-                                }
+                jar.entries().asIterator().forEach { entry ->
+                    if (entry.name != "META-INF/MANIFEST.MF") {
+                        jar.getInputStream(entry).use { stream ->
+                            transformSingleFile(entry.name, remapper, { api, reader -> predicate(entry.name, api, reader) }, transformer, stream) { name, consumer ->
+                                out.putNextEntry(JarEntry(name))
+                                consumer(out)
+                                out.closeEntry()
                             }
                         }
-                    }.awaitAll()
+                    }
                 }
             }
         }
@@ -137,41 +137,37 @@ object TransformUtils {
     fun transformDir(
         inDir: File,
         outDir: File,
-        remapper: Remapper,
+        remapper: (markChanged: Runnable) -> Remapper,
         predicate: (name: String, api: Int, reader: ClassReader) -> Boolean,
-        transformer: (api: Int, writer: ClassWriter) -> ClassVisitor,
+        transformer: (api: Int, visitor: ClassVisitor, remapper: Remapper, markChanged: Runnable) -> ClassVisitor,
     ) {
-        runBlocking {
-            inDir.walkTopDown().map { file ->
-                async {
-                    val rel = file.relativeTo(inDir)
+        inDir.walkTopDown().map { file ->
+            val rel = file.relativeTo(inDir)
 
-                    if (rel.extension == "class") {
-                        transformSingleFile(
-                            rel.name,
-                            remapper,
-                            { api, reader -> predicate(rel.name, api, reader) },
-                            transformer,
-                            ByteArrayInputStream(file.readBytes())
-                        ) { name, consumer ->
-                            if (name == rel.name) {
-                                outDir.resolve(rel).outputStream().use {
-                                    consumer(it)
-                                }
-                            } else {
-                                file.delete()
+            if (rel.extension == "class") {
+                transformSingleFile(
+                    rel.name,
+                    remapper,
+                    { api, reader -> predicate(rel.name, api, reader) },
+                    transformer,
+                    ByteArrayInputStream(file.readBytes())
+                ) { name, consumer ->
+                    if (name == rel.name) {
+                        outDir.resolve(rel).outputStream().use {
+                            consumer(it)
+                        }
+                    } else {
+                        file.delete()
 
-                                val newFile = outDir.resolve(name)
-                                newFile.parentFile.mkdirs()
+                        val newFile = outDir.resolve(name)
+                        newFile.parentFile.mkdirs()
 
-                                newFile.outputStream().use {
-                                    consumer(it)
-                                }
-                            }
+                        newFile.outputStream().use {
+                            consumer(it)
                         }
                     }
                 }
-            }.toList().awaitAll()
+            }
         }
     }
 }

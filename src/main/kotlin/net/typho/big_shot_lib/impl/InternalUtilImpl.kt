@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType
 import net.typho.big_shot_lib.api.IInternalUtil
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.event.RegistryBuilder
+import net.typho.big_shot_lib.impl.event.NeoEventBusImpl
 
 object InternalUtilImpl : IInternalUtil {
     override fun <T : Any> createRegistryBuilder(key: ResourceKey<Registry<T>>): RegistryBuilder<T> {
@@ -62,6 +63,7 @@ object InternalUtilImpl : IInternalUtil {
     }
 
     override fun getEventBus(modId: String): NeoEventBus {
-        return NeoEventBusImpl
+        TODO("")
+        //return NeoEventBusImpl
     }
 }

@@ -6,7 +6,7 @@ import org.objectweb.asm.commons.Remapper
 
 class MixinTargetRemapper(
     api: Int,
-    visitor: AnnotationVisitor,
+    visitor: AnnotationVisitor?,
     @JvmField
     val remapper: Remapper,
     @JvmField

@@ -1,5 +1,7 @@
 package net.typho.big_shot_lib.plugin.transform.util
 
+import net.typho.big_shot_lib.plugin.transform.data.FieldDesc
+import net.typho.big_shot_lib.plugin.transform.data.MethodDesc
 import org.gradle.api.model.ObjectFactory
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
@@ -94,14 +96,11 @@ class AnnotationScanner(
         override fun visitMethod(
             access: Int,
             name: String,
-            descriptor: String?,
+            descriptor: String,
             signature: String?,
             exceptions: Array<out String?>?
         ): MethodVisitor {
-            val desc = objects.newInstance(MethodDesc::class.java)
-            desc.cls.set(this.desc!!)
-            desc.name.set(name)
-            desc.desc.set(descriptor)
+            val desc = MethodDesc(this.desc!!, name, descriptor)
 
             return object : MethodVisitor(api, super.visitMethod(access, name, descriptor, signature, exceptions)) {
                 @JvmField
@@ -133,15 +132,12 @@ class AnnotationScanner(
 
         override fun visitField(
             access: Int,
-            name: String?,
-            descriptor: String?,
+            name: String,
+            descriptor: String,
             signature: String?,
             value: Any?
         ): FieldVisitor {
-            val desc = objects.newInstance(FieldDesc::class.java)
-            desc.cls.set(this.desc!!)
-            desc.name.set(name)
-            desc.desc.set(descriptor)
+            val desc = FieldDesc(this.desc!!, name, descriptor)
 
             return object : FieldVisitor(api, super.visitField(access, name, descriptor, signature, value)) {
                 @JvmField

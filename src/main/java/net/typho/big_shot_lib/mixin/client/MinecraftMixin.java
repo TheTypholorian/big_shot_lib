@@ -21,6 +21,6 @@ public class MinecraftMixin {
             at = @At("HEAD")
     )
     private void setLevel(ClientLevel level, CallbackInfo ci) {
-        NeoClientEventBusImpl.CLIENT_LEVEL_CHANGED.forEach(event -> event.onClientLevelChanged(this.level, level));
+        //NeoClientEventBusImpl.CLIENT_LEVEL_CHANGED.forEach(event -> event.onClientLevelChanged(this.level, level));
     }
 }

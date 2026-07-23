@@ -1,5 +1,10 @@
 package net.typho.big_shot_lib.plugin.transform
 
+import net.typho.big_shot_lib.plugin.ModLoader
+import net.typho.big_shot_lib.plugin.transform.ToRuntimeRemapper
+import net.typho.big_shot_lib.plugin.transform.data.InterfaceInjection
+import net.typho.big_shot_lib.plugin.transform.data.MethodDesc
+import net.typho.big_shot_lib.plugin.transform.data.StaticMethodInjection
 import net.typho.big_shot_lib.plugin.transform.util.Annotations
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
@@ -8,16 +13,22 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 import org.objectweb.asm.commons.Remapper
 import org.objectweb.asm.signature.SignatureReader
-import org.objectweb.asm.signature.SignatureVisitor
 import org.objectweb.asm.signature.SignatureWriter
+import kotlin.collections.filter
 
 class ToCompileTransformer(
     @JvmField
-    val info: NeoTransformParameters,
-    //@JvmField
-    //val overloads: (newDesc: String, oldDesc: String, argumentConverters: List<ArgumentOverloadConverter?>) -> Unit,
+    val interfaceInjections: List<InterfaceInjection>,
+    @JvmField
+    val staticMethodInjections: List<StaticMethodInjection>,
+    @JvmField
+    val markAsDeprecated: List<MethodDesc>,
+    @JvmField
+    val loader: ModLoader,
     @JvmField
     val remapper: Remapper,
+    @JvmField
+    val markChanged: Runnable,
     api: Int,
     visitor: ClassVisitor
 ) : ClassVisitor(api, visitor) {
@@ -25,6 +36,14 @@ class ToCompileTransformer(
     var name: String? = null
     @JvmField
     var isInterface = false
+
+    constructor(
+        parameters: NeoTransformParameters,
+        remapper: Remapper,
+        markChanged: Runnable,
+        api: Int,
+        visitor: ClassVisitor
+    ) : this(parameters.interfaceInjections.get(), parameters.staticMethodInjections.get(), parameters.markAsDeprecated.get(), parameters.loader.get(), remapper, markChanged, api, visitor)
 
     override fun visit(
         version: Int,
@@ -38,106 +57,47 @@ class ToCompileTransformer(
         isInterface = access and Opcodes.ACC_INTERFACE != 0
 
         val interfaces = interfaces?.toMutableList() ?: mutableListOf()
-        val oldSignature = signature
         var signature = signature
-        val interfaceInjections = info.interfaceInjections.get().filter { it.target.get() == name }
+        val interfaceInjections = interfaceInjections.filter { it.target == name }
 
-        if (signature != null) {
-            val writer = SignatureWriter()
-            val reader = SignatureReader(signature)
+        if (interfaceInjections.isNotEmpty()) {
+            markChanged.run()
 
-            reader.accept(object : SignatureVisitor(Opcodes.ASM9) {
-                override fun visitSuperclass(): SignatureVisitor {
-                    return writer.visitSuperclass()
+            if (signature != null) {
+                val writer = SignatureWriter()
+                val reader = SignatureReader(signature)
+
+                reader.accept(writer)
+
+                interfaceInjections.forEach { injection ->
+                    writer.visitInterface().apply {
+                        visitClassType(remapper.map(injection.iface))
+                        visitEnd()
+                    }
                 }
 
-                override fun visitInterface(): SignatureVisitor {
-                    return writer.visitInterface()
-                }
-
-                override fun visitFormalTypeParameter(name: String) {
-                    writer.visitFormalTypeParameter(name)
-                }
-
-                override fun visitClassBound(): SignatureVisitor {
-                    return writer.visitClassBound()
-                }
-
-                override fun visitInterfaceBound(): SignatureVisitor {
-                    return writer.visitInterfaceBound()
-                }
-
-                override fun visitParameterType(): SignatureVisitor {
-                    return writer.visitParameterType()
-                }
-
-                override fun visitReturnType(): SignatureVisitor {
-                    return writer.visitReturnType()
-                }
-
-                override fun visitExceptionType(): SignatureVisitor {
-                    return writer.visitExceptionType()
-                }
-
-                override fun visitBaseType(descriptor: Char) {
-                    writer.visitBaseType(descriptor)
-                }
-
-                override fun visitTypeVariable(name: String) {
-                    writer.visitTypeVariable(name)
-                }
-
-                override fun visitArrayType(): SignatureVisitor {
-                    return writer.visitArrayType()
-                }
-
-                override fun visitClassType(name: String) {
-                    writer.visitClassType(name)
-                }
-
-                override fun visitInnerClassType(name: String) {
-                    writer.visitInnerClassType(name)
-                }
-
-                override fun visitTypeArgument() {
-                    writer.visitTypeArgument()
-                }
-
-                override fun visitTypeArgument(wildcard: Char): SignatureVisitor {
-                    return writer.visitTypeArgument(wildcard)
-                }
-
-                override fun visitEnd() {
-                    writer.visitEnd()
-                }
-            })
-
-            interfaceInjections.forEach { injection ->
-                writer.visitInterface().apply {
-                    visitClassType(remapper.map(injection.iface.get()))
-                    visitEnd()
-                }
+                signature = writer.toString()
             }
 
-            signature = writer.toString()
+            interfaceInjections.mapTo(interfaces) { remapper.map(it.iface) }
         }
 
-        interfaceInjections.mapTo(interfaces) { remapper.map(it.iface.get()) }
-
-        for (injection in info.staticMethodInjections.get()) {
-            val targetCls = injection.targetClass.get()
+        for (injection in staticMethodInjections) {
+            val targetCls = injection.targetClass
 
             if (targetCls == name) {
+                markChanged.run()
+
                 val method = super.visitMethod(
                     Opcodes.ACC_PUBLIC or Opcodes.ACC_STATIC,
-                    injection.targetMethodName.get(),
-                    injection.redirectTo.get().desc.get(),
-                    injection.signature.orNull?.let { remapper.mapSignature(it, false) },
-                    injection.exceptions.orNull?.map { remapper.mapType(it) }?.toTypedArray()
+                    injection.targetMethodName,
+                    injection.redirectTo.desc,
+                    injection.signature?.let { remapper.mapSignature(it, false) },
+                    injection.exceptions.map { remapper.mapType(it) }.toTypedArray()
                 )
 
-                val args = Type.getArgumentTypes(injection.redirectTo.get().desc.get())
-                val ret = Type.getReturnType(injection.redirectTo.get().desc.get())
+                val args = Type.getArgumentTypes(injection.redirectTo.desc)
+                val ret = Type.getReturnType(injection.redirectTo.desc)
 
                 var slot = 0
 
@@ -148,9 +108,9 @@ class ToCompileTransformer(
 
                 method.visitMethodInsn(
                     Opcodes.INVOKESTATIC,
-                    injection.redirectTo.get().cls.get(),
-                    injection.targetMethodName.get(),
-                    injection.targetMethodName.get(),
+                    injection.redirectTo.cls,
+                    injection.targetMethodName,
+                    injection.targetMethodName,
                     false
                 )
 
@@ -170,11 +130,12 @@ class ToCompileTransformer(
         descriptor: String,
         signature: String?,
         exceptions: Array<String>?
-    ): MethodVisitor {
+    ): MethodVisitor? {
         val visitor = super.visitMethod(access, name, descriptor, signature, exceptions)
 
-        if (info.markAsDeprecated.get().any { it.cls.get() == this.name && it.name.get() == name && it.desc.get() == descriptor }) {
-            visitor.visitAnnotation(Annotations.DEPRECATED, true).visitEnd()
+        if (markAsDeprecated.any { it.cls == this.name && it.name == name && it.desc == descriptor }) {
+            markChanged.run()
+            visitor?.visitAnnotation(Annotations.DEPRECATED, true)?.visitEnd()
         }
 
         return visitor
@@ -185,38 +146,10 @@ class ToCompileTransformer(
             return null
         }
 
-        return info.loader.get().unmapOnlyInAnnotation({ descriptor, visible -> super.visitAnnotation(descriptor, visible) }, descriptor, api) ?: super.visitAnnotation(descriptor, visible)
+        return loader.unmapOnlyInAnnotation({ descriptor, visible -> super.visitAnnotation(descriptor, visible) }, descriptor, api)?.also { markChanged.run() } ?: super.visitAnnotation(descriptor, visible)
     }
 
     override fun visitEnd() {
-        for (injection in info.interfaceInjections.get()) {
-            if (injection.target.get() == name) {
-                for (method in injection.methods.get()) {
-                    val visitor = visitMethod(
-                        Opcodes.ACC_PUBLIC,
-                        method.first,
-                        method.second,
-                        null,
-                        null
-                    )
-                    visitor.visitTypeInsn(Opcodes.NEW, "java/lang/IllegalStateException")
-                    visitor.visitInsn(Opcodes.DUP)
-                    visitor.visitLdcInsn("Implemented via mixin")
-                    visitor.visitMethodInsn(
-                        Opcodes.INVOKESPECIAL,
-                        "java/lang/IllegalStateException",
-                        "<init>",
-                        "(Ljava/lang/String;)V",
-                        false
-                    )
-                    visitor.visitInsn(Opcodes.ATHROW)
-
-                    visitor.visitMaxs(3, 1)
-                    visitor.visitEnd()
-                }
-            }
-        }
-
         super.visitAnnotation(Annotations.IS_RUNTIME_READY, true)?.let { anno ->
             anno.visit("value", false)
             anno.visitEnd()

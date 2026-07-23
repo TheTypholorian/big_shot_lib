@@ -5,7 +5,7 @@ import org.objectweb.asm.commons.Remapper
 
 class MixinInjectionRemapper(
     api: Int,
-    visitor: AnnotationVisitor,
+    visitor: AnnotationVisitor?,
     @JvmField
     val remapper: Remapper,
     @JvmField

@@ -9,6 +9,7 @@ import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.InternalUtil
+import net.typho.big_shot_lib.api.event.RegisterEvent
 import java.util.function.Supplier
 
 @Suppress("UNCHECKED_CAST")

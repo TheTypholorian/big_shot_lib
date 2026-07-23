@@ -27,7 +27,7 @@ class RegistryBuilderImpl<T : Any>(
     }
 }
 *///? } neoforge {
-class RegistryBuilderImpl<T>(
+class RegistryBuilderImpl<T : Any>(
     @JvmField
     val key: ResourceKey<Registry<T>>
 ) : RegistryBuilder<T> {

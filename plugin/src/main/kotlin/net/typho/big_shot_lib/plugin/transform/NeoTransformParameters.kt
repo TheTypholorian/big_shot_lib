@@ -1,14 +1,14 @@
 package net.typho.big_shot_lib.plugin.transform
 
+import net.typho.big_shot_lib.plugin.ArgumentOverloadConverter
 import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.ArgumentOverloadConverter
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.ClassRename
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.FieldRename
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.InterfaceInjection
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.MethodRename
-import net.typho.big_shot_lib.plugin.BigShotLibPluginExtension.TransformInfo.StaticMethodInjection
 import net.typho.big_shot_lib.plugin.ModLoader
-import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
+import net.typho.big_shot_lib.plugin.transform.data.ClassRename
+import net.typho.big_shot_lib.plugin.transform.data.FieldRename
+import net.typho.big_shot_lib.plugin.transform.data.InterfaceInjection
+import net.typho.big_shot_lib.plugin.transform.data.MethodRename
+import net.typho.big_shot_lib.plugin.transform.data.StaticMethodInjection
+import net.typho.big_shot_lib.plugin.transform.data.MethodDesc
 import org.gradle.api.artifacts.transform.TransformParameters
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty

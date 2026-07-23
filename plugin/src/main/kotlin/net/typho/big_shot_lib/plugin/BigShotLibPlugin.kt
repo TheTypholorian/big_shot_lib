@@ -38,6 +38,25 @@ class BigShotLibPlugin : Plugin<Project> {
             it.description = "Adds dependencies to the mod manifest"
         }
 
+        project.dependencies.attributesSchema.attribute(neoTweakedAttrib)
+
+        project.dependencies.artifactTypes.configureEach {
+            it.attributes.attribute(neoTweakedAttrib, false)
+        }
+
+        project.configurations.getByName("compileClasspath") {
+            if (it.isCanBeResolved) {
+                it.attributes.attribute(neoTweakedAttrib, true)
+            }
+        }
+
+        project.dependencies.registerTransform(BigShotLibTransformAction::class.java) {
+            it.from.attribute(neoTweakedAttrib, false)
+            it.to.attribute(neoTweakedAttrib, true)
+            it.parameters.set(ext) { project.objects }
+        }
+
+        /*
         project.tasks.register("registerModDependencies", RegisterModDependenciesTask::class.java) { task ->
             task.group = "big_shot_lib"
             task.dependsOn("processResources")
@@ -54,6 +73,7 @@ class BigShotLibPlugin : Plugin<Project> {
             task.minecraftVersion.set(ext.mcVersionProperty)
             task.loaderVersion.set(project.provider { ext.getLoaderVersion() })
         }.also { project.tasks.getByName("processResources").finalizedBy(it) }
+         */
 
         project.tasks.register("updateDependencyVersions") { task ->
             task.group = "big_shot_lib"
@@ -77,130 +97,110 @@ class BigShotLibPlugin : Plugin<Project> {
             }
         }
 
-        project.pluginManager.withPlugin("java") {
-            project.dependencies.attributesSchema.attribute(neoTweakedAttrib)
-
-            project.dependencies.artifactTypes.configureEach {
-                it.attributes.attribute(neoTweakedAttrib, false)
+        project.afterEvaluate {
+            fun toCompile(dir: File, parameters: NeoTransformParameters) {
+                TransformUtils.transformDir(
+                    dir,
+                    dir,
+                    { markChanged -> ToCompileRemapper(parameters, markChanged, Opcodes.ASM9) },
+                    { name, api, reader ->
+                        val visitor = ClassStatusVisitor(api)
+                        reader.accept(visitor, ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
+                        return@transformDir visitor.status == ClassStatusVisitor.Status.RUNTIME
+                    },
+                    { api, writer, remapper, markChanged -> ToCompileTransformer(parameters, remapper, markChanged, api, writer) }
+                )
             }
 
-            project.configurations.getByName("compileClasspath") {
-                if (it.isCanBeResolved) {
-                    it.attributes.attribute(neoTweakedAttrib, true)
-                }
+            fun toRuntime(dir: File, parameters: NeoTransformParameters) {
+                TransformUtils.transformDir(
+                    dir,
+                    dir,
+                    { markChanged -> ToRuntimeRemapper(parameters, markChanged, Opcodes.ASM9) },
+                    { name, api, reader ->
+                        val visitor = ClassStatusVisitor(api)
+                        reader.accept(visitor, ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
+                        return@transformDir visitor.status != ClassStatusVisitor.Status.RUNTIME
+                    },
+                    { api, writer, remapper, markChanged -> ToRuntimeTransformer(parameters, markChanged, api, writer) }
+                )
             }
 
-            project.dependencies.registerTransform(BigShotLibTransformAction::class.java) {
-                it.from.attribute(neoTweakedAttrib, false)
-                it.to.attribute(neoTweakedAttrib, true)
-                it.parameters.set(ext) { project.objects }
-            }
-
-            project.afterEvaluate {
-                fun toCompile(dir: File, parameters: NeoTransformParameters) {
-                    val remapper = ToCompileRemapper(parameters, Opcodes.ASM9)
-
-                    TransformUtils.transformDir(
-                        dir,
-                        dir,
-                        remapper,
-                        { name, api, reader ->
-                            val visitor = ClassStatusVisitor(api)
-                            reader.accept(visitor, ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
-                            return@transformDir visitor.status == ClassStatusVisitor.Status.RUNTIME
-                        },
-                        { api, writer -> ToCompileTransformer(parameters, remapper, api, writer) }
-                    )
+            project.tasks.getByName("classes") { task ->
+                println("[Big Shot Lib] Attaching project transforms to task '${task.name}'")
+                val parameters = project.provider {
+                    project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) { project.objects } }
                 }
 
-                fun toRuntime(dir: File, parameters: NeoTransformParameters) {
-                    val remapper = ToRuntimeRemapper(parameters, Opcodes.ASM9)
+                task.inputs.property("neoParameters", parameters)
 
-                    TransformUtils.transformDir(
-                        dir,
-                        dir,
-                        remapper,
-                        { name, api, reader ->
-                            val visitor = ClassStatusVisitor(api)
-                            reader.accept(visitor, ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
-                            return@transformDir visitor.status != ClassStatusVisitor.Status.RUNTIME
-                        },
-                        { api, writer -> ToRuntimeTransformer(parameters, api, writer) }
-                    )
-                }
+                val compileTasks = arrayListOf<Pair<Task, DirectoryProperty>>()
 
-                project.tasks.getByName("classes") { task ->
-                    println("[Big Shot Lib] Attaching project transforms to task '${task.name}'")
-                    val parameters = project.provider {
-                        project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) { project.objects } }
+                if (project.pluginManager.hasPlugin("org.jetbrains.kotlin.jvm")) {
+                    val scanned = hashSetOf<Task>()
+
+                    fun scanDependencies(task: Task) {
+                        task.taskDependencies.getDependencies(task).forEach { dependency ->
+                            if (scanned.add(dependency)) {
+                                if (dependency is KotlinCompileTool) {
+                                    compileTasks.add(dependency to dependency.destinationDirectory)
+                                } else if (dependency is AbstractCompile) {
+                                    compileTasks.add(dependency to dependency.destinationDirectory)
+                                }
+
+                                scanDependencies(dependency)
+                            }
+                        }
                     }
 
-                    task.inputs.property("neoParameters", parameters)
+                    scanDependencies(task)
+                } else {
+                    val scanned = hashSetOf<Task>()
 
-                    val compileTasks = arrayListOf<Pair<Task, DirectoryProperty>>()
-
-                    if (project.pluginManager.hasPlugin("org.jetbrains.kotlin.jvm")) {
-                        val scanned = hashSetOf<Task>()
-
-                        fun scanDependencies(task: Task) {
-                            task.taskDependencies.getDependencies(task).forEach { dependency ->
-                                if (scanned.add(dependency)) {
-                                    if (dependency is KotlinCompileTool) {
-                                        compileTasks.add(dependency to dependency.destinationDirectory)
-                                    } else if (dependency is AbstractCompile) {
-                                        compileTasks.add(dependency to dependency.destinationDirectory)
-                                    }
-
-                                    scanDependencies(dependency)
+                    fun scanDependencies(task: Task) {
+                        task.taskDependencies.getDependencies(task).forEach { dependency ->
+                            if (scanned.add(dependency)) {
+                                if (dependency is AbstractCompile) {
+                                    compileTasks.add(dependency to dependency.destinationDirectory)
                                 }
+
+                                scanDependencies(dependency)
                             }
                         }
-
-                        scanDependencies(task)
-                    } else {
-                        val scanned = hashSetOf<Task>()
-
-                        fun scanDependencies(task: Task) {
-                            task.taskDependencies.getDependencies(task).forEach { dependency ->
-                                if (scanned.add(dependency)) {
-                                    if (dependency is AbstractCompile) {
-                                        compileTasks.add(dependency to dependency.destinationDirectory)
-                                    }
-
-                                    scanDependencies(dependency)
-                                }
-                            }
-                        }
-
-                        scanDependencies(task)
                     }
 
-                    val reverseTransformsTasks = compileTasks.map { task ->
-                        project.tasks.register("neoReverseTransform_${task.first.name}") {
-                            it.group = "big_shot_lib"
+                    scanDependencies(task)
+                }
 
-                            val parameters = project.provider {
-                                project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) { project.objects } }
-                            }
+                /*
+                val reverseTransformsTasks = compileTasks.map { task ->
+                    val dir = task.second
+                    project.tasks.register("neoReverseTransform_${task.first.name}") {
+                        it.group = "big_shot_lib"
 
-                            it.inputs.property("neoParameters", parameters)
-
-                            it.doFirst {
-                                toCompile(task.second.get().asFile, parameters.get())
-                            }
+                        val parameters = project.provider {
+                            project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) { project.objects } }
                         }
-                    }.toTypedArray()
 
+                        it.inputs.property("neoParameters", parameters)
+                        it.inputs.property("neoDirectory", dir)
+
+                        it.doFirst {
+                            toCompile(dir.get().asFile, parameters.get())
+                        }
+                    }
+                }.toTypedArray()
+
+                compileTasks.forEach { task ->
+                    task.first.dependsOn(*reverseTransformsTasks)
+                }
+
+                task.doLast {
                     compileTasks.forEach { task ->
-                        task.first.dependsOn(*reverseTransformsTasks)
-                    }
-
-                    task.doLast {
-                        compileTasks.forEach { task ->
-                            toRuntime(task.second.get().asFile, parameters.get())
-                        }
+                        toRuntime(task.second.get().asFile, parameters.get())
                     }
                 }
+                 */
             }
         }
     }

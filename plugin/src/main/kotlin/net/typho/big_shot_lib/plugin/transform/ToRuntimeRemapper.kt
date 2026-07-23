@@ -1,12 +1,27 @@
 package net.typho.big_shot_lib.plugin.transform
 
+import net.typho.big_shot_lib.plugin.transform.data.ClassRename
+import net.typho.big_shot_lib.plugin.transform.data.FieldRename
+import net.typho.big_shot_lib.plugin.transform.data.MethodRename
 import org.objectweb.asm.commons.Remapper
 
 class ToRuntimeRemapper(
     @JvmField
-    val info: NeoTransformParameters,
+    val classRenames: List<ClassRename>,
+    @JvmField
+    val methodRenames: List<MethodRename>,
+    @JvmField
+    val fieldRenames: List<FieldRename>,
+    @JvmField
+    val markChanged: Runnable,
     api: Int
 ) : Remapper(api) {
+    constructor(
+        parameters: NeoTransformParameters,
+        markChanged: Runnable,
+        api: Int
+    ) : this(parameters.classRenames.get(), parameters.methodRenames.get(), parameters.fieldRenames.get(), markChanged, api)
+
     override fun map(internalName: String): String {
         var internalName = internalName
         val index = internalName.lastIndexOf('$')
@@ -16,7 +31,7 @@ class ToRuntimeRemapper(
             internalName = "$parent${internalName.substring(index)}"
         }
 
-        return info.classRenames.get().lastOrNull { it.to.get() == internalName }?.from?.get() ?: internalName
+        return classRenames.lastOrNull { it.from == internalName }?.from?.also { markChanged.run() } ?: internalName
     }
 
     override fun mapMethodName(owner: String, name: String, descriptor: String?): String {
@@ -24,10 +39,16 @@ class ToRuntimeRemapper(
             return name
         }
 
-        return info.methodRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && (descriptor == null || it.desc.get() == descriptor) } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
+        val owner = map(owner)
+        val descriptor = descriptor?.let { mapMethodDesc(it) }
+
+        return methodRenames.lastOrNull { it.from.let { it.cls == owner && it.name == name && (descriptor == null || it.desc == descriptor) } }?.from?.name?.also { markChanged.run() } ?: name
     }
 
     override fun mapFieldName(owner: String, name: String, descriptor: String): String {
-        return info.fieldRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.desc.get() == descriptor } && it.to.get() == name }?.from?.get()?.name?.get() ?: name
+        val owner = map(owner)
+        val descriptor = mapDesc(descriptor)
+
+        return fieldRenames.lastOrNull { it.from.let { it.cls == owner && it.name == name && it.desc == descriptor } }?.from?.name?.also { markChanged.run() } ?: name
     }
 }

@@ -1,22 +1,20 @@
 package net.typho.big_shot_lib.plugin
 
-import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
-import net.typho.big_shot_lib.plugin.transform.util.FieldDesc
-import net.typho.big_shot_lib.plugin.transform.util.MethodDesc
+import net.typho.big_shot_lib.plugin.transform.data.ClassRename
+import net.typho.big_shot_lib.plugin.transform.data.FieldRename
+import net.typho.big_shot_lib.plugin.transform.data.InterfaceInjection
+import net.typho.big_shot_lib.plugin.transform.data.MethodRename
+import net.typho.big_shot_lib.plugin.transform.data.StaticMethodInjection
+import net.typho.big_shot_lib.plugin.transform.data.FieldDesc
+import net.typho.big_shot_lib.plugin.transform.data.MethodDesc
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import java.io.File
-import java.net.URI
-import java.net.URLEncoder
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
-import java.nio.charset.StandardCharsets
 import java.time.Instant
 import java.util.Properties
 import java.util.function.Function
@@ -259,43 +257,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(
         private val objects: ObjectFactory,
         private val version: Property<String>
     ) {
-        interface ClassRename {
-            val from: Property<String>
-            val to: Property<String>
-        }
-
-        interface MethodRename {
-            val from: Property<MethodDesc>
-            val to: Property<String>
-        }
-
-        interface FieldRename {
-            val from: Property<FieldDesc>
-            val to: Property<String>
-        }
-
-        interface InterfaceInjection {
-            val iface: Property<String>
-            val target: Property<String>
-            val typeParams: ListProperty<String>
-            val methods: ListProperty<Pair<String, String>>
-        }
-
-        interface StaticMethodInjection {
-            val redirectTo: Property<MethodDesc>
-            val targetClass: Property<String>
-            val targetMethodName: Property<String>
-            val signature: Property<String>
-            val exceptions: ListProperty<String>
-        }
-
-        interface ArgumentOverloadConverter {
-            val from: Property<String>
-            val to: Property<String>
-            val converter: Property<MethodDesc>
-            val permutate: Property<Boolean>
-        }
-
         abstract val classRenames: ListProperty<ClassRename>
         abstract val methodRenames: ListProperty<MethodRename>
         abstract val fieldRenames: ListProperty<FieldRename>
@@ -422,87 +383,57 @@ abstract class BigShotLibPluginExtension @Inject constructor(
         }
 
         fun renameClass(from: String, to: String) {
-            classRenames.add(objects.newInstance(ClassRename::class.java).also {
-                it.from.set(from)
-                it.to.set(to)
-            })
+            classRenames.add(ClassRename(from, to))
         }
 
         fun renameMethod(from: MethodDesc, to: String) {
-            methodRenames.add(objects.newInstance(MethodRename::class.java).also {
-                it.from.set(from)
-                it.to.set(to)
-            })
+            methodRenames.add(MethodRename(from, to))
         }
 
         fun renameMethod(cls: String, desc: String, from: String, to: String) {
-            renameMethod(objects.newInstance(MethodDesc::class.java).also {
-                it.cls.set(cls)
-                it.name.set(from)
-                it.desc.set(desc)
-            }, to)
+            renameMethod(MethodDesc(cls, from, desc), to)
         }
 
         fun renameField(from: FieldDesc, to: String) {
-            fieldRenames.add(objects.newInstance(FieldRename::class.java).also {
-                it.from.set(from)
-                it.to.set(to)
-            })
+            fieldRenames.add(FieldRename(from, to))
         }
 
         fun renameField(cls: String, desc: String, from: String, to: String) {
-            renameField(objects.newInstance(FieldDesc::class.java).also {
-                it.cls.set(cls)
-                it.name.set(from)
-                it.desc.set(desc)
-            }, to)
+            renameField(FieldDesc(cls, from, desc), to)
+        }
+
+        fun markAsDeprecated(desc: MethodDesc) {
+            markAsDeprecated.add(desc)
         }
 
         fun markAsDeprecated(cls: String, desc: String, name: String) {
-            markAsDeprecated.add(objects.newInstance(MethodDesc::class.java).also {
-                it.cls.set(cls)
-                it.name.set(name)
-                it.desc.set(desc)
-            })
+            markAsDeprecated(MethodDesc(cls, desc, name))
         }
 
         @JvmOverloads
-        fun injectInterface(iface: String, target: String, typeParams: Array<String> = arrayOf(), vararg methods: Pair<String, String>) {
-            interfaceInjections.add(objects.newInstance(InterfaceInjection::class.java).also {
-                it.iface.set(iface)
-                it.target.set(target)
-                it.typeParams.set(typeParams.toList())
-                it.methods.set(methods.toList())
-            })
+        fun injectInterface(iface: String, target: String, typeParams: List<String> = listOf()) {
+            interfaceInjections.add(InterfaceInjection(iface, target, typeParams))
         }
 
         @JvmOverloads
-        fun injectStaticMethod(fromCls: String, toCls: String, fromName: String, toName: String, methodDesc: String, signature: String? = null, exceptions: List<String>? = null) {
-            staticMethodInjections.add(objects.newInstance(StaticMethodInjection::class.java).also {
-                it.redirectTo.set(objects.newInstance(MethodDesc::class.java).also {
-                    it.cls.set(fromCls)
-                    it.name.set(fromName)
-                    it.desc.set(methodDesc)
-                })
-                it.targetClass.set(toCls)
-                it.targetMethodName.set(toName)
-                it.exceptions.set(exceptions)
-                it.signature.set(signature)
-            })
+        fun injectStaticMethod(fromCls: String, toCls: String, fromName: String, toName: String, methodDesc: String, signature: String? = null, exceptions: List<String> = listOf()) {
+            staticMethodInjections.add(StaticMethodInjection(
+                MethodDesc(fromCls, fromName, methodDesc),
+                toCls,
+                toName,
+                signature,
+                exceptions
+            ))
         }
 
         @JvmOverloads
         fun overloadArguments(from: String, to: String, converterOwner: String, converterName: String, permutate: Boolean = false) {
-            argumentOverloadConverters.add(objects.newInstance(ArgumentOverloadConverter::class.java).also {
-                it.from.set(from)
-                it.to.set(to)
-                it.converter.set(objects.newInstance(MethodDesc::class.java).also {
-                    it.cls.set(converterOwner)
-                    it.name.set(converterName)
-                    it.desc.set("(L$from;)L$to;")
-                })
-                it.permutate.set(permutate)
-            })
+            argumentOverloadConverters.add(ArgumentOverloadConverter(
+                from,
+                to,
+                MethodDesc(converterOwner, converterName, "(L$from;)L$to;"),
+                permutate
+            ))
         }
     }
 }

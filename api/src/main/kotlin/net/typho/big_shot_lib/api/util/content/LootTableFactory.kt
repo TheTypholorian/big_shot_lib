@@ -8,6 +8,7 @@ import net.minecraft.world.level.storage.loot.LootPool
 import net.minecraft.world.level.storage.loot.LootTable
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction
 import net.typho.big_shot_lib.api.NeoCommonInitializer
+import net.typho.big_shot_lib.api.event.RegisterEvent
 
 @Suppress("UNCHECKED_CAST")
 open class LootTableFactory(

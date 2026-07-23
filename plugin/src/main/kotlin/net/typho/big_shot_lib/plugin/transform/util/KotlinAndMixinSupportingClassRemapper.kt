@@ -43,7 +43,7 @@ class KotlinAndMixinSupportingClassRemapper(
         exceptions: Array<out String?>?
     ): MethodVisitor {
         return object : MethodVisitor(api, super.visitMethod(access, name, descriptor, signature, exceptions)) {
-            override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor {
+            override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {
                 if (descriptor.contains("mixin")) {
                     val target = target
 

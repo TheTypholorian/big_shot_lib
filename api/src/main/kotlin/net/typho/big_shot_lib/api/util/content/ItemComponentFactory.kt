@@ -9,6 +9,7 @@ import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import net.typho.big_shot_lib.api.NeoCommonInitializer
+import net.typho.big_shot_lib.api.event.RegisterEvent
 
 @Suppress("UNCHECKED_CAST")
 open class ItemComponentFactory(

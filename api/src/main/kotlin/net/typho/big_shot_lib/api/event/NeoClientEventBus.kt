@@ -9,7 +9,6 @@ import net.typho.big_shot_lib.client.api.event.ClientStartFrameEvent
 import net.typho.big_shot_lib.client.api.event.ClientStartTickEvent
 import net.typho.big_shot_lib.client.api.event.InitialScreenEvent
 import net.typho.big_shot_lib.client.api.event.RegisterDebugScreenEntriesEvent
-import net.typho.big_shot_lib.client.api.event.RegisterMainMenuModesEvent
 
 interface NeoClientEventBus {
     /**
@@ -33,7 +32,7 @@ interface NeoClientEventBus {
 
     fun register(event: RegisterDebugScreenEntriesEvent)
 
-    fun register(event: RegisterMainMenuModesEvent)
+    //fun register(event: RegisterMainMenuModesEvent)
 
     companion object {
         @JvmStatic

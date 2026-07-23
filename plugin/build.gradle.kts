@@ -22,7 +22,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-metadata-jvm:2.2.0")
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
     implementation("com.akuleshov7:ktoml-core:0.7.1")
     implementation("com.akuleshov7:ktoml-file:0.7.1")

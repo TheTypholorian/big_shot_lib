@@ -13,7 +13,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Classpath
 import org.objectweb.asm.Opcodes
 
-@CacheableTransform
+//@CacheableTransform
 abstract class BigShotLibTransformAction : TransformAction<NeoTransformParameters> {
     @get:Classpath
     @get:InputArtifact
@@ -21,21 +21,22 @@ abstract class BigShotLibTransformAction : TransformAction<NeoTransformParameter
 
     override fun transform(outputs: TransformOutputs) {
         val inFile = input.get().asFile
+        val start = System.currentTimeMillis()
         println("[Big Shot Lib] Transforming $inFile")
 
         if (inFile.isDirectory) {
             val outFile = outputs.file("${inFile.name}-neo-tweaked")
 
-            val remapper = ToCompileRemapper(parameters, Opcodes.ASM9)
             TransformUtils.transformDir(
                 inFile,
                 outFile,
-                remapper,
+                { markChanged -> ToCompileRemapper(parameters, markChanged, Opcodes.ASM9) },
                 { name, api, reader -> true }
-            ) { api, writer ->
+            ) { api, writer, remapper, markChanged ->
                 ToCompileTransformer(
                     parameters,
                     remapper,
+                    markChanged,
                     api,
                     writer
                 )
@@ -43,23 +44,24 @@ abstract class BigShotLibTransformAction : TransformAction<NeoTransformParameter
         } else if (inFile.extension == "jar") {
             val outFile = outputs.file("${inFile.nameWithoutExtension}-neo-tweaked${inFile.extension.let { if (it.isEmpty()) "" else ".$it" }}")
 
-            val remapper = ToCompileRemapper(parameters, Opcodes.ASM9)
             TransformUtils.transformJar(
                 inFile,
                 outFile,
-                remapper,
+                { markChanged -> ToCompileRemapper(parameters, markChanged, Opcodes.ASM9) },
                 { name, api, reader -> true }
-            ) { api, writer ->
+            ) { api, visitor, remapper, markChanged ->
                 ToCompileTransformer(
                     parameters,
                     remapper,
+                    markChanged,
                     api,
-                    writer
+                    visitor
                 )
             }
         } else {
             System.err.println("[Big Shot Lib] Unsupported transform input: $inFile")
-            throw IllegalArgumentException()
         }
+
+        println("\r[Big Shot Lib] Transforming $inFile took ${System.currentTimeMillis() - start} ms")
     }
 }

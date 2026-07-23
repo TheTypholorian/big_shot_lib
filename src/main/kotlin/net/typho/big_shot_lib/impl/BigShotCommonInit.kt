@@ -18,6 +18,7 @@ import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.event.NeoEventBus
+import net.typho.big_shot_lib.impl.event.NeoEventBusImpl
 
 @Mod(value = "big_shot_lib")
 class BigShotCommonInit(eventBus: IEventBus, modContainer: ModContainer) {

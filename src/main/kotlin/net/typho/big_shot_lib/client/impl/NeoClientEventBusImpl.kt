@@ -1,12 +1,12 @@
 package net.typho.big_shot_lib.client.impl
 
+import net.minecraft.client.Minecraft
 import net.typho.big_shot_lib.client.api.event.AddAssetReloadListenersEvent
 import net.typho.big_shot_lib.client.api.event.ClientEndTickEvent
 import net.typho.big_shot_lib.client.api.event.ClientLevelChangedEvent
 import net.typho.big_shot_lib.client.api.event.ClientStartTickEvent
 import net.typho.big_shot_lib.client.api.event.InitialScreenEvent
 import net.typho.big_shot_lib.client.api.event.RegisterDebugScreenEntriesEvent
-import net.typho.big_shot_lib.client.api.event.RegisterMainMenuModesEvent
 
 //? fabric {
 /*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -63,9 +63,13 @@ object NeoClientEventBusImpl : NeoClientEventBus {
 *///? } neoforge {
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.client.event.ClientTickEvent
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
+import net.typho.big_shot_lib.api.event.NeoEventBus
+import net.typho.big_shot_lib.client.api.event.ClientEndFrameEvent
+import net.typho.big_shot_lib.client.api.event.ClientStartFrameEvent
+import net.typho.big_shot_lib.impl.event.NeoEventBusImpl
+import net.typho.big_shot_lib.mixin.client.FrustumAccessor
 
 class NeoClientEventBusImpl(
     @JvmField
@@ -73,6 +77,9 @@ class NeoClientEventBusImpl(
     @JvmField
     val common: NeoEventBus = NeoEventBusImpl(inner)
 ) : NeoClientEventBus {
+    override val loaderBusInstance: Any?
+        get() = TODO("Not yet implemented")
+
     companion object {
         /*
         @JvmField
@@ -81,11 +88,17 @@ class NeoClientEventBusImpl(
     }
 
     override fun register(event: AddAssetReloadListenersEvent) {
+        /*
         inner.addListener { e: RegisterClientReloadListenersEvent ->
             event.registerReloadListeners { listener ->
                 e.registerReloadListener(listener)
             }
         }
+         */
+    }
+
+    override fun register(event: ClientEndFrameEvent) {
+        TODO("Not yet implemented")
     }
 
     /*
@@ -110,6 +123,10 @@ class NeoClientEventBusImpl(
         TODO("Not yet implemented")
     }
 
+    override fun register(event: ClientStartFrameEvent) {
+        TODO("Not yet implemented")
+    }
+
     override fun register(event: ClientStartTickEvent) {
         inner.addListener { e: ClientTickEvent.Pre ->
             event.onClientStartTick(Minecraft.getInstance())
@@ -130,9 +147,9 @@ class NeoClientEventBusImpl(
         TODO("Not yet implemented")
     }
 
-    override fun register(event: RegisterMainMenuModesEvent) {
-        MainMenuModeManager.register(event)
-    }
+    //override fun register(event: RegisterMainMenuModesEvent) {
+    //    MainMenuModeManager.register(event)
+    //}
 
     /*
     override fun register(event: RenderGUIEvent) {
@@ -158,6 +175,7 @@ class NeoClientEventBusImpl(
     }
      */
 
+    /*
     override fun register(
         stage: RenderLevelStage,
         event: RenderLevelEvent
@@ -193,5 +211,6 @@ class NeoClientEventBusImpl(
             }
         }
     }
+     */
 }
 //? }

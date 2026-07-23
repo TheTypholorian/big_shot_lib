@@ -208,12 +208,11 @@ sourceSets.named("main") {
     }
 }
 
-project(":api").pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-    val api = project(":api").extensions.getByType<SourceSetContainer>().named("main").get()
+evaluationDependsOn(":api")
 
-    sourceSets.named("main") {
-        java.srcDirs(api.java.srcDirs)
-        kotlin.srcDirs(api.kotlin.srcDirs)
-        resources.srcDirs(api.resources.srcDirs)
-    }
+sourceSets.named("main") {
+    val api = project(":api").sourceSets["main"]
+    java.srcDirs(api.java.srcDirs)
+    kotlin.srcDirs(api.kotlin.srcDirs)
+    resources.srcDirs(api.resources.srcDirs)
 }

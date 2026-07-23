@@ -1,12 +1,27 @@
 package net.typho.big_shot_lib.plugin.transform
 
+import net.typho.big_shot_lib.plugin.transform.data.ClassRename
+import net.typho.big_shot_lib.plugin.transform.data.FieldRename
+import net.typho.big_shot_lib.plugin.transform.data.MethodRename
 import org.objectweb.asm.commons.Remapper
 
 class ToCompileRemapper(
     @JvmField
-    val info: NeoTransformParameters,
+    val classRenames: List<ClassRename>,
+    @JvmField
+    val methodRenames: List<MethodRename>,
+    @JvmField
+    val fieldRenames: List<FieldRename>,
+    @JvmField
+    val markChanged: Runnable,
     api: Int
 ) : Remapper(api) {
+    constructor(
+        parameters: NeoTransformParameters,
+        markChanged: Runnable,
+        api: Int
+    ) : this(parameters.classRenames.get(), parameters.methodRenames.get(), parameters.fieldRenames.get(), markChanged, api)
+
     override fun map(internalName: String): String {
         var internalName = internalName
         val index = internalName.lastIndexOf('$')
@@ -16,7 +31,7 @@ class ToCompileRemapper(
             internalName = "$parent${internalName.substring(index)}"
         }
 
-        return info.classRenames.get().lastOrNull { it.from.get() == internalName }?.to?.get() ?: internalName
+        return classRenames.lastOrNull { it.from == internalName }?.to?.also { markChanged.run() } ?: internalName
     }
 
     override fun mapMethodName(owner: String, name: String, descriptor: String?): String {
@@ -27,13 +42,13 @@ class ToCompileRemapper(
         val owner = map(owner)
         val descriptor = descriptor?.let { mapMethodDesc(it) }
 
-        return info.methodRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.name.get() == name && (descriptor == null || it.desc.get() == descriptor) } }?.to?.get() ?: name
+        return methodRenames.lastOrNull { it.from.let { it.cls == owner && it.name == name && (descriptor == null || it.desc == descriptor) } }?.to?.also { markChanged.run() } ?: name
     }
 
     override fun mapFieldName(owner: String, name: String, descriptor: String): String {
         val owner = map(owner)
         val descriptor = mapDesc(descriptor)
 
-        return info.fieldRenames.get().lastOrNull { it.from.get().let { it.cls.get() == owner && it.name.get() == name && it.desc.get() == descriptor } }?.to?.get() ?: name
+        return fieldRenames.lastOrNull { it.from.let { it.cls == owner && it.name == name && it.desc == descriptor } }?.to?.also { markChanged.run() } ?: name
     }
 }

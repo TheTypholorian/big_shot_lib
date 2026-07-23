@@ -11,6 +11,7 @@ import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLEnvironment
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
+import net.typho.big_shot_lib.api.util.platform.IPlatformUtil
 //? }
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
@@ -82,7 +83,7 @@ object PlatformUtilImpl : IPlatformUtil {
     }
 
     override fun isClient(): Boolean {
-        return FMLEnvironment.dist == Dist.CLIENT
+        return FMLEnvironment.getDist() == Dist.CLIENT
     }
 
     @JvmRecord

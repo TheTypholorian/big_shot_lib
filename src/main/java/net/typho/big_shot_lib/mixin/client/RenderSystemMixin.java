@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.mixin.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.typho.big_shot_lib.client.impl.rendering.common.GpuQueueImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,6 +13,7 @@ public class RenderSystemMixin {
             at = @At("TAIL")
     )
     private static void pollEvents(CallbackInfo ci) {
+        /*
         synchronized (GpuQueueImpl.queue) {
             for (Runnable task : GpuQueueImpl.queue) {
                 task.run();
@@ -21,5 +21,6 @@ public class RenderSystemMixin {
 
             GpuQueueImpl.queue.clear();
         }
+         */
     }
 }
