@@ -8,9 +8,9 @@ object Annotations {
     @JvmStatic
     val IS_RUNTIME_READY = "Lnet/typho/big_shot_lib/api/plugin/IsRuntimeReady;"
     @JvmStatic
-    val MIXIN = "Lorg/spongepowered/asm/mixin/Mixin;"
+    val PREFIX = "Lnet/typho/big_shot_lib/api/plugin/Prefix;"
     @JvmStatic
-    val METADATA: String = Type.getDescriptor(Metadata::class.java)
+    val MIXIN = "Lorg/spongepowered/asm/mixin/Mixin;"
     @JvmStatic
     val DEPRECATED: String = Type.getDescriptor(Deprecated::class.java)
 }
