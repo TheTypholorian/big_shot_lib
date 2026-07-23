@@ -13,7 +13,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Classpath
 import org.objectweb.asm.Opcodes
 
-//@CacheableTransform
+@CacheableTransform
 abstract class BigShotLibTransformAction : TransformAction<NeoTransformParameters> {
     @get:Classpath
     @get:InputArtifact

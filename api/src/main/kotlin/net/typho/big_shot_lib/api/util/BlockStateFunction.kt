@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.Property
 
-data class StateFunction<T>(
+data class BlockStateFunction<T>(
     @JvmField
     val entries: List<Entry<T>>,
     @JvmField
@@ -46,7 +46,7 @@ data class StateFunction<T>(
 
     companion object {
         @JvmStatic
-        fun <T> codec(inner: Codec<T>, stateDefinition: StateDefinition<*, *>): Codec<StateFunction<T>> {
+        fun <T> codec(inner: Codec<T>, stateDefinition: StateDefinition<*, *>): Codec<BlockStateFunction<T>> {
             val entryCodec: MapCodec<Entry<T>> = RecordCodecBuilder.mapCodec {
                 val keyCodec = Codec.STRING.flatXmap(
                     { name -> DataResult.success(stateDefinition.getProperty(name) ?: return@flatXmap DataResult.error { "Couldn't find property $name in ${stateDefinition.owner}" }) },
@@ -69,16 +69,16 @@ data class StateFunction<T>(
                         entryCodec.codec()
                             .listOf()
                             .fieldOf("entries")
-                            .forGetter { function: StateFunction<T> -> function.entries },
+                            .forGetter { function: BlockStateFunction<T> -> function.entries },
                         inner
                             .fieldOf("default")
-                            .forGetter { function: StateFunction<T> -> function.default }
-                    ).apply(it, ::StateFunction)
+                            .forGetter { function: BlockStateFunction<T> -> function.default }
+                    ).apply(it, ::BlockStateFunction)
                 }.codec()
-            ).xmap<StateFunction<T>>(
-                { either: Either<T, StateFunction<T>> ->
+            ).xmap<BlockStateFunction<T>>(
+                { either: Either<T, BlockStateFunction<T>> ->
                     either.map(
-                        { value -> StateFunction(value) },
+                        { value -> BlockStateFunction(value) },
                         { function -> function }
                     )
                 },

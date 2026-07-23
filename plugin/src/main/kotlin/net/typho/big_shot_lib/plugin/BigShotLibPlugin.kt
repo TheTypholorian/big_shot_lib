@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.plugin
 
 import net.typho.big_shot_lib.plugin.deps.RegisterModDependenciesTask
+import net.typho.big_shot_lib.plugin.deps.UpdateDependencyVersionsTask
 import net.typho.big_shot_lib.plugin.transform.ToCompileRemapper
 import net.typho.big_shot_lib.plugin.transform.ToCompileTransformer
 import net.typho.big_shot_lib.plugin.transform.NeoTransformParameters
@@ -75,26 +76,10 @@ class BigShotLibPlugin : Plugin<Project> {
         }.also { project.tasks.getByName("processResources").finalizedBy(it) }
          */
 
-        project.tasks.register("updateDependencyVersions") { task ->
+        project.tasks.register("updateDependencyVersions", UpdateDependencyVersionsTask::class.java) { task ->
             task.group = "big_shot_lib"
             task.description = "Update cached versions for all dependencies"
-
-            task.doLast {
-                val ext = task.project.extensions.getByType(BigShotLibPluginExtension::class.java)
-
-                val properties = Properties()
-                val propertiesFile = ext.dependencyVersionsFile
-
-                if (propertiesFile.exists()) {
-                    propertiesFile.inputStream().use(properties::load)
-                }
-
-                for ((dependency, version) in properties) {
-                    if (ext.getDependencyVersion(dependency as String, true) == version) {
-                        println("[Big Shot Lib] Dependency $dependency is up to date.")
-                    }
-                }
-            }
+            task.deps.set(project.provider { ext.deps })
         }
 
         project.afterEvaluate {

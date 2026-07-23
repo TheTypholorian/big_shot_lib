@@ -3,8 +3,6 @@ package net.typho.big_shot_lib.api.util
 import com.mojang.serialization.Codec
 import net.typho.big_shot_lib.api.math.IVec3
 import net.typho.big_shot_lib.api.math.IVec4
-import net.typho.big_shot_lib.api.util.buffer.packUInt
-import net.typho.big_shot_lib.api.util.buffer.ubyteAt
 import net.typho.big_shot_lib.api.util.resource.CodecUtil
 import org.joml.Vector3f
 import org.joml.Vector3i
@@ -12,7 +10,8 @@ import org.joml.Vector4f
 import org.joml.Vector4i
 import java.awt.Color
 
-interface NeoColor {
+@Suppress("UNUSED")
+sealed interface NeoColor {
     companion object {
         @JvmField
         val FULL_ON = Expanded(1f, 1f, 1f, 1f)
@@ -80,60 +79,54 @@ interface NeoColor {
     }
 
     val redF: Float
-        get() = red.toInt() / 255f
+        get() = red / 255f
     val greenF: Float
-        get() = green.toInt() / 255f
+        get() = green / 255f
     val blueF: Float
-        get() = blue.toInt() / 255f
+        get() = blue / 255f
     val alphaF: Float?
-        get() = alpha?.toInt()?.div(255f)
+        get() = alpha?.div(255f)
 
-    val red: UByte
-        get() = (redF * 255).toInt().toUByte()
-    val green: UByte
-        get() = (greenF * 255).toInt().toUByte()
-    val blue: UByte
-        get() = (blueF * 255).toInt().toUByte()
-    val alpha: UByte?
-        get() = alphaF?.times(255)?.toInt()?.toUByte()
+    val red: Int
+        get() = (redF * 255).toInt()
+    val green: Int
+        get() = (greenF * 255).toInt()
+    val blue: Int
+        get() = (blueF * 255).toInt()
+    val alpha: Int?
+        get() = alphaF?.times(255)?.toInt()
 
     fun toVec3F(): IVec3<Float> = IVec3(redF, greenF, blueF)
 
     fun toVec4F(): IVec4<Float> = IVec4(redF, greenF, blueF, alphaF ?: 1f)
 
-    fun toVec3i(): IVec3<Int> = IVec3(red.toInt(), green.toInt(), blue.toInt())
+    fun toVec3i(): IVec3<Int> = IVec3(red, green, blue)
 
-    fun toVec4i(): IVec4<Int> = IVec4(red.toInt(), green.toInt(), blue.toInt(), alpha?.toInt() ?: 255)
+    fun toVec4i(): IVec4<Int> = IVec4(red, green, blue, alpha ?: 255)
 
-    fun toPackedARGB() = packUInt(alpha ?: 255.toUByte(), red, green, blue).toInt()
+    fun toPackedARGB() = ((alpha ?: 255) shl 24) or (red shl 16) or (green shl 8) or blue
 
-    fun toPackedABGR() = packUInt(alpha ?: 255.toUByte(), blue, green, red).toInt()
+    fun toPackedABGR() = ((alpha ?: 255) shl 24) or (blue shl 16) or (green shl 8) or red
 
-    fun toPackedRGBA() = packUInt(red, green, blue, alpha ?: 255.toUByte()).toInt()
+    fun toPackedRGBA() = (red shl 24) or (green shl 16) or (blue shl 8) or (alpha ?: 255)
 
-    fun toPackedBGRA() = packUInt(blue, green, red, alpha ?: 255.toUByte()).toInt()
+    fun toPackedBGRA() = (blue shl 24) or (green shl 16) or (red shl 8) or (alpha ?: 255)
 
-    fun toPackedRGB() = packUInt(0.toUByte(), red, green, blue).toInt()
+    fun toPackedRGB() = (red shl 16) or (green shl 8) or blue
 
-    fun toPackedBGR() = packUInt(0.toUByte(), blue, green, red).toInt()
+    fun toPackedBGR() = (blue shl 16) or (green shl 8) or red
 
-    @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesARGB() = ubyteArrayOf(alpha ?: 255.toUByte(), red, green, blue).toByteArray()
+    fun toBytesARGB() = byteArrayOf((alpha ?: 255).toByte(), red.toByte(), green.toByte(), blue.toByte())
 
-    @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesABGR() = ubyteArrayOf(alpha ?: 255.toUByte(), blue, green, red).toByteArray()
+    fun toBytesABGR() = byteArrayOf((alpha ?: 255).toByte(), blue.toByte(), green.toByte(), red.toByte())
 
-    @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesRGBA() = ubyteArrayOf(red, green, blue, alpha ?: 255.toUByte()).toByteArray()
+    fun toBytesRGBA() = byteArrayOf(red.toByte(), green.toByte(), blue.toByte(), (alpha ?: 255).toByte())
 
-    @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesBGRA() = ubyteArrayOf(blue, green, red, alpha ?: 255.toUByte()).toByteArray()
+    fun toBytesBGRA() = byteArrayOf(blue.toByte(), green.toByte(), red.toByte(), (alpha ?: 255).toByte())
 
-    @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesRGB() = ubyteArrayOf(red, green, blue).toByteArray()
+    fun toBytesRGB() = byteArrayOf(red.toByte(), green.toByte(), blue.toByte())
 
-    @OptIn(ExperimentalUnsignedTypes::class)
-    fun toBytesBGR() = ubyteArrayOf(blue, green, red).toByteArray()
+    fun toBytesBGR() = byteArrayOf(blue.toByte(), green.toByte(), red.toByte())
 
     fun toFloatsARGB() = floatArrayOf(alphaF ?: 1f, redF, greenF, blueF)
 
@@ -147,7 +140,7 @@ interface NeoColor {
 
     fun toFloatsBGR() = floatArrayOf(blueF, greenF, redF)
 
-    fun toJava() = alpha?.let { Color(red.toInt(), green.toInt(), blue.toInt(), it.toInt()) } ?: Color(red.toInt(), green.toInt(), blue.toInt())
+    fun toJava() = alpha?.let { Color(red, green, blue, it) } ?: Color(red, green, blue)
 
     @JvmRecord
     data class Expanded @JvmOverloads constructor(
@@ -155,19 +148,17 @@ interface NeoColor {
         override val greenF: Float,
         override val blueF: Float,
         override val alphaF: Float?,
-        override val red: UByte,
-        override val green: UByte,
-        override val blue: UByte,
-        override val alpha: UByte?,
-        private val java: Color = alpha?.let { Color(red.toInt(), green.toInt(), blue.toInt(), it.toInt()) } ?: Color(red.toInt(), green.toInt(), blue.toInt())
+        override val red: Int,
+        override val green: Int,
+        override val blue: Int,
+        override val alpha: Int?,
+        private val java: Color = alpha?.let { Color(red, green, blue, it) } ?: Color(red, green, blue)
     ) : NeoColor {
-        @JvmOverloads constructor(red: Int, green: Int, blue: Int, alpha: Int? = null) : this(red / 255f, green / 255f, blue / 255f, alpha?.div(255f), red.toUByte(), green.toUByte(), blue.toUByte(), alpha?.toUByte())
+        @JvmOverloads constructor(red: Int, green: Int, blue: Int, alpha: Int? = null) : this(red / 255f, green / 255f, blue / 255f, alpha?.div(255f), red, green, blue, alpha)
 
-        @JvmOverloads constructor(red: UByte, green: UByte, blue: UByte, alpha: UByte? = null) : this(red.toInt() / 255f, green.toInt() / 255f, blue.toInt() / 255f, alpha?.toInt()?.div(255f), red, green, blue, alpha)
+        @JvmOverloads constructor(red: Float, green: Float, blue: Float, alpha: Float? = null) : this(red, green, blue, alpha, (red * 255).toInt(), (green * 255).toInt(), (blue * 255).toInt(), (alpha?.times(255)?.toInt() ?: 255))
 
-        @JvmOverloads constructor(red: Float, green: Float, blue: Float, alpha: Float? = null) : this(red, green, blue, alpha, (red * 255).toInt().toUByte(), (green * 255).toInt().toUByte(), (blue * 255).toInt().toUByte(), (alpha?.times(255)?.toInt() ?: 255).toUByte())
-
-        constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f, color.red.toUByte(), color.green.toUByte(), color.blue.toUByte(), color.alpha.toUByte(), color)
+        constructor(color: Color) : this(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f, color.red, color.green, color.blue, color.alpha, color)
 
         constructor(color: Vector3i) : this(color.x, color.y, color.z, null)
 
@@ -210,18 +201,16 @@ interface NeoColor {
 
     @JvmRecord
     data class RGB(
-        override val red: UByte,
-        override val green: UByte,
-        override val blue: UByte
+        override val red: Int,
+        override val green: Int,
+        override val blue: Int
     ) : NeoColor {
-        constructor(red: Int, green: Int, blue: Int) : this(red.toUByte(), green.toUByte(), blue.toUByte())
-
         constructor(red: Float, green: Float, blue: Float) : this((red * 255).toInt(), (green * 255).toInt(), (blue * 255).toInt())
 
         constructor(rgb: Int) : this(
-            rgb.ubyteAt(2),
-            rgb.ubyteAt(1),
-            rgb.ubyteAt(0)
+            (rgb shl 16) and 0xFF,
+            (rgb shl 8) and 0xFF,
+            rgb and 0xFF
         )
 
         constructor(color: Color) : this(color.red, color.green, color.blue)
@@ -236,7 +225,7 @@ interface NeoColor {
 
         constructor(color: FloatArray) : this(color[0], color[1], color[2])
 
-        override val alpha: UByte?
+        override val alpha: Int?
             get() = null
 
         override fun equals(other: Any?): Boolean {
@@ -262,20 +251,18 @@ interface NeoColor {
 
     @JvmRecord
     data class RGBA(
-        override val red: UByte,
-        override val green: UByte,
-        override val blue: UByte,
-        override val alpha: UByte
+        override val red: Int,
+        override val green: Int,
+        override val blue: Int,
+        override val alpha: Int
     ) : NeoColor {
-        constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(red.toUByte(), green.toUByte(), blue.toUByte(), alpha.toUByte())
-
         constructor(red: Float, green: Float, blue: Float, alpha: Float) : this((red * 255).toInt(), (green * 255).toInt(), (blue * 255).toInt(), (alpha * 255).toInt())
 
         constructor(rgba: Int) : this(
-            rgba.ubyteAt(3),
-            rgba.ubyteAt(2),
-            rgba.ubyteAt(1),
-            rgba.ubyteAt(0)
+            (rgba shl 24) and 0xFF,
+            (rgba shl 16) and 0xFF,
+            (rgba shl 8) and 0xFF,
+            rgba and 0xFF
         )
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)
@@ -322,9 +309,9 @@ interface NeoColor {
         constructor(red: UByte, green: UByte, blue: UByte) : this(red.toInt(), green.toInt(), blue.toInt())
 
         constructor(rgb: Int) : this(
-            rgb.ubyteAt(2),
-            rgb.ubyteAt(1),
-            rgb.ubyteAt(0)
+            (rgb shl 16) and 0xFF,
+            (rgb shl 8) and 0xFF,
+            rgb and 0xFF
         )
 
         constructor(color: Color) : this(color.red, color.green, color.blue)
@@ -370,7 +357,7 @@ interface NeoColor {
         override val blueF: Float,
         override val alphaF: Float
     ) : NeoColor {
-        override val alpha: UByte
+        override val alpha: Int
             get() = super.alpha!!
 
         constructor(red: Int, green: Int, blue: Int, alpha: Int) : this(red / 255f, green / 255f, blue / 255f, alpha / 255f)
@@ -378,10 +365,10 @@ interface NeoColor {
         constructor(red: UByte, green: UByte, blue: UByte, alpha: UByte) : this(red.toInt(), green.toInt(), blue.toInt(), alpha.toInt())
 
         constructor(rgba: Int) : this(
-            rgba.ubyteAt(3),
-            rgba.ubyteAt(2),
-            rgba.ubyteAt(1),
-            rgba.ubyteAt(0)
+            (rgba shl 24) and 0xFF,
+            (rgba shl 16) and 0xFF,
+            (rgba shl 8) and 0xFF,
+            rgba and 0xFF
         )
 
         constructor(color: Color) : this(color.red, color.green, color.blue, color.alpha)

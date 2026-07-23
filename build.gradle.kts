@@ -32,11 +32,11 @@ val sourceJavaVersion = MCVersion.getMinJavaVersion(sc.versions.map { it.version
 val targetJavaVersion = bigShotLib.mcVersion.javaVersion
 
 modstitch {
-    modLoaderVersion = bigShotLib.getLoaderVersion()
+    modLoaderVersion = bigShotLib.deps.getLoaderVersion()
     minecraftVersion = bigShotLib.mcVersion.primaryVersion
 
     parchment {
-        bigShotLib.getParchmentVersion()?.let {
+        bigShotLib.deps.getParchmentVersion()?.let {
             minecraftVersion = it.first
             mappingsVersion = it.second
         }
@@ -87,10 +87,10 @@ modstitch {
     moddevgradle {
         when (bigShotLib.loader.get()) {
             ModLoader.FORGE -> {
-                forgeVersion = bigShotLib.getForgeLoaderVersion()
+                forgeVersion = bigShotLib.deps.getForgeLoaderVersion()
             }
             ModLoader.NEOFORGE -> {
-                neoForgeVersion = bigShotLib.getNeoForgeLoaderVersion()
+                neoForgeVersion = bigShotLib.deps.getNeoForgeLoaderVersion()
             }
             else -> {}
         }
@@ -159,16 +159,16 @@ repositories {
 dependencies {
     when (bigShotLib.loader.get()) {
         ModLoader.NEOFORGE, ModLoader.FORGE -> {
-            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("kotlin-for-forge") ?: error("No KFF version"))!!)
+            modstitchModImplementation(modDependency(bigShotLib.deps.modrinth("kotlin-for-forge") ?: error("No KFF version"))!!)
         }
         ModLoader.FABRIC -> {
-            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("fabric-api") ?: error("No fapi version"))!!)
-            modstitchModImplementation(modDependency(bigShotLib.modrinthDep("fabric-language-kotlin") ?: error("No FLK version"))!!)
+            modstitchModImplementation(modDependency(bigShotLib.deps.modrinth("fabric-api") ?: error("No fapi version"))!!)
+            modstitchModImplementation(modDependency(bigShotLib.deps.modrinth("fabric-language-kotlin") ?: error("No FLK version"))!!)
         }
         else -> {}
     }
 
-    bigShotLib.modrinthDep("sodium")?.let { modstitchModImplementation(modDependency(it)!!) }
+    bigShotLib.deps.modrinth("sodium")?.let { modstitchModImplementation(modDependency(it)!!) }
 }
 
 val fabricSet = sourceSets.create("fabric")
