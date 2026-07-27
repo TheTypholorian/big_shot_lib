@@ -176,14 +176,10 @@ evaluationDependsOn(":api")
 
 sourceSets {
     val apiSet = project(":api").sourceSets["main"]
-    val loaderSet = create(bigShotLib.loader.get().name.lowercase())
 
     main {
         compileClasspath += apiSet.compileClasspath
         runtimeClasspath += apiSet.runtimeClasspath
-
-        compileClasspath += loaderSet.compileClasspath
-        runtimeClasspath += loaderSet.runtimeClasspath
 
         java {
             if (sc.current.parsed < "1.21.5") {
