@@ -56,7 +56,7 @@ modstitch {
 
         replacementProperties.put("id", project.property("id") as String)
         replacementProperties.put("version", project.property("version") as String)
-        replacementProperties.put("name", project.property("displayName") as String)
+        replacementProperties.put("displayName", project.property("displayName") as String)
         replacementProperties.put("description", project.property("description") as String)
         replacementProperties.put("authors", project.property("authors") as String)
         replacementProperties.put("license", project.property("license") as String)
@@ -178,8 +178,9 @@ sourceSets {
     val apiSet = project(":api").sourceSets["main"]
 
     main {
-        compileClasspath += apiSet.compileClasspath
-        runtimeClasspath += apiSet.runtimeClasspath
+        java.srcDirs(apiSet.java.srcDirs)
+        kotlin.srcDirs(apiSet.kotlin.srcDirs)
+        resources.srcDirs(apiSet.resources.srcDirs)
 
         java {
             if (sc.current.parsed < "1.21.5") {

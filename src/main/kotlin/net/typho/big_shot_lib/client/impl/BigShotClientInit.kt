@@ -1,7 +1,7 @@
 package net.typho.big_shot_lib.client.impl
 
 //? fabric {
-import net.fabricmc.api.ClientModInitializer
+/*import net.fabricmc.api.ClientModInitializer
 import net.typho.big_shot_lib.client.api.NeoClientInitializer
 
 class BigShotClientInit : ClientModInitializer {
@@ -11,8 +11,8 @@ class BigShotClientInit : ClientModInitializer {
         }
     }
 }
-//? } neoforge {
-/*import net.neoforged.api.distmarker.Dist
+*///? } neoforge {
+import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
@@ -50,4 +50,4 @@ class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
         NeoClientInitializer.isClientInitDone = true
     }
 }
-*///? }
+//? }

@@ -12,9 +12,6 @@
     "issues": "https://github.com/TheTypholorian/big_shot_lib/issues/",
     "sources": "https://github.com/TheTypholorian/big_shot_lib/"
   },
-  "languageAdapters": {
-    "big_shot_lib": "net.typho.big_shot_lib.impl.fabric.BigShotLibLanguageAdapter"
-  },
   "entrypoints": {
     "main": [
       {

@@ -9,7 +9,7 @@ import net.typho.big_shot_lib.client.api.event.InitialScreenEvent
 import net.typho.big_shot_lib.client.api.event.RegisterDebugScreenEntriesEvent
 
 //? fabric {
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+/*import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader
 import net.minecraft.client.Minecraft
@@ -60,8 +60,8 @@ object NeoClientEventBusImpl : NeoClientEventBus {
         MainMenuModeManager.register(event)
     }
 }
-//? } neoforge {
-/*import net.neoforged.bus.api.IEventBus
+*///? } neoforge {
+import net.neoforged.bus.api.IEventBus
 import net.neoforged.neoforge.client.event.ClientTickEvent
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
@@ -213,4 +213,4 @@ class NeoClientEventBusImpl(
     }
      */
 }
-*///? }
+//? }
