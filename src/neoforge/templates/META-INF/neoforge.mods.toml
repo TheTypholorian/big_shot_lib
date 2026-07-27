@@ -7,7 +7,7 @@ license = "${license}"
 [[mods]]
 modId = "${id}"
 version = "${version}"
-displayName = "${name}"
+displayName = "${displayName}"
 logoFile = "icon.png"
 authors = "${authors}"
 description = '''${description}'''

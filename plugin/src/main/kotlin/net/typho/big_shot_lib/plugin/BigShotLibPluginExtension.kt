@@ -1,22 +1,26 @@
 package net.typho.big_shot_lib.plugin
 
+import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle
 import net.typho.big_shot_lib.plugin.deps.ModDependencies
+import net.typho.big_shot_lib.plugin.transform.NeoTransformParameters
+import net.typho.big_shot_lib.plugin.transform.TransformTask
 import net.typho.big_shot_lib.plugin.transform.data.ClassRename
 import net.typho.big_shot_lib.plugin.transform.data.FieldRename
 import net.typho.big_shot_lib.plugin.transform.data.InterfaceInjection
 import net.typho.big_shot_lib.plugin.transform.data.MethodRename
 import net.typho.big_shot_lib.plugin.transform.data.StaticMethodInjection
-import net.typho.big_shot_lib.plugin.transform.data.FieldDesc
 import net.typho.big_shot_lib.plugin.transform.data.MethodDesc
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.jvm.tasks.Jar
 import javax.inject.Inject
 
 abstract class BigShotLibPluginExtension @Inject constructor(
-    objects: ObjectFactory,
+    private val objects: ObjectFactory,
     private val project: Project
 ) {
     abstract val mcVersionProperty: Property<String>
@@ -52,8 +56,25 @@ abstract class BigShotLibPluginExtension @Inject constructor(
         loader.set(value)
     }
 
+    fun registerJarTask(inTask: TaskProvider<out Jar>): TaskProvider<TransformTask> {
+        val transformTask = project.tasks.register(
+            "transformJar_${inTask.name}",
+            TransformTask::class.java
+        ) { task ->
+            task.group = "big_shot_lib"
+            task.inputJar.set(inTask.flatMap { it.archiveFile })
+            task.outputJar.set(inTask.flatMap { it.archiveFile })
+            task.parameters.set(objects.newInstance(NeoTransformParameters::class.java).also { it.set(this) })
+        }
+
+        inTask.configure { task ->
+            task.finalizedBy(transformTask)
+        }
+
+        return transformTask
+    }
+
     abstract class TransformInfo @Inject constructor(
-        private val objects: ObjectFactory,
         private val version: Property<String>
     ) {
         abstract val classRenames: ListProperty<ClassRename>
@@ -78,9 +99,10 @@ abstract class BigShotLibPluginExtension @Inject constructor(
             serverOnlyPackages.convention(listOf())
         }
 
-        fun setupDefaults() {
-            val version = version.get()
+        fun universalNames() {
+            val version = MCVersion[version.get()]
 
+            /*
             if (version < "1.21.1") {
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "fromNamespaceAndPath", "fromNamespaceAndPath", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "createUntrusted", "createUntrusted", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
@@ -89,6 +111,7 @@ abstract class BigShotLibPluginExtension @Inject constructor(
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "bySeparator", "bySeparator", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "tryBySeparator", "tryBySeparator", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
             }
+             */
 
             if (version < "1.21.11") {
                 renameClass("net/minecraft/resources/ResourceLocation", "net/minecraft/resources/Identifier")
@@ -99,11 +122,8 @@ abstract class BigShotLibPluginExtension @Inject constructor(
                 renameClass("net/minecraft/util/parsing/packrat/commands/ResourceLocationParseRule", "net/minecraft/util/parsing/packrat/commands/IdentifierParseRule")
                 renameClass("net/minecraft/client/searchtree/ResourceLocationSearchTree", "net/minecraft/client/searchtree/IdentifierSearchTree")
 
-                renameMethod("net/minecraft/resources/ResourceKey", "()Lnet/minecraft/resources/Identifier;", "location", "identifier")
-                renameMethod("net/minecraft/tags/TagKey", "()Lnet/minecraft/resources/Identifier;", "location", "identifier")
-
-                renameField("net/minecraft/resources/ResourceKey", "Lnet/minecraft/resources/Identifier;", "location", "identifier")
-                renameField("net/minecraft/tags/TagKey", "Lnet/minecraft/resources/Identifier;", "location", "identifier")
+                renameMethod(null, setOf("()Lnet/minecraft/resources/Identifier;"), "location", "identifier")
+                renameField(null, setOf("Lnet/minecraft/resources/Identifier;"), "location", "identifier")
             } else {
                 renameClass("net/minecraft/client/renderer/rendertype/LayeringTransform", "net/minecraft/client/renderer/LayeringTransform")
                 renameClass("net/minecraft/client/renderer/rendertype/OutputTarget", "net/minecraft/client/renderer/OutputTarget")
@@ -116,6 +136,16 @@ abstract class BigShotLibPluginExtension @Inject constructor(
             if (version >= "26.1") {
                 renameClass("net/minecraft/client/resources/model/geometry/BakedQuad", "net/minecraft/client/renderer/block/model/BakedQuad")
             }
+        }
+
+        fun shortIdentifierMethods() {
+            renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "createUntrusted", "untrusted")
+            renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "fromNamespaceAndPath", "of")
+            renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "withDefaultNamespace", "minecraft")
+        }
+
+        fun shortVulkanClasses() {
+            val version = MCVersion[version.get()]
 
             if (version >= "26.2") {
                 renameClass("com/mojang/blaze3d/vulkan/VulkanBackend", "com/mojang/blaze3d/vulkan/VkBackend")
@@ -138,40 +168,30 @@ abstract class BigShotLibPluginExtension @Inject constructor(
                 renameClass("com/mojang/blaze3d/vulkan/VulkanTransientMemory", "com/mojang/blaze3d/vulkan/VkTransientMemory")
                 renameClass("com/mojang/blaze3d/vulkan/VulkanUtils", "com/mojang/blaze3d/vulkan/VkUtil")
             }
+        }
+
+        fun apiRenames() {
+            val version = MCVersion[version.get()]
 
             if (version >= "1.21.5") {
                 renameClass("com/mojang/blaze3d/buffers/GpuBuffer", "com/mojang/blaze3d/buffers/GpuBufferImpl")
                 renameClass("com/mojang/blaze3d/textures/GpuSampler", "com/mojang/blaze3d/textures/GpuSamplerImpl")
                 renameClass("com/mojang/blaze3d/textures/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")
-
-                injectInterface("net/typho/big_shot_lib/client/api/rendering/common/GpuBuffer", "com/mojang/blaze3d/buffers/GpuBufferImpl")
-                injectInterface("net/typho/big_shot_lib/client/api/rendering/common/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")
-
-                injectInterface("net/typho/big_shot_lib/client/api/ext/RenderPassExtension", "com/mojang/blaze3d/systems/RenderPassBackend")
-                injectInterface("net/typho/big_shot_lib/client/api/ext/RenderPassExtension", "com/mojang/blaze3d/systems/RenderPass")
             }
-
-            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex")
-            markAsDeprecated($$"com/mojang/blaze3d/vertex/VertexFormat$Builder", "()Lcom/mojang/blaze3d/vertex/VertexFormat;", "build")
-
-            renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "createUntrusted", "untrusted")
-            renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "fromNamespaceAndPath", "of")
-            renameMethod("net/minecraft/resources/Identifier", "(Ljava/lang/String;)Lnet/minecraft/resources/Identifier;", "withDefaultNamespace", "minecraft")
 
             renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV0", "TEXTURE_UV")
             renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV1", "OVERLAY_UV")
             renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV2", "LIGHT_UV")
+        }
 
-            injectInterface("net/typho/big_shot_lib/client/api/ext/VertexConsumerExtension", "com/mojang/blaze3d/vertex/VertexConsumer")
-            injectInterface("net/typho/big_shot_lib/client/api/ext/VertexFormatBuilderExtension", $$"com/mojang/blaze3d/vertex/VertexFormat$Builder")
-            injectInterface("net/typho/big_shot_lib/client/api/ext/RenderTypeExtension", "net/minecraft/client/renderer/RenderType")
+        fun apiDeprecationInjection() {
+            markAsDeprecated("com/mojang/blaze3d/vertex/VertexConsumer", "(Lorg/joml/Matrix4f;FFF)Lcom/mojang/blaze3d/vertex/VertexConsumer;", "addVertex")
+            markAsDeprecated($$"com/mojang/blaze3d/vertex/VertexFormat$Builder", "()Lcom/mojang/blaze3d/vertex/VertexFormat;", "build")
+        }
 
-            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuAlphaFunction", "com/mojang/blaze3d/platform/CompareOp")
-            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuBlendFactor", "com/mojang/blaze3d/platform/BlendFactor")
-            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuDataType", $$"com/mojang/blaze3d/GpuFormat$ComponentType")
-            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuIndexType", "com/mojang/blaze3d/IndexType")
-            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuShaderType", "com/mojang/blaze3d/shaders/ShaderType")
-            injectInterface("net/typho/big_shot_lib/client/api/rendering/common/constant/GpuTextureFormat", "com/mojang/blaze3d/GpuFormat")
+        fun apiInterfaceInjections() {
+            injectInterface("net/typho/big_shot_lib/api/ext/ItemExtension", "net/minecraft/world/item/Item")
+            injectInterface("net/typho/big_shot_lib/api/ext/ItemPropertiesExtension", $$"net/minecraft/world/item/Item$Properties")
 
             injectInterface("net/typho/big_shot_lib/api/ext/DirectionExtension", "net/minecraft/core/Direction")
             injectInterface("net/typho/big_shot_lib/api/ext/Vec3iExtension", "net/minecraft/core/Vec3i")
@@ -181,39 +201,82 @@ abstract class BigShotLibPluginExtension @Inject constructor(
             injectInterface("net/typho/big_shot_lib/api/ext/IdentifierExtension", "net/minecraft/resources/Identifier")
         }
 
+        fun setupDefaults() {
+            universalNames()
+            shortIdentifierMethods()
+            shortVulkanClasses()
+            apiRenames()
+            apiDeprecationInjection()
+            apiInterfaceInjections()
+        }
+
+        /**
+         * Renames a class from [from] to [to].
+         * Class names must use `/` as a delimiter.
+         */
         fun renameClass(from: String, to: String) {
             classRenames.add(ClassRename(from, to))
         }
 
-        fun renameMethod(from: MethodDesc, to: String) {
-            methodRenames.add(MethodRename(from, to))
-        }
-
+        /**
+         * Renames all methods in the specified class from [from] to [to].
+         * If the method's descriptor is null, it passes, otherwise it only passes if the descriptors match exactly.
+         */
         fun renameMethod(cls: String, desc: String, from: String, to: String) {
-            renameMethod(MethodDesc(cls, from, desc), to)
+            methodRenames.add(MethodRename(setOf(cls), setOf(desc), from, to))
         }
 
-        fun renameField(from: FieldDesc, to: String) {
-            fieldRenames.add(FieldRename(from, to))
+        /**
+         * Renames all methods in the specified classes from [from] to [to].
+         * If the method's descriptor is null, it passes, otherwise it only passes if any of the descriptors match exactly.
+         * If [cls] is null, it passes in any class.
+         * If [desc] is null, it passes with any descriptor.
+         */
+        fun renameMethod(cls: Set<String>?, desc: Set<String>?, from: String, to: String) {
+            methodRenames.add(MethodRename(cls, desc, from, to))
         }
 
+        /**
+         * Renames all fields in the specified class from [from] to [to].
+         * If the field's descriptor is null, it passes, otherwise it only passes if the descriptors match exactly.
+         */
         fun renameField(cls: String, desc: String, from: String, to: String) {
-            renameField(FieldDesc(cls, from, desc), to)
+            fieldRenames.add(FieldRename(setOf(cls), setOf(desc), from, to))
         }
 
+        /**
+         * Renames all fields in the specified classes from [from] to [to].
+         * If the field's descriptor is null, it passes, otherwise it only passes if any of the descriptors match exactly.
+         * If [cls] is null, it passes in any class.
+         * If [desc] is null, it passes with any descriptor.
+         */
+        fun renameField(cls: Set<String>?, desc: Set<String>?, from: String, to: String) {
+            fieldRenames.add(FieldRename(cls, desc, from, to))
+        }
+
+        /**
+         * Marks a specific method as Deprecated.
+         */
         fun markAsDeprecated(desc: MethodDesc) {
             markAsDeprecated.add(desc)
         }
 
+        /**
+         * Marks a specific method as Deprecated.
+         */
         fun markAsDeprecated(cls: String, desc: String, name: String) {
             markAsDeprecated(MethodDesc(cls, desc, name))
         }
 
+        /**
+         * Injects an interface into a target class.
+         */
         @JvmOverloads
         fun injectInterface(iface: String, target: String, typeParams: List<String> = listOf()) {
             interfaceInjections.add(InterfaceInjection(iface, target, typeParams))
         }
 
+        /*
         @JvmOverloads
         fun injectStaticMethod(fromCls: String, toCls: String, fromName: String, toName: String, methodDesc: String, signature: String? = null, exceptions: List<String> = listOf()) {
             staticMethodInjections.add(StaticMethodInjection(
@@ -234,5 +297,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(
                 permutate
             ))
         }
+         */
     }
 }

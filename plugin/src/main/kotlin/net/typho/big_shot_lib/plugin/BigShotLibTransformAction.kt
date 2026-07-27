@@ -30,6 +30,7 @@ abstract class BigShotLibTransformAction : TransformAction<NeoTransformParameter
             TransformUtils.transformDir(
                 inFile,
                 outFile,
+                true,
                 { markChanged -> ToCompileRemapper(parameters, markChanged, Opcodes.ASM9) },
                 { name, api, reader -> true }
             ) { api, writer, remapper, markChanged ->
@@ -42,11 +43,12 @@ abstract class BigShotLibTransformAction : TransformAction<NeoTransformParameter
                 )
             }
         } else if (inFile.extension == "jar") {
-            val outFile = outputs.file("${inFile.nameWithoutExtension}-neo-tweaked${inFile.extension.let { if (it.isEmpty()) "" else ".$it" }}")
+            val outFile = outputs.file("${inFile.nameWithoutExtension}-neo-tweaked.jar")
 
             TransformUtils.transformJar(
                 inFile,
                 outFile,
+                true,
                 { markChanged -> ToCompileRemapper(parameters, markChanged, Opcodes.ASM9) },
                 { name, api, reader -> true }
             ) { api, visitor, remapper, markChanged ->

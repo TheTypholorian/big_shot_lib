@@ -1,9 +1,12 @@
 package net.typho.big_shot_lib.api.ext
 
 import net.minecraft.resources.Identifier
+import net.typho.big_shot_lib.api.BigShotLib
+import net.typho.big_shot_lib.api.plugin.Prefix
 import net.typho.big_shot_lib.api.util.Extension
 import net.typho.big_shot_lib.api.util.Extension.Companion.cast
 
+@Prefix(BigShotLib.MOD_ID)
 interface IdentifierExtension : Extension<Identifier> {
     fun toShortString(): String {
         val id = cast()

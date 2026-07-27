@@ -8,8 +8,10 @@ import net.minecraft.core.Vec3i
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.world.phys.Vec3
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.plugin.Immutable
 import net.typho.big_shot_lib.api.plugin.MaybeMutable
+import net.typho.big_shot_lib.api.plugin.Prefix
 import org.joml.Vector3d
 import org.joml.Vector3dc
 import org.joml.Vector3f
@@ -20,6 +22,7 @@ import org.joml.Vector4d
 import org.joml.Vector4f
 import org.joml.Vector4i
 
+@Prefix(BigShotLib.MOD_ID)
 @MaybeMutable
 interface IVec3<N : Number> {
     val opSet: OperatorSet<N>

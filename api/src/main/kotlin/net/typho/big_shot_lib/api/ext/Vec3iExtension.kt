@@ -1,13 +1,16 @@
 package net.typho.big_shot_lib.api.ext
 
 import net.minecraft.core.Vec3i
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.math.IntOperatorSet
 import net.typho.big_shot_lib.api.math.OperatorSet
 import net.typho.big_shot_lib.api.math.IVec2
 import net.typho.big_shot_lib.api.math.IVec3
+import net.typho.big_shot_lib.api.plugin.Prefix
 import net.typho.big_shot_lib.api.util.Extension
 import net.typho.big_shot_lib.api.util.Extension.Companion.cast
 
+@Prefix(BigShotLib.MOD_ID)
 interface Vec3iExtension : Extension<Vec3i>, IVec3<Int> {
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet

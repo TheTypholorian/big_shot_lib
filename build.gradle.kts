@@ -16,6 +16,7 @@ plugins {
 bigShotLib {
     version(sc.current.version)
     loader(ModLoader[sc.current.project.substringAfterLast('_')])
+    registerJarTask(modstitch.finalJarTask)
 
     transformInfo {
         setupDefaults()
@@ -171,48 +172,37 @@ dependencies {
     bigShotLib.deps.modrinth("sodium")?.let { modstitchModImplementation(modDependency(it)!!) }
 }
 
-val fabricSet = sourceSets.create("fabric")
-val neoForgeSet = sourceSets.create("neoforge")
-val forgeSet = sourceSets.create("forge")
-
-sourceSets.named("main") {
-    when (bigShotLib.loader.get()) {
-        ModLoader.FABRIC -> fabricSet
-        ModLoader.FORGE -> forgeSet
-        ModLoader.NEOFORGE -> neoForgeSet
-        else -> null
-    }?.let {
-        java.srcDirs(it.java.srcDirs)
-        kotlin.srcDirs(it.kotlin.srcDirs)
-        resources.srcDirs(it.resources.srcDirs)
-    }
-
-    java {
-        if (sc.current.parsed < "1.21.5") {
-            exclude("net/typho/big_shot_lib/mixin/impl/iface/GlBufferMixin.java")
-            exclude("net/typho/big_shot_lib/mixin/impl/iface/GlTextureMixin.java")
-        }
-
-        if (sc.current.parsed >= "1.21") {
-            exclude("net/typho/big_shot_lib/mixin/impl/VertexFormatAccessor.java")
-            exclude("net/typho/big_shot_lib/mixin/impl/RenderTypeAccessor.java")
-        }
-
-        if (sc.current.parsed < "1.21.9") {
-            exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenEntriesAccessor.java")
-        }
-
-        if (sc.current.parsed >= "1.21.9") {
-            exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
-        }
-    }
-}
-
 evaluationDependsOn(":api")
 
-sourceSets.named("main") {
-    val api = project(":api").sourceSets["main"]
-    java.srcDirs(api.java.srcDirs)
-    kotlin.srcDirs(api.kotlin.srcDirs)
-    resources.srcDirs(api.resources.srcDirs)
+sourceSets {
+    val apiSet = project(":api").sourceSets["main"]
+    val loaderSet = create(bigShotLib.loader.get().name.lowercase())
+
+    main {
+        compileClasspath += apiSet.compileClasspath
+        runtimeClasspath += apiSet.runtimeClasspath
+
+        compileClasspath += loaderSet.compileClasspath
+        runtimeClasspath += loaderSet.runtimeClasspath
+
+        java {
+            if (sc.current.parsed < "1.21.5") {
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlBufferMixin.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/iface/GlTextureMixin.java")
+            }
+
+            if (sc.current.parsed >= "1.21") {
+                exclude("net/typho/big_shot_lib/mixin/impl/VertexFormatAccessor.java")
+                exclude("net/typho/big_shot_lib/mixin/impl/RenderTypeAccessor.java")
+            }
+
+            if (sc.current.parsed < "1.21.9") {
+                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenEntriesAccessor.java")
+            }
+
+            if (sc.current.parsed >= "1.21.9") {
+                exclude("net/typho/big_shot_lib/mixin/impl/DebugScreenOverlayMixin.java")
+            }
+        }
+    }
 }

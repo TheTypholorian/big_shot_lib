@@ -1,12 +1,15 @@
 package net.typho.big_shot_lib.api.ext
 
 import net.minecraft.core.Direction
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.math.IntOperatorSet
 import net.typho.big_shot_lib.api.math.OperatorSet
 import net.typho.big_shot_lib.api.math.IVec2
 import net.typho.big_shot_lib.api.math.IVec3
+import net.typho.big_shot_lib.api.plugin.Prefix
 import net.typho.big_shot_lib.api.util.Extension
 
+@Prefix(BigShotLib.MOD_ID)
 interface DirectionExtension : Extension<Direction>, IVec3<Int> {
     override val opSet: OperatorSet<Int>
         get() = IntOperatorSet

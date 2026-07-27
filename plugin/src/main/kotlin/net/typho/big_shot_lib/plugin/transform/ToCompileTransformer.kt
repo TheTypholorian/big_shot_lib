@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.plugin.transform
 
 import net.typho.big_shot_lib.plugin.ModLoader
-import net.typho.big_shot_lib.plugin.transform.ToRuntimeRemapper
 import net.typho.big_shot_lib.plugin.transform.data.InterfaceInjection
 import net.typho.big_shot_lib.plugin.transform.data.MethodDesc
 import net.typho.big_shot_lib.plugin.transform.data.StaticMethodInjection

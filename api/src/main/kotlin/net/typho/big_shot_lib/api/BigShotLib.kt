@@ -9,7 +9,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 object BigShotLib : NeoCommonInitializer {
-    override val modId: String = "big_shot_lib"
+    const val MOD_ID = "big_shot_lib"
+    override val modId: String = MOD_ID
     @JvmField
     val LOGGER: Logger = LoggerFactory.getLogger("Big Shot Lib")
 

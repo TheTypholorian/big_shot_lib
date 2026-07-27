@@ -1,5 +1,7 @@
 package net.typho.big_shot_lib.plugin.transform
 
+import com.google.gson.Gson
+import com.google.gson.stream.JsonWriter
 import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
@@ -34,6 +36,7 @@ object TransformUtils {
     @JvmStatic
     fun transformSingleFile(
         name: String,
+        prefixOutput: PrefixAnnotationInfoOutput?,
         remapper: (markChanged: Runnable) -> Remapper,
         predicate: (api: Int, reader: ClassReader) -> Boolean,
         transformer: (api: Int, visitor: ClassVisitor, remapper: Remapper, markChanged: Runnable) -> ClassVisitor,
@@ -53,7 +56,7 @@ object TransformUtils {
                     val remapper = remapper { dirty = true }
                     val transformer = KotlinAndMixinSupportingClassRemapper(
                         Opcodes.ASM9,
-                        transformer(Opcodes.ASM9, node, remapper) { dirty = true },
+                        transformer(Opcodes.ASM9, if (prefixOutput == null) node else PrefixAnnotationInfoOutput.Visitor(prefixOutput, Opcodes.ASM9, node), remapper) { dirty = true },
                         remapper
                     )
                     reader.accept(transformer, 0)
@@ -103,10 +106,13 @@ object TransformUtils {
     fun transformJar(
         inFile: File,
         outFile: File,
+        prefixOutput: Boolean,
         remapper: (markChanged: Runnable) -> Remapper,
         predicate: (name: String, api: Int, reader: ClassReader) -> Boolean,
-        transformer: (api: Int, visitor: ClassVisitor, remapper: Remapper, markChanged: Runnable) -> ClassVisitor,
+        transformer: (api: Int, visitor: ClassVisitor, remapper: Remapper, markChanged: Runnable) -> ClassVisitor
     ) {
+        val prefixOutput = if (prefixOutput) PrefixAnnotationInfoOutput.ToJson() else null
+
         JarFile(inFile, false).use { jar ->
             val manifest = jar.manifest ?: Manifest()
 
@@ -121,13 +127,19 @@ object TransformUtils {
                 jar.entries().asIterator().forEach { entry ->
                     if (entry.name != "META-INF/MANIFEST.MF") {
                         jar.getInputStream(entry).use { stream ->
-                            transformSingleFile(entry.name, remapper, { api, reader -> predicate(entry.name, api, reader) }, transformer, stream) { name, consumer ->
+                            transformSingleFile(entry.name, prefixOutput, remapper, { api, reader -> predicate(entry.name, api, reader) }, transformer, stream) { name, consumer ->
                                 out.putNextEntry(JarEntry(name))
                                 consumer(out)
                                 out.closeEntry()
                             }
                         }
                     }
+                }
+
+                if (prefixOutput != null) {
+                    out.putNextEntry(JarEntry(PrefixAnnotationInfoOutput.FILE_PATH))
+                    out.write(Gson().toJson(prefixOutput.json).toByteArray(Charsets.UTF_8))
+                    out.closeEntry()
                 }
             }
         }
@@ -137,16 +149,20 @@ object TransformUtils {
     fun transformDir(
         inDir: File,
         outDir: File,
+        prefixOutput: Boolean,
         remapper: (markChanged: Runnable) -> Remapper,
         predicate: (name: String, api: Int, reader: ClassReader) -> Boolean,
-        transformer: (api: Int, visitor: ClassVisitor, remapper: Remapper, markChanged: Runnable) -> ClassVisitor,
+        transformer: (api: Int, visitor: ClassVisitor, remapper: Remapper, markChanged: Runnable) -> ClassVisitor
     ) {
+        val prefixOutput = if (prefixOutput) PrefixAnnotationInfoOutput.ToJson() else null
+
         inDir.walkTopDown().map { file ->
             val rel = file.relativeTo(inDir)
 
             if (rel.extension == "class") {
                 transformSingleFile(
                     rel.name,
+                    prefixOutput,
                     remapper,
                     { api, reader -> predicate(rel.name, api, reader) },
                     transformer,
@@ -168,6 +184,17 @@ object TransformUtils {
                     }
                 }
             }
+        }
+
+        if (prefixOutput != null) {
+            //val prefixFile = outDir.resolve(PrefixAnnotationInfoOutput.FILE_PATH)
+
+            //if (!prefixFile.parentFile.exists()) {
+            //    prefixFile.parentFile.mkdirs()
+            //}
+
+            println(Gson().toJson(prefixOutput.json))
+            //prefixFile.writeText(Gson().toJson(prefixOutput.json))
         }
     }
 }

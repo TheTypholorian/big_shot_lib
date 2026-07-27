@@ -4,11 +4,14 @@ import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.plugin.Immutable
 import net.typho.big_shot_lib.api.plugin.MaybeMutable
+import net.typho.big_shot_lib.api.plugin.Prefix
 import kotlin.math.max
 import kotlin.math.min
 
+@Prefix(BigShotLib.MOD_ID)
 @MaybeMutable
 interface IRect4<N : Number> {
     val opSet: OperatorSet<N>

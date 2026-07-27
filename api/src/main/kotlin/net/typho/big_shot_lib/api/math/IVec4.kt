@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec
 import io.netty.buffer.ByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.plugin.Immutable
 import net.typho.big_shot_lib.api.plugin.MaybeMutable
+import net.typho.big_shot_lib.api.plugin.Prefix
 import org.joml.Vector4d
 import org.joml.Vector4dc
 import org.joml.Vector4f
@@ -13,6 +15,7 @@ import org.joml.Vector4fc
 import org.joml.Vector4i
 import org.joml.Vector4ic
 
+@Prefix(BigShotLib.MOD_ID)
 @MaybeMutable
 interface IVec4<N : Number> {
     val opSet: OperatorSet<N>

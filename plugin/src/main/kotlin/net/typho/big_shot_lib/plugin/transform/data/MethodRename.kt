@@ -4,7 +4,11 @@ import java.io.Serializable
 
 data class MethodRename(
     @JvmField
-    val from: MethodDesc,
+    val classes: Set<String>?,
+    @JvmField
+    val descriptors: Set<String>?,
+    @JvmField
+    val from: String,
     @JvmField
     val to: String
 ) : Serializable

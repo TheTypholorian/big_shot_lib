@@ -187,7 +187,7 @@ data class MCVersion(
 
         @JvmStatic
         operator fun get(version: String): MCVersion {
-            val version = if (version.endsWith(".0")) version.substringBefore(".0") else version
+            val version = version.substringBeforeLast(".0")
             return VERSIONS.firstOrNull { it.versions.contains(version) }
                 ?: throw NullPointerException("Nonexistent Minecraft version '$version' (it should be in the format '1.21', '1.21.1', '26.1.2', etc.)")
         }

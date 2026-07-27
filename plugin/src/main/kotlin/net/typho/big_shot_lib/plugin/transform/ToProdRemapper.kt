@@ -5,7 +5,7 @@ import net.typho.big_shot_lib.plugin.transform.data.FieldRename
 import net.typho.big_shot_lib.plugin.transform.data.MethodRename
 import org.objectweb.asm.commons.Remapper
 
-class ToRuntimeRemapper(
+class ToProdRemapper(
     @JvmField
     val classRenames: List<ClassRename>,
     @JvmField
@@ -42,13 +42,13 @@ class ToRuntimeRemapper(
         val owner = map(owner)
         val descriptor = descriptor?.let { mapMethodDesc(it) }
 
-        return methodRenames.lastOrNull { it.from.let { it.cls == owner && it.name == name && (descriptor == null || it.desc == descriptor) } }?.from?.name?.also { markChanged.run() } ?: name
+        return methodRenames.lastOrNull { (it.classes?.contains(owner) ?: true) && it.to == name && (descriptor == null || (it.descriptors?.contains(descriptor) ?: true)) }?.from?.also { markChanged.run() } ?: name
     }
 
     override fun mapFieldName(owner: String, name: String, descriptor: String): String {
         val owner = map(owner)
         val descriptor = mapDesc(descriptor)
 
-        return fieldRenames.lastOrNull { it.from.let { it.cls == owner && it.name == name && it.desc == descriptor } }?.from?.name?.also { markChanged.run() } ?: name
+        return fieldRenames.lastOrNull { (it.classes?.contains(owner) ?: true) && it.to == name && (it.descriptors?.contains(descriptor) ?: true) }?.from?.also { markChanged.run() } ?: name
     }
 }

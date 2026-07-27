@@ -1,26 +1,12 @@
 package net.typho.big_shot_lib.plugin
 
-import net.typho.big_shot_lib.plugin.deps.RegisterModDependenciesTask
 import net.typho.big_shot_lib.plugin.deps.UpdateDependencyVersionsTask
-import net.typho.big_shot_lib.plugin.transform.ToCompileRemapper
-import net.typho.big_shot_lib.plugin.transform.ToCompileTransformer
-import net.typho.big_shot_lib.plugin.transform.NeoTransformParameters
-import net.typho.big_shot_lib.plugin.transform.ToRuntimeRemapper
-import net.typho.big_shot_lib.plugin.transform.ToRuntimeTransformer
-import net.typho.big_shot_lib.plugin.transform.TransformUtils
-import net.typho.big_shot_lib.plugin.transform.util.ClassStatusVisitor
+import net.typho.big_shot_lib.plugin.transform.TransformTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.attributes.Attribute
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.tasks.SourceSetContainer
-import org.gradle.api.tasks.compile.AbstractCompile
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompileTool
-import org.objectweb.asm.ClassReader
-import org.objectweb.asm.Opcodes
-import java.io.File
-import java.util.Properties
+import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.plugins.JavaPluginExtension
 import kotlin.jvm.java
 
 class BigShotLibPlugin : Plugin<Project> {
@@ -45,7 +31,7 @@ class BigShotLibPlugin : Plugin<Project> {
             it.attributes.attribute(neoTweakedAttrib, false)
         }
 
-        project.configurations.getByName("compileClasspath") {
+        project.configurations.configureEach {
             if (it.isCanBeResolved) {
                 it.attributes.attribute(neoTweakedAttrib, true)
             }
@@ -54,7 +40,7 @@ class BigShotLibPlugin : Plugin<Project> {
         project.dependencies.registerTransform(BigShotLibTransformAction::class.java) {
             it.from.attribute(neoTweakedAttrib, false)
             it.to.attribute(neoTweakedAttrib, true)
-            it.parameters.set(ext) { project.objects }
+            it.parameters.set(ext)
         }
 
         /*
@@ -80,113 +66,6 @@ class BigShotLibPlugin : Plugin<Project> {
             task.group = "big_shot_lib"
             task.description = "Update cached versions for all dependencies"
             task.deps.set(project.provider { ext.deps })
-        }
-
-        project.afterEvaluate {
-            fun toCompile(dir: File, parameters: NeoTransformParameters) {
-                TransformUtils.transformDir(
-                    dir,
-                    dir,
-                    { markChanged -> ToCompileRemapper(parameters, markChanged, Opcodes.ASM9) },
-                    { name, api, reader ->
-                        val visitor = ClassStatusVisitor(api)
-                        reader.accept(visitor, ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
-                        return@transformDir visitor.status == ClassStatusVisitor.Status.RUNTIME
-                    },
-                    { api, writer, remapper, markChanged -> ToCompileTransformer(parameters, remapper, markChanged, api, writer) }
-                )
-            }
-
-            fun toRuntime(dir: File, parameters: NeoTransformParameters) {
-                TransformUtils.transformDir(
-                    dir,
-                    dir,
-                    { markChanged -> ToRuntimeRemapper(parameters, markChanged, Opcodes.ASM9) },
-                    { name, api, reader ->
-                        val visitor = ClassStatusVisitor(api)
-                        reader.accept(visitor, ClassReader.SKIP_CODE or ClassReader.SKIP_DEBUG or ClassReader.SKIP_FRAMES)
-                        return@transformDir visitor.status != ClassStatusVisitor.Status.RUNTIME
-                    },
-                    { api, writer, remapper, markChanged -> ToRuntimeTransformer(parameters, markChanged, api, writer) }
-                )
-            }
-
-            project.tasks.getByName("classes") { task ->
-                println("[Big Shot Lib] Attaching project transforms to task '${task.name}'")
-                val parameters = project.provider {
-                    project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) { project.objects } }
-                }
-
-                task.inputs.property("neoParameters", parameters)
-
-                val compileTasks = arrayListOf<Pair<Task, DirectoryProperty>>()
-
-                if (project.pluginManager.hasPlugin("org.jetbrains.kotlin.jvm")) {
-                    val scanned = hashSetOf<Task>()
-
-                    fun scanDependencies(task: Task) {
-                        task.taskDependencies.getDependencies(task).forEach { dependency ->
-                            if (scanned.add(dependency)) {
-                                if (dependency is KotlinCompileTool) {
-                                    compileTasks.add(dependency to dependency.destinationDirectory)
-                                } else if (dependency is AbstractCompile) {
-                                    compileTasks.add(dependency to dependency.destinationDirectory)
-                                }
-
-                                scanDependencies(dependency)
-                            }
-                        }
-                    }
-
-                    scanDependencies(task)
-                } else {
-                    val scanned = hashSetOf<Task>()
-
-                    fun scanDependencies(task: Task) {
-                        task.taskDependencies.getDependencies(task).forEach { dependency ->
-                            if (scanned.add(dependency)) {
-                                if (dependency is AbstractCompile) {
-                                    compileTasks.add(dependency to dependency.destinationDirectory)
-                                }
-
-                                scanDependencies(dependency)
-                            }
-                        }
-                    }
-
-                    scanDependencies(task)
-                }
-
-                /*
-                val reverseTransformsTasks = compileTasks.map { task ->
-                    val dir = task.second
-                    project.tasks.register("neoReverseTransform_${task.first.name}") {
-                        it.group = "big_shot_lib"
-
-                        val parameters = project.provider {
-                            project.objects.newInstance(NeoTransformParameters::class.java).also { it.set(ext) { project.objects } }
-                        }
-
-                        it.inputs.property("neoParameters", parameters)
-                        it.inputs.property("neoDirectory", dir)
-
-                        it.doFirst {
-                            toCompile(dir.get().asFile, parameters.get())
-                        }
-                    }
-                }.toTypedArray()
-
-                compileTasks.forEach { task ->
-                    task.first.dependsOn(*reverseTransformsTasks)
-                }
-
-                task.doLast {
-                    compileTasks.forEach { task ->
-                        toRuntime(task.second.get().asFile, parameters.get())
-                    }
-                }
-                 */
-            }
         }
     }
 }

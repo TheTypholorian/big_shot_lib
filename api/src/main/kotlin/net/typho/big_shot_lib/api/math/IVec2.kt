@@ -5,9 +5,11 @@ import io.netty.buffer.ByteBuf
 import net.minecraft.core.Direction
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.error.IllegalDimensionException
 import net.typho.big_shot_lib.api.plugin.Immutable
 import net.typho.big_shot_lib.api.plugin.MaybeMutable
+import net.typho.big_shot_lib.api.plugin.Prefix
 import org.joml.Vector2d
 import org.joml.Vector2f
 import org.joml.Vector2i
@@ -15,6 +17,7 @@ import org.joml.Vector3dc
 import org.joml.Vector3fc
 import org.joml.Vector3ic
 
+@Prefix(BigShotLib.MOD_ID)
 @MaybeMutable
 interface IVec2<N : Number> {
     val opSet: OperatorSet<N>

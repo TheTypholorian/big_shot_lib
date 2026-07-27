@@ -42,13 +42,13 @@ class ToCompileRemapper(
         val owner = map(owner)
         val descriptor = descriptor?.let { mapMethodDesc(it) }
 
-        return methodRenames.lastOrNull { it.from.let { it.cls == owner && it.name == name && (descriptor == null || it.desc == descriptor) } }?.to?.also { markChanged.run() } ?: name
+        return methodRenames.lastOrNull { (it.classes?.contains(owner) ?: true) && it.from == name && (descriptor == null || (it.descriptors?.contains(descriptor) ?: true)) }?.to?.also { markChanged.run() } ?: name
     }
 
     override fun mapFieldName(owner: String, name: String, descriptor: String): String {
         val owner = map(owner)
         val descriptor = mapDesc(descriptor)
 
-        return fieldRenames.lastOrNull { it.from.let { it.cls == owner && it.name == name && it.desc == descriptor } }?.to?.also { markChanged.run() } ?: name
+        return fieldRenames.lastOrNull { (it.classes?.contains(owner) ?: true) && it.from == name && (it.descriptors?.contains(descriptor) ?: true) }?.to?.also { markChanged.run() } ?: name
     }
 }

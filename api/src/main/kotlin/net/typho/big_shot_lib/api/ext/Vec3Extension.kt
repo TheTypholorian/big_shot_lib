@@ -1,12 +1,15 @@
 package net.typho.big_shot_lib.api.ext
 
 import net.minecraft.world.phys.Vec3
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.math.DoubleOperatorSet
 import net.typho.big_shot_lib.api.math.OperatorSet
 import net.typho.big_shot_lib.api.math.IVec2
 import net.typho.big_shot_lib.api.math.IVec3
+import net.typho.big_shot_lib.api.plugin.Prefix
 import net.typho.big_shot_lib.api.util.Extension
 
+@Prefix(BigShotLib.MOD_ID)
 interface Vec3Extension : Extension<Vec3>, IVec3<Double> {
     override val opSet: OperatorSet<Double>
         get() = DoubleOperatorSet

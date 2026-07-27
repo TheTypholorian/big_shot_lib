@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceKey
 import net.typho.big_shot_lib.api.event.RegistryBuilder
 
 //? fabric {
-/*import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 
 class RegistryBuilderImpl<T : Any>(
@@ -26,8 +26,8 @@ class RegistryBuilderImpl<T : Any>(
         return builder.buildAndRegister()
     }
 }
-*///? } neoforge {
-class RegistryBuilderImpl<T : Any>(
+//? } neoforge {
+/*class RegistryBuilderImpl<T : Any>(
     @JvmField
     val key: ResourceKey<Registry<T>>
 ) : RegistryBuilder<T> {
@@ -41,4 +41,4 @@ class RegistryBuilderImpl<T : Any>(
         return builder
     }
 }
-//? }
+*///? }

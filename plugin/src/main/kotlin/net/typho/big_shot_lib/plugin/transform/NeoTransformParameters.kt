@@ -39,7 +39,7 @@ interface NeoTransformParameters : TransformParameters {
     @get:Input
     val serverOnlyPackages: ListProperty<String>
 
-    fun set(ext: BigShotLibPluginExtension, objects: () -> ObjectFactory) {
+    fun set(ext: BigShotLibPluginExtension) {
         classRenames.set(ext.transformInfo.classRenames)
         methodRenames.set(ext.transformInfo.methodRenames)
         fieldRenames.set(ext.transformInfo.fieldRenames)

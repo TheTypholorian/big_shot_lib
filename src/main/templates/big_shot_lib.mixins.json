@@ -11,6 +11,7 @@
     "ext.BlockPosMixin",
     "ext.DirectionMixin",
     "ext.IdentifierMixin",
+    "ext.ItemMixin",
     "ext.MutableBlockPosMixin",
     "ext.Vec3iMixin",
     "ext.Vec3Mixin"
