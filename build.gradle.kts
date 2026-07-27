@@ -170,6 +170,7 @@ dependencies {
     }
 
     bigShotLib.deps.modrinth("sodium")?.let { modstitchModImplementation(modDependency(it)!!) }
+    modstitchRuntimeOnly(kotlin("reflect"))
 }
 
 evaluationDependsOn(":api")

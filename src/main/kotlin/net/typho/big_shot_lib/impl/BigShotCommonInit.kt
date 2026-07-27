@@ -16,11 +16,12 @@ import net.neoforged.fml.common.Mod
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.impl.event.NeoEventBusImpl
 
-@Mod(value = "big_shot_lib")
+@Mod(BigShotLib.MOD_ID)
 class BigShotCommonInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
         val buses: MutableMap<String, NeoEventBus> = hashMapOf()

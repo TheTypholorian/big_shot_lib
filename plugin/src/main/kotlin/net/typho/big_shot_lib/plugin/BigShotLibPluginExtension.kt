@@ -100,8 +100,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(
         }
 
         fun universalNames() {
-            val version = MCVersion[version.get()]
-
             /*
             if (version < "1.21.1") {
                 injectStaticMethod("net/minecraft/resources/Identifier", "net/typho/big_shot_lib/impl/util/OldIdentifierUtil", "fromNamespaceAndPath", "fromNamespaceAndPath", "(Ljava/lang/String;Ljava/lang/String;)L/net/minecraft/resources/Identifier;")
@@ -113,29 +111,25 @@ abstract class BigShotLibPluginExtension @Inject constructor(
             }
              */
 
-            if (version < "1.21.11") {
-                renameClass("net/minecraft/resources/ResourceLocation", "net/minecraft/resources/Identifier")
-                renameClass("net/minecraft/util/ResourceLocationPattern", "net/minecraft/util/IdentifierPattern")
-                renameClass("net/minecraft/ResourceLocationException", "net/minecraft/IdentifierException")
-                renameClass("net/minecraft/client/resources/model/ModelResourceLocation", "net/minecraft/client/resources/model/ModelIdentifier")
-                renameClass("net/minecraft/commands/arguments/ResourceLocationArgument", "net/minecraft/commands/arguments/IdentifierArgument")
-                renameClass("net/minecraft/util/parsing/packrat/commands/ResourceLocationParseRule", "net/minecraft/util/parsing/packrat/commands/IdentifierParseRule")
-                renameClass("net/minecraft/client/searchtree/ResourceLocationSearchTree", "net/minecraft/client/searchtree/IdentifierSearchTree")
+            renameClass("net/minecraft/resources/ResourceLocation", "net/minecraft/resources/Identifier")
+            renameClass("net/minecraft/util/ResourceLocationPattern", "net/minecraft/util/IdentifierPattern")
+            renameClass("net/minecraft/ResourceLocationException", "net/minecraft/IdentifierException")
+            renameClass("net/minecraft/client/resources/model/ModelResourceLocation", "net/minecraft/client/resources/model/ModelIdentifier")
+            renameClass("net/minecraft/commands/arguments/ResourceLocationArgument", "net/minecraft/commands/arguments/IdentifierArgument")
+            renameClass("net/minecraft/util/parsing/packrat/commands/ResourceLocationParseRule", "net/minecraft/util/parsing/packrat/commands/IdentifierParseRule")
+            renameClass("net/minecraft/client/searchtree/ResourceLocationSearchTree", "net/minecraft/client/searchtree/IdentifierSearchTree")
 
-                renameMethod(null, setOf("()Lnet/minecraft/resources/Identifier;"), "location", "identifier")
-                renameField(null, setOf("Lnet/minecraft/resources/Identifier;"), "location", "identifier")
-            } else {
-                renameClass("net/minecraft/client/renderer/rendertype/LayeringTransform", "net/minecraft/client/renderer/LayeringTransform")
-                renameClass("net/minecraft/client/renderer/rendertype/OutputTarget", "net/minecraft/client/renderer/OutputTarget")
-                renameClass("net/minecraft/client/renderer/rendertype/RenderSetup", "net/minecraft/client/renderer/RenderSetup")
-                renameClass("net/minecraft/client/renderer/rendertype/RenderType", "net/minecraft/client/renderer/RenderType")
-                renameClass("net/minecraft/client/renderer/rendertype/RenderTypes", "net/minecraft/client/renderer/RenderTypes")
-                renameClass("net/minecraft/client/renderer/rendertype/TextureTransform", "net/minecraft/client/renderer/TextureTransform")
-            }
+            renameMethod(null, setOf("()Lnet/minecraft/resources/Identifier;"), "location", "identifier")
+            renameField(null, setOf("Lnet/minecraft/resources/Identifier;"), "location", "identifier")
 
-            if (version >= "26.1") {
-                renameClass("net/minecraft/client/resources/model/geometry/BakedQuad", "net/minecraft/client/renderer/block/model/BakedQuad")
-            }
+            renameClass("net/minecraft/client/renderer/rendertype/LayeringTransform", "net/minecraft/client/renderer/LayeringTransform")
+            renameClass("net/minecraft/client/renderer/rendertype/OutputTarget", "net/minecraft/client/renderer/OutputTarget")
+            renameClass("net/minecraft/client/renderer/rendertype/RenderSetup", "net/minecraft/client/renderer/RenderSetup")
+            renameClass("net/minecraft/client/renderer/rendertype/RenderType", "net/minecraft/client/renderer/RenderType")
+            renameClass("net/minecraft/client/renderer/rendertype/RenderTypes", "net/minecraft/client/renderer/RenderTypes")
+            renameClass("net/minecraft/client/renderer/rendertype/TextureTransform", "net/minecraft/client/renderer/TextureTransform")
+
+            renameClass("net/minecraft/client/resources/model/geometry/BakedQuad", "net/minecraft/client/renderer/block/model/BakedQuad")
         }
 
         fun shortIdentifierMethods() {
@@ -145,39 +139,31 @@ abstract class BigShotLibPluginExtension @Inject constructor(
         }
 
         fun shortVulkanClasses() {
-            val version = MCVersion[version.get()]
-
-            if (version >= "26.2") {
-                renameClass("com/mojang/blaze3d/vulkan/VulkanBackend", "com/mojang/blaze3d/vulkan/VkBackend")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanBindGroupLayout", "com/mojang/blaze3d/vulkan/VkBindGroupLayout")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanCommandEncoder", "com/mojang/blaze3d/vulkan/VkCommandEncoder")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanCommandPool", "com/mojang/blaze3d/vulkan/VkCommandPool")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanConst", "com/mojang/blaze3d/vulkan/VkConst")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanDebug", "com/mojang/blaze3d/vulkan/VkDebug")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanDevice", "com/mojang/blaze3d/vulkan/VkDevice")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuBuffer", "com/mojang/blaze3d/vulkan/VkBuffer")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuSampler", "com/mojang/blaze3d/vulkan/VkSampler")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuSurface", "com/mojang/blaze3d/vulkan/VkSurface")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuTexture", "com/mojang/blaze3d/vulkan/VkTexture")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanGpuTextureView", "com/mojang/blaze3d/vulkan/VkTextureView")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanPhysicalDevice", "com/mojang/blaze3d/vulkan/VkPhysicalDevice")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanQueryPool", "com/mojang/blaze3d/vulkan/VkQueryPool")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanQueue", "com/mojang/blaze3d/vulkan/VkQueue")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanRenderPass", "com/mojang/blaze3d/vulkan/VkRenderPass")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanRenderPipeline", "com/mojang/blaze3d/vulkan/VkRenderPipeline")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanTransientMemory", "com/mojang/blaze3d/vulkan/VkTransientMemory")
-                renameClass("com/mojang/blaze3d/vulkan/VulkanUtils", "com/mojang/blaze3d/vulkan/VkUtil")
-            }
+            renameClass("com/mojang/blaze3d/vulkan/VulkanBackend", "com/mojang/blaze3d/vulkan/VkBackend")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanBindGroupLayout", "com/mojang/blaze3d/vulkan/VkBindGroupLayout")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanCommandEncoder", "com/mojang/blaze3d/vulkan/VkCommandEncoder")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanCommandPool", "com/mojang/blaze3d/vulkan/VkCommandPool")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanConst", "com/mojang/blaze3d/vulkan/VkConst")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanDebug", "com/mojang/blaze3d/vulkan/VkDebug")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanDevice", "com/mojang/blaze3d/vulkan/VkDevice")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanGpuBuffer", "com/mojang/blaze3d/vulkan/VkBuffer")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanGpuSampler", "com/mojang/blaze3d/vulkan/VkSampler")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanGpuSurface", "com/mojang/blaze3d/vulkan/VkSurface")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanGpuTexture", "com/mojang/blaze3d/vulkan/VkTexture")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanGpuTextureView", "com/mojang/blaze3d/vulkan/VkTextureView")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanPhysicalDevice", "com/mojang/blaze3d/vulkan/VkPhysicalDevice")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanQueryPool", "com/mojang/blaze3d/vulkan/VkQueryPool")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanQueue", "com/mojang/blaze3d/vulkan/VkQueue")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanRenderPass", "com/mojang/blaze3d/vulkan/VkRenderPass")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanRenderPipeline", "com/mojang/blaze3d/vulkan/VkRenderPipeline")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanTransientMemory", "com/mojang/blaze3d/vulkan/VkTransientMemory")
+            renameClass("com/mojang/blaze3d/vulkan/VulkanUtils", "com/mojang/blaze3d/vulkan/VkUtil")
         }
 
         fun apiRenames() {
-            val version = MCVersion[version.get()]
-
-            if (version >= "1.21.5") {
-                renameClass("com/mojang/blaze3d/buffers/GpuBuffer", "com/mojang/blaze3d/buffers/GpuBufferImpl")
-                renameClass("com/mojang/blaze3d/textures/GpuSampler", "com/mojang/blaze3d/textures/GpuSamplerImpl")
-                renameClass("com/mojang/blaze3d/textures/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")
-            }
+            renameClass("com/mojang/blaze3d/buffers/GpuBuffer", "com/mojang/blaze3d/buffers/GpuBufferImpl")
+            renameClass("com/mojang/blaze3d/textures/GpuSampler", "com/mojang/blaze3d/textures/GpuSamplerImpl")
+            renameClass("com/mojang/blaze3d/textures/GpuTexture", "com/mojang/blaze3d/textures/GpuTextureImpl")
 
             renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV0", "TEXTURE_UV")
             renameField("com/mojang/blaze3d/vertex/VertexFormatElement", "Lcom/mojang/blaze3d/vertex/VertexFormatElement;", "UV1", "OVERLAY_UV")
@@ -191,7 +177,6 @@ abstract class BigShotLibPluginExtension @Inject constructor(
 
         fun apiInterfaceInjections() {
             injectInterface("net/typho/big_shot_lib/api/ext/ItemExtension", "net/minecraft/world/item/Item")
-            injectInterface("net/typho/big_shot_lib/api/ext/ItemPropertiesExtension", $$"net/minecraft/world/item/Item$Properties")
 
             injectInterface("net/typho/big_shot_lib/api/ext/DirectionExtension", "net/minecraft/core/Direction")
             injectInterface("net/typho/big_shot_lib/api/ext/Vec3iExtension", "net/minecraft/core/Vec3i")

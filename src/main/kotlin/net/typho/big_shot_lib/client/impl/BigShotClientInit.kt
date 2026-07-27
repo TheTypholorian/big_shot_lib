@@ -17,10 +17,11 @@ import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModList
 import net.neoforged.fml.common.Mod
+import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.client.api.NeoClientInitializer
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
 
-@Mod(value = "big_shot_lib", dist = [Dist.CLIENT])
+@Mod(value = BigShotLib.MOD_ID, dist = [Dist.CLIENT])
 class BigShotClientInit(eventBus: IEventBus, modContainer: ModContainer) {
     init {
         val buses: MutableMap<String, NeoClientEventBus> = hashMapOf()

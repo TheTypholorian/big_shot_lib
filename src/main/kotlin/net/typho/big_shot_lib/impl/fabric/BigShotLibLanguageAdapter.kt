@@ -1,6 +1,7 @@
 package net.typho.big_shot_lib.impl.fabric
 
-import kotlin.jvm.java
+//? fabric {
+/*import kotlin.jvm.java
 
 class BigShotLibLanguageAdapter : LanguageAdapter {
     @Suppress("UNCHECKED_CAST")
@@ -28,3 +29,4 @@ class BigShotLibLanguageAdapter : LanguageAdapter {
         }
     }
 }
+*///? }

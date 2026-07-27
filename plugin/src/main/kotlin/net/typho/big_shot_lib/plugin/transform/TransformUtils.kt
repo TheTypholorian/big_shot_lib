@@ -1,7 +1,6 @@
 package net.typho.big_shot_lib.plugin.transform
 
 import com.google.gson.Gson
-import com.google.gson.stream.JsonWriter
 import net.typho.big_shot_lib.plugin.transform.util.KotlinAndMixinSupportingClassRemapper
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassVisitor
@@ -20,19 +19,6 @@ import java.util.jar.JarOutputStream
 import java.util.jar.Manifest
 
 object TransformUtils {
-    @JvmStatic
-    fun getAutomaticModuleName(name: String): String {
-        var name = name.removeSuffix(".jar")
-
-        val versionIndex = Regex("-\\d+(\\.|$)").find(name)?.range?.first
-
-        if (versionIndex != null) {
-            name = name.substring(0, versionIndex)
-        }
-
-        return name.replace(Regex("[^A-Za-z0-9]"), ".").replace(Regex("\\.+"), ".").trim('.')
-    }
-
     @JvmStatic
     fun transformSingleFile(
         name: String,
@@ -115,13 +101,6 @@ object TransformUtils {
 
         JarFile(inFile, false).use { jar ->
             val manifest = jar.manifest ?: Manifest()
-
-            if (manifest.mainAttributes.getValue("Automatic-Module-Name") == null) {
-                manifest.mainAttributes.putValue(
-                    "Automatic-Module-Name",
-                    getAutomaticModuleName(inFile.name)
-                )
-            }
 
             JarOutputStream(FileOutputStream(outFile), manifest).use { out ->
                 jar.entries().asIterator().forEach { entry ->
