@@ -50,3 +50,4 @@ stonecutter {
 }
 
 include("api")
+include("agent")

@@ -16,7 +16,8 @@ plugins {
 bigShotLib {
     version(sc.current.version)
     loader(ModLoader[sc.current.project.substringAfterLast('_')])
-    registerJarTask(modstitch.finalJarTask)
+    // TODO
+    //registerJarTask(modstitch.finalJarTask)
 
     transformInfo {
         setupDefaults()
@@ -29,12 +30,11 @@ bigShotLib {
     }
 }
 
-val sourceJavaVersion = MCVersion.getMinJavaVersion(sc.versions.map { it.version })
-val targetJavaVersion = bigShotLib.mcVersion.javaVersion
-
 modstitch {
     modLoaderVersion = bigShotLib.deps.getLoaderVersion()
     minecraftVersion = bigShotLib.mcVersion.primaryVersion
+
+    javaVersion.set(25)
 
     parchment {
         bigShotLib.deps.getParchmentVersion()?.let {
@@ -62,7 +62,7 @@ modstitch {
         replacementProperties.put("license", project.property("license") as String)
         replacementProperties.put("group", project.group as String)
         replacementProperties.put("loader", bigShotLib.loader.get().name.lowercase())
-        replacementProperties.put("java_version", sourceJavaVersion.toString())
+        replacementProperties.put("java_version", javaVersion.toString())
     }
 
     mixin {
@@ -105,40 +105,8 @@ val env = DotEnvBuilder.dotEnv {
     addFileIfExists("$projectDir/.env")
 }
 
-tasks.compileJava.configure {
-    val javaCompat = when {
-        sc.current.parsed >= "26.1" -> "25"
-        sc.current.parsed >= "1.20.5" -> "21"
-        sc.current.parsed >= "1.18" -> "17"
-        sc.current.parsed >= "1.17" -> "16"
-        else -> "8"
-    }
-    sourceCompatibility = javaCompat
-    targetCompatibility = javaCompat
-}
-
-java {
-    val javaCompat = when {
-        sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
-        sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
-        sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17
-        sc.current.parsed >= "1.17" -> JavaVersion.VERSION_16
-        else -> JavaVersion.VERSION_1_8
-    }
-    sourceCompatibility = javaCompat
-    targetCompatibility = javaCompat
-}
-
 kotlin {
-    jvmToolchain(
-        when {
-            sc.current.parsed >= "26.1" -> 25
-            sc.current.parsed >= "1.20.5" -> 21
-            sc.current.parsed >= "1.18" -> 17
-            sc.current.parsed >= "1.17" -> 16
-            else -> 8
-        }
-    )
+    jvmToolchain(25)
     compilerOptions {
         freeCompilerArgs.add("-Xjvm-default=all")
     }
@@ -171,6 +139,10 @@ dependencies {
 
     bigShotLib.deps.modrinth("sodium")?.let { modstitchModImplementation(modDependency(it)!!) }
     modstitchRuntimeOnly(kotlin("reflect"))
+}
+
+tasks.processResources {
+    dependsOn(project(":agent").tasks.build)
 }
 
 evaluationDependsOn(":api")

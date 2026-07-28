@@ -3,12 +3,8 @@ import io.github.klahap.dotenv.DotEnvBuilder
 plugins {
     kotlin("jvm")
 
-    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
-
     id("me.modmuss50.mod-publish-plugin") version "2.0.0-beta.1"
     id("io.github.klahap.dotenv") version "1.1.3"
-
-    id("com.google.devtools.ksp") version "2.3.9"
 
     id("dev.isxander.modstitch.base") version "0.8.5"
 
@@ -20,6 +16,7 @@ plugins {
 bigShotLib {
     version("26.2")
     loader("fabric")
+    registerJarTask(modstitch.finalJarTask)
 
     transformInfo {
         setupDefaults()
@@ -40,14 +37,15 @@ publishing {
 }
 
 modstitch {
-    modLoaderVersion = property("deps.loader_version") as String
-    minecraftVersion = "26.2"
+    modLoaderVersion = bigShotLib.deps.getLoaderVersion()
+    minecraftVersion = bigShotLib.mcVersion.primaryVersion
+
+    javaVersion.set(25)
 
     parchment {
-        findProperty("deps.parchment")?.let {
-            val (mc, mappings) = (it as String).split(':')
-            minecraftVersion = mc
-            mappingsVersion = mappings
+        bigShotLib.deps.getParchmentVersion()?.let {
+            minecraftVersion = it.first
+            mappingsVersion = it.second
         }
     }
 
@@ -77,18 +75,8 @@ val env = DotEnvBuilder.dotEnv {
     addFileIfExists("$projectDir/.env")
 }
 
-tasks.compileJava.configure {
-    sourceCompatibility = "21"
-    targetCompatibility = "21"
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
-
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
     compilerOptions {
         freeCompilerArgs.add("-Xjvm-default=all")
     }
@@ -107,5 +95,5 @@ repositories {
 }
 
 dependencies {
-    modstitchModImplementation("maven.modrinth:sodium:${property("deps.sodium")}")
+    bigShotLib.deps.modrinth("sodium")?.let { modstitchModImplementation(modDependency(it)!!) }
 }

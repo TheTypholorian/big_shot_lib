@@ -28,3 +28,4 @@ runs
 
 **/.run
 **/.intellijPlatform
+src/main/resources/agent.jar
