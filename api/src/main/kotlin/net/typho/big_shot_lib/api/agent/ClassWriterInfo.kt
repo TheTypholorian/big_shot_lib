@@ -2,7 +2,7 @@ package net.typho.big_shot_lib.api.agent
 
 import org.objectweb.asm.ClassWriter
 
-class ClassInstrumentationInfo {
+class ClassWriterInfo {
     @JvmField
     var changed = false
     @JvmField

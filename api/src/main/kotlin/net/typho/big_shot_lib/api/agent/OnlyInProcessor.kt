@@ -40,7 +40,7 @@ object OnlyInProcessor {
     fun process(
         currentEnv: Environment,
         node: ClassNode,
-        info: ClassInstrumentationInfo
+        info: ClassWriterInfo
     ) {
         println("Processing ${node.name}")
         node.visibleAnnotations?.find { it.desc == Type.getDescriptor(OnlyIn::class.java) }?.let { onlyIn ->

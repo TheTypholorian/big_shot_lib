@@ -25,10 +25,34 @@ import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.chunk.ChunkAccess
+import net.typho.big_shot_lib.api.agent.ClassWriterInfo
 import net.typho.big_shot_lib.api.util.content.RegisteredObject
 import net.typho.big_shot_lib.api.util.resource.NeoReloadListener
+import net.typho.big_shot_lib.common.annotation.Environment
+import org.objectweb.asm.tree.ClassNode
+import java.lang.instrument.Instrumentation
 import java.util.Optional
 import java.util.function.Consumer
+
+/**
+ * Called after the java agent has been loaded, before any transformations have been applied.
+ */
+fun interface InstrumentationEvent {
+    operator fun invoke(
+        inst: Instrumentation
+    )
+}
+
+/**
+ * Called when a class is being transformed at runtime.
+ */
+fun interface ClassTransformEvent {
+    operator fun invoke(
+        node: ClassNode,
+        info: ClassWriterInfo,
+        environment: Environment
+    )
+}
 
 interface BrewingStandAccess {
     val numSlots: Int
