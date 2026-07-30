@@ -49,7 +49,7 @@ object TransformUtils {
 
                     if (dirty) {
                         val newName = remapper.map(className)
-                        val writer = ClassWriter(Opcodes.ASM9)
+                        val writer = ClassWriter(0)
 
                         node.accept(writer)
 

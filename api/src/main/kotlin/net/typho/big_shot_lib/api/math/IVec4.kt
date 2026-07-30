@@ -5,9 +5,7 @@ import io.netty.buffer.ByteBuf
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.typho.big_shot_lib.api.BigShotLib
-import net.typho.big_shot_lib.api.plugin.Immutable
-import net.typho.big_shot_lib.api.plugin.MaybeMutable
-import net.typho.big_shot_lib.api.plugin.Prefix
+import net.typho.big_shot_lib.common.annotation.Prefix
 import org.joml.Vector4d
 import org.joml.Vector4dc
 import org.joml.Vector4f
@@ -16,7 +14,6 @@ import org.joml.Vector4i
 import org.joml.Vector4ic
 
 @Prefix(BigShotLib.MOD_ID)
-@MaybeMutable
 interface IVec4<N : Number> {
     val opSet: OperatorSet<N>
 
@@ -52,43 +49,43 @@ interface IVec4<N : Number> {
     val ba: IVec2<N>
     val rgb: IVec3<N>
 
-    fun copyWith(x: N, y: N, z: N, w: N): @Immutable IVec4<N>
+    fun copyWith(x: N, y: N, z: N, w: N): IVec4<N>
 
-    fun toInt(): @Immutable IVec4<Int> = IVec4(x.toInt(), y.toInt(), z.toInt(), w.toInt())
+    fun toInt(): IVec4<Int> = IVec4(x.toInt(), y.toInt(), z.toInt(), w.toInt())
 
-    fun toFloat(): @Immutable IVec4<Float> = IVec4(x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat())
+    fun toFloat(): IVec4<Float> = IVec4(x.toFloat(), y.toFloat(), z.toFloat(), w.toFloat())
 
-    fun toDouble(): @Immutable IVec4<Double> = IVec4(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
+    fun toDouble(): IVec4<Double> = IVec4(x.toDouble(), y.toDouble(), z.toDouble(), w.toDouble())
 
-    fun lerp(x: N, y: N, z: N, w: N, d: Float): @Immutable IVec4<N> {
+    fun lerp(x: N, y: N, z: N, w: N, d: Float): IVec4<N> {
         return copyWith(opSet.lerp(this.x, x, d), opSet.lerp(this.y, y, d), opSet.lerp(this.z, z, d), opSet.lerp(this.w, w, d))
     }
 
-    fun plus(x: N, y: N, z: N, w: N): @Immutable IVec4<N> {
+    fun plus(x: N, y: N, z: N, w: N): IVec4<N> {
         return copyWith(opSet.plus(this.x, x), opSet.plus(this.y, y), opSet.plus(this.z, z), opSet.plus(this.w, w))
     }
 
-    fun minus(x: N, y: N, z: N, w: N): @Immutable IVec4<N> {
+    fun minus(x: N, y: N, z: N, w: N): IVec4<N> {
         return copyWith(opSet.minus(this.x, x), opSet.minus(this.y, y), opSet.minus(this.z, z), opSet.minus(this.w, w))
     }
 
-    fun times(x: N, y: N, z: N, w: N): @Immutable IVec4<N> {
+    fun times(x: N, y: N, z: N, w: N): IVec4<N> {
         return copyWith(opSet.times(this.x, x), opSet.times(this.y, y), opSet.times(this.z, z), opSet.times(this.w, w))
     }
 
-    fun div(x: N, y: N, z: N, w: N): @Immutable IVec4<N> {
+    fun div(x: N, y: N, z: N, w: N): IVec4<N> {
         return copyWith(opSet.div(this.x, x), opSet.div(this.y, y), opSet.div(this.z, z), opSet.div(this.w, w))
     }
 
-    fun rem(x: N, y: N, z: N, w: N): @Immutable IVec4<N> {
+    fun rem(x: N, y: N, z: N, w: N): IVec4<N> {
         return copyWith(opSet.rem(this.x, x), opSet.rem(this.y, y), opSet.rem(this.z, z), opSet.rem(this.w, w))
     }
 
-    fun min(x: N, y: N, z: N, w: N): @Immutable IVec4<N> {
+    fun min(x: N, y: N, z: N, w: N): IVec4<N> {
         return copyWith(opSet.min(this.x, x), opSet.min(this.y, y), opSet.min(this.z, z), opSet.min(this.w, w))
     }
 
-    fun max(x: N, y: N, z: N, w: N): @Immutable IVec4<N> {
+    fun max(x: N, y: N, z: N, w: N): IVec4<N> {
         return copyWith(opSet.max(this.x, x), opSet.max(this.y, y), opSet.max(this.z, z), opSet.max(this.w, w))
     }
 
@@ -258,7 +255,7 @@ interface IVec4<N : Number> {
         return equals(other.x, other.y, other.z, other.w)
     }
 
-    fun immutable(): @Immutable IVec4<N> = this
+    fun immutable(): IVec4<N> = this
 
     fun toJVec4i() = Vector4i(x.toInt(), y.toInt(), z.toInt(), w.toInt())
 
@@ -463,39 +460,39 @@ interface IVec4<N : Number> {
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Int, y: Int, z: Int, w: Int): @Immutable IVec4<Int> = IntImpl(x, y, z, w)
+        operator fun invoke(x: Int, y: Int, z: Int, w: Int): IVec4<Int> = IntImpl(x, y, z, w)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(other: Vector4ic): @Immutable IVec4<Int> = IntImpl(other.x(), other.y(), other.z(), other.w())
+        operator fun invoke(other: Vector4ic): IVec4<Int> = IntImpl(other.x(), other.y(), other.z(), other.w())
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Int): @Immutable IVec4<Int> = IntImpl(x, x, x, x)
+        operator fun invoke(x: Int): IVec4<Int> = IntImpl(x, x, x, x)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Float, y: Float, z: Float, w: Float): @Immutable IVec4<Float> = FloatImpl(x, y, z, w)
+        operator fun invoke(x: Float, y: Float, z: Float, w: Float): IVec4<Float> = FloatImpl(x, y, z, w)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(other: Vector4fc): @Immutable IVec4<Float> = FloatImpl(other.x(), other.y(), other.z(), other.w())
+        operator fun invoke(other: Vector4fc): IVec4<Float> = FloatImpl(other.x(), other.y(), other.z(), other.w())
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Float): @Immutable IVec4<Float> = FloatImpl(x, x, x, x)
+        operator fun invoke(x: Float): IVec4<Float> = FloatImpl(x, x, x, x)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Double, y: Double, z: Double, w: Double): @Immutable IVec4<Double> = DoubleImpl(x, y, z, w)
+        operator fun invoke(x: Double, y: Double, z: Double, w: Double): IVec4<Double> = DoubleImpl(x, y, z, w)
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(other: Vector4dc): @Immutable IVec4<Double> = DoubleImpl(other.x(), other.y(), other.z(), other.w())
+        operator fun invoke(other: Vector4dc): IVec4<Double> = DoubleImpl(other.x(), other.y(), other.z(), other.w())
 
         @JvmStatic
         @JvmName("of")
-        operator fun invoke(x: Double): @Immutable IVec4<Double> = DoubleImpl(x, x, x, x)
+        operator fun invoke(x: Double): IVec4<Double> = DoubleImpl(x, x, x, x)
 
         @JvmStatic
         inline fun <reified N : Number> Array<IVec4<N>>.flat(): Array<N> {

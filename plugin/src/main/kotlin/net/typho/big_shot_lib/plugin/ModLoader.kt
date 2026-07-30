@@ -16,11 +16,7 @@ import java.io.File
 
 enum class ModLoader {
     NONE {
-        override val mappedOnlyInAnnotationName = null
         override val manifestFile: File? = null
-
-        override fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean) {
-        }
 
         override fun getModIdAndVersion(manifest: String): Pair<String, String> {
             throw UnsupportedOperationException()
@@ -36,15 +32,7 @@ enum class ModLoader {
         }
     },
     FABRIC {
-        override val mappedOnlyInAnnotationName = "net/fabricmc/api/Environment"
         override val manifestFile: File = File("fabric.mod.json")
-
-        override fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean) {
-            annotation("L$mappedOnlyInAnnotationName;", true)?.let { anno ->
-                anno.visitEnum("value", "Lnet/fabricmc/api/EnvType;", if (client) "CLIENT" else "SERVER")
-                anno.visitEnd()
-            }
-        }
 
         override fun getModIdAndVersion(manifest: String): Pair<String, String> {
             val json = JsonParser.parseString(manifest).asJsonObject
@@ -73,15 +61,7 @@ enum class ModLoader {
         }
     },
     FORGE {
-        override val mappedOnlyInAnnotationName = "net/minecraftforge/api/distmarker/OnlyIn"
         override val manifestFile: File = File("META-INF/mods.toml")
-
-        override fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean) {
-            annotation("L$mappedOnlyInAnnotationName;", true)?.let { anno ->
-                anno.visitEnum("value", "Lnet/minecraftforge/api/distmarker/Dist;", if (client) "CLIENT" else "DEDICATED_SERVER")
-                anno.visitEnd()
-            }
-        }
 
         override fun getModIdAndVersion(manifest: String): Pair<String, String> {
             @Serializable
@@ -132,15 +112,7 @@ enum class ModLoader {
         }
     },
     NEOFORGE {
-        override val mappedOnlyInAnnotationName = "net/neoforged/api/distmarker/OnlyIn"
         override val manifestFile: File = File("META-INF/neoforge.mods.toml")
-
-        override fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean) {
-            annotation("L$mappedOnlyInAnnotationName;", true)?.let { anno ->
-                anno.visitEnum("value", "Lnet/neoforged/api/distmarker/Dist;", if (client) "CLIENT" else "DEDICATED_SERVER")
-                anno.visitEnd()
-            }
-        }
 
         override fun getModIdAndVersion(manifest: String): Pair<String, String> {
             @Serializable
@@ -189,33 +161,7 @@ enum class ModLoader {
         }
     };
 
-    abstract val mappedOnlyInAnnotationName: String?
     abstract val manifestFile: File?
-
-    open fun unmapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, descriptor: String, api: Int): AnnotationVisitor? {
-        return if (mappedOnlyInAnnotationName != null && descriptor == "L$mappedOnlyInAnnotationName;") {
-            object : AnnotationVisitor(api) {
-                var client = false
-
-                override fun visitEnum(name: String, descriptor: String, value: String) {
-                    if (name == "value" && value == "CLIENT") {
-                        client = true
-                    }
-                }
-
-                override fun visitEnd() {
-                    annotation(Annotations.ONLY_IN, true)?.let { anno ->
-                        anno.visitEnum("value", "Lnet/typho/big_shot_lib/api/plugin/Environment;", if (client) "CLIENT" else "SERVER")
-                        anno.visitEnd()
-                    }
-                }
-            }
-        } else {
-            null
-        }
-    }
-
-    abstract fun mapOnlyInAnnotation(annotation: (desc: String, visible: Boolean) -> AnnotationVisitor?, client: Boolean)
 
     abstract fun getModIdAndVersion(manifest: String): Pair<String, String>
 

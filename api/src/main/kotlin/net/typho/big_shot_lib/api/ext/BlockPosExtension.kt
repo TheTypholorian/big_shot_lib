@@ -4,10 +4,8 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.api.math.IVec3
-import net.typho.big_shot_lib.api.plugin.Prefix
-import net.typho.big_shot_lib.api.util.Extension
-import net.typho.big_shot_lib.api.util.Extension.Companion.cast
 import net.typho.big_shot_lib.api.util.Extension.Companion.castTo
+import net.typho.big_shot_lib.common.annotation.Prefix
 
 @Prefix(BigShotLib.MOD_ID)
 interface BlockPosExtension : Vec3iExtension {

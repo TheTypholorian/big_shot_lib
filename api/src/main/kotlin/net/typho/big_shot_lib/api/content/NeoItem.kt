@@ -11,8 +11,6 @@ import net.minecraft.world.item.JukeboxPlayable
 import net.minecraft.world.item.Rarity
 import net.minecraft.world.level.ItemLike
 import net.minecraft.world.level.Level
-import net.typho.big_shot_lib.api.BigShotLib
-import net.typho.big_shot_lib.api.plugin.Prefix
 
 open class NeoItem(
     /**

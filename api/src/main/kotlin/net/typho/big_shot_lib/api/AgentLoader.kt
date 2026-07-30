@@ -1,10 +1,15 @@
 package net.typho.big_shot_lib.api
 
+import java.lang.instrument.Instrumentation
 import java.nio.file.Files
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.outputStream
 
 object AgentLoader {
+    @JvmStatic
+    @get:JvmName("getInstrumentation")
+    lateinit var INSTRUMENTATION: Instrumentation
+
     @JvmStatic
     @JvmOverloads
     fun loadAgent(

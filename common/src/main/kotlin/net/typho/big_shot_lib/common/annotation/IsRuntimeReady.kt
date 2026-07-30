@@ -1,4 +1,4 @@
-package net.typho.big_shot_lib.api.plugin
+package net.typho.big_shot_lib.common.annotation
 
 import org.jetbrains.annotations.ApiStatus
 

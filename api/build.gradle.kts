@@ -97,3 +97,15 @@ repositories {
 dependencies {
     bigShotLib.deps.modrinth("sodium")?.let { modstitchModImplementation(modDependency(it)!!) }
 }
+
+evaluationDependsOn(":common")
+
+sourceSets {
+    val commonSet = project(":common").sourceSets["main"]
+
+    main {
+        java.srcDirs(commonSet.java.srcDirs)
+        kotlin.srcDirs(commonSet.kotlin.srcDirs)
+        resources.srcDirs(commonSet.resources.srcDirs)
+    }
+}

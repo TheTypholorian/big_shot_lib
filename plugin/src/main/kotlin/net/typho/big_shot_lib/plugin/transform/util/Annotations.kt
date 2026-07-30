@@ -4,11 +4,11 @@ import org.objectweb.asm.Type
 
 object Annotations {
     @JvmStatic
-    val ONLY_IN = "Lnet/typho/big_shot_lib/api/plugin/OnlyIn;"
+    val ONLY_IN = "Lnet/typho/big_shot_lib/common/annotation/OnlyIn;"
     @JvmStatic
-    val IS_RUNTIME_READY = "Lnet/typho/big_shot_lib/api/plugin/IsRuntimeReady;"
+    val IS_RUNTIME_READY = "Lnet/typho/big_shot_lib/common/annotation/IsRuntimeReady;"
     @JvmStatic
-    val PREFIX = "Lnet/typho/big_shot_lib/api/plugin/Prefix;"
+    val PREFIX = "Lnet/typho/big_shot_lib/common/annotation/Prefix;"
     @JvmStatic
     val MIXIN = "Lorg/spongepowered/asm/mixin/Mixin;"
     @JvmStatic

@@ -1,5 +1,4 @@
 import io.github.klahap.dotenv.DotEnvBuilder
-import net.typho.big_shot_lib.plugin.MCVersion
 import net.typho.big_shot_lib.plugin.ModLoader
 
 plugins {

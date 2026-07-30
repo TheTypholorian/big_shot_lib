@@ -50,22 +50,6 @@ class ToProdTransformer(
     override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor? {
         return when (descriptor) {
             Annotations.IS_RUNTIME_READY -> null
-            Annotations.ONLY_IN -> {
-                markChanged.run()
-                object : AnnotationVisitor(api) {
-                    var client = false
-
-                    override fun visitEnum(name: String, descriptor: String, value: String) {
-                        if (name == "value" && value == "CLIENT") {
-                            client = true
-                        }
-                    }
-
-                    override fun visitEnd() {
-                        loader.mapOnlyInAnnotation(::visitAnnotation, client)
-                    }
-                }
-            }
             else -> super.visitAnnotation(descriptor, visible)
         }
     }
@@ -101,58 +85,6 @@ class ToProdTransformer(
                 }
 
                 super.visitMethodInsn(opcode, owner, name, descriptor, isInterface)
-            }
-
-            override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor? {
-                if (descriptor == Annotations.ONLY_IN) {
-                    markChanged.run()
-                    return object : AnnotationVisitor(api) {
-                        var client = false
-
-                        override fun visitEnum(name: String, descriptor: String, value: String) {
-                            if (name == "value" && value == "CLIENT") {
-                                client = true
-                            }
-                        }
-
-                        override fun visitEnd() {
-                            loader.mapOnlyInAnnotation(::visitAnnotation, client)
-                        }
-                    }
-                }
-
-                return super.visitAnnotation(descriptor, visible)
-            }
-        }
-    }
-
-    override fun visitField(
-        access: Int,
-        name: String?,
-        descriptor: String?,
-        signature: String?,
-        value: Any?
-    ): FieldVisitor {
-        return object : FieldVisitor(api, super.visitField(access, name, descriptor, signature, value)) {
-            override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor? {
-                if (descriptor == Annotations.ONLY_IN) {
-                    markChanged.run()
-                    return object : AnnotationVisitor(api) {
-                        var client = false
-
-                        override fun visitEnum(name: String, descriptor: String, value: String) {
-                            if (name == "value" && value == "CLIENT") {
-                                client = true
-                            }
-                        }
-
-                        override fun visitEnd() {
-                            loader.mapOnlyInAnnotation(::visitAnnotation, client)
-                        }
-                    }
-                }
-
-                return super.visitAnnotation(descriptor, visible)
             }
         }
     }

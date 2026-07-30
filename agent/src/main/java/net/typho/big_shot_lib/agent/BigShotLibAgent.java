@@ -11,7 +11,6 @@ import org.objectweb.asm.tree.*;
 
 import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.security.ProtectionDomain;
@@ -38,7 +37,17 @@ public class BigShotLibAgent {
     }
 
     public static void init(Instrumentation inst) throws UnmodifiableClassException {
-        System.out.println("MUAHAHAHAHA");
+        Class<?> agentCls = Arrays.stream(inst.getAllLoadedClasses())
+                .filter(c -> c.getName().equals("net.typho.big_shot_lib.api.AgentLoader"))
+                .findAny()
+                .orElseThrow(() -> new AssertionError("Class net.typho.big_shot_lib.api.AgentLoader was not loaded when the Big Shot Lib agent was launched, this should never happen."));
+
+        try {
+            agentCls.getField("INSTRUMENTATION").set(null, inst);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         inst.addTransformer(
                 new ClassFileTransformer() {
                     @Override
@@ -69,7 +78,5 @@ public class BigShotLibAgent {
                 },
                 true
         );
-        System.out.println(Arrays.asList(inst.getAllLoadedClasses()).stream().filter(c -> c.getName().startsWith("net.minecraft")).toList());
-        //inst.retransformClasses(Arrays.asList(inst.getAllLoadedClasses()).stream().filter(c -> c.getName().equals("net.minecraft.client.Minecraft")).findAny().orElseThrow());
     }
 }
