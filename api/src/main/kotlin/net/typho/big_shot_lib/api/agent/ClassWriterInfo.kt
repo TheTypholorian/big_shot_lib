@@ -16,7 +16,7 @@ class ClassWriterInfo {
         writerFlags = writerFlags or ClassWriter.COMPUTE_FRAMES
     }
 
-    fun computeMaxStacks() {
+    fun computeMaxStackSizes() {
         writerFlags = writerFlags or ClassWriter.COMPUTE_MAXS
     }
 }

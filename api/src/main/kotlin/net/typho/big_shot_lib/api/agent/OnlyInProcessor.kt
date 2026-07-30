@@ -42,7 +42,6 @@ object OnlyInProcessor {
         node: ClassNode,
         info: ClassWriterInfo
     ) {
-        println("Processing ${node.name}")
         node.visibleAnnotations?.find { it.desc == Type.getDescriptor(OnlyIn::class.java) }?.let { onlyIn ->
             lateinit var targetEnv: Environment
             val iterator = onlyIn.values.iterator()
@@ -57,8 +56,6 @@ object OnlyInProcessor {
                 }
             }
 
-            println("$currentEnv $targetEnv")
-
             if (currentEnv != targetEnv) {
                 val clinit = node.methods.find { it.name == "<clinit>" } ?: MethodNode(
                     Opcodes.ACC_STATIC,
@@ -67,7 +64,6 @@ object OnlyInProcessor {
                     null,
                     null
                 ).also { node.methods.add(it) }
-                println("$clinit")
                 injectInvalidEnvironmentException(
                     clinit,
                     "class ${node.name}",
