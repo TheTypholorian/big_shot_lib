@@ -1,12 +1,12 @@
 package net.typho.big_shot_lib.api.util.buffer
 
-import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import net.typho.big_shot_lib.api.util.platform.NeoModLoader
 
 object MemoryChecks {
     @JvmStatic
     @get:JvmName("areChecksEnabled")
     @set:JvmName("setChecksEnabled")
-    var CHECKS = PlatformUtil.isDevEnv()
+    var CHECKS = NeoModLoader.isDevEnv()
 
     @JvmStatic
     fun checkIsByte(v: Int) {

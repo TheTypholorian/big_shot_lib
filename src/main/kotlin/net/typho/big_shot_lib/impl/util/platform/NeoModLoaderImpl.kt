@@ -4,21 +4,22 @@ package net.typho.big_shot_lib.impl.util.platform
 /*import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.metadata.CustomValue
-import net.typho.big_shot_lib.api.util.platform.IPlatformUtil
+import net.typho.big_shot_lib.api.util.platform.INeoModLoader
 *///? } neoforge {
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModList
 import net.neoforged.fml.loading.FMLEnvironment
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.fml.loading.FMLPaths
-import net.typho.big_shot_lib.api.util.platform.IPlatformUtil
+import net.typho.big_shot_lib.api.util.platform.INeoModLoader
 //? }
 
 import net.typho.big_shot_lib.api.util.platform.ModContainer
 import net.typho.big_shot_lib.api.util.platform.ModLoader
+import net.typho.big_shot_lib.common.annotation.Environment
 import java.nio.file.Path
 
-object PlatformUtilImpl : IPlatformUtil {
+object NeoModLoaderImpl : INeoModLoader {
     //? fabric {
     /*override val loader = ModLoader.FABRIC
     override val mods: Collection<ModContainer>
@@ -68,11 +69,15 @@ object PlatformUtilImpl : IPlatformUtil {
         }
     }
     *///? } neoforge {
-    override val loader = ModLoader.NEOFORGE
+    override val backend = ModLoader.NEOFORGE
     override val mods: Collection<ModContainer>
         get() = ModList.get().sortedMods.map { ModContainerImpl(it) }
     override val configPath: Path
         get() = FMLPaths.CONFIGDIR.get()
+    override val environment: Environment = when (FMLEnvironment.getDist()) {
+        Dist.CLIENT -> Environment.CLIENT
+        Dist.DEDICATED_SERVER -> Environment.SERVER
+    }
 
     override fun isDevEnv(): Boolean {
         //? if <1.21.9 {
@@ -80,10 +85,6 @@ object PlatformUtilImpl : IPlatformUtil {
         *///? } else {
         return !FMLLoader.getCurrent().isProduction
         //? }
-    }
-
-    override fun isClient(): Boolean {
-        return FMLEnvironment.getDist() == Dist.CLIENT
     }
 
     @JvmRecord

@@ -1,26 +1,20 @@
 package net.typho.big_shot_lib.impl.neoforge
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import net.neoforged.fml.jarcontents.JarContents
 import net.neoforged.fml.loading.moddiscovery.ModFile
 import net.neoforged.fml.loading.moddiscovery.ModJarMetadata
-import net.neoforged.neoforgespi.language.IConfigurable
 import net.neoforged.neoforgespi.language.IModFileInfo
-import net.neoforged.neoforgespi.language.IModInfo
 import net.neoforged.neoforgespi.locating.IModFile
 import net.neoforged.neoforgespi.locating.IModFileReader
 import net.neoforged.neoforgespi.locating.ModFileDiscoveryAttributes
-import net.typho.big_shot_lib.api.BigShotLib
 import net.typho.big_shot_lib.common.loading.BigShotModInfo
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class NeoForgeModFileReader : IModFileReader {
     companion object {
         @JvmField
         val LOGGER = LoggerFactory.getLogger("Big Shot Mod Loader")
-        
+
         @JvmStatic
         fun modJsonParser(file: IModFile): IModFileInfo? {
             val json = file.contents.get(BigShotModInfo.FILE_NAME)
@@ -30,7 +24,7 @@ class NeoForgeModFileReader : IModFileReader {
                 return null
             }
 
-            return json.open().use { ModFileInfoImpl(file, JsonParser.parseReader(it.reader()).asJsonObject) }
+            return json.open().use { ModFileInfoImpl(file, BigShotModInfo.GSON.fromJson(it.reader(), BigShotModInfo::class.java)) }
         }
     }
 
@@ -57,42 +51,4 @@ class NeoForgeModFileReader : IModFileReader {
          */
     }
 
-    class ModFileInfoImpl(
-        private val file: IModFile,
-        json: JsonObject
-    ) : IModFileInfo {
-        override fun getMods(): List<IModInfo> {
-            TODO("Not yet implemented")
-        }
-
-        override fun requiredLanguageLoaders(): List<IModFileInfo.LanguageSpec> {
-            TODO("Not yet implemented")
-        }
-
-        override fun showAsResourcePack() = false
-
-        override fun showAsDataPack() = false
-
-        override fun getFileProperties(): Map<String, Any> {
-            TODO("Not yet implemented")
-        }
-
-        override fun getLicense(): String {
-            TODO("Not yet implemented")
-        }
-
-        override fun versionString(): String {
-            TODO("Not yet implemented")
-        }
-
-        override fun usesServices(): List<String> {
-            TODO("Not yet implemented")
-        }
-
-        override fun getFile() = file
-
-        override fun getConfig(): IConfigurable {
-            TODO("Not yet implemented")
-        }
-    }
 }

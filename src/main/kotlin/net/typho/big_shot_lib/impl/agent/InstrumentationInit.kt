@@ -5,6 +5,7 @@ import net.typho.big_shot_lib.api.agent.OnlyInProcessor
 import net.typho.big_shot_lib.api.event.ClassTransformEvent
 import net.typho.big_shot_lib.api.util.EventGraph
 import net.typho.big_shot_lib.common.annotation.Environment
+import net.typho.big_shot_lib.common.loading.LoadingConstants
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.tree.ClassNode
@@ -18,14 +19,14 @@ internal object InstrumentationInit {
     fun init(inst: Instrumentation, environment: Environment) {
         val transformGraph = EventGraph<String, ClassTransformEvent>()
 
-        transformGraph.register("big_shot_lib:only_in") { node, info, environment ->
+        transformGraph.register(LoadingConstants.INSTRUMENTATION_STEP_ONLY_IN) { node, info, environment ->
             OnlyInProcessor.process(environment, node, info)
         }
         // TODO registration entrypoint
 
         val instGraph = EventGraph<String, Consumer<Instrumentation>>()
 
-        instGraph.register("big_shot_lib:basic_transform") { inst ->
+        instGraph.register(LoadingConstants.TRANSFORM_STEP_BASIC) { inst ->
             inst.addTransformer(object : ClassFileTransformer {
                 override fun transform(
                     loader: ClassLoader?,

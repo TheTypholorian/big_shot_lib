@@ -4,7 +4,7 @@ import net.typho.big_shot_lib.client.api.NeoClientInitializer
 import net.typho.big_shot_lib.api.event.NeoClientEventBus
 import net.typho.big_shot_lib.api.event.NeoEventBus
 import net.typho.big_shot_lib.api.util.NeoServiceLoader.loadServices
-import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import net.typho.big_shot_lib.api.util.platform.NeoModLoader
 import java.util.function.Consumer
 
 interface NeoCommonInitializer {
@@ -19,7 +19,7 @@ interface NeoCommonInitializer {
     }
 
     fun addClientListener(listener: Consumer<NeoClientEventBus>) {
-        if (PlatformUtil.isClient()) {
+        if (NeoModLoader.isClient()) {
             if (NeoClientInitializer.isClientInitDone) {
                 throw IllegalStateException("Cannot register a client mod listener for $modId after init")
             }

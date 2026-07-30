@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.Recipe
 import net.minecraft.world.level.block.Block
 import net.typho.big_shot_lib.api.NeoCommonInitializer
 import net.typho.big_shot_lib.api.event.RegisterEvent
-import net.typho.big_shot_lib.api.util.platform.PlatformUtil
+import net.typho.big_shot_lib.api.util.platform.NeoModLoader
 import net.typho.big_shot_lib.api.util.resource.RegisteredResource
 import java.util.function.Supplier
 import java.util.function.UnaryOperator
@@ -180,7 +180,7 @@ open class ItemFactory(
         }
 
         fun client(info: UnaryOperator<ClientInfo<T, *>>): B {
-            if (PlatformUtil.isClient()) {
+            if (NeoModLoader.isClient()) {
                 clientInfo = info.apply(clientInfo ?: ClientInfoImpl(parent))
             }
 

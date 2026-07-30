@@ -1,5 +1,6 @@
 package net.typho.big_shot_lib.common.loading
 
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -9,6 +10,7 @@ import com.google.gson.JsonSerializer
 import com.google.gson.reflect.TypeToken
 import net.typho.big_shot_lib.common.annotation.Environment
 import java.lang.reflect.Type
+import java.util.function.Consumer
 import kotlin.jvm.java
 
 data class BigShotModInfo(
@@ -41,6 +43,31 @@ data class BigShotModInfo(
          * TODO support .toml format
          */
         const val FILE_NAME = "big_shot.mod.json"
+        @JvmStatic
+        @get:JvmName("getGson")
+        val GSON by lazy {
+            GsonBuilder()
+                .registerTypeAdapter(BigShotModInfo::class.java, JsonCodec)
+                .registerTypeAdapter(ModAuthor::class.java, ModAuthor.JsonCodec)
+                .registerTypeAdapter(ModMixinConfig::class.java, ModMixinConfig.JsonCodec)
+                .registerTypeAdapter(ModVersion::class.java, ModVersion.JsonCodec) // TODO
+                .registerTypeAdapter(Environment::class.java, Environment.JsonCodec)
+                .create()
+        }
+    }
+
+    fun <T> invokeEntrypoints(
+        type: String,
+        entrypointType: Class<T>,
+        args: Map<Class<*>, Any?>,
+        out: Consumer<T>
+    ) {
+        entrypoints[type]?.forEach { entrypoint ->
+            out.accept(entrypoint.getOrConstruct(
+                entrypointType,
+                args
+            ))
+        }
     }
 
     object JsonCodec : JsonSerializer<BigShotModInfo>, JsonDeserializer<BigShotModInfo> {

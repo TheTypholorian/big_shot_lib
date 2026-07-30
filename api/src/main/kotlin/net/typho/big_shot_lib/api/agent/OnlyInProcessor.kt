@@ -23,7 +23,7 @@ object OnlyInProcessor {
         val insn = InsnList()
         insn.add(TypeInsnNode(Opcodes.NEW, "net/typho/big_shot_lib/api/error/InvalidEnvironmentException"))
         insn.add(InsnNode(Opcodes.DUP))
-        insn.add(LdcInsnNode("Tried to load $name on ${currentEnv.name.lowercase()} but it's ${targetEnv.name.lowercase()}-side only"))
+        insn.add(LdcInsnNode("Tried to load $name on ${currentEnv.name.lowercase()} but it is ${targetEnv.name.lowercase()}-side only"))
         insn.add(MethodInsnNode(
             Opcodes.INVOKESPECIAL,
             "net/typho/big_shot_lib/api/error/InvalidEnvironmentException",
