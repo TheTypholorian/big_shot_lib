@@ -12,6 +12,8 @@ repositories {
 dependencies {
     implementation("com.google.code.gson:gson:2.13.1")
     implementation("org.jetbrains:annotations:26.0.2")
+    implementation("org.ow2.asm:asm:9.8")
+    implementation("org.ow2.asm:asm-tree:9.8")
 }
 
 kotlin {

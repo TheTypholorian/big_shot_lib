@@ -1,11 +1,36 @@
 package net.typho.big_shot_lib.common.loading
 
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
 import java.lang.reflect.Modifier
+import java.lang.reflect.Type
 
 data class ModEntrypoint(
     @JvmField
     val path: String
 ) {
+    object JsonCodec : JsonSerializer<ModEntrypoint>, JsonDeserializer<ModEntrypoint> {
+        override fun serialize(
+            src: ModEntrypoint,
+            typeOfSrc: Type,
+            context: JsonSerializationContext
+        ): JsonElement {
+            return JsonPrimitive(src.path)
+        }
+
+        override fun deserialize(
+            json: JsonElement,
+            typeOfT: Type,
+            context: JsonDeserializationContext
+        ): ModEntrypoint {
+            return ModEntrypoint(json.asString)
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     fun <T> resolveClass(entrypointType: Class<T>): Class<out T> {
         val actual = Class.forName(path)

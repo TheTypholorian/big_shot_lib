@@ -1,6 +1,5 @@
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "9.6.1"
 }
 
 group = "net.typho.big_shot_lib"
@@ -11,8 +10,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.ow2.asm:asm:9.8")
-    implementation("org.ow2.asm:asm-tree:9.8")
 }
 
 tasks.jar {

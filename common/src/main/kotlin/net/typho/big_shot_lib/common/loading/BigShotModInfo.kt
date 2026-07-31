@@ -18,6 +18,8 @@ data class BigShotModInfo(
     val id: String,
     @JvmField
     val version: String,
+    @JvmField
+    val dependencies: ModDependencies,
 
     @JvmField
     val environment: Environment?,
@@ -49,8 +51,9 @@ data class BigShotModInfo(
             GsonBuilder()
                 .registerTypeAdapter(BigShotModInfo::class.java, JsonCodec)
                 .registerTypeAdapter(ModAuthor::class.java, ModAuthor.JsonCodec)
+                .registerTypeAdapter(ModDependencies::class.java, ModDependencies.JsonCodec)
+                .registerTypeAdapter(ModEntrypoint::class.java, ModEntrypoint.JsonCodec)
                 .registerTypeAdapter(ModMixinConfig::class.java, ModMixinConfig.JsonCodec)
-                .registerTypeAdapter(ModVersion::class.java, ModVersion.JsonCodec) // TODO
                 .registerTypeAdapter(Environment::class.java, Environment.JsonCodec)
                 .create()
         }
@@ -79,6 +82,7 @@ data class BigShotModInfo(
             return JsonObject().apply {
                 addProperty("id", src.id)
                 addProperty("version", src.version)
+                add("dependencies", context.serialize(src.dependencies))
 
                 add("environment", context.serialize(src.environment))
                 add("entrypoints", context.serialize(src.entrypoints))
@@ -102,6 +106,7 @@ data class BigShotModInfo(
             return BigShotModInfo(
                 json.getAsJsonPrimitive("id").asString,
                 json.getAsJsonPrimitive("version").asString,
+                context.deserialize(json.get("dependencies"), ModDependencies::class.java),
 
                 context.deserialize(json.get("environment"), Environment::class.java),
                 context.deserialize(json.get("entrypoints"), TypeToken.getParameterized(Map::class.java, String::class.java, TypeToken.getParameterized(List::class.java, ModEntrypoint::class.java).type).type) ?: mapOf(),
